@@ -1,0 +1,27 @@
+.defaultCheckboxes {
+	@apply relative inline-flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center justify-center rounded-md border border-gray-300 text-white/0 outline-none transition ease-linear hover:cursor-pointer dark:border-white/10;
+}
+
+.checked {
+	@apply border-none;
+}
+
+.checked-red {
+	@apply bg-red-500 dark:bg-red-400;
+}
+
+.checked-blue {
+	@apply bg-blue-500 dark:bg-blue-400;
+}
+
+.checked-green {
+	@apply bg-green-500 dark:bg-green-400;
+}
+
+.checked-yellow {
+	@apply bg-yellow-500 dark:bg-yellow-400;
+}
+
+.checked-sidebar {
+	@apply bg-sidebar dark:bg-sidebar;
+}

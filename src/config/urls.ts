@@ -4,8 +4,11 @@ export const URLS = {
 	AUTH: '/auth',
 	AUTH_REGISTER: '/auth/register',
 	AUTH_LOGOUT: '/auth/logout',
-	USER_PROFILE: '/user/profile',
-	USER_TIMER: '/user/timer',
-	USER_TIME_BLOCKS: '/user/time-blocks',
-	USER_TASKS: '/user/tasks',
+	ADMIN_PANEL_URL: '/admin',
+	MENU_ITEM: '/menu-item',
+
+
 }
+
+export const getSiteUrl = () => process.env.APP_URL as string
+export const getAdminUrl = (path = '') => `${URLS.ADMIN_PANEL_URL}${path}`

@@ -1,0 +1,38 @@
+.fieldContainer {
+	@apply relative mt-2 flex w-full items-center justify-center rounded-lg border bg-transparent p-3 text-base outline-none transition-colors duration-500;
+}
+
+.fieldPlaceholder {
+	@apply text-text-primary;
+}
+
+.fieldFocus {
+	@apply focus:border-border-light text-text-primary;
+}
+
+.fieldDisabled {
+	@apply border-none bg-gray-100 dark:bg-white/5 dark:placeholder:text-[rgba(255,255,255,0.15)];
+}
+
+.fieldError {
+	@apply border-red-500 text-red-500 placeholder:text-red-500 dark:border-red-400 dark:text-red-400 dark:placeholder:text-red-400;
+}
+
+.fieldSuccess {
+	@apply border-green-500 text-green-500 placeholder:text-green-500 dark:border-green-400 dark:text-green-400 dark:placeholder:text-green-400;
+}
+
+.label {
+	@apply text-sm text-text-primary dark:text-white ml-1.5 font-medium;
+}
+
+.inputTransparentField {
+	@apply bg-transparent border-none focus:outline-0 focus:shadow-transparent w-full pr-3 overflow-hidden text-ellipsis mr-2 
+	resize-none flex-1;
+
+	&:hover,
+	:focus {
+		@apply overflow-visible h-20 z-10 absolute top-0 left-[4%] p-3 rounded-sm  bg-lightPrimary;
+		transition: all 0.3s ease;
+	}
+}

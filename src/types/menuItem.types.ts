@@ -42,3 +42,19 @@ export const InstitutionType = {
 }
 
 export type InstitutionType = keyof typeof InstitutionType
+
+export enum EnumMenuSort {
+	HIGH_PRICE = 'high-price',
+	LOW_PRICE = 'low-price',
+	NEWEST = 'newest',
+	OLDEST = 'oldest'
+}
+
+export type MenuItemDataFilters = {
+	sort?: EnumMenuSort | string
+	searchTerm?: string
+	minPrice?: string
+	maxPrice?: string
+	startDate?: string
+	endDate?: string
+}

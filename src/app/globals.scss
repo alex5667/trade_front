@@ -17,9 +17,10 @@
 }
 
 body {
-  @apply text-base overflow-hidden bg-background-primary text-text-primary;
+  @apply text-base overflow-hidden bg-primary text-text-primary;
   // color: rgb(var(--foreground-rgb));
   font-family: var(--font-zen), sans-serif;
+  font-weight: 400;
 
   // background: linear-gradient(
   //     to bottom,

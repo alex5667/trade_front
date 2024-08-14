@@ -1,55 +1,25 @@
-import { Reducer, combineReducers, configureStore } from '@reduxjs/toolkit'
-import {
-	FLUSH,
-	PAUSE,
-	PERSIST,
-	PURGE,
-	REGISTER,
-	REHYDRATE,
-	persistReducer,
-	persistStore
-} from 'redux-persist'
-import { PersistPartial } from 'redux-persist/es/persistReducer'
-import storage from 'redux-persist/lib/storage'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 // import { filterSlice } from './filters/filters.slice'
 
 
+import { menuItemApi } from '@/services/menu-item.service'
 import { userSlice } from './user/user.slice'
 
-const isClient = typeof window !== 'undefined'
-const combinedReducer = combineReducers({
+const rootReducer = combineReducers({
 	[userSlice.reducerPath]: userSlice.reducer,
+	[menuItemApi.reducerPath]: menuItemApi.reducer,
+
 })
-
-type RootState = ReturnType<typeof combinedReducer>
-type RootStateWithPersist = RootState & Partial<PersistPartial>
-
-let mainReducer: Reducer<RootState> = combinedReducer
-if (isClient) {
-	const persistConfig = {
-		key: 'menu',
-		storage,
-		whiteList: ['menu']
-	}
-
-	mainReducer = persistReducer(
-		persistConfig,
-		combinedReducer
-	) as Reducer<RootStateWithPersist>
-}
 
 export const store = configureStore({
-	reducer: mainReducer,
+	reducer: rootReducer,
 	middleware: getDefaultMiddleware =>
-		getDefaultMiddleware({
-			serializableCheck: {
-				ignoredActions: [FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE]
-			}
-		})
+		getDefaultMiddleware().concat(
+			menuItemApi.middleware,
+
+		)
 })
 
-export const persistor = persistStore(store)
-export type TypeRootState = ReturnType<typeof combinedReducer> &
-	Partial<PersistPartial>
+export type TypeRootState = ReturnType<typeof rootReducer>
 export type AppStore = typeof store
 export type AppDispatch = AppStore['dispatch']
