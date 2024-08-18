@@ -1,6 +1,11 @@
-import { MenuItemResponse } from '@/types/menuItem.types'
+import {
+	MealTypes,
+	MenuItemResponse,
+	MealType as TypeMeal
+} from '@/types/menuItem.types'
 
-import { Heading } from '../Heading'
+import DishRow from './DishRow'
+import styles from './Home.module.scss'
 
 const MealType = ({
 	items,
@@ -9,21 +14,17 @@ const MealType = ({
 	items: MenuItemResponse[]
 	meal: string
 }) => {
+	const mealUkr = MealTypes[meal as TypeMeal]
 	return (
-		<div>
-			<Heading
-				title={meal}
-				size='xs'
-			/>
+		<div className={styles.mealTypeContainer}>
+			<h2 className={styles.mealTypeTitle}>{mealUkr}</h2>
 			{items && items.length > 0 ? (
 				<ul>
 					{items.map((item, idx) => (
-						<li
-							className='text-xs bg-text-secondary'
-							key={item.id}
-						>
-							{idx} {item.dish.name}
-						</li>
+						<DishRow
+							key={idx}
+							name={item.dish.printName ? item.dish.printName : 'noName'}
+						/>
 					))}
 				</ul>
 			) : (

@@ -1,14 +1,16 @@
 import DayWeek from '@/components/ui/home/DayWeak'
 
-import { DayOfWeek, MenuItemResponse } from '@/types/menuItem.types'
+import { DayOfWeekUkr, MenuItemResponse } from '@/types/menuItem.types'
+
+import styles from './HomePage.module.scss'
 
 const Home = ({ items }: { items: MenuItemResponse[] }) => {
-	const daysOfWeek = Object.keys(DayOfWeek).filter(
+	const daysOfWeek = Object.keys(DayOfWeekUkr).filter(
 		days => days !== 'SATURDAY' && days !== 'SUNDAY'
 	)
 
 	return (
-		<div className='grid w-full grid-cols-5 justify-between gap-5'>
+		<div className={styles.mainContent}>
 			{daysOfWeek.map(day => {
 				const daysWeekItems = items.filter(item => item.dayOfWeek === day)
 				return (

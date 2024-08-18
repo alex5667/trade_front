@@ -1,7 +1,11 @@
-import { MealTypes, MenuItemResponse } from '@/types/menuItem.types'
+import {
+	DayOfWeek,
+	DayOfWeekUkr,
+	MealTypes,
+	MenuItemResponse
+} from '@/types/menuItem.types'
 
-import { Heading } from '../Heading'
-
+import styles from './Home.module.scss'
 import MealType from './MealType'
 
 const DayWeek = ({
@@ -12,12 +16,12 @@ const DayWeek = ({
 	day: string
 }) => {
 	const mealTypes = Object.keys(MealTypes)
+	const ukrDayOfWeek = DayOfWeekUkr[day as DayOfWeek]
 	return (
-		<div className='bg-secondary rounded-lg py-3 px-2'>
-			<Heading
-				title={day}
-				size='base'
-			/>
+		<div className={styles.dayWeekCOlumn}>
+			<h2 className={styles.dayWeekTitle}>
+				<span>{ukrDayOfWeek}</span>
+			</h2>
 			{mealTypes.map(meal => {
 				const itemsDishes = items.filter(item => item.mealType === meal)
 				return (

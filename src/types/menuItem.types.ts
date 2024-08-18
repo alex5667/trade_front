@@ -17,24 +17,24 @@ export interface MenuItemResponse {
 
 export type MenuItemForm = Omit<MenuItemResponse, 'id' | 'createdAt' | 'updatedAt'>
 export const MealTypes = {
-	BREAKFAST: 'Завтрак',
-	LUNCH: 'Обед',
-	SNACK: 'Полдник',
-	DINNER: 'Ужин'
+	BREAKFAST: 'Сніданок',
+	LUNCH: 'Обід',
+	SNACK: 'Полуденок',
+	DINNER: 'Вечеря'
 }
 
 export type MealType = keyof typeof MealTypes
 
-export const DayOfWeek = {
-	MONDAY: 'Понедельник',
-	TUESDAY: 'Вторник',
-	WEDNESDAY: 'Среда',
-	THURSDAY: 'Четверг',
-	FRIDAY: 'Пятница',
-	SATURDAY: 'Суббота',
-	SUNDAY: 'Воскресенье'
+export const DayOfWeekUkr = {
+	MONDAY: 'Понеділок',
+	TUESDAY: 'Вівторок',
+	WEDNESDAY: 'Середа',
+	THURSDAY: 'Четвер',
+	FRIDAY: `П'ятниця`,
+	SATURDAY: 'Субота',
+	SUNDAY: 'Неділя'
 }
-export type DayOfWeek = keyof typeof DayOfWeek
+export type DayOfWeek = keyof typeof DayOfWeekUkr
 
 export const InstitutionType = {
 	KINDERGARTEN: 'Детский сад',

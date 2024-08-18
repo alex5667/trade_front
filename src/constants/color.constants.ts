@@ -1,5 +1,5 @@
 export const COLORS = {
-	primary: '#e3e9e9',
+	primary: '#dfccc2',
 	secondary: '#afbfc0cc',
 	third: '#3333331a',
 	border: '#0a1b27',
@@ -7,14 +7,16 @@ export const COLORS = {
 	sidebar: '#5b7679',
 	'sidebar-light': '#4f3dace6',
 	'bg-black': '#0a1b27',
-	'text-primary': '#222222',
+	'text-primary': '#794f45',
 	'text-secondary': '#ffffffcc',
+	'text-white': '#ffffff',
 	'primary-hover': '#333333',
 	'text-gray': '#5b7679',
 	'bg-button-hover': '#e4e4e7',
-	'primary-selected-color': '#133774',
 	'row-black': '#0f0f0f',
-	'hover-light': '#1D7AFC'
+	'hover-light': '#1D7AFC',
+	'button-red': '#f95454',
+	'button-brown': '#794f45'
 
 
 

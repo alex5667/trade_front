@@ -6,7 +6,9 @@ import { Providers } from '@/providers/providers'
 
 import { SITE_NAME } from '@/constants/seo.constants'
 
-import './globals.scss'
+import { getSiteUrl } from '@/config/urls'
+
+import '../styles/globals.scss'
 
 const zen = Noto_Sans({
 	subsets: ['cyrillic', 'latin'],
@@ -21,7 +23,8 @@ export const metadata: Metadata = {
 		default: SITE_NAME,
 		template: `%s | ${SITE_NAME}`
 	},
-	description: 'Best one for planning menu'
+	description: 'Best one for planning menu',
+	metadataBase: new URL(getSiteUrl())
 }
 
 export default function RootLayout({
@@ -33,7 +36,7 @@ export default function RootLayout({
 		<html lang='uk'>
 			<body className={zen.className}>
 				<Providers>
-					<div>{children}</div>
+					<div className='wrapper'>{children}</div>
 					<Toaster
 						theme='dark'
 						position='bottom-right'
