@@ -1,25 +1,26 @@
+import { MenuItemResponse } from '@/types/menuItem.types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface InitialTaskState {
-	items: string[]
+interface InitialMenuState {
+	items: MenuItemResponse[]
 }
 
-const initialState: InitialTaskState = {
+const initialState: InitialMenuState = {
 	items: []
 
 }
 
 
-export const userSlice = createSlice({
-	name: 'user',
+export const menuItemSlice = createSlice({
+	name: 'menu',
 	initialState,
 	reducers: {
-
-		addItem: (state, action: PayloadAction<string>) => {
-			state.items.push(action.payload)
+		addItems: (state, action: PayloadAction<MenuItemResponse[]>) => {
+			state.items = [...state.items, ...action.payload]
 		}
 
 
 	}
 
 })
+export const { addItems } = menuItemSlice.actions

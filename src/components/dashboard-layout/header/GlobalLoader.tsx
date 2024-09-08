@@ -8,10 +8,10 @@ import {
 } from '@/services/user.services'
 
 export function GlobalLoader() {
-	const { isLoading, isFetching } = useGetProfileQuery()
+	const { isLoading } = useGetProfileQuery()
 	const [_, { isLoading: isMutating }] = useUpdateUserMutation()
 
-	return isLoading || isMutating || isFetching ? (
+	return isMutating || isLoading ? (
 		<div className='fixed top-layout right-layout z-50'>
 			<Loader />
 		</div>

@@ -3,10 +3,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 
 import { menuItemApi } from '@/services/menu-item.service'
+import { userApi } from '@/services/user.services'
 import { userSlice } from './user/user.slice'
 
 const rootReducer = combineReducers({
 	[userSlice.reducerPath]: userSlice.reducer,
+	[userApi.reducerPath]: userApi.reducer,
 	[menuItemApi.reducerPath]: menuItemApi.reducer,
 
 })
@@ -16,6 +18,7 @@ export const store = configureStore({
 	middleware: getDefaultMiddleware =>
 		getDefaultMiddleware().concat(
 			menuItemApi.middleware,
+			userApi.middleware
 
 		)
 })

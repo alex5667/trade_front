@@ -1,35 +1,34 @@
 'use client'
 
-import { GanttChartSquare } from 'lucide-react'
+import cn from 'clsx'
+import { Notebook } from 'lucide-react'
 import Link from 'next/link'
 
-import { COLORS } from '@/constants/color.constants'
+import { DASHBOARD_PAGES } from '@/config/pages-url.config'
 
 import { LogoutButton } from './LogoutButton'
 import { MenuItem } from './MenuItem'
+import styles from './Sidebar.module.scss'
 import { MENU } from './menu.data'
 
 export function Sidebar() {
 	return (
-		<aside className='border-r border-r-border h-full bg-sidebar flex flex-col justify-between'>
-			<div>
+		<aside className={cn(styles.aside, 'dark:bg-sidebar')}>
+			<div className='flex h-full flex-col justify-between '>
 				<Link
-					href='/'
-					className='flex items-center gap-2.5 p-layout border-b border-b-border'
-					draggable={false}
+					href={DASHBOARD_PAGES.HOME}
+					className={styles.linkHome}
 				>
-					<GanttChartSquare
-						color={COLORS.primary}
+					<Notebook
+						color={'#1D7AFC'}
 						size={38}
 					/>
-					<span className='text-2xl font-bold relative'>
-						Red Planner
-						<span className='absolute -top-1 -right-6 text-xs opacity -40 rotate-[18deg] font-normal'>
-							beta
-						</span>
+					<span className={styles.spanTitle}>
+						BOIKO
+						<span>management</span>
 					</span>
 				</Link>
-				<div className='p-3 relative'>
+				<div className={cn(styles.logout, 'flex-grow')}>
 					<LogoutButton />
 					{MENU.map(item => (
 						<MenuItem
@@ -38,15 +37,14 @@ export function Sidebar() {
 						/>
 					))}
 				</div>
-				<footer className='text-xs opacity-40 font-normal text-center p-layout'>
-					2024& copy;
+				<footer className={styles.footer}>
+					2024&copy
 					<a
 						href=''
 						target='_blank'
 						rel='noreferrer'
-						className='hover: text-primary text-brand-300 transition-colors'
 					>
-						Red Group
+						Alex Group
 					</a>
 					.<br /> All rights reserved.
 				</footer>

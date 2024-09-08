@@ -13,7 +13,7 @@ import {
 
 export const baseQuery = retry(
 	fetchBaseQuery({
-		baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+		baseUrl: 'http://localhost:4200/api',
 		prepareHeaders: headers => {
 			const token = getAccessToken()
 			if (token) {

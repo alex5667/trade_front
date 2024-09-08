@@ -1,4 +1,5 @@
 import { URLS } from '@/config/urls'
+import { addItems } from '@/store/menuItem/user.slice'
 import { MenuItemDataFilters, MenuItemResponse } from '@/types/menuItem.types'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
@@ -17,13 +18,10 @@ export const menuItemApi = createApi({
 				method: 'GET',
 				params: queryData
 			}),
-			transformResponse: (response: MenuItemResponse[]) => {
-
-				return response
-			},
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
-					await queryFulfilled
+					const data = await queryFulfilled
+					dispatch(addItems(data.data))
 				} catch (err) {
 					console.error('Failed to fetch menu...', err)
 				}
@@ -32,4 +30,4 @@ export const menuItemApi = createApi({
 
 	})
 })
-export const { useGetAllQuery } = menuItemApi
+export const { useGetAllQuery, usePrefetch } = menuItemApi

@@ -1,6 +1,6 @@
 import { LucideIcon } from 'lucide-react'
 
-export interface IMenuItem {
+export interface MenuItem {
 	link: string
 	name: string
 	icon: LucideIcon

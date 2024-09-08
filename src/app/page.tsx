@@ -1,4 +1,8 @@
-import Header from '@/components/ui/home/Header'
+import { Metadata } from 'next'
+
+import Header from '@/components/home/Header'
+
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
 import { MenuItemDataFilters } from '@/types/menuItem.types'
 
@@ -6,6 +10,11 @@ import { URLS } from '@/config/urls'
 
 import Home from './Home'
 import styles from './HomePage.module.scss'
+
+export const metadata: Metadata = {
+	title: 'Home page',
+	...NO_INDEX_PAGE
+}
 
 export const revalidate = 3600
 

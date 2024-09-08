@@ -2,22 +2,23 @@
 
 import Loader from '@/components/ui/Loader'
 
+import styles from './Profile.module.scss'
 import { useGetProfileQuery } from '@/services/user.services'
 
 export function Profile() {
 	const { data, isLoading } = useGetProfileQuery()
 
 	return (
-		<div className='absolute top-big-layout right-big-layout'>
+		<div className={styles.profileContainer}>
 			{isLoading ? (
 				<Loader />
 			) : (
-				<div className='flex items-center'>
-					<div className='text-right mr-3'>
-						<p className='font-bold -mb-1'>{data?.user.name}</p>
-						<p className='text-sm opacity-40'>{data?.user.email}</p>
+				<div className={styles.loaderContainer}>
+					<div className={styles.userInfo}>
+						<p className={styles.userName}>{data?.user.name}</p>
+						<p className={styles.userEmail}>{data?.user.email}</p>
 					</div>
-					<div className='w-10 h-10 flex justify-center items-center text-2xl text-white bg-white/20 rounded uppercase'>
+					<div className={styles.userAvatar}>
 						{data?.user.name?.charAt(0) || 'A'}
 					</div>
 				</div>

@@ -1,0 +1,16 @@
+@import "@/styles/mixins.scss";
+@import "@/styles/variables.scss";
+
+.dashBoardWrapper {
+	@apply grid dark:text-primary dark:bg-db-bg bg-db-bg-light text-db-text-color-on-primary;
+	display: grid;
+	grid-template-columns: 1fr 6fr;
+}
+
+.main {
+	padding: 1rem /* 36.8px */;
+}
+
+.menuItemLink {
+	background-color: $borderRed;
+}

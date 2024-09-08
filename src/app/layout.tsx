@@ -1,12 +1,16 @@
 import type { Metadata } from 'next'
 import { Noto_Sans } from 'next/font/google'
+import { Suspense } from 'react'
 import { Toaster } from 'sonner'
+
+import Background from '@/components/ui/Background'
+import Loader from '@/components/ui/Loader'
 
 import { Providers } from '@/providers/providers'
 
 import { SITE_NAME } from '@/constants/seo.constants'
 
-import { getSiteUrl } from '@/config/urls'
+import { getSiteUrl } from '@/config/pages-url.config'
 
 import '../styles/globals.scss'
 
@@ -36,6 +40,9 @@ export default function RootLayout({
 		<html lang='uk'>
 			<body className={zen.className}>
 				<Providers>
+					<Suspense fallback={<Loader />}>
+						<Background />
+					</Suspense>
 					<div className='wrapper'>{children}</div>
 					<Toaster
 						theme='dark'

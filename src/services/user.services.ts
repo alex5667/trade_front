@@ -3,15 +3,12 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { TypeUserForm, User } from '@/types/auth.types'
 
 import { URLS } from '@/config/urls'
-import { setBreakInterval, setWorkInterval } from '@/store/pomodoro/pomodoro.slice'
+
 import { baseQueryWIthReAuth } from './baseQueries'
 
-export interface IProfileResponse {
+export interface ProfileResponse {
 	user: User
-	statistics: {
-		label: string
-		value: string
-	}[]
+
 }
 
 export const userApi = createApi({
@@ -19,7 +16,7 @@ export const userApi = createApi({
 	baseQuery: baseQueryWIthReAuth,
 	tagTypes: ['profile', 'updateProfile'],
 	endpoints: builder => ({
-		getProfile: builder.query<IProfileResponse, void>({
+		getProfile: builder.query<ProfileResponse, void>({
 			query: () => ({
 				url: URLS.USER_PROFILE,
 				method: 'GET'
@@ -27,15 +24,16 @@ export const userApi = createApi({
 			providesTags: ['profile'],
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
-					const { data } = await queryFulfilled
-					dispatch(setWorkInterval(data.user.workInterval))
-					dispatch(setBreakInterval(data.user.breakInterval))
+					await queryFulfilled
+					// const { data } = await queryFulfilled
+					// dispatch(setWorkInterval(data.user.workInterval))
+					// dispatch(setBreakInterval(data.user.breakInterval))
 				} catch (err) {
 					console.error('Failed to fetch profile:', err)
 				}
 			}
 		}),
-		updateUser: builder.mutation<IProfileResponse, TypeUserForm>({
+		updateUser: builder.mutation<ProfileResponse, TypeUserForm>({
 			query: data => ({
 				url: URLS.USER_PROFILE,
 				method: 'PUT',

@@ -3,6 +3,9 @@
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
+import { URLS } from '@/config/urls'
+
+import styles from './Sidebar.module.scss'
 import { useLogoutMutation } from '@/services/auth.services'
 
 export function LogoutButton() {
@@ -12,14 +15,14 @@ export function LogoutButton() {
 	const handleLogout = () => {
 		logout()
 		if (isSuccess) {
-			router.push('/auth')
+			router.push(URLS.AUTH)
 		}
 	}
 
 	return (
-		<div className='absolute top-1 right-1'>
+		<div className={styles.logoutContainer}>
 			<button
-				className='opacity-40 hover:opacity-100 transition-opacity duration-300'
+				className={styles.logoutButton}
 				onClick={() => handleLogout()}
 			>
 				<LogOut size={20} />

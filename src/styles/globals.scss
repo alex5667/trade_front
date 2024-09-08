@@ -20,19 +20,6 @@
 	}
 }
 
-// // Мінімальна ширина сторінки
-// $minWidth: 320;
-// // Ширина полотна (макету)
-// $maxWidth: 1920;
-// // Ширина обмежуючого контейнера (0 = немає обмеження)
-// $maxWidthContainer: 1440;
-// // Загальний відступ у контейнера
-// // (30 = по 15px ліворуч і праворуч, 0 = немає відступу)
-// $containerPadding: 30;
-
-// // Ширина спрацьовування першого брейкпоінту
-// $containerWidth: $maxWidthContainer + $containerPadding;
-
 // Брейк-поїнти
 $pc: em($containerWidth); // ПК, ноутбуки, деякі планшети у горизонтальному положенні
 $tablet: em(991.98); // Планшети, деякі телефони в горизонтальному положенні
@@ -47,7 +34,7 @@ $responsiveType: 1;
 body {
 	@apply text-base  text-text-primary;
 	position: relative;
-	background: url("../../public/backround.webp") no-repeat center center/cover;
+	// background: url("../../public/backround.webp") no-repeat center center/cover;
 
 	font-family: var(--font-zen), sans-serif;
 	font-weight: 400;
@@ -60,7 +47,7 @@ body {
 		width: 100%;
 		height: 100%;
 		background: rgba(223, 204, 194, 0.85);
-		z-index: 1;
+		z-index: 2;
 		pointer-events: none;
 	}
 }
@@ -70,7 +57,7 @@ body {
 	flex-direction: column;
 	overflow: hidden;
 	position: relative;
-	z-index: 2;
+	z-index: 3;
 	@supports (overflow: clip) {
 		overflow: clip;
 	}

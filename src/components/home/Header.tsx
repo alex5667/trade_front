@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import logo from '../../../../public/logo.png'
+import logo from '../../../public/logo.png'
 
 import styles from './Home.module.scss'
 
@@ -12,8 +12,8 @@ const Header = () => {
 					<Image
 						src={logo}
 						alt='Boiko logo'
-						width={80}
-						height={80}
+						width={60}
+						height={60}
 						style={{
 							objectFit: 'cover'
 						}}
@@ -21,7 +21,7 @@ const Header = () => {
 					/>
 				</div>
 
-				{/* <h1>Boiko school menu</h1> */}
+				<h1 className={styles.headerTitle}>Boiko school</h1>
 			</div>
 		</header>
 	)

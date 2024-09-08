@@ -1,0 +1,23 @@
+.profileContainer {
+	@apply top-big-layout right-big-layout;
+}
+
+.loaderContainer {
+	@apply flex items-center justify-end;
+}
+
+.userInfo {
+	@apply text-right mr-3;
+}
+
+.userName {
+	@apply font-bold -mb-1;
+}
+
+.userEmail {
+	@apply text-sm opacity-40;
+}
+
+.userAvatar {
+	@apply w-10 h-10 flex justify-center items-center text-2xl text-white bg-white/20 rounded uppercase;
+}

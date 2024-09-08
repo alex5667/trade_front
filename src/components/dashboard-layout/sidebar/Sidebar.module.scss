@@ -1,0 +1,35 @@
+.aside {
+	@apply border-r border-r-border h-full  flex flex-col justify-between   bg-sidebar-light;
+}
+
+.menuItemLink {
+	@apply flex gap-2.5 items-center py-1.5 mt-2 px-layout transition-colors hover:bg-border rounded-lg;
+}
+
+.logoutContainer {
+	@apply text-right mb-8;
+}
+
+.logoutButton {
+	@apply opacity-40 hover:opacity-100 transition-opacity duration-300;
+}
+
+.linkHome {
+	@apply flex items-center gap-2.5 p-layout;
+}
+.spanTitle {
+	@apply text-2xl font-bold relative;
+	> span {
+		@apply absolute -top-1 -right-6 text-xs opacity-40 rotate-[18deg] font-normal;
+	}
+}
+.logout {
+	@apply p-3 relative;
+}
+
+.footer {
+	@apply text-xs opacity-40 font-normal text-center p-layout;
+	> a {
+		@apply text-white/70 transition-colors hover:text-primary;
+	}
+}

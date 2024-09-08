@@ -1,0 +1,11 @@
+.authContainer {
+	@apply flex min-h-screen;
+}
+
+.authForm {
+	@apply w-1/4 m-auto shadow bg-secondary rounded-xl p-layout;
+}
+
+.authButtons {
+	@apply flex items-center gap-5 justify-center;
+}

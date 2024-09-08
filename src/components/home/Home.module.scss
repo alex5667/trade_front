@@ -1,25 +1,56 @@
-@import "../../../styles/mixins.scss";
-@import "../../../styles/variables.scss";
+@import "@/styles/mixins.scss";
+@import "@/styles/variables.scss";
 .header__container {
-	@apply py-3;
+	@apply pt-3;
 	display: flex;
 	align-items: center;
 
 	@include adaptiveValue("font-size", 32, 18);
 }
-
+.headerTitle {
+	// color: rgba(249, 84, 84, 0.6);
+	letter-spacing: 0.15rem;
+	line-height: 1.4;
+	font-weight: 700;
+}
 .logoImage {
 	position: relative;
 	margin-right: 20px;
 }
 .dayWeekCOlumn {
 	@apply py-2 px-2 flex flex-col items-center justify-start;
+	opacity: 0;
+	animation: slideIn 0.5s ease-out forwards;
+
 	&:not(:last-child) {
 		border-right: 1px solid #ccc;
 	}
+
+	@for $i from 1 through 5 {
+		&:nth-child(#{$i}) {
+			animation-delay: 0.2s * ($i - 1);
+		}
+	}
 }
+
+@keyframes slideIn {
+	0% {
+		transform: translateX(-100%);
+		opacity: 0;
+	}
+	100% {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
 .mealTypeContainer {
 	@apply rounded-sm my-2 px-3;
+	position: relative;
+	height: toRem(630);
+	&:not(:last-child) {
+		border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+	}
 }
 
 .dayWeekTitle {
@@ -46,8 +77,8 @@
 		background-color: rgba(249, 84, 84, 0.6);
 		z-index: 2;
 		transition:
-			height 0.5s ease,
-			top 0.5s ease;
+			height 0.3s ease,
+			top 0.3s ease;
 	}
 	@media (any-hover: hover) {
 		&:hover::after {
@@ -87,9 +118,12 @@
 	}
 }
 
+.dishRow:nth-child(even)::before {
+	background: rgba(0, 0, 0, 0.45);
+}
 .dishRowSpan {
-	@apply text-white/95 relative z-10;
-	font-weight: 300;
-	letter-spacing: 0.15rem;
+	@apply text-white relative z-10;
+	font-weight: 200;
+	letter-spacing: 0.12rem;
 	@include adaptiveValue("font-size", 16, 12);
 }

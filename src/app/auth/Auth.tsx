@@ -13,6 +13,7 @@ import { AuthForm } from '@/types/auth.types'
 
 import { DASHBOARD_PAGES } from '@/config/pages-url.config'
 
+import styles from './Auth.module.scss'
 import { useLoginMutation, useRegisterMutation } from '@/services/auth.services'
 
 const Auth = () => {
@@ -29,15 +30,15 @@ const Auth = () => {
 			await (isLoginForm ? login : auth)(data)
 			toast.success('Successfully logged in')
 			reset()
-			push(DASHBOARD_PAGES.HOME)
+			push(DASHBOARD_PAGES.ADMIN_PANEL_URL)
 		} catch (error) {
 			toast.error(`${isLoginForm ? `Login` : `Register`} failed`)
 		}
 	}
 	return (
-		<div className='flex min-h-screen'>
+		<div className={styles.authContainer}>
 			<form
-				className='w-1/4 m-auto shadow bg-secondary rounded-xl p-layout'
+				className={styles.authForm}
 				onSubmit={handleSubmit(onSubmit)}
 			>
 				<Heading title='Auth' />
@@ -61,7 +62,7 @@ const Auth = () => {
 						required: 'Password is required!'
 					})}
 				/>
-				<div className='flex items-center gap-5 justify-center'>
+				<div className={styles.authButtons}>
 					<Button onClick={() => setIsLoginForm(true)}>Login</Button>
 					<Button onClick={() => setIsLoginForm(false)}>Register</Button>
 				</div>

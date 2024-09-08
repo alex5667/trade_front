@@ -1,4 +1,4 @@
-import DayWeek from '@/components/ui/home/DayWeak'
+import DayWeek from '@/components/home/DayWeak'
 
 import { DayOfWeekUkr, MenuItemResponse } from '@/types/menuItem.types'
 

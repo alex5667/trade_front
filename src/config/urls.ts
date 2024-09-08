@@ -4,11 +4,7 @@ export const URLS = {
 	AUTH: '/auth',
 	AUTH_REGISTER: '/auth/register',
 	AUTH_LOGOUT: '/auth/logout',
-	ADMIN_PANEL_URL: '/admin',
 	MENU_ITEM: '/menu-item',
-
-
+	USER_PROFILE: '/user/profile',
 }
 
-export const getSiteUrl = () => process.env.APP_URL as string
-export const getAdminUrl = (path = '') => `${URLS.ADMIN_PANEL_URL}${path}`
