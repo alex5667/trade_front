@@ -17,13 +17,24 @@ export interface MenuItemResponse {
 
 export type MenuItemForm = Omit<MenuItemResponse, 'id' | 'createdAt' | 'updatedAt'>
 export const MealTypes = {
-	BREAKFAST: 'Сніданок',
-	LUNCH: 'Обід',
-	SNACK: 'Полуденок',
-	DINNER: 'Вечеря'
+	Breakfast: 'Сніданок',
+	Lunch: 'Обід',
+	Snack: 'Полуденок',
+	Dinner: 'Вечеря'
 }
 
-export type MealType = keyof typeof MealTypes
+export type TypeMeal = keyof typeof MealTypes
+
+
+export type MealType = {
+	id: number,
+	name: string,
+	printName: string,
+	description: string | null,
+	createdAt: string,
+	updatedAt: string,
+	slug: string
+}
 
 export const DayOfWeekUkr = {
 	MONDAY: 'Понеділок',
@@ -37,8 +48,11 @@ export const DayOfWeekUkr = {
 export type DayOfWeek = keyof typeof DayOfWeekUkr
 
 export const InstitutionType = {
-	KINDERGARTEN: 'Детский сад',
-	SCHOOL: 'Школа'
+	'Slon-1': 'Слон 1',
+	'Slon-2': 'Слон 2',
+	'Slon-3': 'Слон 3',
+	Kosmos: 'Космічна',
+	Naberezhnaya: 'Набережна',
 }
 
 export type InstitutionType = keyof typeof InstitutionType

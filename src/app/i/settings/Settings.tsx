@@ -9,7 +9,7 @@ import { Field } from '@/components/ui/fields/Field'
 import { TypeUserForm } from '@/types/auth.types'
 
 import { useInitialData } from './useInitialData'
-import { useUpdateUserMutation } from '@/services/user-redux.services'
+import { useUpdateUserMutation } from '@/services/user.services'
 
 export function Settings() {
 	const { register, handleSubmit, reset } = useForm<TypeUserForm>({
@@ -29,12 +29,12 @@ export function Settings() {
 		}
 	}
 	return (
-		<div>
+		<div className='w-full'>
 			<form
-				className='w-2/4'
+				className='w-2/4 m-auto'
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<div className='grid grid-cols-2 gap-10'>
+				<div className='flex flex-col w-2/3 '>
 					<div>
 						<Field
 							id='email'
@@ -62,43 +62,11 @@ export function Settings() {
 							{...register('password')}
 						/>
 					</div>
-					<div>
-						<Field
-							id='workInterval'
-							label='WorkInterval'
-							placeholder='Enter workInterval:'
-							extra='mb-4'
-							isNumber
-							{...register('workInterval', {
-								valueAsNumber: true
-							})}
-						/>
-						<Field
-							id='breakInterval'
-							label='Break interval(min.)'
-							placeholder='Enter break interval (min.):'
-							extra='mb-4'
-							isNumber
-							{...register('breakInterval', {
-								valueAsNumber: true
-							})}
-						/>
-						<Field
-							id='intervalsCount'
-							label='Intervals count(max 10)'
-							placeholder='Enter intervals count (max 10):'
-							extra='mb-6'
-							isNumber
-							{...register('intervalsCount', {
-								valueAsNumber: true,
-								max: 10
-							})}
-						/>
-					</div>
 				</div>
 				<Button
 					type='submit'
 					disabled={isLoading}
+					className='text-text-white'
 				>
 					Save
 				</Button>

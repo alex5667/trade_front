@@ -51,8 +51,8 @@ const getMenuItems = async (
 			console.error('Fetch error:', errorText)
 			throw new Error(`Network response was not ok: ${response.statusText}`)
 		}
-
-		return response.json()
+		const res = await response.json()
+		return res
 	} catch (error) {
 		console.error('Error fetching menu items:', error)
 		throw error

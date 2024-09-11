@@ -1,9 +1,15 @@
 .aside {
-	@apply border-r border-r-border h-full  flex flex-col justify-between   bg-sidebar-light;
+	@apply border-r border-r-border h-full flex flex-col justify-between bg-sidebar-light dark:bg-sidebar;
 }
 
+.menuContainer {
+	@apply pt-10 px-2 relative;
+}
+.toggle {
+	@apply flex w-full items-center justify-end cursor-pointer opacity-50 hover:opacity-100;
+}
 .menuItemLink {
-	@apply flex gap-2.5 items-center py-1.5 mt-2 px-layout transition-colors hover:bg-border rounded-lg;
+	@apply flex gap-2.5 items-center py-1.5 mt-2 px-3 transition-colors hover:bg-border rounded-lg;
 }
 
 .logoutContainer {
@@ -15,16 +21,13 @@
 }
 
 .linkHome {
-	@apply flex items-center gap-2.5 p-layout;
+	@apply flex items-center justify-center gap-2.5 p-layout mb-4;
 }
 .spanTitle {
 	@apply text-2xl font-bold relative;
 	> span {
-		@apply absolute -top-1 -right-6 text-xs opacity-40 rotate-[18deg] font-normal;
+		@apply absolute -top-1 -right-6 text-xs opacity-40 rotate-[18deg] font-normal  mb-4;
 	}
-}
-.logout {
-	@apply p-3 relative;
 }
 
 .footer {

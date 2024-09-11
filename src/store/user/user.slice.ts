@@ -1,11 +1,12 @@
+import { User } from '@/types/auth.types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface InitialTaskState {
-	items: string[]
+interface InitialState {
+	user: User | null
 }
 
-const initialState: InitialTaskState = {
-	items: []
+const initialState: InitialState = {
+	user: null
 
 }
 
@@ -15,8 +16,8 @@ export const userSlice = createSlice({
 	initialState,
 	reducers: {
 
-		addItem: (state, action: PayloadAction<string>) => {
-			state.items.push(action.payload)
+		addItem: (state, action: PayloadAction<User>) => {
+			state.user = action.payload
 		}
 
 

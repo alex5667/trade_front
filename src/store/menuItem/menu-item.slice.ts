@@ -15,12 +15,12 @@ export const menuItemSlice = createSlice({
 	name: 'menu',
 	initialState,
 	reducers: {
-		addItems: (state, action: PayloadAction<MenuItemResponse[]>) => {
-			state.items = [...state.items, ...action.payload]
+		getAllItems: (state, action: PayloadAction<MenuItemResponse[]>) => {
+			state.items = action.payload
 		}
 
 
 	}
 
 })
-export const { addItems } = menuItemSlice.actions
+export const { getAllItems } = menuItemSlice.actions

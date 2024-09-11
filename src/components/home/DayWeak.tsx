@@ -23,7 +23,9 @@ const DayWeek = ({
 				<span>{ukrDayOfWeek}</span>
 			</h2>
 			{mealTypes.map(meal => {
-				const itemsDishes = items.filter(item => item.mealType === meal)
+				const itemsDishes = items.filter(item => {
+					return item.mealType.name === meal
+				})
 				return (
 					<MealType
 						key={meal}

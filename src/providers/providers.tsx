@@ -1,5 +1,6 @@
 'use client'
 
+import { LazyMotion, domAnimation } from 'framer-motion'
 import { ThemeProvider } from 'next-themes'
 import { PropsWithChildren } from 'react'
 import { Provider } from 'react-redux'
@@ -14,7 +15,7 @@ export function Providers({ children }: PropsWithChildren) {
 				defaultTheme='system'
 				enableSystem
 			>
-				{children}
+				<LazyMotion features={domAnimation}>{children}</LazyMotion>
 			</ThemeProvider>
 		</Provider>
 	)

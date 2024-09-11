@@ -1,10 +1,14 @@
 'use client'
 
 import cn from 'clsx'
-import { Notebook } from 'lucide-react'
+import { m } from 'framer-motion'
+import { Notebook, PanelLeftCloseIcon, PanelLeftOpen } from 'lucide-react'
 import Link from 'next/link'
 
-import { DASHBOARD_PAGES } from '@/config/pages-url.config'
+import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
+
+import { useActions } from '@/hooks/useActions'
+import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 import { LogoutButton } from './LogoutButton'
 import { MenuItem } from './MenuItem'
@@ -12,31 +16,55 @@ import styles from './Sidebar.module.scss'
 import { MENU } from './menu.data'
 
 export function Sidebar() {
+	const isCollapsed = useTypedSelector(state => state.collapsed.isCollapsed)
+	const { setIsCollapsed } = useActions()
+	const toggleSidebar = () => {
+		setIsCollapsed(!isCollapsed)
+	}
 	return (
-		<aside className={cn(styles.aside, 'dark:bg-sidebar')}>
-			<div className='flex h-full flex-col justify-between '>
+		<m.aside
+			className={cn(styles.aside)}
+			animate={{ width: isCollapsed ? 60 : 215 }}
+			transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+		>
+			<div
+				className={cn(styles.notebook, {
+					visible: !isCollapsed
+				})}
+			>
 				<Link
-					href={DASHBOARD_PAGES.HOME}
+					href={ADMINBOARD_PAGES.HOME}
 					className={styles.linkHome}
 				>
 					<Notebook
 						color={'#1D7AFC'}
 						size={38}
 					/>
-					<span className={styles.spanTitle}>
-						BOIKO
-						<span>management</span>
-					</span>
+					{!isCollapsed && (
+						<span className={styles.spanTitle}>
+							BOIKO
+							<span>management</span>
+						</span>
+					)}
 				</Link>
-				<div className={cn(styles.logout, 'flex-grow')}>
-					<LogoutButton />
-					{MENU.map(item => (
-						<MenuItem
-							item={item}
-							key={item.link}
-						/>
-					))}
-				</div>
+			</div>
+
+			<div className={cn(styles.menuContainer, 'flex-grow')}>
+				<button
+					className={styles.toggle}
+					onClick={toggleSidebar}
+				>
+					{isCollapsed ? <PanelLeftOpen /> : <PanelLeftCloseIcon />}
+				</button>
+				{MENU.map(item => (
+					<MenuItem
+						item={item}
+						key={item.link}
+					/>
+				))}
+			</div>
+			<LogoutButton />
+			{!isCollapsed && (
 				<footer className={styles.footer}>
 					2024&copy
 					<a
@@ -48,7 +76,7 @@ export function Sidebar() {
 					</a>
 					.<br /> All rights reserved.
 				</footer>
-			</div>
-		</aside>
+			)}
+		</m.aside>
 	)
 }

@@ -1,5 +1,9 @@
 .fieldContainer {
-	@apply relative mt-2 flex w-full items-center justify-center rounded-lg border bg-transparent p-3 text-base outline-none transition-colors duration-500;
+	@apply relative mt-2 flex w-full items-center justify-center rounded-lg border bg-transparent p-3 text-base text-white outline-none transition-colors duration-500;
+	&::placeholder {
+		color: white;
+		opacity: 0.7;
+	}
 }
 
 .fieldPlaceholder {
@@ -7,7 +11,11 @@
 }
 
 .fieldFocus {
-	@apply focus:border-border-light text-text-primary;
+	@apply focus:border-border-light text-white/90;
+	&::placeholder {
+		color: white;
+		opacity: 0.9;
+	}
 }
 
 .fieldDisabled {
@@ -23,7 +31,7 @@
 }
 
 .label {
-	@apply text-sm text-text-primary dark:text-white ml-1.5 font-medium;
+	@apply text-sm  text-white ml-1.5 font-medium;
 }
 
 .inputTransparentField {

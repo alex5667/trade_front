@@ -24,7 +24,8 @@ export const userApi = createApi({
 			providesTags: ['profile'],
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
-					await queryFulfilled
+					const { data } = await queryFulfilled
+					console.log(data)
 					// const { data } = await queryFulfilled
 					// dispatch(setWorkInterval(data.user.workInterval))
 					// dispatch(setBreakInterval(data.user.breakInterval))

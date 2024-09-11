@@ -11,7 +11,7 @@ import { Field } from '@/components/ui/fields/Field'
 
 import { AuthForm } from '@/types/auth.types'
 
-import { DASHBOARD_PAGES } from '@/config/pages-url.config'
+import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 
 import styles from './Auth.module.scss'
 import { useLoginMutation, useRegisterMutation } from '@/services/auth.services'
@@ -30,7 +30,7 @@ const Auth = () => {
 			await (isLoginForm ? login : auth)(data)
 			toast.success('Successfully logged in')
 			reset()
-			push(DASHBOARD_PAGES.ADMIN_PANEL_URL)
+			push(ADMINBOARD_PAGES.ADMIN_PANEL_URL)
 		} catch (error) {
 			toast.error(`${isLoginForm ? `Login` : `Register`} failed`)
 		}

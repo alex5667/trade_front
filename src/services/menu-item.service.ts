@@ -1,5 +1,5 @@
 import { URLS } from '@/config/urls'
-import { addItems } from '@/store/menuItem/user.slice'
+import { getAllItems } from '@/store/menuItem/menu-item.slice'
 import { MenuItemDataFilters, MenuItemResponse } from '@/types/menuItem.types'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
@@ -21,7 +21,7 @@ export const menuItemApi = createApi({
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
 					const data = await queryFulfilled
-					dispatch(addItems(data.data))
+					dispatch(getAllItems(data.data))
 				} catch (err) {
 					console.error('Failed to fetch menu...', err)
 				}

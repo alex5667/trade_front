@@ -1,6 +1,8 @@
-export const DASHBOARD_PAGES = {
+export const ADMINBOARD_PAGES = {
 	HOME: '/',
-	MENU_SCHOOL: `/i/menu-school`,
+	MENU_Slon_1: `/i/menu/Slon_1`,
+	// MENU_Slon_2: `/i/menu-school`,
+	// MENU_Slon_3: `/i/menu-school`,
 	MENU_KINDERGARTEN: `/i/menu-kindergarten`,
 	MENU_BUFFET: `/i/menu-buffet`,
 	DISHES: `/i/dishes`,
@@ -12,4 +14,4 @@ export const DASHBOARD_PAGES = {
 
 }
 export const getSiteUrl = () => process.env.APP_URL as string
-export const getAdminUrl = (path = '') => `${DASHBOARD_PAGES.ADMIN_PANEL_URL}${path}`
+export const getAdminUrl = (path = '') => `${ADMINBOARD_PAGES.ADMIN_PANEL_URL}${path}`

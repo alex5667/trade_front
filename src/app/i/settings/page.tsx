@@ -13,9 +13,12 @@ export const metadata: Metadata = {
 
 export default function SettingsPage() {
 	return (
-		<div>
-			<Heading title='Settings' />
+		<>
+			<Heading
+				title='Settings'
+				className='pt-10 pl-10 mb-10'
+			/>
 			<Settings />
-		</div>
+		</>
 	)
 }
