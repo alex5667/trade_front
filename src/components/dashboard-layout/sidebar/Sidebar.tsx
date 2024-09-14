@@ -24,7 +24,7 @@ export function Sidebar() {
 	return (
 		<m.aside
 			className={cn(styles.aside)}
-			animate={{ width: isCollapsed ? 60 : 215 }}
+			animate={{ width: isCollapsed ? 60 : 210 }}
 			transition={{ type: 'spring', stiffness: 300, damping: 22 }}
 		>
 			<div
@@ -34,11 +34,14 @@ export function Sidebar() {
 			>
 				<Link
 					href={ADMINBOARD_PAGES.HOME}
-					className={styles.linkHome}
+					className={cn(styles.linkHome, {
+						'px-2, py-layout': isCollapsed,
+						'p-layout': !isCollapsed
+					})}
 				>
 					<Notebook
 						color={'#1D7AFC'}
-						size={38}
+						size={isCollapsed ? 20 : 38}
 					/>
 					{!isCollapsed && (
 						<span className={styles.spanTitle}>
@@ -51,7 +54,10 @@ export function Sidebar() {
 
 			<div className={cn(styles.menuContainer, 'flex-grow')}>
 				<button
-					className={styles.toggle}
+					className={cn(styles.toggle, {
+						'justify-end': !isCollapsed,
+						'justify-center': isCollapsed
+					})}
 					onClick={toggleSidebar}
 				>
 					{isCollapsed ? <PanelLeftOpen /> : <PanelLeftCloseIcon />}

@@ -35,7 +35,9 @@ export interface ItemMenu {
 }
 export function MenuItem({ item }: { item: ItemMenu }) {
 	const { icon: Icon, link, name, endPoint } = item
+
 	const path = usePathname()
+	console.log('path', path)
 
 	const isCollapsed = useTypedSelector(state => state.collapsed.isCollapsed)
 
@@ -58,7 +60,9 @@ export function MenuItem({ item }: { item: ItemMenu }) {
 					prefetch()
 				}}
 				className={cn(styles.menuItemLink, {
-					'bg-db-row-light dark:!bg-[#1c2b41]': path === link
+					'bg-db-row-light dark:!bg-[#1c2b41]': path === link,
+					'justify-start': !isCollapsed,
+					'justify-center': isCollapsed
 				})}
 			>
 				<Icon />
