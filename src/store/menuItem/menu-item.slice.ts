@@ -1,4 +1,4 @@
-import { MenuItemResponse } from '@/types/menuItem.types'
+import { MenuItemResponse } from '@/types/menuItem.type'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface InitialMenuState {

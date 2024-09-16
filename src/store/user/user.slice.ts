@@ -6,8 +6,7 @@ interface InitialState {
 }
 
 const initialState: InitialState = {
-	user: null
-
+	user: null,
 }
 
 
@@ -16,11 +15,15 @@ export const userSlice = createSlice({
 	initialState,
 	reducers: {
 
-		addItem: (state, action: PayloadAction<User>) => {
+		addUser: (state, action: PayloadAction<User>) => {
 			state.user = action.payload
-		}
+		},
+
+
 
 
 	}
 
 })
+
+export const { addRoles, addUser } = userSlice.actions

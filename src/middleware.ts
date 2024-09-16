@@ -1,29 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-
 import { ADMINBOARD_PAGES } from './config/pages-url.config'
-import { URLS } from './config/urls'
 import { EnumTokens } from './services/auth-token.service'
+import { decodeToken, User } from './services/token.service'
 
-export async function middleware(request: NextRequest, response: NextResponse) {
+export async function middleware(request: NextRequest) {
 	const { url, cookies } = request
 	const refreshToken = cookies.get(EnumTokens.REFRESH_TOKEN)?.value
-	// const isAdminBoard = url.includes(DASHBOARD_PAGES.ADMIN_PANEL_URL)
-	const isAuthPage = url.includes(URLS.AUTH)
+	const user = refreshToken ? (decodeToken(refreshToken) as User) : null
+
+	const allowedPagesForUser = [ADMINBOARD_PAGES.MENU, ADMINBOARD_PAGES.USER, ADMINBOARD_PAGES.SETTINGS]
+	const isAuthPage = url.includes(ADMINBOARD_PAGES.AUTH)
+	const baseUrl = request.nextUrl.origin
 
 
-	if (isAuthPage && refreshToken) {
-		return NextResponse.redirect(new URL(ADMINBOARD_PAGES.ADMIN_PANEL_URL, url))
+	if (user) {
+		if (isAuthPage && refreshToken && user.roles.includes('admin')) {
+			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.ADMIN, baseUrl))
+		}
+
+		if (isAuthPage && refreshToken && user.roles.includes('user')) {
+			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.USER, baseUrl))
+		}
+
+		if (isAuthPage && refreshToken && user.roles.includes('customer')) {
+			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, baseUrl))
+		}
 	}
+
 	if (isAuthPage) {
 		return NextResponse.next()
 	}
+
 	if (!refreshToken) {
-		return NextResponse.redirect(new URL(ADMINBOARD_PAGES.AUTH, url))
+		return NextResponse.redirect(new URL(ADMINBOARD_PAGES.AUTH, baseUrl))
 	}
-	return NextResponse.next()
+
+	if (user) {
+		if (user.roles.includes('admin')) {
+			return NextResponse.next()
+		}
+
+		if (user.roles.includes('user')) {
+			const isAllowedPage = allowedPagesForUser.some(page => url.includes(page))
+			if (isAllowedPage) {
+				return NextResponse.next()
+			}
+		}
+	}
+
+	return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, baseUrl))
 }
 
 export const config = {
-	matcher: ['/i/:path*', '/auth/:path']
+	matcher: ['/i/:path*', '/auth/:path*'],
 }

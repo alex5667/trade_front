@@ -1,6 +1,6 @@
 import { URLS } from '@/config/urls'
 import { getAllItems } from '@/store/menuItem/menu-item.slice'
-import { MenuItemDataFilters, MenuItemResponse } from '@/types/menuItem.types'
+import { MenuItemDataFilters, MenuItemResponse } from '@/types/menuItem.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 

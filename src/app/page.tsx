@@ -4,7 +4,7 @@ import Header from '@/components/home/Header'
 
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
-import { MenuItemDataFilters } from '@/types/menuItem.types'
+import { MenuItemDataFilters } from '@/types/menuItem.type'
 
 import { URLS } from '@/config/urls'
 

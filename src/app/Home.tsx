@@ -1,6 +1,6 @@
 import DayWeek from '@/components/home/DayWeak'
 
-import { DayOfWeekUkr, MenuItemResponse } from '@/types/menuItem.types'
+import { DayOfWeekUkr, MenuItemResponse } from '@/types/menuItem.type'
 
 import styles from './HomePage.module.scss'
 

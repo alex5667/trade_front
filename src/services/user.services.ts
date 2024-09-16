@@ -4,6 +4,7 @@ import { TypeUserForm, User } from '@/types/auth.types'
 
 import { URLS } from '@/config/urls'
 
+import { addUser } from '@/store/user/user.slice'
 import { baseQueryWIthReAuth } from './baseQueries'
 
 export interface ProfileResponse {
@@ -25,7 +26,7 @@ export const userApi = createApi({
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
 					const { data } = await queryFulfilled
-					console.log(data)
+					dispatch(addUser(data.user))
 					// const { data } = await queryFulfilled
 					// dispatch(setWorkInterval(data.user.workInterval))
 					// dispatch(setBreakInterval(data.user.breakInterval))

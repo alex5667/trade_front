@@ -4,13 +4,13 @@ import { DishResponse } from './dish.type'
 
 export interface MenuItemResponse {
 	id: number
-	mealType: MealType
+	meal: MealType
 	dayOfWeek: DayOfWeek
 	date: string
 	dish: DishResponse
 	createdAt?: string
 	updatedAt?: string
-	institutionType: InstitutionType
+	institution: InstitutionType
 	description?: String
 	price?: number
 }

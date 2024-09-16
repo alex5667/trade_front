@@ -11,7 +11,12 @@ import { Field } from '@/components/ui/fields/Field'
 
 import { AuthForm } from '@/types/auth.types'
 
-import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
+import {
+	ADMINBOARD_PAGES,
+	type ADMINBOARD_PAGES_KEYS
+} from '@/config/pages-url.config'
+
+import { useAuth } from '@/hooks/useAuth'
 
 import styles from './Auth.module.scss'
 import { useLoginMutation, useRegisterMutation } from '@/services/auth.services'
@@ -21,16 +26,22 @@ const Auth = () => {
 		mode: 'onChange'
 	})
 	const [isLoginForm, setIsLoginForm] = useState(false)
-	const { push } = useRouter()
+	const { replace } = useRouter()
 	const [login] = useLoginMutation()
 	const [auth] = useRegisterMutation()
+	const { user } = useAuth()
+	const upperCaseRole = user?.roles.join().toUpperCase()
 
 	const onSubmit: SubmitHandler<AuthForm> = async data => {
 		try {
-			await (isLoginForm ? login : auth)(data)
+			const response = await (isLoginForm ? login : auth)(data)
 			toast.success('Successfully logged in')
 			reset()
-			push(ADMINBOARD_PAGES.ADMIN_PANEL_URL)
+			if (response?.data?.user) {
+				const updatedUser = user || response?.data?.user
+				const upperCaseRole = updatedUser?.roles.join().toUpperCase()
+				replace(ADMINBOARD_PAGES[upperCaseRole as ADMINBOARD_PAGES_KEYS] || '/')
+			}
 		} catch (error) {
 			toast.error(`${isLoginForm ? `Login` : `Register`} failed`)
 		}

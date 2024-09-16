@@ -37,7 +37,6 @@ export function MenuItem({ item }: { item: ItemMenu }) {
 	const { icon: Icon, link, name, endPoint } = item
 
 	const path = usePathname()
-	console.log('path', path)
 
 	const isCollapsed = useTypedSelector(state => state.collapsed.isCollapsed)
 

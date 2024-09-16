@@ -3,7 +3,7 @@ import {
 	DayOfWeekUkr,
 	MealTypes,
 	MenuItemResponse
-} from '@/types/menuItem.types'
+} from '@/types/menuItem.type'
 
 import styles from './Home.module.scss'
 import MealType from './MealType'
@@ -24,7 +24,7 @@ const DayWeek = ({
 			</h2>
 			{mealTypes.map(meal => {
 				const itemsDishes = items.filter(item => {
-					return item.mealType.name === meal
+					return item.meal.name === meal
 				})
 				return (
 					<MealType

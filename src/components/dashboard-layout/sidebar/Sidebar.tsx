@@ -13,7 +13,7 @@ import { useTypedSelector } from '@/hooks/useTypedSelector'
 import { LogoutButton } from './LogoutButton'
 import { MenuItem } from './MenuItem'
 import styles from './Sidebar.module.scss'
-import { MENU } from './menu.data'
+import { USERMENU } from './menu.data'
 
 export function Sidebar() {
 	const isCollapsed = useTypedSelector(state => state.collapsed.isCollapsed)
@@ -33,7 +33,7 @@ export function Sidebar() {
 				})}
 			>
 				<Link
-					href={ADMINBOARD_PAGES.HOME}
+					href={ADMINBOARD_PAGES.CUSTOMER}
 					className={cn(styles.linkHome, {
 						'px-2, py-layout': isCollapsed,
 						'p-layout': !isCollapsed
@@ -62,7 +62,7 @@ export function Sidebar() {
 				>
 					{isCollapsed ? <PanelLeftOpen /> : <PanelLeftCloseIcon />}
 				</button>
-				{MENU.map(item => (
+				{USERMENU.map(item => (
 					<MenuItem
 						item={item}
 						key={item.link}

@@ -3,6 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { AuthForm, AuthResponse } from '@/types/auth.types'
 
 import { URLS } from '@/config/urls'
+import { addUser } from '@/store/user/user.slice'
 import { removeFromStorage, saveTokenStorage } from './auth-token.service'
 import { baseQueryWIthReAuth } from './baseQueries'
 
@@ -24,9 +25,10 @@ export const authApi = createApi({
 				saveTokenStorage(response.accessToken)
 				return response
 			},
-			onQueryStarted: async (arg, { queryFulfilled }) => {
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
-					await queryFulfilled
+					const { data } = await queryFulfilled
+					dispatch(addUser(data.user))
 				} catch (err) {
 					console.error('Login error:', err)
 				}
@@ -45,9 +47,10 @@ export const authApi = createApi({
 				saveTokenStorage(response.accessToken)
 				return response
 			},
-			onQueryStarted: async (arg, { queryFulfilled }) => {
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
-					await queryFulfilled
+					const { data } = await queryFulfilled
+					dispatch(addUser(data.user))
 				} catch (err) {
 					console.error('Registration error:', err)
 				}

@@ -3,19 +3,21 @@
 import { LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-import { URLS } from '@/config/urls'
+import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 
 import styles from './Sidebar.module.scss'
 import { useLogoutMutation } from '@/services/auth.services'
 
 export function LogoutButton() {
-	const router = useRouter()
+	const { replace } = useRouter()
 	const [logout, { isSuccess }] = useLogoutMutation()
 
-	const handleLogout = () => {
-		logout()
-		if (isSuccess) {
-			router.push(URLS.AUTH)
+	const handleLogout = async () => {
+		try {
+			await logout()
+			replace(ADMINBOARD_PAGES.CUSTOMER)
+		} catch (error) {
+			console.error('Logout failed:', error)
 		}
 	}
 

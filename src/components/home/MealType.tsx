@@ -1,4 +1,4 @@
-import { MealTypes, MenuItemResponse, TypeMeal } from '@/types/menuItem.types'
+import { MealTypes, MenuItemResponse, TypeMeal } from '@/types/menuItem.type'
 
 import DishRow from './DishRow'
 import styles from './Home.module.scss'
