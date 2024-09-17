@@ -4,7 +4,6 @@ import cn from 'clsx'
 import { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
 
 // import { usePrefetch as usePomodoroPrefetch } from '@/services/pomodoro.services'
 // import { usePrefetch as useTaskPrefetch } from '@/services/task.services'
@@ -12,20 +11,18 @@ import { useEffect } from 'react'
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 import styles from './Sidebar.module.scss'
-import { usePrefetch as useMenuItemPrefetch } from '@/services/menu-item.service'
-import { usePrefetch as useUserPrefetch } from '@/services/user.services'
 
-type PrefetchFunction = (endpointName: EndpointKeys) => () => void
+// type PrefetchFunction = (endpointName: EndpointKeys) => () => void
 
-const usePrefetchFunctions = {
-	// getTasks: useTaskPrefetch,
-	// getTodaySession: usePomodoroPrefetch,
-	// getTimeBlocks: useTimeBlockPrefetch,
-	getAll: useMenuItemPrefetch,
-	getProfile: useUserPrefetch
-} as const
+// const usePrefetchFunctions = {
+// 	// getTasks: useTaskPrefetch,
+// 	// getTodaySession: usePomodoroPrefetch,
+// 	// getTimeBlocks: useTimeBlockPrefetch,
+// 	getAll: useMenuItemPrefetch,
+// 	getProfile: useUserPrefetch
+// } as const
 
-type EndpointKeys = keyof typeof usePrefetchFunctions
+// type EndpointKeys = keyof typeof usePrefetchFunctions
 
 export interface ItemMenu {
 	link: string
@@ -40,24 +37,24 @@ export function MenuItem({ item }: { item: ItemMenu }) {
 
 	const isCollapsed = useTypedSelector(state => state.collapsed.isCollapsed)
 
-	const prefetchFunction = usePrefetchFunctions[
-		endPoint as EndpointKeys
-	] as PrefetchFunction
-	const prefetch = prefetchFunction(endPoint as EndpointKeys)
+	// const prefetchFunction = usePrefetchFunctions[
+	// 	endPoint as EndpointKeys
+	// ] as PrefetchFunction
+	// const prefetch = prefetchFunction(endPoint as EndpointKeys)
 
-	useEffect(() => {
-		if (path === link) {
-			prefetch()
-		}
-	}, [path, link, prefetch])
+	// useEffect(() => {
+	// 	if (path === link) {
+	// 		prefetch()
+	// 	}
+	// }, [path, link, prefetch])
 
 	return (
 		<div>
 			<Link
 				href={link}
-				onClick={() => {
-					prefetch()
-				}}
+				// onClick={() => {
+				// 	prefetch()
+				// }}
 				className={cn(styles.menuItemLink, {
 					'bg-db-row-light dark:!bg-[#1c2b41]': path === link,
 					'justify-start': !isCollapsed,

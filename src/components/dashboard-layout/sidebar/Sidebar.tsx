@@ -8,12 +8,13 @@ import Link from 'next/link'
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 
 import { useActions } from '@/hooks/useActions'
+import { useAuth } from '@/hooks/useAuth'
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 import { LogoutButton } from './LogoutButton'
 import { MenuItem } from './MenuItem'
 import styles from './Sidebar.module.scss'
-import { USERMENU } from './menu.data'
+import { ADMINMENU, USERMENU } from './menu.data'
 
 export function Sidebar() {
 	const isCollapsed = useTypedSelector(state => state.collapsed.isCollapsed)
@@ -21,6 +22,8 @@ export function Sidebar() {
 	const toggleSidebar = () => {
 		setIsCollapsed(!isCollapsed)
 	}
+	const { user } = useAuth()
+	const isAdmin = user?.roles.includes('admin')
 	return (
 		<m.aside
 			className={cn(styles.aside)}
@@ -62,7 +65,7 @@ export function Sidebar() {
 				>
 					{isCollapsed ? <PanelLeftOpen /> : <PanelLeftCloseIcon />}
 				</button>
-				{USERMENU.map(item => (
+				{(isAdmin ? ADMINMENU : USERMENU).map(item => (
 					<MenuItem
 						item={item}
 						key={item.link}

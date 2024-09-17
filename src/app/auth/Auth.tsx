@@ -30,7 +30,6 @@ const Auth = () => {
 	const [login] = useLoginMutation()
 	const [auth] = useRegisterMutation()
 	const { user } = useAuth()
-	const upperCaseRole = user?.roles.join().toUpperCase()
 
 	const onSubmit: SubmitHandler<AuthForm> = async data => {
 		try {

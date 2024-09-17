@@ -48,11 +48,11 @@ export const DayOfWeekUkr = {
 export type DayOfWeek = keyof typeof DayOfWeekUkr
 
 export const InstitutionType = {
-	'Slon-1': 'Слон 1',
-	'Slon-2': 'Слон 2',
-	'Slon-3': 'Слон 3',
-	Kosmos: 'Космічна',
-	Naberezhnaya: 'Набережна',
+	'slon-1': 'Слон 1',
+	'slon-2': 'Слон 2',
+	'slon-3': 'Слон 3',
+	kosmicheskaya: 'Космічна',
+	naberezhnaya: 'Набережна',
 }
 
 export type InstitutionType = keyof typeof InstitutionType

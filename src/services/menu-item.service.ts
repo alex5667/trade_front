@@ -28,6 +28,21 @@ export const menuItemApi = createApi({
 			}
 		}),
 
+		getByInstitutionSlug: builder.query<MenuItemResponse[], string>({
+			query: (institutionSlug) => ({
+				url: `${URLS.MENU_ITEM_BY_INSTITUTION}/${institutionSlug}`,
+				method: 'GET',
+			}),
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
+				try {
+					const data = await queryFulfilled
+					dispatch(getAllItems(data.data))
+				} catch (err) {
+					console.error('Failed to fetch menu...', err)
+				}
+			}
+		}),
+
 	})
 })
-export const { useGetAllQuery, usePrefetch } = menuItemApi
+export const { useGetAllQuery, usePrefetch, useGetByInstitutionSlugQuery } = menuItemApi
