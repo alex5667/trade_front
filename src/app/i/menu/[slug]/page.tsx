@@ -1,34 +1,70 @@
-'use client'
-
-import DayWeek from '@/components/home/DayWeak'
-import Loader from '@/components/ui/Loader'
-
-import { DayOfWeekUkr } from '@/types/menuItem.type'
+import { InstitutionResponse } from '@/types/institution.type'
+import { MenuItemDataFilters } from '@/types/menuItem.type'
 import { PageSlugParam } from '@/types/page-params'
 
-import styles from './../../../HomePage.module.scss'
-import { useGetByInstitutionSlugQuery } from '@/services/menu-item.service'
+import { URLS } from '@/config/urls'
 
-export default function MenuPage({ params }: PageSlugParam) {
-	const { data, isLoading } = useGetByInstitutionSlugQuery(params.slug)
+import { getDatesForNextWeek } from '@/utils/getDatesForNextWeek'
 
-	const daysOfWeek = Object.keys(DayOfWeekUkr).filter(
-		days => days !== 'SATURDAY' && days !== 'SUNDAY'
-	)
-	if (isLoading) return <Loader />
+import { MenuView } from './(view)/MenuView'
+import { fetchMenuByInstitutionSlugAndWeek } from '@/app/[slug]/page'
+
+export const revalidate = 60
+
+export default async function MenuPage({ params }: PageSlugParam) {
+	// const data = await fetchMenuByInstitutionSlug(params.slug)
+	const dates = getDatesForNextWeek()
+
+	const items = await fetchMenuByInstitutionSlugAndWeek({
+		startDate: dates[0],
+		endDate: dates[dates.length - 1],
+		institutionSlug: params.slug
+	} as MenuItemDataFilters)
+
 	return (
-		<div className={styles.mainContent}>
-			{daysOfWeek.map(day => {
-				const daysWeekItems =
-					(data && data.filter(item => item.dayOfWeek === day)) || []
-				return (
-					<DayWeek
-						key={day}
-						items={daysWeekItems}
-						day={day}
-					/>
-				)
-			})}
-		</div>
+		<MenuView
+			items={items.length > 0 ? items : []}
+			institutionSlug={params.slug}
+		/>
 	)
+}
+
+// export async function fetchMenuByInstitutionSlug(
+// 	slug: string
+// ): Promise<MenuItemResponse[]> {
+// 	const res = await fetch(
+// 		`${process.env.BASE_URL}${URLS.MENU_ITEM_BY_INSTITUTION}/${slug}`,
+// 		{
+// 			method: 'GET',
+// 			headers: {
+// 				'Content-Type': 'application/json'
+// 			}
+// 		}
+// 	)
+
+// 	if (!res.ok) {
+// 		throw new Error('Failed to fetch menu items')
+// 	}
+
+// 	const data: MenuItemResponse[] = await res.json()
+// 	return data
+// }
+
+export async function generateStaticParams() {
+	const res = await fetch(`${process.env.BASE_URL}${URLS.INSTITUTIONS}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+
+	if (!res.ok) {
+		throw new Error('Failed to fetch menu items')
+	}
+
+	const data: InstitutionResponse[] = await res.json()
+
+	return data.map(institution => {
+		return { params: { slug: institution.slug } }
+	})
 }

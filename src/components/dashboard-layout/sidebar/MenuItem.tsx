@@ -31,7 +31,7 @@ export interface ItemMenu {
 	endPoint: string
 }
 export function MenuItem({ item }: { item: ItemMenu }) {
-	const { icon: Icon, link, name, endPoint } = item
+	const { icon: Icon, link, name } = item
 
 	const path = usePathname()
 

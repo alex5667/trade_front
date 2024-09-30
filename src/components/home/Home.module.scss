@@ -47,7 +47,7 @@
 .mealTypeContainer {
 	@apply rounded-sm my-2 px-3;
 	position: relative;
-	height: toRem(550);
+	height: toRem(770);
 	&:not(:last-child) {
 		border-bottom: 1px solid rgba(255, 255, 255, 0.8);
 	}

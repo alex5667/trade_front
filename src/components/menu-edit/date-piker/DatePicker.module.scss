@@ -1,0 +1,17 @@
+.container {
+	@apply relative;
+}
+
+.closeButton {
+	@apply absolute -top-2 -right-4 opacity-30 hover:opacity-100 transition-opacity;
+}
+
+.datePickerContainer {
+	@apply absolute p-2.5  bg-sidebar z-10 shadow rounded-lg;
+	top: calc(100% + 0.7rem);
+}
+
+.past {
+	background-color: #ffe0e0;
+	color: #a0a0a0;
+}

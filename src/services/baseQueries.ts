@@ -11,9 +11,10 @@ import {
 	saveTokenStorage
 } from './auth-token.service'
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 export const baseQuery = retry(
 	fetchBaseQuery({
-		baseUrl: 'http://localhost:4200/api',
+		baseUrl: API_BASE_URL,
 		prepareHeaders: headers => {
 			const token = getAccessToken()
 			if (token) {
@@ -23,6 +24,17 @@ export const baseQuery = retry(
 			return headers
 		},
 		credentials: 'include',
+
+		responseHandler: async (response) => {
+			if (!response.ok) {
+				if (response.status === 404) {
+					return { error: 'Not Found' }
+				}
+				const errorMessage = await response.text()
+				return { error: errorMessage || 'An error occurred' }
+			}
+			return response.json()
+		},
 	}),
 	{
 		maxRetries: 3

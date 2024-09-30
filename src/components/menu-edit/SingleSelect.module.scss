@@ -1,0 +1,15 @@
+.container {
+	@apply relative  flex justify-center items-center  text-sm;
+}
+.closeButton {
+	@apply absolute top-0 right-0 opacity-30 hover:opacity-100 transition-opacity;
+}
+
+.listContainer {
+	@apply absolute flex flex-col items-start  min-w-full p-2.5 left-0  bg-sidebar z-20 shadow rounded-lg;
+	top: calc(100% + 0.5rem);
+}
+
+.listButton {
+	@apply mb-4  block min-w-full last:mb-0 capitalize rounded-lg text-text-color-on-primary;
+}

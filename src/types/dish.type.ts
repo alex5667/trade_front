@@ -3,7 +3,7 @@ import { DishCategoryResponse } from './dishCategory.type'
 export interface DishResponse {
 	id: number
 	name: string
-	printName?: string | null
+	printName: string | ''
 	description?: string | null
 	price?: number | null
 	category: DishCategoryResponse
@@ -11,4 +11,4 @@ export interface DishResponse {
 	updatedAt?: Date
 	slug: string
 }
-export type DishForm = Pick<DishResponse, 'name' | 'printName' | 'category'>
+export type DishFormState = Pick<DishResponse, 'name' | 'printName' | 'category'>

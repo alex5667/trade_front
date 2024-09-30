@@ -3,19 +3,39 @@ import { DishResponse } from './dish.type'
 
 
 export interface MenuItemResponse {
-	id: number
-	meal: MealType
+	id?: number
+	meal: MealType | string
 	dayOfWeek: DayOfWeek
 	date: string
-	dish: DishResponse
-	createdAt?: string
+	dish: DishResponse | string
+	createdAt: string
 	updatedAt?: string
-	institution: InstitutionType
-	description?: String
+	dishOrder?: number
+	institution: InstitutionType | string
+	description?: string
 	price?: number
 }
+export type TypeMenuItemFormState = {
+	description?: string,
+	date: string,
+	dayOfWeek: DayOfWeek,
+	dishId: number,
+	institutionId: number,
+	mealId: number
+	dishOrder?: number
 
-export type MenuItemForm = Omit<MenuItemResponse, 'id' | 'createdAt' | 'updatedAt'>
+}
+
+
+// type ConvertToString<T> = {
+// 	[K in keyof T]: string
+// }
+
+// export type TypeMenuItemFormState = Partial<Omit<ConvertToString<MenuItemResponse>, 'id' | 'updatedAt'>>
+// export type TypeMenuItemFormState = Partial<ConvertToString<MenuItemResponse>>
+
+
+// export type MenuItemForm = Partial<MenuItemResponse>
 export const MealTypes = {
 	Breakfast: 'Сніданок',
 	Lunch: 'Обід',
@@ -47,7 +67,17 @@ export const DayOfWeekUkr = {
 }
 export type DayOfWeek = keyof typeof DayOfWeekUkr
 
-export const InstitutionType = {
+export type InstitutionType = {
+	id: number,
+	name: string,
+	printName: string,
+	description: string | null,
+	createdAt: string,
+	updatedAt: string,
+	slug: string
+}
+
+export const Institution = {
 	'slon-1': 'Слон 1',
 	'slon-2': 'Слон 2',
 	'slon-3': 'Слон 3',
@@ -55,7 +85,7 @@ export const InstitutionType = {
 	naberezhnaya: 'Набережна',
 }
 
-export type InstitutionType = keyof typeof InstitutionType
+// export type InstitutionType = keyof typeof Institution
 
 export enum EnumMenuSort {
 	HIGH_PRICE = 'high-price',
@@ -71,4 +101,6 @@ export type MenuItemDataFilters = {
 	maxPrice?: string
 	startDate?: string
 	endDate?: string
+	institutionSlug?: string
+
 }

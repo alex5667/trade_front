@@ -3,16 +3,16 @@ import { type TextareaHTMLAttributes, forwardRef } from 'react'
 
 import styles from './Fields.module.scss'
 
-type TransparentFieldProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+type TransparentFieldProps = TextareaHTMLAttributes<HTMLInputElement> & {
 	type?: 'list' | 'kanban'
 }
 
 export const TransparentField = forwardRef<
-	HTMLTextAreaElement,
+	HTMLInputElement,
 	TransparentFieldProps
 >(({ className, type, ...rest }, ref) => {
 	return (
-		<textarea
+		<input
 			className={cn(
 				styles.inputTransparentField,
 				className,
