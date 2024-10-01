@@ -1,10 +1,10 @@
 'use client'
 
-import NextWeekDay from '@/components/menu-edit/NextWeekDay'
+import WeekDay from '@/components/menu-edit/WeekDay'
 import Loader from '@/components/ui/Loader'
 
 import { MealResponse } from '@/types/meal.type'
-import { DayOfWeek } from '@/types/menuItem.type'
+import { DayOfWeek, DayOfWeekUkr } from '@/types/menuItem.type'
 
 import { ListRowParent } from './ListRowParent'
 import { useGetAllMealsQuery } from '@/services/meal.service'
@@ -13,17 +13,30 @@ interface ListDayView {
 	day: DayOfWeek
 	label: string
 	institutionSlug: string
+	daysOfWeek: string[]
 }
 
-const ListDayView = ({ day, label, institutionSlug }: ListDayView) => {
+const ListDayView = ({
+	day,
+	label,
+	institutionSlug,
+	daysOfWeek
+}: ListDayView) => {
 	const { data: meals, isLoading, isError } = useGetAllMealsQuery()
 	if (isLoading) return <Loader />
 	if (isError) return <div>Error loading meals</div>
+	const dayIndex = Object.keys(DayOfWeekUkr).findIndex(
+		key => key === day.toUpperCase()
+	)
+	const dateForDay = daysOfWeek[dayIndex]
 	return (
 		<div>
 			<div>
 				<h2>{label}</h2>
-				<NextWeekDay day={day} />
+				<WeekDay
+					dateForDay={dateForDay}
+					day={day}
+				/>
 			</div>
 
 			{meals && meals.length > 0 ? (
@@ -34,6 +47,7 @@ const ListDayView = ({ day, label, institutionSlug }: ListDayView) => {
 						key={meal.id}
 						day={day}
 						institutionSlug={institutionSlug}
+						dateForDay={dateForDay}
 					/>
 				))
 			) : (

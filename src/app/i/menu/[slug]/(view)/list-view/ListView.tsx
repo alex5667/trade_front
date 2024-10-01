@@ -11,9 +11,11 @@ import styles from './ListView.module.scss'
 
 interface ListView {
 	institutionSlug: string
+	daysOfWeek: string[]
 }
-export function ListView({ institutionSlug }: ListView) {
+export function ListView({ institutionSlug, daysOfWeek }: ListView) {
 	const { onDragEnd } = useMealItemDnd()
+
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<div className={cn(styles.parentsWrapper)}>
@@ -24,6 +26,7 @@ export function ListView({ institutionSlug }: ListView) {
 							day={column.value}
 							key={column.value}
 							institutionSlug={institutionSlug}
+							daysOfWeek={daysOfWeek}
 						/>
 					)
 				})}

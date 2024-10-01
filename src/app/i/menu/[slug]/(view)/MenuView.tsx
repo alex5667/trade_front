@@ -1,16 +1,19 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 import Loader from '@/components/ui/Loader'
 
-import { MenuItemResponse } from '@/types/menuItem.type'
+import { MenuItemDataFilters } from '@/types/menuItem.type'
 
-import { useActions } from '@/hooks/useActions'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 
+import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
+
 import { ListView } from './list-view/ListView'
+import { useGetAllMenuItemQuery } from '@/services/menu-item.service'
 
 interface MenuView {
-	items: MenuItemResponse[] | []
 	institutionSlug: string
 }
 
@@ -28,14 +31,32 @@ export type TypeView = 'list' | 'kanban'
 // 	}
 // )
 
-export function MenuView({ items, institutionSlug }: MenuView) {
+export function MenuView({ institutionSlug }: MenuView) {
 	const [type, setType, isLoading] = useLocalStorage<TypeView>({
 		key: 'view-type',
 		defaultValue: 'list'
 	})
-	const { addAllMenuItems } = useActions()
-	addAllMenuItems(items)
-	if (isLoading) return <Loader />
+	const [weekOffset, setWeekOffset] = useState(0)
+	const { startOfWeek, endOfWeek, daysOfWeek } = getDatesOfWeek(weekOffset)
+	console.log('weekOffset', weekOffset)
+	console.log('startOfWeek', startOfWeek)
+	console.log('endOfWeek', endOfWeek)
+
+	const { isLoading: isLoadingMenu, refetch } = useGetAllMenuItemQuery({
+		startDate: startOfWeek,
+		endDate: endOfWeek,
+		institutionSlug
+	} as MenuItemDataFilters)
+	const handleWeekChange = (direction: 'next' | 'prev') => {
+		setWeekOffset(prev => (direction === 'next' ? prev + 1 : prev - 1))
+	}
+	useEffect(() => {
+		refetch()
+	}, [weekOffset, refetch])
+
+	if (isLoading || isLoadingMenu) {
+		return <Loader />
+	}
 
 	return (
 		<div>
@@ -43,8 +64,19 @@ export function MenuView({ items, institutionSlug }: MenuView) {
 				setType={setType}
 				type={type}
 			/> */}
+			<div>
+				<button onClick={() => handleWeekChange('prev')}>
+					Предыдущая неделя
+				</button>
+				<button onClick={() => handleWeekChange('next')}>
+					Следующая неделя
+				</button>
+			</div>
 
-			<ListView institutionSlug={institutionSlug} />
+			<ListView
+				institutionSlug={institutionSlug}
+				daysOfWeek={daysOfWeek}
+			/>
 			{/* <ListView /> */}
 			{/* {type === 'list' ? <ListView /> : <KanbanView />} */}
 		</div>

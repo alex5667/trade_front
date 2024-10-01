@@ -10,7 +10,7 @@ import { PageSlugParam } from '@/types/page-params'
 
 import { URLS } from '@/config/urls'
 
-import { getDatesForNextWeek } from '@/utils/getDatesForNextWeek'
+import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
 import CustomerMenu from './CustomerMenu'
 import styles from './HomePage.module.scss'
@@ -23,11 +23,11 @@ export const metadata: Metadata = {
 export const revalidate = 600
 
 export default async function CustomerPage({ params }: PageSlugParam) {
-	const dates = getDatesForNextWeek()
+	let { startOfWeek, endOfWeek } = getDatesOfWeek()
 
 	const items = await fetchMenuByInstitutionSlugAndWeek({
-		startDate: dates[0],
-		endDate: dates[dates.length - 1],
+		startDate: startOfWeek,
+		endDate: endOfWeek,
 		institutionSlug: params.slug
 	} as MenuItemDataFilters)
 	return (

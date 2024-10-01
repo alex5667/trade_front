@@ -4,7 +4,7 @@ import { MenuItemResponse } from '@/types/menuItem.type'
 import { URLS } from '@/config/urls'
 
 import styles from './Home.module.scss'
-import MealType from './MealType'
+import MealCategory from './MealCategory'
 
 interface DayWeek {
 	items: MenuItemResponse[]
@@ -28,7 +28,7 @@ const DayWeek = async ({ items, day, label }: DayWeek) => {
 					return (item?.meal as MealResponse)?.slug === meal.slug
 				})
 				return (
-					<MealType
+					<MealCategory
 						key={meal.slug}
 						items={itemsDishes}
 						meal={meal.printName}

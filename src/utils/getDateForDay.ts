@@ -1,10 +1,10 @@
 import { DayOfWeek, DayOfWeekUkr } from '@/types/menuItem.type'
-import { getDatesForNextWeek } from '@/utils/getDatesForNextWeek'
+import { getDatesOfWeek } from './getDatesOfWeek'
 
 export const getDateForDay = (day: DayOfWeek): string | undefined => {
-	const dates = getDatesForNextWeek()
+	const { daysOfWeek } = getDatesOfWeek()
 	const dayIndex = Object.keys(DayOfWeekUkr).findIndex(
 		key => key === day.toUpperCase()
 	)
-	return dates[dayIndex]
+	return daysOfWeek[dayIndex]
 }

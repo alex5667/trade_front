@@ -4,7 +4,7 @@ import { MenuItemResponse } from '@/types/menuItem.type'
 import DishRow from './DishRow'
 import styles from './Home.module.scss'
 
-const MealType = ({
+const MealCategory = ({
 	items,
 	meal
 }: {
@@ -36,4 +36,4 @@ const MealType = ({
 	)
 }
 
-export default MealType
+export default MealCategory

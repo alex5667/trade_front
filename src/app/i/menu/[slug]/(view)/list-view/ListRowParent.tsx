@@ -8,8 +8,6 @@ import { DayOfWeek, MenuItemResponse } from '@/types/menuItem.type'
 
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 
-import { getDateForDay } from '@/utils/getDateForDay'
-
 import AddNewMenuItem from '../AddNewMenuItem'
 
 import ListRow from './ListRow'
@@ -20,17 +18,18 @@ interface ListRowParent {
 	day: DayOfWeek
 	institutionSlug: string
 	mealSlug: string
+	dateForDay: string
 }
 
 export function ListRowParent({
 	label,
 	day,
 	institutionSlug,
-	mealSlug
+	mealSlug,
+	dateForDay
 }: ListRowParent) {
 	const items = useTypedSelector(state => state.menuSlice.items)
-	const dateForDay = getDateForDay(day)
-
+	console.log('items', items)
 	const filteredItems: MenuItemResponse[] | [] =
 		items?.filter(item => {
 			const isString = typeof item?.meal === 'string'
@@ -58,6 +57,13 @@ export function ListRowParent({
 		}
 		return (a.id || 0) - (b.id || 0)
 	})
+
+	if (day === 'MONDAY') {
+		console.log('items', items)
+
+		console.log('filteredItems', filteredItems)
+		console.log('sortedItems', sortedItems)
+	}
 
 	return (
 		<Droppable droppableId={mealSlug + dateForDay}>

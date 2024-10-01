@@ -2,14 +2,12 @@ import dayjs from 'dayjs'
 
 import { DayOfWeek } from '@/types/menuItem.type'
 
-import { getDateForDay } from '@/utils/getDateForDay'
-
 interface DateDayProps {
 	day: DayOfWeek
+	dateForDay: string
 }
 
-const NextWeekDay = ({ day }: DateDayProps) => {
-	const dateForDay = getDateForDay(day)
+const WeekDay = ({ day, dateForDay }: DateDayProps) => {
 	const formattedDate = dateForDay
 		? dayjs(dateForDay).format('DD-MM-YYYY')
 		: 'Нет даты'
@@ -22,4 +20,4 @@ const NextWeekDay = ({ day }: DateDayProps) => {
 	)
 }
 
-export default NextWeekDay
+export default WeekDay
