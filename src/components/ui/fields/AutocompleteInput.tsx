@@ -1,7 +1,7 @@
 'use client'
 
 import cn from 'clsx'
-import { useCallback, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { toast } from 'sonner'
 
 import { DishResponse } from '@/types/dish.type'
@@ -9,19 +9,13 @@ import { MenuItemResponse } from '@/types/menuItem.type'
 
 import { useOutside } from '@/hooks/useOutside'
 
-import { debounce } from '@/utils/debounce'
-
 import { errorCatch } from '@/api/error'
 
 import styles from './AutocompleteInput.module.scss'
+import { AutocompleteList } from './AutocompleteList '
+import { useAutocompleteInput } from './hooks/useAutocompleteInput'
+import { useOptionSelect } from './hooks/useOptionSelect'
 import { useGetDishByNameQuery } from '@/services/dish.service'
-import { useGetInstitutionBySlugQuery } from '@/services/institution.service'
-import { useGetMealBySlugQuery } from '@/services/meal.service'
-import {
-	useCreateMenuItemMutation,
-	useGetByInstitutionSlugQuery,
-	useUpdateMenuItemMutation
-} from '@/services/menu-item.service'
 
 type AutocompleteInputProps = {
 	item: MenuItemResponse
@@ -44,16 +38,18 @@ export const AutocompleteInput = ({
 	const defaultInputValue: string = isDishString
 		? (item.dish as string)
 		: (item.dish as DishResponse).name
-	const [inputValue, setInputValue] = useState(defaultInputValue)
-	const [debouncedValue, setDebouncedValue] = useState('')
-	const [shouldFetch, setShouldFetch] = useState(false)
-	const [updateMenuItem] = useUpdateMenuItemMutation()
-	const [createMenuItem] = useCreateMenuItemMutation()
-	const { isShow, ref, setIsShow } = useOutside(false)
-	const { data: institution } = useGetInstitutionBySlugQuery(institutionSlug)
-	const { data: meal } = useGetMealBySlugQuery(mealSlug)
-	const { refetch } = useGetByInstitutionSlugQuery(institutionSlug)
 
+	const { isShow, ref, setIsShow } = useOutside(false)
+
+	const {
+		inputValue,
+		handleChange,
+		debouncedValue,
+		shouldFetch,
+		setShouldFetch,
+		setDebouncedValue,
+		setInputValue
+	} = useAutocompleteInput({ defaultInputValue, setIsShow })
 	const {
 		data: dishes,
 		isError,
@@ -62,63 +58,16 @@ export const AutocompleteInput = ({
 		skip: !shouldFetch || !debouncedValue.trim()
 	})
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debouncedInputChange = useCallback(
-		debounce((value: string) => {
-			setDebouncedValue(value)
-			setShouldFetch(true)
-		}, 400),
-		[]
-	)
-
-	const handleChange = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
-			setInputValue(event.target.value)
-			debouncedInputChange(event.target.value)
-			setIsShow(true)
-		},
-		[debouncedInputChange, setIsShow]
-	)
-
-	const handleOptionSelect = useCallback(
-		(option: string, dishId: number) => {
-			setInputValue(option)
-			setDebouncedValue(option)
-			setShouldFetch(true)
-			setTimeout(() => setIsShow(false), 200)
-
-			if (inputRef.current) {
-				inputRef.current.blur()
-			}
-
-			if (institution?.id && meal?.id) {
-				const updatedData = {
-					...item,
-					date: dateForDay,
-					dishId,
-					institutionId: institution.id,
-					mealId: meal.id
-				}
-				if (item.id) {
-					updateMenuItem({ id: item.id, data: updatedData })
-				} else {
-					createMenuItem(updatedData)
-				}
-				refetch()
-			} else {
-				console.log('Не указаны блюдо или заведение')
-			}
-		},
-		[
-			item,
-			updateMenuItem,
-			setIsShow,
-			createMenuItem,
-			institution?.id,
-			meal?.id,
-			dateForDay,
-			refetch
-		]
+	const handleOptionSelect = useOptionSelect(
+		item,
+		institutionSlug,
+		mealSlug,
+		dateForDay,
+		setInputValue,
+		setDebouncedValue,
+		setShouldFetch,
+		setIsShow,
+		inputRef
 	)
 	if (isError) {
 		toast.error(errorCatch(error))
@@ -138,20 +87,11 @@ export const AutocompleteInput = ({
 				{...rest}
 			/>
 			{isShow && dishes && dishes.length > 0 && (
-				<ul
+				<AutocompleteList
 					ref={ref}
-					className={styles.autocompleteList}
-				>
-					{dishes.map(dish => (
-						<li
-							key={dish.id}
-							className={styles.autocompleteItem}
-							onClick={() => handleOptionSelect(dish.name, dish.id)}
-						>
-							{dish.name}
-						</li>
-					))}
-				</ul>
+					dishes={dishes}
+					handleOptionSelect={handleOptionSelect}
+				/>
 			)}
 		</div>
 	)

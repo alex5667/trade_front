@@ -29,7 +29,6 @@ export function ListRowParent({
 	dateForDay
 }: ListRowParent) {
 	const items = useTypedSelector(state => state.menuSlice.items)
-	console.log('items', items)
 	const filteredItems: MenuItemResponse[] | [] =
 		items?.filter(item => {
 			const isString = typeof item?.meal === 'string'

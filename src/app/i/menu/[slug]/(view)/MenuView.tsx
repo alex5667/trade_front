@@ -38,9 +38,6 @@ export function MenuView({ institutionSlug }: MenuView) {
 	})
 	const [weekOffset, setWeekOffset] = useState(0)
 	const { startOfWeek, endOfWeek, daysOfWeek } = getDatesOfWeek(weekOffset)
-	console.log('weekOffset', weekOffset)
-	console.log('startOfWeek', startOfWeek)
-	console.log('endOfWeek', endOfWeek)
 
 	const { isLoading: isLoadingMenu, refetch } = useGetAllMenuItemQuery({
 		startDate: startOfWeek,
