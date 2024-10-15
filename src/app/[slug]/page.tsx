@@ -1,6 +1,5 @@
+import dayjs from 'dayjs'
 import { Metadata } from 'next'
-
-import Header from '@/components/home/Header'
 
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
@@ -23,16 +22,32 @@ export const metadata: Metadata = {
 export const revalidate = 600
 
 export default async function CustomerPage({ params }: PageSlugParam) {
-	let { startOfWeek, endOfWeek } = getDatesOfWeek()
+	const today = dayjs()
+	const isSaturday = today.day() === 0
+	let weekOffset = isSaturday ? 1 : 0
 
-	const items = await fetchMenuByInstitutionSlugAndWeek({
+	const { startOfWeek, endOfWeek } = getDatesOfWeek(weekOffset)
+
+	let items = await fetchMenuByInstitutionSlugAndWeek({
 		startDate: startOfWeek,
 		endDate: endOfWeek,
 		institutionSlug: params.slug
 	} as MenuItemDataFilters)
+
+	if (items.length === 0) {
+		weekOffset = -1
+		const { startOfWeek, endOfWeek } = getDatesOfWeek(weekOffset)
+
+		items = await fetchMenuByInstitutionSlugAndWeek({
+			startDate: startOfWeek,
+			endDate: endOfWeek,
+			institutionSlug: params.slug
+		} as MenuItemDataFilters)
+	}
+
 	return (
 		<>
-			<Header />
+			{/* <Header /> */}
 			<main className={styles.main__container}>
 				<CustomerMenu items={items} />
 			</main>

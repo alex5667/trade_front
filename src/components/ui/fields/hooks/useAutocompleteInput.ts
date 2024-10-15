@@ -20,7 +20,7 @@ export function useAutocompleteInput({ defaultInputValue, setIsShow }: useAutoco
 		[]
 	)
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setInputValue(event.target.value)
 		debouncedInputChange(event.target.value)
 		setIsShow(true)

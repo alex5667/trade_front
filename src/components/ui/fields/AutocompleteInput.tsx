@@ -11,11 +11,11 @@ import { useOutside } from '@/hooks/useOutside'
 
 import { errorCatch } from '@/api/error'
 
+import { useGetDishByNameQuery } from '@/services/dish.service'
 import styles from './AutocompleteInput.module.scss'
 import { AutocompleteList } from './AutocompleteList '
 import { useAutocompleteInput } from './hooks/useAutocompleteInput'
 import { useOptionSelect } from './hooks/useOptionSelect'
-import { useGetDishByNameQuery } from '@/services/dish.service'
 
 type AutocompleteInputProps = {
 	item: MenuItemResponse
@@ -33,7 +33,7 @@ export const AutocompleteInput = ({
 	dateForDay,
 	...rest
 }: AutocompleteInputProps) => {
-	const inputRef = useRef<HTMLInputElement>(null)
+	const inputRef = useRef<HTMLTextAreaElement>(null)
 	const isDishString = typeof item.dish === 'string'
 	const defaultInputValue: string = isDishString
 		? (item.dish as string)
@@ -75,7 +75,8 @@ export const AutocompleteInput = ({
 	return (
 		<div className={styles.autocompleteContainer}>
 			<span>{item.dishOrder}</span>
-			<input
+			<textarea
+				rows={1}
 				ref={inputRef}
 				className={cn(styles.input, className)}
 				value={inputValue}

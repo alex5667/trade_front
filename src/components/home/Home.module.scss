@@ -8,7 +8,6 @@
 	@include adaptiveValue("font-size", 32, 18);
 }
 .headerTitle {
-	// color: rgba(249, 84, 84, 0.6);
 	letter-spacing: 0.15rem;
 	line-height: 1.4;
 	font-weight: 700;
@@ -18,12 +17,15 @@
 	margin-right: 20px;
 }
 .dayWeekCOlumn {
-	@apply py-2 px-2 flex flex-col items-center justify-start;
+	@apply py-2  flex flex-col items-center justify-start;
 	opacity: 0;
 	animation: slideIn 0.5s ease-out forwards;
 
 	&:not(:last-child) {
 		border-right: 1px solid #ccc;
+		@media (max-width: toRem(1050)) {
+			border: none;
+		}
 	}
 
 	@for $i from 1 through 5 {
@@ -45,22 +47,37 @@
 }
 
 .mealTypeContainer {
-	@apply rounded-sm my-2 px-3;
+	@apply my-2;
 	position: relative;
-	height: toRem(770);
 	&:not(:last-child) {
 		border-bottom: 1px solid rgba(255, 255, 255, 0.8);
 	}
+	@media (max-width: toRem(1050)) {
+		width: 100%;
+		padding-bottom: toRem(10);
+	}
+	@include adaptiveValue("margin-right", 16, 5);
+	@include adaptiveValue("margin-left", 16, 5);
 }
-
+.dayContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: start;
+	> span {
+		margin-top: toRem(5);
+		@include adaptiveValue("font-size", 14, 10);
+	}
+}
 .dayWeekTitle {
 	@apply text-center rounded-sm;
 	position: relative;
-	padding: 5px 7px 5px 7px;
+	padding: toRem(5) toRem(5);
 	line-height: 1.4;
 	letter-spacing: 0.2rem;
+	font-weight: 600;
 
-	@include adaptiveValue("font-size", 32, 18);
+	@include adaptiveValue("font-size", 32, 26);
 	> span {
 		position: relative;
 		transition: all 0.5s ease;
@@ -98,11 +115,18 @@
 	line-height: 1.4;
 	letter-spacing: 0.1rem;
 
-	@include adaptiveValue("font-size", 22, 16);
+	@include adaptiveValue("font-size", 22, 18);
 }
 
 .dishRow {
 	@apply relative  my-3 rounded-sm p-2  shadow-md shadow-row-black;
+	@media (max-width: toRem(1050)) {
+		width: 100%;
+		text-align: center;
+		&:not(:last-child) {
+			margin-bottom: toRem(20);
+		}
+	}
 
 	&::before {
 		content: "";
@@ -119,11 +143,11 @@
 }
 
 .dishRow:nth-child(even)::before {
-	background: rgba(121, 79, 69, 0.35);
+	background: rgba(121, 79, 69, 0.5);
 }
 .dishRowSpan {
 	@apply text-white relative z-10;
-	font-weight: 300;
-	letter-spacing: 0.1rem;
-	@include adaptiveValue("font-size", 16, 12);
+	font-weight: 200;
+	letter-spacing: 0.15rem;
+	@include adaptiveValue("font-size", 16, 14);
 }

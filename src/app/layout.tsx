@@ -1,10 +1,10 @@
+import { Loader } from 'lucide-react'
 import type { Metadata } from 'next'
 import { Noto_Sans } from 'next/font/google'
 import { Suspense } from 'react'
 import { Toaster } from 'sonner'
 
 import Background from '@/components/ui/Background'
-import Loader from '@/components/ui/Loader'
 
 import { Providers } from '@/providers/providers'
 
@@ -17,7 +17,7 @@ import '../styles/globals.scss'
 const zen = Noto_Sans({
 	subsets: ['cyrillic', 'latin'],
 
-	weight: ['200', '300', '400', '500', '600', '700'],
+	weight: ['200', '300', '400', '500', '600', '700', '900'],
 	display: 'swap',
 	variable: '--font-zen',
 	style: ['normal']

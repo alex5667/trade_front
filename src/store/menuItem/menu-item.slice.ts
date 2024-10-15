@@ -17,8 +17,6 @@ export const menuItemSlice = createSlice({
 	reducers: {
 		addAllMenuItems: (state, action: PayloadAction<MenuItemResponse[]>) => {
 			state.items = [...action.payload]
-			console.log('state.items', state.items)
-			console.log('action.payload', action.payload)
 		},
 		deleteMenuItemById: (state, action: PayloadAction<number>) => {
 			state.items = state.items.filter(item => item.id !== action.payload)

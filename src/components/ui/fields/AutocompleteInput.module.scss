@@ -5,7 +5,8 @@
 .input {
 	background: transparent;
 	color: theme("colors.red.500");
-	@apply hover:bg-sidebar-light;
+	@apply hover:bg-sidebar-light  overflow-hidden text-ellipsis mr-2 
+	resize-none;
 }
 
 .input:focus {

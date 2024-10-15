@@ -12,7 +12,7 @@ const MealCategory = ({
 	meal: string
 }) => {
 	return (
-		<div className={styles.mealTypeContainer}>
+		<>
 			<h2 className={styles.mealTypeTitle}>{meal}</h2>
 			{items && items.length > 0 ? (
 				<ul>
@@ -32,7 +32,7 @@ const MealCategory = ({
 			) : (
 				<p>No menu items available</p>
 			)}
-		</div>
+		</>
 	)
 }
 

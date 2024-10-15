@@ -13,7 +13,7 @@ export function useOptionSelect(
 	setDebouncedValue: (value: SetStateAction<string>) => void,
 	setShouldFetch: (value: SetStateAction<boolean>) => void,
 	setIsShow: Dispatch<SetStateAction<boolean>>,
-	inputRef: MutableRefObject<HTMLInputElement | null>
+	inputRef: MutableRefObject<HTMLTextAreaElement | null>
 ) {
 	const [updateMenuItem] = useUpdateMenuItemMutation()
 	const [createMenuItem] = useCreateMenuItemMutation()

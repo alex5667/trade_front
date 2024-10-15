@@ -1,7 +1,19 @@
+@import "@/styles/mixins.scss";
+@import "@/styles/variables.scss";
+
 .main__container {
 	@apply relative;
+	@media (max-width: toRem(1050)) {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 }
 
 .mainContent {
 	@apply grid w-full grid-cols-5 justify-between;
+	@media (max-width: toRem(1050)) {
+		grid-template-columns: 1fr;
+		width: 80%;
+	}
 }

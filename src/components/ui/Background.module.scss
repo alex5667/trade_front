@@ -1,0 +1,82 @@
+@import "@/styles/mixins.scss";
+@import "@/styles/variables.scss";
+
+.backgroundWrapper {
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(223, 204, 194, 0.8);
+		z-index: 2;
+		pointer-events: none;
+	}
+}
+
+.responsiveImage {
+	width: 100vw;
+	height: 100vh;
+	object-fit: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.svgContainer {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	z-index: 3;
+	opacity: 0.15;
+}
+
+.textContainerBoiko {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	height: 50%;
+	position: relative;
+	margin-bottom: toRem(50);
+}
+
+.textContainerFood {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 50%;
+}
+.textStyle {
+	letter-spacing: 10px;
+	font-family: var(--font-zen), sans-serif;
+}
+
+.textStyleBoiko {
+	letter-spacing: 7px;
+
+	font-size: toRem(120);
+	font-weight: 600;
+
+	text-shadow:
+		1px 1px 2px rgba(0, 0, 0, 0.3),
+		2px 2px 4px rgba(0, 0, 0, 0.3),
+		3px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.textStyleFood {
+	letter-spacing: 7px;
+
+	font-size: toRem(100);
+	font-weight: 600;
+
+	text-shadow:
+		1px 1px 2px rgba(0, 0, 0, 0.3),
+		2px 2px 4px rgba(0, 0, 0, 0.3),
+		3px 3px 6px rgba(0, 0, 0, 0.3);
+}

@@ -57,13 +57,6 @@ export function ListRowParent({
 		return (a.id || 0) - (b.id || 0)
 	})
 
-	if (day === 'MONDAY') {
-		console.log('items', items)
-
-		console.log('filteredItems', filteredItems)
-		console.log('sortedItems', sortedItems)
-	}
-
 	return (
 		<Droppable droppableId={mealSlug + dateForDay}>
 			{provided => (
