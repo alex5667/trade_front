@@ -4,11 +4,12 @@ import { Metadata } from 'next'
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
 import { InstitutionResponse } from '@/types/institution.type'
-import { MenuItemDataFilters, MenuItemResponse } from '@/types/menuItem.type'
+import { MenuItemDataFilters } from '@/types/menuItem.type'
 import { PageSlugParam } from '@/types/page-params'
 
 import { URLS } from '@/config/urls'
 
+import { fetchMenuByInstitutionSlugAndWeek } from '@/utils/fetchMenuByInstitutionSlugAndWeek'
 import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
 import CustomerMenu from './CustomerMenu'
@@ -55,29 +56,29 @@ export default async function CustomerPage({ params }: PageSlugParam) {
 	)
 }
 
-export async function fetchMenuByInstitutionSlugAndWeek(
-	params: MenuItemDataFilters = {} as MenuItemDataFilters
-): Promise<MenuItemResponse[]> {
-	const queryString = new URLSearchParams(
-		params as MenuItemDataFilters
-	).toString()
-	const urlBase = process.env.BASE_URL
-	const url = `${urlBase}${URLS.MENU_ITEM}?${queryString}`
+// export async function fetchMenuByInstitutionSlugAndWeek(
+// 	params: MenuItemDataFilters = {} as MenuItemDataFilters
+// ): Promise<MenuItemResponse[]> {
+// 	const queryString = new URLSearchParams(
+// 		params as MenuItemDataFilters
+// 	).toString()
+// 	const urlBase = process.env.BASE_URL
+// 	const url = `${urlBase}${URLS.MENU_ITEM}?${queryString}`
 
-	const res = await fetch(url, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	})
+// 	const res = await fetch(url, {
+// 		method: 'GET',
+// 		headers: {
+// 			'Content-Type': 'application/json'
+// 		}
+// 	})
 
-	if (!res.ok) {
-		throw new Error('Failed to fetch menu items')
-	}
+// 	if (!res.ok) {
+// 		throw new Error('Failed to fetch menu items')
+// 	}
 
-	const data: MenuItemResponse[] = await res.json()
-	return data
-}
+// 	const data: MenuItemResponse[] = await res.json()
+// 	return data
+// }
 
 export async function generateStaticParams() {
 	const res = await fetch(`${process.env.BASE_URL}${URLS.INSTITUTIONS}`, {

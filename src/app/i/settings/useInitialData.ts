@@ -15,5 +15,5 @@ export function useInitialData(reset: UseFormReset<TypeUserForm>) {
 
 			})
 		}
-	}, [isSuccess])
+	}, [isSuccess, data, reset])
 }

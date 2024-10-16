@@ -26,4 +26,4 @@ export const userSlice = createSlice({
 
 })
 
-export const { addRoles, addUser } = userSlice.actions
+export const { addUser } = userSlice.actions
