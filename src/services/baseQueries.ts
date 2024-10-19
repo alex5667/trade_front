@@ -6,7 +6,7 @@ import { errorCatch } from '@/api/error'
 
 import { URLS } from '@/config/urls'
 import {
-	getAccessToken,
+	getAccessToken, getRefreshToken,
 	removeFromStorage,
 	saveTokenStorage
 } from './auth-token.service'
@@ -15,15 +15,24 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 export const baseQuery = retry(
 	fetchBaseQuery({
 		baseUrl: API_BASE_URL,
-		prepareHeaders: headers => {
-			const token = getAccessToken()
-			if (token) {
-				headers.set('Authorization', `Bearer ${token}`)
+		credentials: 'include',
+
+		prepareHeaders: (headers) => {
+			const accessToken = getAccessToken()
+			const refreshToken = getRefreshToken()
+			console.log('refreshToken base', refreshToken)
+
+			if (accessToken) {
+				headers.set('Authorization', `Bearer ${accessToken}`)
 			}
+
+			if (refreshToken) {
+				headers.set('x-refresh-token', refreshToken)
+			}
+
 			headers.set('Content-Type', 'application/json')
 			return headers
 		},
-		credentials: 'include',
 
 		responseHandler: async (response) => {
 			if (!response.ok) {

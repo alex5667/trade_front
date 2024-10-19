@@ -26,7 +26,7 @@ const Auth = () => {
 		mode: 'onChange'
 	})
 	const [isLoginForm, setIsLoginForm] = useState(false)
-	const { replace } = useRouter()
+	const { replace, push } = useRouter()
 	const [login] = useLoginMutation()
 	const [auth] = useRegisterMutation()
 	const { user } = useAuth()
@@ -34,12 +34,15 @@ const Auth = () => {
 	const onSubmit: SubmitHandler<AuthForm> = async data => {
 		try {
 			const response = await (isLoginForm ? login : auth)(data)
+			console.log('response', response)
 			toast.success('Successfully logged in')
 			reset()
 			if (response?.data?.user) {
 				const updatedUser = user || response?.data?.user
 				const upperCaseRole = updatedUser?.roles.join().toUpperCase()
+
 				replace(ADMINBOARD_PAGES[upperCaseRole as ADMINBOARD_PAGES_KEYS] || '/')
+				// push(ADMINBOARD_PAGES[upperCaseRole as ADMINBOARD_PAGES_KEYS] || '/')
 			}
 		} catch (error) {
 			toast.error(`${isLoginForm ? `Login` : `Register`} failed`)

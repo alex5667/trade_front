@@ -9,6 +9,11 @@ export const getAccessToken = () => {
 	const accessToken = Cookies.get(EnumTokens.ACCESS_TOKEN)
 	return accessToken || null
 }
+export const getRefreshToken = () => {
+	const refreshToken = Cookies.get(EnumTokens.REFRESH_TOKEN)
+	console.log('refreshToken getRefreshToken', refreshToken)
+	return refreshToken || null
+}
 
 export const saveTokenStorage = (accessToken: string) => {
 	Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, {

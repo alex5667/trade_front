@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	output: 'export',
-	basePath: '/menu-front',
+	// output: 'export',
+	// basePath: '/menu-front',
 	// experimental: {
 	//   turbo: {
 	//     rules: {

@@ -3,15 +3,21 @@ import { ADMINBOARD_PAGES } from './config/pages-url.config'
 import { EnumTokens } from './services/auth-token.service'
 import { decodeToken, User } from './services/token.service'
 
-export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest, response: NextResponse) {
 	const { url, cookies } = request
+	console.log('cookies:', cookies)
+	const cookieHeader = request.headers.get('x-refresh-token')
+	console.log('cookieHeader:', cookieHeader)
 	const refreshToken = cookies.get(EnumTokens.REFRESH_TOKEN)?.value
+	console.log('refreshToken:', refreshToken)
+
+
 	const user = refreshToken ? (decodeToken(refreshToken) as User) : null
+
 
 	const allowedPagesForUser = [ADMINBOARD_PAGES.MENU, ADMINBOARD_PAGES.USER, ADMINBOARD_PAGES.SETTINGS]
 	const isAuthPage = url.includes(ADMINBOARD_PAGES.AUTH)
 	const baseUrl = request.nextUrl.origin
-
 
 	if (user) {
 		if (isAuthPage && refreshToken && user.roles.includes('admin')) {
