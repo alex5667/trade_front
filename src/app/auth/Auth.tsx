@@ -11,6 +11,11 @@ import { Field } from '@/components/ui/fields/Field'
 
 import { AuthForm } from '@/types/auth.types'
 
+import {
+	ADMINBOARD_PAGES,
+	ADMINBOARD_PAGES_KEYS
+} from '@/config/pages-url.config'
+
 import { useAuth } from '@/hooks/useAuth'
 
 import styles from './Auth.module.scss'
