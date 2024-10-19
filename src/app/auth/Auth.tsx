@@ -11,11 +11,6 @@ import { Field } from '@/components/ui/fields/Field'
 
 import { AuthForm } from '@/types/auth.types'
 
-import {
-	ADMINBOARD_PAGES,
-	type ADMINBOARD_PAGES_KEYS
-} from '@/config/pages-url.config'
-
 import { useAuth } from '@/hooks/useAuth'
 
 import styles from './Auth.module.scss'
@@ -41,7 +36,7 @@ const Auth = () => {
 				const updatedUser = user || response?.data?.user
 				const upperCaseRole = updatedUser?.roles.join().toUpperCase()
 
-				replace(ADMINBOARD_PAGES[upperCaseRole as ADMINBOARD_PAGES_KEYS] || '/')
+				// replace(ADMINBOARD_PAGES[upperCaseRole as ADMINBOARD_PAGES_KEYS] || '/')
 				// push(ADMINBOARD_PAGES[upperCaseRole as ADMINBOARD_PAGES_KEYS] || '/')
 			}
 		} catch (error) {

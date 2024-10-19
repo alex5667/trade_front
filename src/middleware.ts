@@ -4,24 +4,13 @@ import { decodeToken, User } from './services/token.service'
 
 export async function middleware(request: NextRequest, response: NextResponse) {
 	const { url, cookies } = request
-	// const cookieHeader = request.headers.get('cookie')
-	// console.log('cookieHeader:', cookieHeader)
-	// const cookies = cookieHeader
-	// 	? new Map(
-	// 		cookieHeader
-	// 			.split(';')
-	// 			.map(c => {
-	// 				const [key, value] = c.trim().split('=')
-	// 				return [key, value] as [string, string]
-	// 			})
-	// 	)
-	// 	: new Map()
-
-	const refreshToken = cookies.get('AccessToken')?.value
-	console.log('refreshToken:', refreshToken)
 
 
-	const user = refreshToken ? (decodeToken(refreshToken) as User) : null
+	const accessToken = cookies.get('AccessToken')?.value
+	console.log('accessToken:', accessToken)
+
+
+	const user = accessToken ? (decodeToken(accessToken) as User) : null
 
 
 	const allowedPagesForUser = [ADMINBOARD_PAGES.MENU, ADMINBOARD_PAGES.USER, ADMINBOARD_PAGES.SETTINGS]
@@ -29,15 +18,15 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 	const baseUrl = request.nextUrl.origin
 
 	if (user) {
-		if (isAuthPage && refreshToken && user.roles.includes('admin')) {
+		if (isAuthPage && accessToken && user.roles.includes('admin')) {
 			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.ADMIN, baseUrl))
 		}
 
-		if (isAuthPage && refreshToken && user.roles.includes('user')) {
+		if (isAuthPage && accessToken && user.roles.includes('user')) {
 			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.USER, baseUrl))
 		}
 
-		if (isAuthPage && refreshToken && user.roles.includes('customer')) {
+		if (isAuthPage && accessToken && user.roles.includes('customer')) {
 			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, baseUrl))
 		}
 	}
@@ -46,7 +35,7 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 		return NextResponse.next()
 	}
 
-	if (!refreshToken) {
+	if (!accessToken) {
 		return NextResponse.redirect(new URL(ADMINBOARD_PAGES.AUTH, baseUrl))
 	}
 
