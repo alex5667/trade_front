@@ -6,7 +6,7 @@ import { decodeToken, User } from './services/token.service'
 export async function middleware(request: NextRequest, response: NextResponse) {
 	const { url, cookies } = request
 	console.log('cookies:', cookies)
-	const cookieHeader = request.headers.get('x-refresh-token')
+	const cookieHeader = request.headers.get('cookies')
 	console.log('cookieHeader:', cookieHeader)
 	const refreshToken = cookies.get(EnumTokens.REFRESH_TOKEN)?.value
 	console.log('refreshToken:', refreshToken)
