@@ -3,21 +3,21 @@ import { ADMINBOARD_PAGES } from './config/pages-url.config'
 import { decodeToken, User } from './services/token.service'
 
 export async function middleware(request: NextRequest, response: NextResponse) {
-	const { url, } = request
-	const cookieHeader = request.headers.get('cookie')
-	console.log('cookieHeader:', cookieHeader)
-	const cookies = cookieHeader
-		? new Map(
-			cookieHeader
-				.split(';')
-				.map(c => {
-					const [key, value] = c.trim().split('=')
-					return [key, value] as [string, string]
-				})
-		)
-		: new Map()
+	const { url, cookies } = request
+	// const cookieHeader = request.headers.get('cookie')
+	// console.log('cookieHeader:', cookieHeader)
+	// const cookies = cookieHeader
+	// 	? new Map(
+	// 		cookieHeader
+	// 			.split(';')
+	// 			.map(c => {
+	// 				const [key, value] = c.trim().split('=')
+	// 				return [key, value] as [string, string]
+	// 			})
+	// 	)
+	// 	: new Map()
 
-	const refreshToken = cookies.get('refreshToken')
+	const refreshToken = cookies.get('AccessToken')?.value
 	console.log('refreshToken:', refreshToken)
 
 
