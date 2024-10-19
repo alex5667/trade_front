@@ -68,6 +68,7 @@ export const baseQueryWIthReAuth: typeof baseQuery = async (
 			extraOptions
 		)
 		const refreshResultData = refreshResult.data as AuthResponse
+		console.log('refreshResultData basequery', refreshResultData)
 		if (refreshResultData.accessToken) {
 			saveTokenStorage(refreshResultData.accessToken)
 			result = await baseQuery(args, api, extraOptions)
