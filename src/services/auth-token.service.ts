@@ -16,7 +16,7 @@ export const getRefreshToken = () => {
 
 export const saveTokenStorage = (accessToken: string) => {
 	Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, {
-		domain: 'menu-front-three.vercel.app',
+		domain: 'menu-boiko-school.vercel.app',
 		sameSite: 'none',
 		secure: true,
 		expires: 1
