@@ -6,7 +6,7 @@ import { errorCatch } from '@/api/error'
 
 import { URLS } from '@/config/urls'
 import {
-	getAccessToken, getRefreshToken,
+	getAccessToken,
 	removeFromStorage,
 	saveTokenStorage
 } from './auth-token.service'
@@ -19,16 +19,13 @@ export const baseQuery = retry(
 
 		prepareHeaders: (headers) => {
 			const accessToken = getAccessToken()
-			const refreshToken = getRefreshToken()
-			console.log('refreshToken base', refreshToken)
+
 
 			if (accessToken) {
 				headers.set('Authorization', `Bearer ${accessToken}`)
 			}
 
-			if (refreshToken) {
-				headers.set('x-refresh-token', refreshToken)
-			}
+
 
 			headers.set('Content-Type', 'application/json')
 			return headers
