@@ -17,8 +17,8 @@ export const getRefreshToken = () => {
 
 export const saveTokenStorage = (accessToken: string) => {
 	Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, {
-		domain: 'localhost',
-		sameSite: 'strict',
+		domain: 'menu-app-1810.herokuapp.com',
+		sameSite: 'none',
 		expires: 1
 	})
 }
