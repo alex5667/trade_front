@@ -22,7 +22,7 @@ export const authApi = createApi({
 				if (!response.accessToken) {
 					throw new Error('Login failed: Access token is missing')
 				}
-				console.log('response.accessToken transformResponse', response.accessToken)
+
 				saveTokenStorage(response.accessToken)
 				return response
 			},

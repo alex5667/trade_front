@@ -7,7 +7,6 @@ export async function middleware(request: NextRequest, response: NextResponse) {
 
 
 	const accessToken = cookies.get('AccessToken')?.value
-	console.log('accessToken:', accessToken)
 
 
 	const user = accessToken ? (decodeToken(accessToken) as User) : null

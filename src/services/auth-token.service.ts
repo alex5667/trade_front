@@ -11,7 +11,6 @@ export const getAccessToken = () => {
 }
 export const getRefreshToken = () => {
 	const refreshToken = Cookies.get(EnumTokens.REFRESH_TOKEN)
-	console.log('refreshToken getRefreshToken', refreshToken)
 	return refreshToken || null
 }
 
