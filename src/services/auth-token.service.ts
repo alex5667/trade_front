@@ -17,7 +17,7 @@ export const getRefreshToken = () => {
 
 export const saveTokenStorage = (accessToken: string) => {
 	Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, {
-		domain: 'vercel.app',
+		domain: 'menu-app-1810-074608cb794e.herokuapp.com',
 		sameSite: 'none',
 		secure: true,
 		expires: 1
