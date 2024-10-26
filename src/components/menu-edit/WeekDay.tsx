@@ -1,9 +1,7 @@
 import dayjs from 'dayjs'
 
-import { DayOfWeek } from '@/types/menuItem.type'
-
 interface DateDayProps {
-	day: DayOfWeek
+	day: string
 	dateForDay: string
 }
 
@@ -13,9 +11,9 @@ const WeekDay = ({ day, dateForDay }: DateDayProps) => {
 		: 'Нет даты'
 
 	return (
-		<div>
-			<h3>{day}</h3>
-			<div>{formattedDate}</div>
+		<div className='w-full flex justify-between align-middle mb-2'>
+			<h3 className='text-lg'>{day}</h3>
+			<span className='text-base'>{formattedDate}</span>
 		</div>
 	)
 }

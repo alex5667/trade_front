@@ -14,12 +14,14 @@ export const getDatesOfWeek = (weekOffset = 0) => {
 
 	const endOfWeek = today.endOf('week').utc().startOf('day').toISOString()
 
-	const datesOfWeek = []
+	const datesOfWeek: { [key: string]: string } = {}
 
 	for (let i = 0; i < 7; i++) {
-		datesOfWeek.push(today
+		const date = today
 			.startOf('week')
-			.add(2, 'day').add(i, 'day').utc().startOf('day').toISOString())
+			.add(2, 'day').add(i, 'day').utc().startOf('day')
+		const dayOfWeek = date.format('dddd').toUpperCase()
+		datesOfWeek[dayOfWeek] = date.toISOString()
 	}
 
 

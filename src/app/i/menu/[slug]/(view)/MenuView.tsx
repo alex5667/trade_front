@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import Loader from '@/components/ui/Loader'
+import { Button } from '@/components/ui/buttons/Button'
 
 import { MenuItemDataFilters } from '@/types/menuItem.type'
 
@@ -10,6 +11,7 @@ import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
+import styles from './MenuView.module.scss'
 import { ListView } from './list-view/ListView'
 import { useGetAllMenuItemQuery } from '@/services/menu-item.service'
 
@@ -56,18 +58,18 @@ export function MenuView({ institutionSlug }: MenuView) {
 	}
 
 	return (
-		<div>
+		<div className={styles.menuWrapper}>
 			{/* <SwitcherView
 				setType={setType}
 				type={type}
 			/> */}
-			<div>
-				<button onClick={() => handleWeekChange('prev')}>
+			<div className={styles.btnWrapper}>
+				<Button onClick={() => handleWeekChange('prev')}>
 					Предыдущая неделя
-				</button>
-				<button onClick={() => handleWeekChange('next')}>
+				</Button>
+				<Button onClick={() => handleWeekChange('next')}>
 					Следующая неделя
-				</button>
+				</Button>
 			</div>
 
 			<ListView

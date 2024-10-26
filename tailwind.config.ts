@@ -11,7 +11,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      letterSpacing: {
+        tight: '-0.02em',
+        normal: '0em',
+        wide: '0.1em',
+        'extra-wide': '0.25em',
+      },
       keyframes: {
+
         'shadow-inset-center': {
           '0%': {
             boxShadow: 'inset 0 0 0 0 rgba(0, 0, 0, 0)',

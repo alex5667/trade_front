@@ -1,5 +1,4 @@
 import { Draggable, Droppable } from '@hello-pangea/dnd'
-import cn from 'clsx'
 
 import { DishResponse } from '@/types/dish.type'
 import { InstitutionResponse } from '@/types/institution.type'
@@ -66,16 +65,7 @@ export function ListRowParent({
 					{...provided.droppableProps}
 					className='mb-7 border-t dark:border-border'
 				>
-					<div className={styles.colHeading}>
-						<div
-							className={cn('relative', {
-								// 'text-text-task-completed': value === 'completed',
-								// ' dark:text-text-color-header-list': value !== 'completed'
-							})}
-						>
-							{label}
-						</div>
-					</div>
+					<h4 className={styles.colHeading}>{label}</h4>
 					{sortedItems &&
 						sortedItems.length > 0 &&
 						sortedItems.map((item: MenuItemResponse, index: number) => {

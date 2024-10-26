@@ -67,7 +67,10 @@
 	justify-content: start;
 	> span {
 		margin-top: 5px;
-		@include mixins.adaptiveValue("font-size", 14, 10);
+		position: relative;
+		transition: all 0.5s ease;
+		z-index: 5;
+		@include mixins.adaptiveValue("font-size", 16, 14);
 	}
 }
 .dayWeekTitle {
@@ -78,12 +81,8 @@
 	letter-spacing: 0.2rem;
 	font-weight: 600;
 
-	@include mixins.adaptiveValue("font-size", 32, 26);
-	> span {
-		position: relative;
-		transition: all 0.5s ease;
-		z-index: 5;
-	}
+	@include mixins.adaptiveValue("font-size", 32, 28);
+
 	&::after {
 		content: "";
 		position: absolute;
@@ -116,7 +115,7 @@
 	line-height: 1.4;
 	letter-spacing: 0.1rem;
 
-	@include mixins.adaptiveValue("font-size", 22, 18);
+	@include mixins.adaptiveValue("font-size", 24, 20);
 }
 
 .dishRow {

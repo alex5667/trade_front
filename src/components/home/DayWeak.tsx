@@ -67,7 +67,7 @@ export const DayWeek = forwardRef<HTMLDivElement, DayWeekProps>(
 					variants={childVariants}
 				>
 					<h2 className={styles.dayWeekTitle}>{label}</h2>
-					<span>{formattedDate}</span>
+					<span className={styles.formattedDate}>{formattedDate}</span>
 				</motion.div>
 
 				{meals &&
