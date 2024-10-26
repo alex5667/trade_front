@@ -37,7 +37,7 @@ export function MenuView({ institutionSlug }: MenuView) {
 		defaultValue: 'list'
 	})
 	const [weekOffset, setWeekOffset] = useState(0)
-	const { startOfWeek, endOfWeek, daysOfWeek } = getDatesOfWeek(weekOffset)
+	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
 
 	const { isLoading: isLoadingMenu, refetch } = useGetAllMenuItemQuery({
 		startDate: startOfWeek,
@@ -72,7 +72,7 @@ export function MenuView({ institutionSlug }: MenuView) {
 
 			<ListView
 				institutionSlug={institutionSlug}
-				daysOfWeek={daysOfWeek}
+				datesOfWeek={datesOfWeek}
 			/>
 			{/* <ListView /> */}
 			{/* {type === 'list' ? <ListView /> : <KanbanView />} */}

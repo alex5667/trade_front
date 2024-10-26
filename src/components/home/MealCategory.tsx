@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion'
+
 import { DishResponse } from '@/types/dish.type'
 import { MenuItemResponse } from '@/types/menuItem.type'
 
@@ -12,7 +14,7 @@ const MealCategory = ({
 	meal: string
 }) => {
 	return (
-		<>
+		<motion.div>
 			<h2 className={styles.mealTypeTitle}>{meal}</h2>
 			{items && items.length > 0 ? (
 				<ul>
@@ -32,7 +34,7 @@ const MealCategory = ({
 			) : (
 				<p>No menu items available</p>
 			)}
-		</>
+		</motion.div>
 	)
 }
 

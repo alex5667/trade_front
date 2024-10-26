@@ -1,5 +1,3 @@
-'use client'
-
 import { PageSlugParam } from '@/types/page-params'
 
 import { MenuView } from './(view)/MenuView'

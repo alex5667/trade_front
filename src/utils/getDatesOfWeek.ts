@@ -12,19 +12,19 @@ export const getDatesOfWeek = (weekOffset = 0) => {
 		.startOf('day')
 		.toISOString()
 
-	let endOfWeek = today.endOf('week').utc().startOf('day').toISOString()
+	const endOfWeek = today.endOf('week').utc().startOf('day').toISOString()
 
-	const daysOfWeek = []
+	const datesOfWeek = []
 
 	for (let i = 0; i < 7; i++) {
-		daysOfWeek.push(today
+		datesOfWeek.push(today
 			.startOf('week')
 			.add(2, 'day').add(i, 'day').utc().startOf('day').toISOString())
 	}
 
 
 	return {
-		startOfWeek, endOfWeek, daysOfWeek
+		startOfWeek, endOfWeek, datesOfWeek
 	}
 
 }

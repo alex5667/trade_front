@@ -13,14 +13,14 @@ interface ListDayView {
 	day: DayOfWeek
 	label: string
 	institutionSlug: string
-	daysOfWeek: string[]
+	datesOfWeek: string[]
 }
 
 const ListDayView = ({
 	day,
 	label,
 	institutionSlug,
-	daysOfWeek
+	datesOfWeek
 }: ListDayView) => {
 	const { data: meals, isLoading, isError } = useGetAllMealsQuery()
 	if (isLoading) return <Loader />
@@ -28,7 +28,7 @@ const ListDayView = ({
 	const dayIndex = Object.keys(DayOfWeekUkr).findIndex(
 		key => key === day.toUpperCase()
 	)
-	const dateForDay = daysOfWeek[dayIndex]
+	const dateForDay = datesOfWeek[dayIndex]
 	return (
 		<div>
 			<div>

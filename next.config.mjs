@@ -14,7 +14,8 @@ const nextConfig = {
 
 	// }
 	sassOptions: {
-		silenceDeprecations: ['legacy-js-api']
+		silenceDeprecations: ['legacy-js-api'],
+		quietDeps: true
 	}
 }
 

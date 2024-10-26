@@ -1,6 +1,8 @@
 import dayjs from 'dayjs'
 import { Metadata } from 'next'
 
+import Footer from '@/components/home/Footer'
+
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
 import { InstitutionResponse } from '@/types/institution.type'
@@ -13,7 +15,6 @@ import { fetchMenuByInstitutionSlugAndWeek } from '@/utils/fetchMenuByInstitutio
 import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
 import CustomerMenu from './CustomerMenu'
-import styles from './HomePage.module.scss'
 
 export const metadata: Metadata = {
 	title: 'Home page',
@@ -49,9 +50,10 @@ export default async function CustomerPage({ params }: PageSlugParam) {
 	return (
 		<>
 			{/* <Header /> */}
-			<main className={styles.main__container}>
+			<main className='main__container'>
 				<CustomerMenu items={items} />
 			</main>
+			<Footer />
 		</>
 	)
 }

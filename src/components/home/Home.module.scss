@@ -1,11 +1,11 @@
-@import "@/styles/mixins.scss";
-@import "@/styles/variables.scss";
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss";
 .header__container {
 	@apply pt-3;
 	display: flex;
 	align-items: center;
 
-	@include adaptiveValue("font-size", 32, 18);
+	@include mixins.adaptiveValue("font-size", 32, 18);
 }
 .headerTitle {
 	letter-spacing: 0.15rem;
@@ -18,33 +18,34 @@
 }
 .dayWeekCOlumn {
 	@apply py-2  flex flex-col items-center justify-start;
-	opacity: 0;
-	animation: slideIn 0.5s ease-out forwards;
+	// opacity: 0;
+	// animation: slideIn 0.5s ease-out forwards;
 
 	&:not(:last-child) {
 		border-right: 1px solid #ccc;
-		@media (max-width: toRem(1050)) {
+		@media (max-width: 1050px) {
 			border: none;
 		}
 	}
-
-	@for $i from 1 through 5 {
-		&:nth-child(#{$i}) {
-			animation-delay: 0.2s * ($i - 1);
-		}
-	}
 }
 
-@keyframes slideIn {
-	0% {
-		transform: translateX(-100%);
-		opacity: 0;
-	}
-	100% {
-		transform: translateX(0);
-		opacity: 1;
-	}
-}
+// 	@for $i from 1 through 5 {
+// 		&:nth-child(#{$i}) {
+// 			animation-delay: 0.2s * ($i - 1);
+// 		}
+// 	}
+// }
+
+// @keyframes slideIn {
+// 	0% {
+// 		transform: translateX(-100%);
+// 		opacity: 0;
+// 	}
+// 	100% {
+// 		transform: translateX(0);
+// 		opacity: 1;
+// 	}
+// }
 
 .mealTypeContainer {
 	@apply my-2;
@@ -52,12 +53,12 @@
 	&:not(:last-child) {
 		border-bottom: 1px solid rgba(255, 255, 255, 0.8);
 	}
-	@media (max-width: toRem(1050)) {
+	@media (max-width: 1050px) {
 		width: 100%;
-		padding-bottom: toRem(10);
+		padding-bottom: 10px;
 	}
-	@include adaptiveValue("margin-right", 16, 5);
-	@include adaptiveValue("margin-left", 16, 5);
+	@include mixins.adaptiveValue("margin-right", 16, 5);
+	@include mixins.adaptiveValue("margin-left", 16, 5);
 }
 .dayContainer {
 	display: flex;
@@ -65,19 +66,19 @@
 	align-items: center;
 	justify-content: start;
 	> span {
-		margin-top: toRem(5);
-		@include adaptiveValue("font-size", 14, 10);
+		margin-top: 5px;
+		@include mixins.adaptiveValue("font-size", 14, 10);
 	}
 }
 .dayWeekTitle {
 	@apply text-center rounded-sm;
 	position: relative;
-	padding: toRem(5) toRem(5);
+	padding: 5px 5px;
 	line-height: 1.4;
 	letter-spacing: 0.2rem;
 	font-weight: 600;
 
-	@include adaptiveValue("font-size", 32, 26);
+	@include mixins.adaptiveValue("font-size", 32, 26);
 	> span {
 		position: relative;
 		transition: all 0.5s ease;
@@ -115,16 +116,16 @@
 	line-height: 1.4;
 	letter-spacing: 0.1rem;
 
-	@include adaptiveValue("font-size", 22, 18);
+	@include mixins.adaptiveValue("font-size", 22, 18);
 }
 
 .dishRow {
 	@apply relative  my-3 rounded-sm p-2  shadow-md shadow-row-black;
-	@media (max-width: toRem(1050)) {
+	@media (max-width: 1050px) {
 		width: 100%;
 		text-align: center;
 		&:not(:last-child) {
-			margin-bottom: toRem(20);
+			margin-bottom: 20px;
 		}
 	}
 
@@ -140,14 +141,30 @@
 		z-index: 2;
 		pointer-events: none;
 	}
-}
 
-.dishRow:nth-child(even)::before {
-	background: rgba(121, 79, 69, 0.5);
-}
-.dishRowSpan {
-	@apply text-white relative z-10;
-	font-weight: 200;
-	letter-spacing: 0.15rem;
-	@include adaptiveValue("font-size", 16, 14);
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: 4px;
+		background: rgba(0, 0, 0, 0.1);
+		z-index: 3;
+		pointer-events: none;
+	}
+
+	&:nth-child(even)::before {
+		background: rgba(121, 79, 69, 0.45);
+	}
+	&:nth-child(even)::after {
+		background: rgba(0, 0, 0, 0.15);
+	}
+	.dishRowSpan {
+		@apply text-white relative z-10 italic;
+		font-weight: 400;
+		letter-spacing: 0.1rem;
+		@include mixins.adaptiveValue("font-size", 18, 16);
+	}
 }
