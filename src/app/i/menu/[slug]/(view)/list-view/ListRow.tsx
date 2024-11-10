@@ -2,7 +2,7 @@ import cn from 'clsx'
 import { GripVertical, Loader, Trash } from 'lucide-react'
 import { memo } from 'react'
 
-import { AutocompleteInput } from '@/components/ui/fields/AutocompleteInput'
+import { AutocompleteInput } from '@/components/ui/fields/auto-complete-input/AutocompleteInput'
 
 import { DishResponse } from '@/types/dish.type'
 import { MealResponse } from '@/types/meal.type'
@@ -27,35 +27,26 @@ const ListRow = ({
 	const [deleteMenuItem, { isLoading }] = useDeleteMenuItemMutation()
 
 	return (
-		<div
-			className={cn(
-				styles.row,
-				'dark:bg-sidebar/90 bg-row-light text-sm hover:dark:bg-bg/80 hover:bg-row-light/80'
-			)}
-		>
-			<div>
-				<span className={styles.transparentContainer}>
-					<button aria-describedby='todo-item'>
-						<GripVertical className={styles.grip} />
-					</button>
+		<div className={cn(styles.row)}>
+			<div className={styles.transparentContainer}>
+				<button aria-describedby='todo-item'>
+					<GripVertical className={styles.grip} />
+				</button>
 
-					<AutocompleteInput
-						institutionSlug={institutionSlug}
-						mealSlug={mealSlug}
-						item={item}
-						dateForDay={dateForDay}
-					/>
-				</span>
+				<AutocompleteInput
+					institutionSlug={institutionSlug}
+					mealSlug={mealSlug}
+					item={item}
+					dateForDay={dateForDay}
+				/>
 			</div>
 			{item.id && (
-				<div>
-					<button
-						onClick={() => deleteMenuItem(item.id!)}
-						className={styles.deleteButton}
-					>
-						{isLoading ? <Loader size={17} /> : <Trash size={17} />}
-					</button>
-				</div>
+				<button
+					onClick={() => deleteMenuItem(item.id!)}
+					className={styles.deleteButton}
+				>
+					{isLoading ? <Loader size={17} /> : <Trash size={17} />}
+				</button>
 			)}
 		</div>
 	)

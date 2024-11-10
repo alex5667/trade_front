@@ -1,6 +1,6 @@
 import { useGetInstitutionBySlugQuery } from '@/services/institution.service'
 import { useGetMealBySlugQuery } from '@/services/meal.service'
-import { useCreateMenuItemMutation, useGetByInstitutionSlugQuery, useUpdateMenuItemMutation } from '@/services/menu-item.service'
+import { useCreateMenuItemMutation, useUpdateMenuItemMutation } from '@/services/menu-item.service'
 import { MenuItemResponse } from '@/types/menuItem.type'
 import { Dispatch, MutableRefObject, SetStateAction, useCallback } from 'react'
 
@@ -19,7 +19,7 @@ export function useOptionSelect(
 	const [createMenuItem] = useCreateMenuItemMutation()
 	const { data: institution } = useGetInstitutionBySlugQuery(institutionSlug)
 	const { data: meal } = useGetMealBySlugQuery(mealSlug)
-	const { refetch } = useGetByInstitutionSlugQuery(institutionSlug)
+
 
 
 	const handleOptionSelect = useCallback(
@@ -47,9 +47,8 @@ export function useOptionSelect(
 			} else {
 				createMenuItem(updatedData)
 			}
-			refetch()
 		},
-		[item, dateForDay, updateMenuItem, createMenuItem, refetch, setInputValue, setDebouncedValue, setShouldFetch, setIsShow, institution, meal, inputRef]
+		[item, dateForDay, updateMenuItem, createMenuItem, setInputValue, setDebouncedValue, setShouldFetch, setIsShow, institution, meal, inputRef]
 	)
 
 	return handleOptionSelect

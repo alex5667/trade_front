@@ -10,7 +10,7 @@ export interface MenuItemResponse {
 	dish: DishResponse | string
 	createdAt: string
 	updatedAt?: string
-	dishOrder?: number
+	dishOrder: number
 	institution: InstitutionType | string
 	description?: string
 	price?: number

@@ -36,7 +36,7 @@ const AddNewMenuItem = ({
 		const addedMenuItem: MenuItemResponse = {
 			dayOfWeek: day,
 			date: dateForDay!,
-			dishOrder: 100,
+			dishOrder: 10000,
 			dish: 'Введите наименование блюда',
 			institution: institutionSlug,
 			meal: mealSlug,
@@ -47,7 +47,7 @@ const AddNewMenuItem = ({
 
 	return (
 		<div
-			className={cn('rounded-sm', {
+			className={cn('rounded-sm mt-3 w-full', {
 				'mt-5': view === 'kanban'
 			})}
 		>
@@ -55,14 +55,14 @@ const AddNewMenuItem = ({
 				onClick={addRow}
 				disabled={!dateForDay}
 				className={cn(
-					'italic opacity text-sm font-thin rounded-sm px-8 py-1 dark:bg-primary-color bg-hover-light dark:text-text-color-on-primary relative inline-flex items-center justify-center overflow-hidden transition-all group',
+					'italic text-sm w-full md:w-[30%] font-thin rounded-sm px-8 py-3 dark:bg-primary-color bg-hover-light dark:text-text-color-on-primary relative inline-flex items-center justify-center overflow-hidden transition-all group',
 					{
 						'block min-w-full': view === 'kanban'
 					}
 				)}
 			>
-				<span className='w-0 h-0 rounded dark:bg-bg-button-hover bg-primary-hover-color absolute top-0 left-0 ease-out duration-300 transition-all group-hover:w-full group-hover:h-full -z-1'></span>
-				<span className='w-full transition-colors duration-300 ease-in-out group-hover:text-text-color-on-primary z-10'>
+				<span className='w-0 h-0 rounded dark:bg-bg-button-hover bg-primary-hover-color absolute top-0 left-0 ease-out duration-300 transition-all group-hover:w-full group-hover:h-full z-1'></span>
+				<span className='w-full transition-colors duration-300 ease-in-out group-hover:text-bg-black relative z-10'>
 					Добавить блюдо...
 				</span>
 			</button>

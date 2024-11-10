@@ -1,33 +1,44 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss";
+
 .parentsWrapper {
 	width: 100%;
 	.colHeading {
-		@apply font-semibold  text-base py-3 tracking-wide;
+		@apply py-2;
+		font-weight: 400;
+		letter-spacing: 0.01rem;
+		@include mixins.adaptiveValue("font-size", 18, 14);
 	}
 
 	.addRow {
-		@apply py-2 px-4 border-t border-border;
+		@apply py-2 px-4 mt-2;
 	}
 
 	.row {
-		@apply font-normal  grid grid-cols-[1.4fr_.4fr_.4fr_.1fr] items-center relative px-3 py-2 mb-2;
+		@apply font-normal  relative px-2 py-2 mb-4 dark:bg-sidebar/90 bg-db-row-light rounded-sm;
+		display: grid;
+		grid-template-columns: 7fr auto;
+		grid-template-rows: auto;
+		align-items: center;
 
 		&:hover {
-			@apply bg-db-bg-button-hover;
+			@apply bg-db-row-light/40  dark:bg-db-bg/80  transition-all    duration-300;
 		}
-		> div > span {
-			.grip {
-				@apply opacity-20 transition-opacity -ml-3 -mr-1;
-				&:hover,
-				&.active {
-					@apply opacity-100;
-				}
+
+		.grip {
+			@apply opacity-20 transition-opacity ml-1 mr-1;
+			&:hover,
+			&.active {
+				@apply opacity-100;
 			}
+		}
+
+		.transparentContainer {
+			@apply flex items-center gap-2.5 w-full;
 		}
 	}
 }
-.transparentContainer {
-	@apply flex items-center gap-2.5 w-full;
-}
+
 .deleteButton {
-	@apply opacity-50 transition-opacity hover:opacity-100 ml-3;
+	@apply opacity-50 transition-opacity hover:opacity-100 px-2;
 }

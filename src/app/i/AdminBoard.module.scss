@@ -3,8 +3,9 @@
 
 .dashBoardWrapper {
 	@apply dark:text-primary dark:bg-db-bg bg-db-bg-light text-db-text-color-on-primary min-h-svh relative;
-	display: grid;
-	grid-template-columns: auto 1fr;
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
 }
 
 .main {

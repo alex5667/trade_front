@@ -41,7 +41,11 @@ export function MenuView({ institutionSlug }: MenuView) {
 	const [weekOffset, setWeekOffset] = useState(0)
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
 
-	const { isLoading: isLoadingMenu, refetch } = useGetAllMenuItemQuery({
+	const {
+		data,
+		isLoading: isLoadingMenu,
+		refetch
+	} = useGetAllMenuItemQuery({
 		startDate: startOfWeek,
 		endDate: endOfWeek,
 		institutionSlug
@@ -64,10 +68,16 @@ export function MenuView({ institutionSlug }: MenuView) {
 				type={type}
 			/> */}
 			<div className={styles.btnWrapper}>
-				<Button onClick={() => handleWeekChange('prev')}>
+				<Button
+					className='px-2 py-3 sm:px-4 sm:py-1'
+					onClick={() => handleWeekChange('prev')}
+				>
 					Предыдущая неделя
 				</Button>
-				<Button onClick={() => handleWeekChange('next')}>
+				<Button
+					className='px-2 py-3 sm:px-4 sm:py-1'
+					onClick={() => handleWeekChange('next')}
+				>
 					Следующая неделя
 				</Button>
 			</div>

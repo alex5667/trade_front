@@ -11,7 +11,7 @@ export default function DashboardLayout({
 	return (
 		<div className={styles.dashBoardWrapper}>
 			<Sidebar />
-			<div>
+			<div className='w-full flex flex-col ml-[60px] sm:ml-0'>
 				<Header />
 				<main className={styles.main}>{children}</main>
 			</div>

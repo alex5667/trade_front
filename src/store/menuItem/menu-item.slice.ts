@@ -16,6 +16,8 @@ export const menuItemSlice = createSlice({
 	initialState,
 	reducers: {
 		addAllMenuItems: (state, action: PayloadAction<MenuItemResponse[]>) => {
+			console.log('Replacing items with:', action.payload)
+
 			state.items = [...action.payload]
 		},
 		deleteMenuItemById: (state, action: PayloadAction<number>) => {
@@ -34,21 +36,29 @@ export const menuItemSlice = createSlice({
 			}
 
 		},
-		updateOrderMenuItem: (state, action: PayloadAction<number[]>) => {
-			const idOrderMap = action.payload.reduce((acc, id, index) => {
-				acc[id] = index
+		updateOrderMenuItem: (state, action: PayloadAction<{ id: number; dishOrder: number }[]>) => {
+			const idOrderMap = action.payload.reduce((acc, item) => {
+				acc[item.id] = item.dishOrder
 				return acc
-			}, {} as { [id: string]: number })
+			}, {} as { [id: number]: number })
 
-			state.items = state.items.map(menuItem => ({
-				...menuItem,
-				dishOrder: idOrderMap[menuItem.id ? menuItem.id : 100]
-			}))
-		},
-
-
-
+			state.items = state.items.map(menuItem => {
+				if (menuItem.id !== undefined && menuItem.id in idOrderMap) {
+					return {
+						...menuItem,
+						dishOrder: idOrderMap[menuItem.id]
+					}
+				}
+				return menuItem
+			})
+		}
 	}
 
-})
+},
+
+
+
+
+
+)
 export const { addAllMenuItems, deleteMenuItemById, addMenuItem, updateMenuItem, updateOrderMenuItem } = menuItemSlice.actions

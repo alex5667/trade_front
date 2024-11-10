@@ -107,18 +107,18 @@ export const menuItemApi = createApi({
 			},
 			invalidatesTags: (result, error, arg) => [{ type: 'menuItems', id: arg.id }]
 		}),
-		updateOrderMenuItem: builder.mutation<MenuItemResponse[], number[]>({
-			query: ids => ({
+		updateOrderMenuItem: builder.mutation<MenuItemResponse[], { id: number; dishOrder: number }[]>({
+			query: items => ({
 				url: `${URLS.MENU_ITEM_ORDER_UPDATE}`,
 				method: 'PUT',
-				body: { ids }
+				body: { items }
 			}),
-			async onQueryStarted(ids, { dispatch, queryFulfilled }) {
-				dispatch(updateOrderMenuItem(ids))
+			async onQueryStarted(items, { dispatch, queryFulfilled }) {
+				dispatch(updateOrderMenuItem(items))
 				try {
 					await queryFulfilled
 				} catch {
-					console.log("Error to update")
+					console.log("Error updating order")
 				}
 			},
 			invalidatesTags: (result, error, arg) => [
