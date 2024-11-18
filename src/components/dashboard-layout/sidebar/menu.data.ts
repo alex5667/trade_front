@@ -1,7 +1,7 @@
 import {
 	CookingPot,
 	LayoutDashboard,
-	Settings
+	Settings, Table
 } from 'lucide-react'
 
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
@@ -20,6 +20,13 @@ export const USERMENU: MenuItem[] = [
 		link: `${ADMINBOARD_PAGES.MENU}/slon-1`,
 		name: 'Меню Слон-1',
 		endPoint: 'getAll'
+	}
+	,
+	{
+		icon: Table,
+		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
+		name: 'Кол-во порций',
+		endPoint: null
 	},
 
 
@@ -40,10 +47,17 @@ export const ADMINMENU: MenuItem[] = [
 	},
 	{
 		icon: CookingPot,
-		link: `${ADMINBOARD_PAGES.MENU}/Slon-1`,
+		link: `${ADMINBOARD_PAGES.MENU}/slon-1`,
 		name: 'Меню Слон-1',
 		endPoint: 'getAll'
 	},
+	{
+		icon: Table,
+		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
+		name: 'Количество порций',
+		endPoint: null
+	},
+
 
 
 	{

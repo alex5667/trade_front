@@ -1,5 +1,5 @@
 .fieldContainer {
-	@apply relative mt-2 flex w-full items-center justify-center rounded-lg border bg-transparent p-3 text-base text-white outline-none transition-colors duration-500;
+	@apply relative mt-2 flex w-full items-center justify-center rounded-lg border border-border-light  bg-transparent p-3 text-base text-white outline-none transition-colors duration-500;
 	&::placeholder {
 		color: white;
 		opacity: 0.7;

@@ -25,14 +25,6 @@ const AddNewMenuItem = ({
 	const { addMenuItem } = useActions()
 
 	const addRow = async () => {
-		// const dayJs = dateForDay && dayjs(dateForDay)
-		// if (!dayJs) {
-		// 	console.error('Invalid date')
-		// 	return
-		// }
-
-		// const newDate = dayJs.format()
-
 		const addedMenuItem: MenuItemResponse = {
 			dayOfWeek: day,
 			date: dateForDay!,
@@ -47,7 +39,7 @@ const AddNewMenuItem = ({
 
 	return (
 		<div
-			className={cn('rounded-sm mt-3 w-full', {
+			className={cn('rounded-sm mt-3 min-w-full', {
 				'mt-5': view === 'kanban'
 			})}
 		>
@@ -55,7 +47,7 @@ const AddNewMenuItem = ({
 				onClick={addRow}
 				disabled={!dateForDay}
 				className={cn(
-					'italic text-sm w-full md:w-[30%] font-thin rounded-sm px-8 py-3 dark:bg-primary-color bg-hover-light dark:text-text-color-on-primary relative inline-flex items-center justify-center overflow-hidden transition-all group',
+					'italic text-sm w-full lg:w-[30%] font-thin rounded-sm px-8 py-3 sm:text-base tracking-wide  dark:bg-primary-color bg-hover-light dark:text-text-color-on-primary relative inline-flex items-center justify-center overflow-hidden transition-all group',
 					{
 						'block min-w-full': view === 'kanban'
 					}

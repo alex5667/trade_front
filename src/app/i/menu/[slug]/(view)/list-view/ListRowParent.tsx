@@ -31,6 +31,7 @@ export function ListRowParent({
 	const filteredItems: MenuItemResponse[] | [] =
 		items?.filter(item => {
 			const isString = typeof item?.meal === 'string'
+
 			if (isString) {
 				return (
 					item.dayOfWeek === day &&
@@ -54,6 +55,7 @@ export function ListRowParent({
 		}
 		return (a.id || 0) - (b.id || 0)
 	})
+
 	const droppableId = `${mealSlug} + ${dateForDay}+${institutionSlug}`
 	return (
 		<Droppable droppableId={droppableId}>

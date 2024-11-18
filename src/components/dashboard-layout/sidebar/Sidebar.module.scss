@@ -1,5 +1,5 @@
 .aside {
-	@apply border-r border-r-border h-full absolute z-10 sm:relative min-h-svh flex flex-col justify-start bg-sidebar-light dark:bg-sidebar whitespace-nowrap overflow-hidden;
+	@apply fixed border-r border-r-border z-10 min-h-full flex flex-col justify-start bg-sidebar-light dark:bg-sidebar whitespace-nowrap overflow-hidden;
 }
 
 .menuContainer {
@@ -13,7 +13,7 @@
 }
 
 .logoutContainer {
-	@apply text-right mb-8;
+	@apply text-right mb-8 px-2;
 }
 
 .logoutButton {

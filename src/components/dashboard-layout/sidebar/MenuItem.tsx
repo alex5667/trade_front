@@ -28,7 +28,7 @@ export interface ItemMenu {
 	link: string
 	name: string
 	icon: LucideIcon
-	endPoint: string
+	endPoint: string | null
 }
 export function MenuItem({ item }: { item: ItemMenu }) {
 	const { icon: Icon, link, name } = item

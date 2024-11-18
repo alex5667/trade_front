@@ -74,8 +74,18 @@ const Auth = () => {
 					})}
 				/>
 				<div className={styles.authButtons}>
-					<Button onClick={() => setIsLoginForm(true)}>Login</Button>
-					<Button onClick={() => setIsLoginForm(false)}>Register</Button>
+					<Button
+						className=' text-white sm:py-2 sm:px-7'
+						onClick={() => setIsLoginForm(true)}
+					>
+						Login
+					</Button>
+					<Button
+						className='text-white sm:py-2 sm:px-7'
+						onClick={() => setIsLoginForm(false)}
+					>
+						Register
+					</Button>
 				</div>
 			</form>
 		</div>

@@ -3,7 +3,7 @@ interface isCollapsed {
 	isCollapsed: boolean
 }
 const initialState: isCollapsed = {
-	isCollapsed: false
+	isCollapsed: true
 }
 
 

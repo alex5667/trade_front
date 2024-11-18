@@ -15,5 +15,7 @@ export const URLS = {
 	MEAL_BY_SLUG: '/meals/by-slug',
 	MENU_ITEM_BY_INSTITUTION: '/menu-item/by-institution',
 	USER_PROFILE: '/user/profile',
+	MEALCONSUMPTIONS: '/meal-consumption',
+	MEAL_CONSUMPTION_ITEM_BY_INSTITUTION: '/meal-consumption/by-institution',
 }
 

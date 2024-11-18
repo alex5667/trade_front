@@ -16,7 +16,7 @@ import { MenuItem } from './MenuItem'
 import styles from './Sidebar.module.scss'
 import { ADMINMENU, USERMENU } from './menu.data'
 
-export function Sidebar() {
+const Sidebar = () => {
 	const isCollapsed = useTypedSelector(state => state.collapsed.isCollapsed)
 	const { setIsCollapsed } = useActions()
 	const toggleSidebar = () => {
@@ -27,7 +27,7 @@ export function Sidebar() {
 	return (
 		<m.aside
 			className={cn(styles.aside)}
-			animate={{ width: isCollapsed ? 60 : 210 }}
+			animate={{ width: isCollapsed ? 60 : 230 }}
 			transition={{ type: 'spring', stiffness: 300, damping: 22 }}
 		>
 			<div
@@ -89,3 +89,4 @@ export function Sidebar() {
 		</m.aside>
 	)
 }
+export default Sidebar
