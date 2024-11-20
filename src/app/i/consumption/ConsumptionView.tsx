@@ -1,8 +1,8 @@
 'use client'
 
-import { Loader } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+import Loader from '@/components/ui/Loader'
 import { Button } from '@/components/ui/buttons/Button'
 
 import { MealConsumptionDataFilters } from '@/types/mealConsumption.type'
@@ -18,10 +18,11 @@ import { useGetAllMealConsumptionsQuery } from '@/services/meal-consumption.serv
 const ConsumptionView = () => {
 	const [weekOffset, setWeekOffset] = useState(0)
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
-	const { data, isLoading, refetch } = useGetAllMealConsumptionsQuery({
-		startDate: startOfWeek,
-		endDate: endOfWeek
-	} as MealConsumptionDataFilters)
+	const { data, isFetching, isLoading, refetch } =
+		useGetAllMealConsumptionsQuery({
+			startDate: startOfWeek,
+			endDate: endOfWeek
+		} as MealConsumptionDataFilters)
 	const handleWeekChange = (direction: 'next' | 'prev') => {
 		setWeekOffset(prev => (direction === 'next' ? prev + 1 : prev - 1))
 	}
@@ -29,8 +30,12 @@ const ConsumptionView = () => {
 		refetch()
 	}, [weekOffset, refetch])
 
-	if (isLoading) {
+	if (isLoading || isFetching) {
 		return <Loader />
+	}
+
+	if (!data) {
+		return <p>Нет данных ...</p>
 	}
 
 	return (

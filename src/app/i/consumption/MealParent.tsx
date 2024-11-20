@@ -22,7 +22,7 @@ const MealParent = ({ label, day, mealSlug, dateForDay }: MealParentProps) => {
 		item => item.date === dateForDay && item.meal && item.meal.slug === mealSlug
 	)
 	return (
-		<div>
+		<div className='flex flex-col items-center justify-start  w-full'>
 			<h4 className={styles.colHeading}>{label}</h4>
 
 			{institutions &&

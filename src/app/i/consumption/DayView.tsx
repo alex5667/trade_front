@@ -21,7 +21,7 @@ const DayView = ({ day, label, datesOfWeek }: DayView) => {
 
 	const dateForDay = datesOfWeek[day]
 	return (
-		<div className='w-full'>
+		<div className='w-full flex flex-col items-center justify-start'>
 			<WeekDay
 				dateForDay={dateForDay}
 				day={label}

@@ -21,8 +21,8 @@ const MealRow = ({
 		return item.institution?.slug === institutionSlug
 	})
 	return (
-		<div className='flex '>
-			<div className='text-base bg-db-bg-button-hover border border-border-light py-2 px-3'>
+		<div className='flex min-w-full'>
+			<div className='text-base w-[50%] bg-db-row-light border border-border-light py-2 px-3'>
 				{institutionName}
 			</div>
 
