@@ -22,6 +22,11 @@ export const metadata: Metadata = {
 }
 
 export const revalidate = 600
+const https = require('https')
+
+const agent = new https.Agent({
+	rejectUnauthorized: false // Отключает проверку сертификата
+})
 
 export default async function CustomerPage({ params }: PageSlugParam) {
 	const today = dayjs()
