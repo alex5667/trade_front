@@ -1,11 +1,13 @@
+import { memo } from 'react'
+
 import WeekDay from '@/components/menu-edit/WeekDay'
-import Loader from '@/components/ui/Loader'
 
 import { MealResponse } from '@/types/meal.type'
 import { DayOfWeek } from '@/types/menuItem.type'
 
+import { useTypedSelector } from '@/hooks/useTypedSelector'
+
 import MealParent from './MealParent'
-import { useGetAllMealsQuery } from '@/services/meal.service'
 
 interface DayView {
 	day: DayOfWeek
@@ -14,14 +16,10 @@ interface DayView {
 }
 
 const DayView = ({ day, label, datesOfWeek }: DayView) => {
-	const { data: meals, isLoading, isError } = useGetAllMealsQuery()
-
-	if (isLoading) return <Loader />
-	if (isError) return <div>Error loading meals</div>
-
+	const meals = useTypedSelector(state => state.mealSlice.items)
 	const dateForDay = datesOfWeek[day]
 	return (
-		<div className='w-full flex flex-col items-center justify-start'>
+		<div className='w-full flex flex-col items-center justify-start py-3'>
 			<WeekDay
 				dateForDay={dateForDay}
 				day={label}
@@ -33,7 +31,6 @@ const DayView = ({ day, label, datesOfWeek }: DayView) => {
 						label={meal.printName}
 						mealSlug={meal.slug}
 						key={meal.id}
-						day={day}
 						dateForDay={dateForDay}
 					/>
 				))
@@ -44,4 +41,4 @@ const DayView = ({ day, label, datesOfWeek }: DayView) => {
 	)
 }
 
-export default DayView
+export default memo(DayView)

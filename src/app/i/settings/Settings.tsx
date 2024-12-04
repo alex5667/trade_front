@@ -66,7 +66,7 @@ export function Settings() {
 				<Button
 					type='submit'
 					disabled={isLoading}
-					className='text-text-white'
+					className='text-text-white py-2 px-8'
 				>
 					Save
 				</Button>

@@ -14,7 +14,8 @@ export async function fetchMenuByInstitutionSlugAndWeek(
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
-		}
+		}, mode: 'cors',
+
 	})
 
 	if (!res.ok) {

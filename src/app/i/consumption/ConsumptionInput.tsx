@@ -1,5 +1,5 @@
 import cn from 'clsx'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 import { MealConsumptionResponse } from '@/types/mealConsumption.type'
 
@@ -29,11 +29,7 @@ const ConsumptionInput = ({
 		dateForDay,
 		mealSlug
 	})
-	useEffect(() => {
-		if (consumptionItem) {
-			setInputValue(consumptionItem.quantity)
-		}
-	}, [consumptionItem, setInputValue])
+
 	const handleFocus = () => {
 		if (inputValue === 0) {
 			setInputValue('')

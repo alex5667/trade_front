@@ -36,6 +36,7 @@ export class MealConsumptionDataFilters {
 
 
 	institutionSlug?: string
+	mealSlug?: string
 
 	minQuantity?: string
 

@@ -16,7 +16,6 @@ export const menuItemSlice = createSlice({
 	initialState,
 	reducers: {
 		addAllMenuItems: (state, action: PayloadAction<MenuItemResponse[]>) => {
-			console.log('Replacing items with:', action.payload)
 
 			state.items = [...action.payload]
 		},

@@ -1,4 +1,5 @@
 import { URLS } from '@/config/urls'
+import { addAllInstitutions } from '@/store/institution/institution.slice'
 import { InstitutionFormState, InstitutionResponse } from '@/types/institution.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
@@ -19,8 +20,8 @@ export const institutionApi = createApi({
 			}),
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
-					await queryFulfilled
-					// dispatch(addAllInstitutions(data.data))
+					const data = await queryFulfilled
+					dispatch(addAllInstitutions(data.data))
 				} catch (err) {
 					console.error('Failed to fetch menu...', err)
 				}

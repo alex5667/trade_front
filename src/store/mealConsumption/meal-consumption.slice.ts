@@ -22,7 +22,7 @@ export const mealConsumptionSlice = createSlice({
 			state.items = state.items.filter(item => item.id !== action.payload)
 		},
 		addMealConsumption: (state, action: PayloadAction<MealConsumptionResponse>) => {
-			state.items.push(action.payload)
+			state.items = [...state.items, action.payload]
 			console.log('state.items', state.items)
 		},
 		updateMealConsumption: (state, action: PayloadAction<{ id: number; data: Partial<MealConsumptionResponse> }>) => {

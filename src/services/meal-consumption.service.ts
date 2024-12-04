@@ -1,6 +1,5 @@
 import { URLS } from '@/config/urls'
 import { addAllMealConsumptions, addMealConsumption, deleteMealConsumptionById, updateMealConsumption } from '@/store/mealConsumption/meal-consumption.slice'
-import { updateMenuItem } from '@/store/menuItem/menu-item.slice'
 import { TypeRootState } from '@/store/store'
 import { MealConsumptionDataFilters, MealConsumptionResponse, MealFConsumptionFormState } from '@/types/mealConsumption.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
@@ -73,8 +72,9 @@ export const mealConsumptionApi = createApi({
 					console.log("Error to create")
 				}
 			},
-
-			invalidatesTags: (result, error, arg) => [{ type: 'mealConsumptions', id: 'LIST' }]
+			// invalidatesTags: (result, error, arg) =>
+			// 	result ? [{ type: 'mealConsumptions', id: result.id }, { type: 'mealConsumptions', id: 'LIST' }] : [{ type: 'mealConsumptions', id: 'LIST' }]
+			invalidatesTags: (result, error, arg) => result ? [{ type: 'mealConsumptions', id: result.id }] : []
 		}),
 		updateMealConsumption: builder.mutation<MealConsumptionResponse, MealConsumptionUpdate>({
 			query: ({ id, data }) => ({
@@ -83,7 +83,7 @@ export const mealConsumptionApi = createApi({
 				body: data
 			}), async onQueryStarted({ id, data }, { dispatch, queryFulfilled, getState }) {
 				const previousTask = (getState() as TypeRootState).mealConsumptionSlice.items.find(item => item.id === id)
-				dispatch(updateMenuItem({ id, data }))
+				dispatch(updateMealConsumption({ id, data }))
 				try {
 					const { data } = await queryFulfilled
 					dispatch(updateMealConsumption({ id, data }))
@@ -93,7 +93,7 @@ export const mealConsumptionApi = createApi({
 
 				}
 			},
-			invalidatesTags: (result, error, arg) => [{ type: 'mealConsumptions', id: arg.id }]
+			// invalidatesTags: (result, error, arg) => result ? [{ type: 'mealConsumptions', id: result.id }] : []
 		}),
 
 		getByInstitutionSlug: builder.query<MealConsumptionResponse[], string>({

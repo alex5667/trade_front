@@ -115,7 +115,7 @@ export default function Background({ z = 1 }: { z?: number }) {
 							textAnchor='middle'
 							fill='url(#grad1)'
 							stroke='rgba(255,255,255,0.6)'
-							strokeWidth='0.1'
+							strokeWidth='0.2'
 							// filter='url(#inset-shadow)'
 							filter='url(#volume-shadow)'
 						>

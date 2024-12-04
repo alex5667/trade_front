@@ -13,16 +13,22 @@ import { dayColumns } from '../menu/[slug]/(view)/columns.data'
 
 import styles from './ConsumptionPage.module.scss'
 import DayView from './DayView'
+import { useGetAllInstitutionsQuery } from '@/services/institution.service'
 import { useGetAllMealConsumptionsQuery } from '@/services/meal-consumption.service'
+import { useGetAllMealsQuery } from '@/services/meal.service'
 
 const ConsumptionView = () => {
 	const [weekOffset, setWeekOffset] = useState(0)
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
+	const { isLoading: isLoadingInstitutions } = useGetAllInstitutionsQuery()
+
 	const { data, isFetching, isLoading, refetch } =
 		useGetAllMealConsumptionsQuery({
 			startDate: startOfWeek,
 			endDate: endOfWeek
 		} as MealConsumptionDataFilters)
+	const { isLoading: isLoadingMeals } = useGetAllMealsQuery()
+
 	const handleWeekChange = (direction: 'next' | 'prev') => {
 		setWeekOffset(prev => (direction === 'next' ? prev + 1 : prev - 1))
 	}
@@ -30,7 +36,7 @@ const ConsumptionView = () => {
 		refetch()
 	}, [weekOffset, refetch])
 
-	if (isLoading || isFetching) {
+	if (isLoading || isFetching || isLoadingMeals || isLoadingInstitutions) {
 		return <Loader />
 	}
 

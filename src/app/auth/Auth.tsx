@@ -52,7 +52,10 @@ const Auth = () => {
 				className={styles.authForm}
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<Heading title='Auth' />
+				<Heading
+					className='text-center text-xl md:text-2xl'
+					title='Authorization'
+				/>
 				<Field
 					id='email'
 					label='Email'
@@ -75,17 +78,17 @@ const Auth = () => {
 				/>
 				<div className={styles.authButtons}>
 					<Button
-						className=' text-white sm:py-2 sm:px-7'
+						className=' text-white w-full py-2'
 						onClick={() => setIsLoginForm(true)}
 					>
 						Login
 					</Button>
-					<Button
-						className='text-white sm:py-2 sm:px-7'
+					{/* <Button
+						className='text-white w-full py-2 px-4  md:w-auto md:py-2 md:px-7  '
 						onClick={() => setIsLoginForm(false)}
 					>
 						Register
-					</Button>
+					</Button> */}
 				</div>
 			</form>
 		</div>

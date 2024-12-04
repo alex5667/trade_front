@@ -3,9 +3,14 @@
 }
 
 .authForm {
-	@apply w-1/4 m-auto shadow bg-secondary rounded-xl p-layout;
+	@apply w-[70%] m-auto shadow bg-secondary rounded-xl p-layout sm:w-[40%];
 }
 
 .authButtons {
-	@apply flex items-center justify-between;
+	@apply flex  items-center justify-between;
+	@media (max-width: 767.98px) {
+		display: flex;
+		flex-direction: column;
+		min-width: 100%;
+	}
 }

@@ -5,5 +5,5 @@
 	@apply rounded-lg bg-transparent border border-border-light  transition hover:bg-primary active:bg-brand-700;
 	font-weight: 400;
 	letter-spacing: 0.01rem;
-	@include mixins.adaptiveValue("font-size", 18, 12);
+	@include mixins.adaptiveValue("font-size", 18, 14);
 }

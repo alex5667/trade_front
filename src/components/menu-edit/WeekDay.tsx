@@ -11,7 +11,7 @@ const WeekDay = ({ day, dateForDay }: DateDayProps) => {
 		: 'Нет даты'
 
 	return (
-		<div className='w-full flex justify-between align-middle mb-2'>
+		<div className='w-full flex justify-between align-middle mb-2 py-2 px-1 '>
 			<h3 className='text-lg'>{day}</h3>
 			<span className='text-base'>{formattedDate}</span>
 		</div>
