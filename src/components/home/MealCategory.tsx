@@ -14,7 +14,7 @@ const MealCategory = ({
 	meal: string
 }) => {
 	return (
-		<motion.div>
+		<motion.div className={styles.mealWrapper}>
 			<h2 className={styles.mealTypeTitle}>{meal}</h2>
 			{items && items.length > 0 ? (
 				<ul>

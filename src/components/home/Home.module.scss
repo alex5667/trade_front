@@ -48,7 +48,8 @@
 // }
 
 .mealTypeContainer {
-	@apply my-2;
+	@apply my-2 flex flex-col justify-start align-middle py-2 px-3;
+	width: 100%;
 	position: relative;
 	&:not(:last-child) {
 		border-bottom: 1px solid rgba(255, 255, 255, 0.8);
@@ -110,6 +111,14 @@
 	}
 }
 
+.mealWrapper {
+	display: flex;
+	min-width: 100%;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: flex-start;
+}
+
 .mealTypeTitle {
 	@apply text-center;
 	line-height: 1.4;
@@ -119,9 +128,11 @@
 }
 
 .dishRow {
-	@apply relative  my-3 rounded-sm p-2  shadow-md shadow-row-black;
+	flex: 1 1 auto;
+	min-width: 100%;
+	@apply relative flex align-middle justify-center my-3 rounded-sm p-2  shadow-md shadow-row-black;
+
 	@media (max-width: 1050px) {
-		width: 100%;
 		text-align: center;
 		&:not(:last-child) {
 			margin-bottom: 20px;
@@ -133,7 +144,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: 100%;
+		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
 		background: rgba(121, 79, 69, 0.25);
@@ -146,7 +157,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: 100%;
+		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
 		background: rgba(0, 0, 0, 0.1);
@@ -162,6 +173,7 @@
 	}
 	.dishRowSpan {
 		@apply text-white relative z-10 italic;
+		min-width: 100%;
 		font-weight: 500;
 		letter-spacing: 0.1rem;
 		@include mixins.adaptiveValue("font-size", 18, 16);
