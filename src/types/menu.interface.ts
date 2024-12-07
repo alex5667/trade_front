@@ -4,5 +4,5 @@ export interface MenuItem {
 	link: string
 	name: string
 	icon: LucideIcon
-	endPoint: string | null
+	endPoint?: string | null
 }

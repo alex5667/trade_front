@@ -3,6 +3,7 @@ export const ADMINBOARD_PAGES = {
 	ADMIN: '/i',
 	MENU: `/i/menu`,
 	USER: `/i/user`,
+	EXCEL: `/i/excelLoader`,
 	CONSUMPTION: `/i/consumption`,
 	DISHES: `/i/dishes`,
 	INGREDIENTS: `/i/ingredients`,

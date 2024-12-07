@@ -1,11 +1,12 @@
 import {
 	CookingPot,
+	FileDown,
 	LayoutDashboard,
 	Settings, Table
 } from 'lucide-react'
 
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
-import { MenuItem } from './menu.interface'
+import { MenuItem } from '@/types/menu.interface'
 
 
 export const USERMENU: MenuItem[] = [
@@ -23,11 +24,13 @@ export const USERMENU: MenuItem[] = [
 	}
 	,
 	{
-		icon: Table,
+		icon: FileDown,
 		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
 		name: 'Кол-во порций',
 		endPoint: null
-	},
+	}
+	,
+
 
 
 	{
@@ -55,6 +58,12 @@ export const ADMINMENU: MenuItem[] = [
 		icon: Table,
 		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
 		name: 'Количество порций',
+		endPoint: null
+	},
+	{
+		icon: FileDown,
+		link: `${ADMINBOARD_PAGES.EXCEL}`,
+		name: 'Загрузка из excel',
 		endPoint: null
 	},
 

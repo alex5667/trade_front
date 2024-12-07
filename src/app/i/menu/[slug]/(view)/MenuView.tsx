@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import Loader from '@/components/ui/Loader'
-import { Button } from '@/components/ui/buttons/Button'
+import WeekChangeButtons from '@/components/weekChangeButtons/WeekChangeButtons'
 
 import { MenuItemDataFilters } from '@/types/menuItem.type'
 
@@ -50,9 +50,9 @@ export function MenuView({ institutionSlug }: MenuView) {
 		endDate: endOfWeek,
 		institutionSlug
 	} as MenuItemDataFilters)
-	const handleWeekChange = (direction: 'next' | 'prev') => {
-		setWeekOffset(prev => (direction === 'next' ? prev + 1 : prev - 1))
-	}
+	// const handleWeekChange = (direction: 'next' | 'prev') => {
+	// 	setWeekOffset(prev => (direction === 'next' ? prev + 1 : prev - 1))
+	// }
 	useEffect(() => {
 		refetch()
 	}, [weekOffset, refetch])
@@ -67,7 +67,7 @@ export function MenuView({ institutionSlug }: MenuView) {
 				setType={setType}
 				type={type}
 			/> */}
-			<div className={styles.btnWrapper}>
+			{/* <div className={styles.btnWrapper}>
 				<Button
 					className='px-2 py-3 sm:px-4 sm:py-1'
 					onClick={() => handleWeekChange('prev')}
@@ -80,7 +80,8 @@ export function MenuView({ institutionSlug }: MenuView) {
 				>
 					Следующая неделя
 				</Button>
-			</div>
+			</div> */}
+			<WeekChangeButtons setWeekOffset={setWeekOffset} />
 
 			<ListView
 				institutionSlug={institutionSlug}
