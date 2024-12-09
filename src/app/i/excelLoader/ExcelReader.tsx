@@ -3,27 +3,28 @@
 import { useState } from 'react'
 import * as XLSX from 'xlsx'
 
+import { Button } from '@/components/ui/buttons/Button'
 import WeekChangeButtons from '@/components/weekChangeButtons/WeekChangeButtons'
 
-import { DayOfWeekUkr } from '@/types/menuItem.type'
+import { DayOfWeekUkr, ExcelDto } from '@/types/menuItem.type'
 
 import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
-import { useGetAllDishesQuery } from '@/services/dish.service'
 import { useGetAllMealsQuery } from '@/services/meal.service'
+import { useDownloadFromExcelMenuItemMutation } from '@/services/menu-item.service'
 
 export default function ExcelReader() {
 	const [data, setData] = useState<string[][]>([])
 	const { data: mealsResponse } = useGetAllMealsQuery()
-	const meals = mealsResponse && mealsResponse.map(meal => meal.printName)
+	const meals =
+		mealsResponse && mealsResponse.map(meal => meal.printName.toLowerCase())
 	const daysOfWeeks = Object.values(DayOfWeekUkr).map(item =>
 		item.toLowerCase()
 	)
 	const [weekOffset, setWeekOffset] = useState(0)
+	const [downloadMenu] = useDownloadFromExcelMenuItemMutation()
 
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
-	console.log('datesOfWeek', datesOfWeek)
-	const { data: dishes } = useGetAllDishesQuery()
 
 	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0]
@@ -47,7 +48,12 @@ export default function ExcelReader() {
 					const processedData = []
 
 					for (const row of jsonData) {
-						const isEmptyRow = (row as string[]).every(cell => cell === '')
+						const cleanedRow = (row as string[]).map(cell =>
+							typeof cell === 'string' ? cell.trim() : cell
+						)
+						const isEmptyRow = (cleanedRow as string[]).every(
+							cell => cell === ''
+						)
 						if (isEmptyRow) {
 							emptyRowCount++
 						} else {
@@ -68,14 +74,30 @@ export default function ExcelReader() {
 			reader.readAsArrayBuffer(file)
 		}
 	}
+	const downloadMenuFromExcel = () => {
+		if (data.length > 0) {
+			const dto: ExcelDto = {
+				data,
+				dates: datesOfWeek
+			}
+			downloadMenu(dto)
+		}
+		return
+	}
 
 	return (
 		<div className='p-6'>
 			<h1 className='text-lg font-bold mb-4'>Считывание файла Excel</h1>
 			<WeekChangeButtons setWeekOffset={setWeekOffset} />
-			<div>
-				{datesOfWeek.MONDAY.split('T')[0]}-{datesOfWeek.SUNDAY.split('T')[0]}
+			<div className='py-3'>
+				{startOfWeek.split('T')[0]} - {endOfWeek.split('T')[0]}
 			</div>
+			<Button
+				className='py-2 px-4 mr-4'
+				onClick={() => downloadMenuFromExcel()}
+			>
+				Загрузить меню
+			</Button>
 			<input
 				type='file'
 				accept='.xlsx, .xls'

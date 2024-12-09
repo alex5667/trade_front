@@ -1,7 +1,7 @@
 import { URLS } from '@/config/urls'
 import { addAllMenuItems, addMenuItem, deleteMenuItemById, updateMenuItem, updateOrderMenuItem } from '@/store/menuItem/menu-item.slice'
 import { TypeRootState } from '@/store/store'
-import { MenuItemDataFilters, MenuItemResponse, TypeMenuItemFormState } from '@/types/menuItem.type'
+import { ExcelDto, MenuItemDataFilters, MenuItemResponse, TypeMenuItemFormState } from '@/types/menuItem.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
@@ -88,6 +88,25 @@ export const menuItemApi = createApi({
 			invalidatesTags: (result, error, arg) =>
 				result ? [{ type: 'menuItems', id: result.id }, { type: 'menuItems', id: 'LIST' }] : [{ type: 'menuItems', id: 'LIST' }]
 		}),
+		downloadFromExcelMenuItem: builder.mutation<void, ExcelDto>({
+			query: data => ({
+				url: URLS.MENU_ITEM_EXCEL,
+				method: 'POST',
+				body: data
+			}),
+			// async onQueryStarted(data, { dispatch, queryFulfilled }) {
+			// 	try {
+			// 		const { data } = await queryFulfilled
+			// 		dispatch(addMenuItem(data))
+			// 	} catch {
+			// 		console.log("Error to create")
+			// 	}
+			// },
+
+			invalidatesTags: (result, error, arg) => [
+				{ type: 'menuItems', id: 'LIST' }
+			]
+		}),
 		updateMenuItem: builder.mutation<MenuItemResponse, MenuItemUpdate>({
 			query: ({ id, data }) => ({
 				url: `${URLS.MENU_ITEM}/${id}`,
@@ -128,4 +147,4 @@ export const menuItemApi = createApi({
 
 	})
 })
-export const { useGetAllMenuItemQuery, usePrefetch, useGetByInstitutionSlugQuery, useDeleteMenuItemMutation, useCreateMenuItemMutation, useUpdateMenuItemMutation, useUpdateOrderMenuItemMutation } = menuItemApi
+export const { useGetAllMenuItemQuery, usePrefetch, useGetByInstitutionSlugQuery, useDeleteMenuItemMutation, useCreateMenuItemMutation, useUpdateMenuItemMutation, useUpdateOrderMenuItemMutation, useDownloadFromExcelMenuItemMutation } = menuItemApi

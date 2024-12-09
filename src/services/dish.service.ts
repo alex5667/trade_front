@@ -1,4 +1,6 @@
 import { URLS } from '@/config/urls'
+import { addAllDishes, addDish, deleteDishById, updateDish } from '@/store/dish/dish.slice'
+import { TypeRootState } from '@/store/store'
 import { DishFormState, DishResponse } from '@/types/dish.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
@@ -19,8 +21,8 @@ export const dishApi = createApi({
 			}),
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
-					await queryFulfilled
-					// dispatch(addAllDishes(data.data))
+					const data = await queryFulfilled
+					dispatch(addAllDishes(data.data))
 				} catch (err) {
 					console.error('Failed to fetch menu...', err)
 				}
@@ -40,8 +42,8 @@ export const dishApi = createApi({
 				method: 'DELETE'
 			}),
 			async onQueryStarted(id, { dispatch, queryFulfilled, getState }) {
-				// const previousTasks = (getState() as TypeRootState).disheslice.items
-				// dispatch(deleteDishById(+id))
+				const previousTasks = (getState() as TypeRootState).dishSlice.items
+				dispatch(deleteDishById(+id))
 				try {
 					await queryFulfilled
 				} catch {
@@ -62,8 +64,8 @@ export const dishApi = createApi({
 			}),
 			async onQueryStarted(data, { dispatch, queryFulfilled }) {
 				try {
-					await queryFulfilled
-					// 	dispatch(addDish(data))
+					const data = await queryFulfilled
+					dispatch(addDish(data.data))
 				} catch {
 					console.log("Error to create")
 				}
@@ -85,13 +87,13 @@ export const dishApi = createApi({
 				method: 'PUT',
 				body: data
 			}), async onQueryStarted({ id, data }, { dispatch, queryFulfilled, getState }) {
-				// const previousTask = (getState() as TypeRootState).dishSlice.items.find(item => item.id === id)
-				// dispatch(updateMenuItem({ id, data }))
+				const previousTask = (getState() as TypeRootState).dishSlice.items.find(item => item.id === id)
+				dispatch(updateDish({ id, data }))
 				try {
 					await queryFulfilled
-					// dispatch(updateDish({ id, data }))
+					dispatch(updateDish({ id, data }))
 				} catch (error) {
-					// if (previousTask) updateDish({ id, data })
+					if (previousTask) updateDish({ id, data })
 					console.log("Error to update")
 
 				}

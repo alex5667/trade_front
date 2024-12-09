@@ -10,6 +10,7 @@ import { mealApi } from '@/services/meal.service'
 import { menuItemApi } from '@/services/menu-item.service'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
+import { dishSlice } from './dish/dish.slice'
 import { institutionSlice } from './institution/institution.slice'
 import { mealSlice } from './meal/meal.slice'
 import { mealConsumptionSlice } from './mealConsumption/meal-consumption.slice'
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
 	[institutionApi.reducerPath]: institutionApi.reducer,
 	[mealConsumptionApi.reducerPath]: mealConsumptionApi.reducer,
 	[sidebarSlice.reducerPath]: sidebarSlice.reducer,
+	[dishSlice.reducerPath]: dishSlice.reducer,
 
 })
 

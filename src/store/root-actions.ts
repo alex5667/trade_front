@@ -1,5 +1,6 @@
 
 import { collapsedSlice } from './collapsed/collapsed.slice'
+import { dishSlice } from './dish/dish.slice'
 import { institutionSlice } from './institution/institution.slice'
 import { mealSlice } from './meal/meal.slice'
 import { mealConsumptionSlice } from './mealConsumption/meal-consumption.slice'
@@ -14,5 +15,6 @@ export const rootActions = {
 	...mealConsumptionSlice.actions,
 	...sidebarSlice.actions,
 	...institutionSlice.actions,
+	...dishSlice.actions,
 
 }
