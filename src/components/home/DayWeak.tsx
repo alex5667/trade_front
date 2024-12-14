@@ -80,32 +80,35 @@ export const DayWeek = forwardRef<HTMLDivElement, DayWeekProps>(
 							return (item?.meal as MealResponse)?.slug === meal.slug
 						})
 
-						return (
-							<motion.div
-								custom={index}
-								key={meal.slug}
-								ref={(el: HTMLDivElement | null) => {
-									if (el) {
-										if (!mealRefs.current[meal.slug]) {
-											mealRefs.current[meal.slug] = []
+						if (itemsDishes.length > 0) {
+							return (
+								<motion.div
+									custom={index}
+									key={meal.slug}
+									ref={(el: HTMLDivElement | null) => {
+										if (el) {
+											if (!mealRefs.current[meal.slug]) {
+												mealRefs.current[meal.slug] = []
+											}
+											mealRefs.current[meal.slug].push(el)
 										}
-										mealRefs.current[meal.slug].push(el)
-									}
-								}}
-								className={styles.mealTypeContainer}
-								style={{
-									height: maxHeights[meal.slug]
-										? `${maxHeights[meal.slug]}px`
-										: 'auto'
-								}}
-								variants={childVariants}
-							>
-								<MealCategory
-									items={itemsDishes}
-									meal={meal.printName}
-								/>
-							</motion.div>
-						)
+									}}
+									className={styles.mealTypeContainer}
+									style={{
+										height: maxHeights[meal.slug]
+											? `${maxHeights[meal.slug]}px`
+											: 'auto'
+									}}
+									variants={childVariants}
+								>
+									<MealCategory
+										items={itemsDishes}
+										meal={meal.printName}
+									/>
+								</motion.div>
+							)
+						}
+						return null
 					})}
 			</motion.div>
 		)

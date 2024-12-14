@@ -13,12 +13,19 @@ const MealCategory = ({
 	items: MenuItemResponse[]
 	meal: string
 }) => {
+	const sortedItems = items.slice().sort((a, b) => {
+		if (a.dishOrder !== undefined && b.dishOrder !== undefined) {
+			return a.dishOrder - b.dishOrder
+		}
+		return (a.id || 0) - (b.id || 0)
+	})
+
 	return (
 		<motion.div className={styles.mealWrapper}>
 			<h2 className={styles.mealTypeTitle}>{meal}</h2>
 			{items && items.length > 0 ? (
 				<ul>
-					{items.map((item, idx) => {
+					{sortedItems.map((item, idx) => {
 						const isString = typeof item?.dish === 'string'
 						const dishName = isString
 							? item.dish

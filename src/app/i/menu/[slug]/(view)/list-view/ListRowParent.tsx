@@ -57,6 +57,7 @@ export function ListRowParent({
 	})
 
 	const droppableId = `${mealSlug} + ${dateForDay}+${institutionSlug}`
+
 	return (
 		<Droppable droppableId={droppableId}>
 			{provided => (

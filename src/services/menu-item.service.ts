@@ -102,7 +102,6 @@ export const menuItemApi = createApi({
 			// 		console.log("Error to create")
 			// 	}
 			// },
-
 			invalidatesTags: (result, error, arg) => [
 				{ type: 'menuItems', id: 'LIST' }
 			]

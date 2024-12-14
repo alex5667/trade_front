@@ -147,7 +147,7 @@
 		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
-		background: rgba(121, 79, 69, 0.25);
+		background: rgba(121, 79, 69, 0.28);
 		z-index: 2;
 		pointer-events: none;
 	}
@@ -160,7 +160,7 @@
 		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
-		background: rgba(0, 0, 0, 0.1);
+		background: rgba(0, 0, 0, 0.12);
 		z-index: 3;
 		pointer-events: none;
 	}
@@ -176,6 +176,11 @@
 		min-width: 100%;
 		font-weight: 500;
 		letter-spacing: 0.1rem;
-		@include mixins.adaptiveValue("font-size", 18, 16);
+		// font-size: 18px;
+		@include mixins.adaptiveValue("font-size", 20, 18);
+		display: block;
+		// text-align: justify;
+		white-space: normal;
+		word-break: break-word;
 	}
 }

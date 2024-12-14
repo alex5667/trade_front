@@ -107,5 +107,6 @@ export type MenuItemDataFilters = {
 
 export interface ExcelDto {
 	data: string[][]
-	dates: { [key: string]: string }
+	dates: { [key: string]: string },
+	institutionName: string
 }

@@ -22,9 +22,14 @@ export default function ExcelReader() {
 		item.toLowerCase()
 	)
 	const [weekOffset, setWeekOffset] = useState(0)
+	const [sheetName, setSheetName] = useState('')
 	const [downloadMenu] = useDownloadFromExcelMenuItemMutation()
 
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
+	// const{refetch}=useGetAllMenuItemQuery({
+	// 	startDate:startOfWeek,
+	// 	endDate:endOfWeek,
+	// })
 
 	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0]
@@ -38,6 +43,7 @@ export default function ExcelReader() {
 						type: 'array'
 					})
 					const sheetName = workbook.SheetNames[0]
+					setSheetName(sheetName)
 					const sheet = workbook.Sheets[sheetName]
 					const jsonData = XLSX.utils.sheet_to_json(sheet, {
 						header: 1,
@@ -78,7 +84,8 @@ export default function ExcelReader() {
 		if (data.length > 0) {
 			const dto: ExcelDto = {
 				data,
-				dates: datesOfWeek
+				dates: datesOfWeek,
+				institutionName: sheetName
 			}
 			downloadMenu(dto)
 		}

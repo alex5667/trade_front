@@ -7,7 +7,7 @@ const DishRow = memo(({ name }: { name: string }) => {
 	const ref = useRef(null)
 	const { scrollYProgress } = useScroll({
 		target: ref,
-		offset: ['0 0', '0 0.25']
+		offset: ['0 0', '0 0.2']
 	})
 	const opacityRow = useTransform(scrollYProgress, [0, 1], [0.2, 1])
 
