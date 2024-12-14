@@ -63,9 +63,9 @@ export default function ExcelReader() {
 		const processedData = []
 
 		for (const row of jsonData) {
-			const cleanedRow = (row as string[]).map(cell =>
-				typeof cell === 'string' ? cell.trim() : cell
-			)
+			const cleanedRow = (row as string[])
+				.slice(0, 7)
+				.map(cell => (typeof cell === 'string' ? cell.trim() : cell))
 			const isEmptyRow = (cleanedRow as string[]).every(cell => cell === '')
 			if (isEmptyRow) {
 				emptyRowCount++
