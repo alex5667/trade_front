@@ -5,7 +5,7 @@ import { LayoutDashboard } from 'lucide-react'
 export const EXCELMENU: MenuItem[] = [
 	{
 		icon: LayoutDashboard,
-		link: ADMINBOARD_PAGES.EXCEL_MENU,
+		link: ADMINBOARD_PAGES.EXCEL,
 		name: 'Загрузка меню',
 	},
 	// {

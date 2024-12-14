@@ -22,14 +22,12 @@ export default function ExcelReader() {
 		item.toLowerCase()
 	)
 	const [weekOffset, setWeekOffset] = useState(0)
-	const [sheetName, setSheetName] = useState('')
+	const [sheetNames, setSheetNames] = useState<string[]>([])
+	const [selectedSheet, setSelectedSheet] = useState<string>('')
+	const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null)
 	const [downloadMenu] = useDownloadFromExcelMenuItemMutation()
 
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
-	// const{refetch}=useGetAllMenuItemQuery({
-	// 	startDate:startOfWeek,
-	// 	endDate:endOfWeek,
-	// })
 
 	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0]
@@ -42,50 +40,63 @@ export default function ExcelReader() {
 					const workbook = XLSX.read(new Uint8Array(arrayBuffer), {
 						type: 'array'
 					})
-					const sheetName = workbook.SheetNames[0]
-					setSheetName(sheetName)
-					const sheet = workbook.Sheets[sheetName]
-					const jsonData = XLSX.utils.sheet_to_json(sheet, {
-						header: 1,
-						defval: ''
-					})
-
-					let emptyRowCount = 0
-					const processedData = []
-
-					for (const row of jsonData) {
-						const cleanedRow = (row as string[]).map(cell =>
-							typeof cell === 'string' ? cell.trim() : cell
-						)
-						const isEmptyRow = (cleanedRow as string[]).every(
-							cell => cell === ''
-						)
-						if (isEmptyRow) {
-							emptyRowCount++
-						} else {
-							emptyRowCount = 0
-						}
-
-						if (emptyRowCount > 15) {
-							break
-						}
-
-						processedData.push(row as string[])
-					}
-
-					setData(processedData)
+					setWorkbook(workbook)
+					const sheetNames = workbook.SheetNames
+					setSheetNames(sheetNames)
+					setSelectedSheet(sheetNames[0])
+					loadSheetData(workbook, sheetNames[0])
 				}
 			}
 
 			reader.readAsArrayBuffer(file)
 		}
 	}
+
+	const loadSheetData = (workbook: XLSX.WorkBook, sheetName: string) => {
+		const sheet = workbook.Sheets[sheetName]
+		const jsonData = XLSX.utils.sheet_to_json(sheet, {
+			header: 1,
+			defval: ''
+		})
+
+		let emptyRowCount = 0
+		const processedData = []
+
+		for (const row of jsonData) {
+			const cleanedRow = (row as string[]).map(cell =>
+				typeof cell === 'string' ? cell.trim() : cell
+			)
+			const isEmptyRow = (cleanedRow as string[]).every(cell => cell === '')
+			if (isEmptyRow) {
+				emptyRowCount++
+			} else {
+				emptyRowCount = 0
+			}
+
+			if (emptyRowCount > 15) {
+				break
+			}
+
+			processedData.push(row as string[])
+		}
+
+		setData(processedData)
+	}
+
+	const handleSheetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const sheetName = event.target.value
+		setSelectedSheet(sheetName)
+		if (workbook) {
+			loadSheetData(workbook, sheetName)
+		}
+	}
+
 	const downloadMenuFromExcel = () => {
 		if (data.length > 0) {
 			const dto: ExcelDto = {
 				data,
 				dates: datesOfWeek,
-				institutionName: sheetName
+				institutionName: selectedSheet
 			}
 			downloadMenu(dto)
 		}
@@ -99,6 +110,24 @@ export default function ExcelReader() {
 			<div className='py-3'>
 				{startOfWeek.split('T')[0]} - {endOfWeek.split('T')[0]}
 			</div>
+
+			{sheetNames.length > 0 && (
+				<select
+					value={selectedSheet}
+					onChange={handleSheetChange}
+					className='mb-4 mr-4 px-3 py-2  border rounded'
+				>
+					{sheetNames.map(sheetName => (
+						<option
+							key={sheetName}
+							value={sheetName}
+						>
+							{sheetName}
+						</option>
+					))}
+				</select>
+			)}
+
 			<Button
 				className='py-2 px-4 mr-4'
 				onClick={() => downloadMenuFromExcel()}
