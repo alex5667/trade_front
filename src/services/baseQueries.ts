@@ -28,6 +28,8 @@ export const baseQuery = retry(
 
 
 			headers.set('Content-Type', 'application/json')
+			headers.set('Origin', window.location.origin)
+
 			return headers
 		},
 
