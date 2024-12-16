@@ -15,10 +15,9 @@ export const getRefreshToken = () => {
 }
 
 export const saveTokenStorage = (accessToken: string) => {
-	console.log('Access Token:', accessToken) // Для диагностики
-
+	console.log('Access Token:', accessToken)
 	Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, {
-		domain: process.env.COOKIE_DOMAIN || 'localhost',
+		domain: process.env.COOKIE_DOMAIN || 'menu-front-gamma.vercel.app',
 		sameSite: 'lax',
 		secure: process.env.NODE_ENV === 'production',
 		expires: 1
