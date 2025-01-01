@@ -7,7 +7,7 @@ interface useAutocompleteInput {
 	setIsShow: Dispatch<SetStateAction<boolean>>
 }
 export function useAutocompleteInput({ defaultInputValue, setIsShow }: useAutocompleteInput) {
-	const [inputValue, setInputValue] = useState(defaultInputValue)
+	const [inputValue, setInputValue] = useState<string | ''>(defaultInputValue || '')
 	const [debouncedValue, setDebouncedValue] = useState('')
 	const [shouldFetch, setShouldFetch] = useState(false)
 
@@ -16,7 +16,7 @@ export function useAutocompleteInput({ defaultInputValue, setIsShow }: useAutoco
 		debounce((value: string) => {
 			setDebouncedValue(value)
 			setShouldFetch(true)
-		}, 400),
+		}, 500),
 		[]
 	)
 

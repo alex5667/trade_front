@@ -15,9 +15,9 @@ export const getRefreshToken = () => {
 }
 
 export const saveTokenStorage = (accessToken: string) => {
-	console.log('Access Token:', accessToken)
+
 	Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, {
-		domain: process.env.COOKIE_DOMAIN || 'menu-front-gamma.vercel.app',
+		domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN || 'localhost',
 		sameSite: 'lax',
 		secure: process.env.NODE_ENV === 'production',
 		expires: 1

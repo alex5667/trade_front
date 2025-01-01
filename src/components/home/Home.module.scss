@@ -174,10 +174,10 @@
 	.dishRowSpan {
 		@apply text-white relative z-10 italic;
 		min-width: 100%;
-		font-weight: 500;
+		font-weight: 400;
 		letter-spacing: 0.1rem;
 		// font-size: 18px;
-		@include mixins.adaptiveValue("font-size", 20, 18);
+		@include mixins.adaptiveValue("font-size", 20, 16);
 		display: block;
 		// text-align: justify;
 		white-space: normal;

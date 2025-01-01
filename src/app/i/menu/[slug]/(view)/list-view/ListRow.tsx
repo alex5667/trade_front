@@ -38,6 +38,7 @@ const ListRow = ({
 					mealSlug={mealSlug}
 					item={item}
 					dateForDay={dateForDay}
+					isMenuItem={true}
 				/>
 			</div>
 			{item.id && (

@@ -11,4 +11,5 @@ export interface DishResponse {
 	updatedAt?: Date
 	slug: string
 }
+export type DishResponseKeys = keyof DishResponse
 export type DishFormState = Pick<DishResponse, 'name' | 'printName' | 'category'>

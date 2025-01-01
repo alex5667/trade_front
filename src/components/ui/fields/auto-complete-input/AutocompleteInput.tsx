@@ -1,7 +1,7 @@
 'use client'
 
 import cn from 'clsx'
-import { useRef } from 'react'
+import { SetStateAction, useCallback, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { DishResponse } from '@/types/dish.type'
@@ -14,16 +14,19 @@ import { errorCatch } from '@/api/error'
 import { useAutocompleteInput } from '../hooks/useAutocompleteInput'
 import { useOptionSelect } from '../hooks/useOptionSelect'
 
+import AutoCompleteTextarea from './AutoCompleteTextarea'
 import styles from './AutocompleteInput.module.scss'
 import { AutocompleteList } from './AutocompleteList '
+import DishCard from '@/app/i/dishes/DishCard'
 import { useGetDishByNameQuery } from '@/services/dish.service'
 
 type AutocompleteInputProps = {
-	item: MenuItemResponse
-	institutionSlug: string
-	mealSlug: string
-	dateForDay: string
+	item?: MenuItemResponse
+	institutionSlug?: string
+	mealSlug?: string
+	dateForDay?: string
 	className?: string
+	isMenuItem?: boolean
 }
 
 export const AutocompleteInput = ({
@@ -32,16 +35,18 @@ export const AutocompleteInput = ({
 	institutionSlug,
 	mealSlug,
 	dateForDay,
+	isMenuItem,
 	...rest
 }: AutocompleteInputProps) => {
 	const inputRef = useRef<HTMLTextAreaElement>(null)
-	const isDishString = typeof item.dish === 'string'
-	const defaultInputValue: string = isDishString
-		? (item.dish as string)
-		: (item.dish as DishResponse).name
+	const defaultInputValue: string = item
+		? typeof item.dish === 'string'
+			? (item.dish as string)
+			: (item.dish as DishResponse)?.name || ''
+		: ''
 
 	const { isShow, ref, setIsShow } = useOutside(false)
-
+	const [dish, setDish] = useState<DishResponse>({} as DishResponse)
 	const {
 		inputValue,
 		handleChange,
@@ -56,43 +61,52 @@ export const AutocompleteInput = ({
 		isError,
 		error
 	} = useGetDishByNameQuery(debouncedValue, {
-		skip: !shouldFetch || !debouncedValue.trim()
+		skip: !shouldFetch || !debouncedValue || !debouncedValue.trim()
 	})
-
-	const handleOptionSelect = useOptionSelect(
-		item,
-		institutionSlug,
-		mealSlug,
-		dateForDay,
-		setInputValue,
-		setDebouncedValue,
-		setShouldFetch,
-		setIsShow,
-		inputRef
+	const memoizedSetDish = useCallback(
+		(value: SetStateAction<DishResponse>) => {
+			setDish(value)
+		},
+		[setDish]
 	)
 	if (isError) {
 		toast.error(errorCatch(error))
 	}
+
+	const handleOptionSelect = useOptionSelect(
+		setInputValue,
+		setDebouncedValue,
+		setShouldFetch,
+		setIsShow,
+		inputRef,
+		item,
+		institutionSlug,
+		mealSlug,
+		dateForDay,
+		isMenuItem,
+		setDish
+	)
+
 	return (
-		<div className={styles.autocompleteContainer}>
-			{/* <span>{item.dishOrder}</span> */}
-			<textarea
-				rows={1}
+		<div className={cn(styles.autocompleteContainer, className)}>
+			<AutoCompleteTextarea
 				ref={inputRef}
-				className={cn(styles.input, className)}
-				value={inputValue}
-				onChange={handleChange}
-				onFocus={() => setIsShow(true)}
-				onBlur={() => {
-					setTimeout(() => setIsShow(false), 200)
-				}}
+				setIsShow={setIsShow}
+				handleChange={handleChange}
+				inputValue={inputValue}
 				{...rest}
 			/>
-			{isShow && dishes && dishes.length > 0 && (
+			{isShow && dishes && !isError && dishes.length > 0 && (
 				<AutocompleteList
 					ref={ref}
 					dishes={dishes}
 					handleOptionSelect={handleOptionSelect}
+				/>
+			)}
+			{!isMenuItem && (
+				<DishCard
+					dish={dish}
+					setDish={memoizedSetDish}
 				/>
 			)}
 		</div>

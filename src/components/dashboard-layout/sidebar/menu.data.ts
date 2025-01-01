@@ -2,6 +2,7 @@ import {
 	CookingPot,
 	FileDown,
 	LayoutDashboard,
+	Salad,
 	Settings, Table
 } from 'lucide-react'
 
@@ -64,6 +65,12 @@ export const ADMINMENU: MenuItem[] = [
 		icon: FileDown,
 		link: `${ADMINBOARD_PAGES.EXCEL}`,
 		name: 'Загрузка из excel',
+		endPoint: null
+	},
+	{
+		icon: Salad,
+		link: `${ADMINBOARD_PAGES.DISHES}`,
+		name: 'Блюда',
 		endPoint: null
 	},
 

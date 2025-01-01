@@ -1,16 +1,18 @@
+import { forwardRef } from 'react'
+
+import { DishResponse } from '@/types/dish.type'
+
 import styles from './AutocompleteInput.module.scss'
 
 type AutocompleteListProps = {
-	dishes: { id: number; name: string }[]
-	handleOptionSelect: (name: string, id: number) => void
-	ref: React.RefObject<HTMLUListElement>
+	dishes: DishResponse[]
+	handleOptionSelect: (dish: DishResponse) => void
 }
 
-export const AutocompleteList = ({
-	dishes,
-	handleOptionSelect,
-	ref
-}: AutocompleteListProps) => {
+export const AutocompleteList = forwardRef<
+	HTMLUListElement,
+	AutocompleteListProps
+>(({ dishes, handleOptionSelect }, ref) => {
 	return (
 		<ul
 			ref={ref}
@@ -20,11 +22,13 @@ export const AutocompleteList = ({
 				<li
 					key={dish.id}
 					className={styles.autocompleteItem}
-					onClick={() => handleOptionSelect(dish.name, dish.id)}
+					onClick={() => handleOptionSelect(dish)}
 				>
 					{dish.name}
 				</li>
 			))}
 		</ul>
 	)
-}
+})
+
+AutocompleteList.displayName = 'AutocompleteList'
