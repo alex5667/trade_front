@@ -1,15 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import * as XLSX from 'xlsx'
 
 import { Button } from '@/components/ui/buttons/Button'
 import WeekChangeButtons from '@/components/weekChangeButtons/WeekChangeButtons'
 
-import { DayOfWeekUkr, ExcelDto } from '@/types/menuItem.type'
+import { DayOfWeekUkr } from '@/types/menuItem.type'
 
 import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
+import { useDownloadFromExcelDishMutation } from '@/services/dish.service'
+import { downloadMenuFromExcelService } from '@/services/downloadMenuFromExcelService'
 import { useGetAllMealsQuery } from '@/services/meal.service'
 import { useDownloadFromExcelMenuItemMutation } from '@/services/menu-item.service'
 
@@ -26,6 +28,11 @@ export default function ExcelReader() {
 	const [selectedSheet, setSelectedSheet] = useState<string>('')
 	const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null)
 	const [downloadMenu] = useDownloadFromExcelMenuItemMutation()
+	// const [downloadDish] = useDownloadFromExcelDishMutation()
+
+	const [downloadDish, { isLoading }] = useDownloadFromExcelDishMutation({
+		fixedCacheKey: 'excelDishRequest'
+	})
 
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
 
@@ -58,14 +65,11 @@ export default function ExcelReader() {
 			header: 1,
 			defval: ''
 		})
-
 		let emptyRowCount = 0
 		const processedData = []
 
 		for (const row of jsonData) {
-			const cleanedRow = (row as string[])
-				.slice(0, 7)
-				.map(cell => (typeof cell === 'string' ? cell.trim() : cell))
+			const cleanedRow = (row as any[]).map(cell => String(cell).trim())
 			const isEmptyRow = (cleanedRow as string[]).every(cell => cell === '')
 			if (isEmptyRow) {
 				emptyRowCount++
@@ -77,9 +81,8 @@ export default function ExcelReader() {
 				break
 			}
 
-			processedData.push(row as string[])
+			processedData.push(cleanedRow as string[])
 		}
-
 		setData(processedData)
 	}
 
@@ -92,16 +95,14 @@ export default function ExcelReader() {
 	}
 
 	const downloadMenuFromExcel = () => {
-		if (data.length > 0) {
-			const dto: ExcelDto = {
-				data,
-				dates: datesOfWeek,
-				institutionName: selectedSheet
-			}
-			downloadMenu(dto)
-		}
-		return
+		downloadMenuFromExcelService(data, datesOfWeek, selectedSheet, downloadMenu)
 	}
+
+	const downloadDishFromExcel = useCallback(async () => {
+		console.log('Отправка запроса')
+		await downloadDish({ data, selectedSheet })
+		console.log('Запрос завершен')
+	}, [data, selectedSheet, downloadDish])
 
 	return (
 		<div className='p-6'>
@@ -134,6 +135,12 @@ export default function ExcelReader() {
 			>
 				Загрузить меню
 			</Button>
+			<Button
+				className='py-2 px-4 mr-4'
+				onClick={downloadDishFromExcel}
+			>
+				Загрузить блюдо
+			</Button>
 			<input
 				type='file'
 				accept='.xlsx, .xls'
@@ -146,8 +153,8 @@ export default function ExcelReader() {
 						{data.map((row, rowIndex) => {
 							const isHeader = row.some(
 								item =>
-									(meals && meals.includes(item.toLowerCase())) ||
-									daysOfWeeks.includes(item.toLowerCase())
+									(meals && meals.includes(item.toString().toLowerCase())) ||
+									daysOfWeeks.includes(item.toString().toLowerCase())
 							)
 							const Tag = isHeader ? 'th' : 'td'
 

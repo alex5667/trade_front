@@ -1,10 +1,11 @@
 export interface DishCategoryResponse {
-	id: 'id',
-	name: 'name',
-	printName: 'printName',
-	createdAt: 'createdAt',
-	updatedAt: 'updatedAt',
-	slug: 'slug'
+	id: number,
+	name: string,
+	slug: string,
+	printName: string | null,
+	description?: string | null,
+	createdAt: Date,
+	updatedAt: Date,
 }
 
 export type DishCategory = Pick<DishCategoryResponse, 'name' | 'printName'>

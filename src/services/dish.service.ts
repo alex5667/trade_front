@@ -75,7 +75,7 @@ export const dishApi = createApi({
 		}),
 		getDishByName: builder.query<DishResponse[], string>({
 			query: (name) => ({
-				url: URLS.DISHES_BY_NAME,
+				url: URLS.DISHES_BY_NAME_CONTAINS,
 				method: 'GET',
 				params: { name },
 			}),
@@ -99,8 +99,26 @@ export const dishApi = createApi({
 				}
 			},
 			invalidatesTags: (result, error, arg) => [{ type: 'dishes', id: arg.id }]
-		})
+		}),
+		downloadFromExcelDish: builder.mutation<void, { data: string[][]; selectedSheet: string }>({
+			query: data => ({
+				url: URLS.DISHES_EXCEL,
+				method: 'POST',
+				body: data
+			}),
+			// async onQueryStarted(data, { dispatch, queryFulfilled }) {
+			// 	try {
+			// 		const { data } = await queryFulfilled
+			// 		dispatch(addMenuItem(data))
+			// 	} catch {
+			// 		console.log("Error to create")
+			// 	}
+			// },
+			invalidatesTags: (result, error, arg) => [
+				{ type: 'dishes', id: 'LIST' }
+			]
+		}),
 
 	})
 })
-export const { useCreateDishMutation, useGetAllDishesQuery, useDeleteDishMutation, useUpdateDishMutation, useGetDishByNameQuery } = dishApi
+export const { useCreateDishMutation, useGetAllDishesQuery, useDeleteDishMutation, useUpdateDishMutation, useGetDishByNameQuery, useDownloadFromExcelDishMutation } = dishApi

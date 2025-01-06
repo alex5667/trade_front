@@ -9,6 +9,7 @@ export type DishInputProps = {
 	dish: DishResponse
 	keyName: keyof DishResponse
 	setDish?: (value: SetStateAction<DishResponse>) => void
+	isIngredient?: boolean
 }
 
 const DishInput = ({ dish, keyName, setDish }: DishInputProps) => {

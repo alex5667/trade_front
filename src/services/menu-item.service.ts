@@ -1,7 +1,7 @@
 import { URLS } from '@/config/urls'
 import { addAllMenuItems, addMenuItem, deleteMenuItemById, updateMenuItem, updateOrderMenuItem } from '@/store/menuItem/menu-item.slice'
 import { TypeRootState } from '@/store/store'
-import { ExcelDto, MenuItemDataFilters, MenuItemResponse, TypeMenuItemFormState } from '@/types/menuItem.type'
+import { MenuItemDataFilters, MenuItemExcelDto, MenuItemResponse, TypeMenuItemFormState } from '@/types/menuItem.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
@@ -88,7 +88,7 @@ export const menuItemApi = createApi({
 			invalidatesTags: (result, error, arg) =>
 				result ? [{ type: 'menuItems', id: result.id }, { type: 'menuItems', id: 'LIST' }] : [{ type: 'menuItems', id: 'LIST' }]
 		}),
-		downloadFromExcelMenuItem: builder.mutation<void, ExcelDto>({
+		downloadFromExcelMenuItem: builder.mutation<void, MenuItemExcelDto>({
 			query: data => ({
 				url: URLS.MENU_ITEM_EXCEL,
 				method: 'POST',

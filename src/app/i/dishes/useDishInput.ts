@@ -8,7 +8,7 @@ interface UseDishInputProps {
 	data: DishResponse
 	key: keyof DishResponse
 	setDish?: (value: SetStateAction<DishResponse>) => void,
-
+	isIngredient: boolean
 }
 
 export function useDishInput<T extends keyof DishResponse>({

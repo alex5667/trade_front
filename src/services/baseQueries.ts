@@ -41,8 +41,20 @@ export const baseQuery = retry(
 				const errorMessage = await response.text()
 				return { error: errorMessage || 'An error occurred' }
 			}
-			return response.json()
-		},
+
+			// Если тело ответа пустое, возвращаем пустой объект
+			const text = await response.text()
+			if (!text) {
+				return {} // пустой ответ
+			}
+
+			try {
+				return JSON.parse(text) // Парсим JSON, если он есть
+			} catch (error) {
+				console.error('Ошибка парсинга JSON:', error)
+				return { error: 'Ошибка парсинга JSON' }
+			}
+		}
 	}),
 	{
 		maxRetries: 3
