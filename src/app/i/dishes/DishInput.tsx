@@ -7,18 +7,31 @@ import { useDishInput } from './useDishInput'
 
 export type DishInputProps = {
 	dish: DishResponse
-	keyName: keyof DishResponse
+	keyName?: keyof DishResponse
 	setDish?: (value: SetStateAction<DishResponse>) => void
-	isIngredient?: boolean
+	defaultValue?: string | number
+	ingredientKey?: string
+	ingredientId?: number
 }
 
-const DishInput = ({ dish, keyName, setDish }: DishInputProps) => {
+const DishInput = ({
+	dish,
+	keyName,
+	setDish,
+
+	defaultValue,
+	ingredientKey,
+	ingredientId
+}: DishInputProps) => {
 	const inputRef = useRef<HTMLInputElement>(null)
 	const { inputValue, handleChange, setInputValue } = useDishInput({
 		inputRef,
 		data: dish,
+		setDish,
 		key: keyName,
-		setDish
+		defaultValue,
+		ingredientKey,
+		ingredientId
 	})
 	const handleFocus = () => {
 		if (inputValue === 0) {

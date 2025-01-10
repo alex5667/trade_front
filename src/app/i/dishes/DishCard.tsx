@@ -10,7 +10,7 @@ interface DishCard {
 	setDish?: (value: SetStateAction<DishResponse>) => void
 }
 const DishCard = memo(({ dish, setDish }: DishCard) => {
-	console.log('dish', dish)
+	console.log('DishCard', dish)
 	if (!dish || Object.keys(dish).length === 0) {
 		return <p>Блюдо не выбрано.</p>
 	}
@@ -22,14 +22,14 @@ const DishCard = memo(({ dish, setDish }: DishCard) => {
 				if (isIngredients) {
 					return (
 						<DishIngredients
-							key={key}
-							ingredients={dish.ingredients}
+							key={index}
+							dish={dish}
 						/>
 					)
 				}
 				return (
 					<div
-						key={key}
+						key={index}
 						className='flex w-full items-center'
 					>
 						<p className='mr-2 p-1'>{index}</p>

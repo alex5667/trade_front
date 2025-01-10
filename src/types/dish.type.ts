@@ -1,16 +1,16 @@
 import { DishCategoryResponse } from './dishCategory.type'
 
-export interface DishResponse {
-	id: number
-	name: string
-	printName: string | ''
-	description?: string | null
-	price?: number | null
-	category?: DishCategoryResponse
-	createdAt?: Date
-	updatedAt?: Date
-	slug: string
-}
+// export interface DishResponse {
+// 	id: number
+// 	name: string
+// 	printName: string | ''
+// 	description?: string | null
+// 	price?: number | null
+// 	category?: DishCategoryResponse
+// 	createdAt?: Date
+// 	updatedAt?: Date
+// 	slug: string
+// }
 
 
 export interface Ingredient {
@@ -46,7 +46,18 @@ export interface DishResponse {
 	ingredients: DishIngredient[]
 }
 
+export interface IngredientDto {
+	ingredientId: number
+	grossWeight: number
+	coldLossPercent?: number
+	heatLossPercent?: number
+}
 
+
+
+export interface DishDto extends Omit<DishResponse, 'ingredients'> {
+	ingredients: IngredientDto[]
+}
 
 export type DishResponseKeys = keyof DishResponse
 export type DishFormState = Pick<DishResponse, 'name' | 'printName' | 'category'> & Partial<Omit<DishResponse, 'name' | 'printName' | 'category'>>

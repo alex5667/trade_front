@@ -99,9 +99,7 @@ export default function ExcelReader() {
 	}
 
 	const downloadDishFromExcel = useCallback(async () => {
-		console.log('Отправка запроса')
 		await downloadDish({ data, selectedSheet })
-		console.log('Запрос завершен')
 	}, [data, selectedSheet, downloadDish])
 
 	return (

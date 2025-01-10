@@ -47,6 +47,7 @@ export const AutocompleteInput = ({
 
 	const { isShow, ref, setIsShow } = useOutside(false)
 	const [dish, setDish] = useState<DishResponse>({} as DishResponse)
+	console.log('AutocompleteInput dish', dish)
 	const {
 		inputValue,
 		handleChange,

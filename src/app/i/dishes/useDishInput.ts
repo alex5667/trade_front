@@ -6,30 +6,59 @@ import { MutableRefObject, SetStateAction, useCallback, useEffect, useState } fr
 interface UseDishInputProps {
 	inputRef: MutableRefObject<HTMLInputElement | null>
 	data: DishResponse
-	key: keyof DishResponse
+	key?: keyof DishResponse
 	setDish?: (value: SetStateAction<DishResponse>) => void,
-	isIngredient: boolean
+	defaultValue?: string | number
+	ingredientKey?: string
+	ingredientId?: number
+
+
 }
 
 export function useDishInput<T extends keyof DishResponse>({
 	inputRef,
 	data,
 	key,
-	setDish
+	setDish, defaultValue, ingredientKey, ingredientId
 }: UseDishInputProps) {
-	const [inputValue, setInputValue] = useState(data[key] as DishResponse[T])
-
+	const [inputValue, setInputValue] = useState(
+		key ? data[key] : defaultValue
+	)
 	const [updateDish] = useUpdateDishMutation()
 	const [createDish] = useCreateDishMutation()
 	useEffect(() => {
-		setInputValue(data[key] as DishResponse[T])
+		if (key) {
 
-	}, [data, key])
+			setInputValue(data[key] as DishResponse[T])
+		}
+		if (defaultValue) {
+			setInputValue(defaultValue)
+
+		}
+
+	}, [data, key, defaultValue])
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedInputChange = useCallback(
 		debounce(async (value: any) => {
+
+
 			try {
-				const updatedData = { ...data, [key]: value }
+				let updatedData = {} as DishResponse
+				if (key) {
+					updatedData = { ...data, [key]: value }
+				}
+				if (ingredientKey && ingredientId) {
+					const ingredients = data.ingredients.map((ingredient, index) => {
+						if (ingredient.ingredient?.id === ingredientId) {
+							return { ...ingredient, [ingredientKey]: +value }
+						}
+						return ingredient
+					})
+
+					updatedData = {
+						...data, ingredients: ingredients
+					}
+				}
 
 				if (data?.id) {
 					const dish = await updateDish({ id: data.id, data: updatedData }).unwrap()
