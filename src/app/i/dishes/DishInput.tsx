@@ -3,6 +3,8 @@ import { SetStateAction, useRef } from 'react'
 
 import { DishResponse } from '@/types/dish.type'
 
+import { formatValue } from '@/utils/formatValue'
+
 import { useDishInput } from './useDishInput'
 
 export type DishInputProps = {
@@ -39,14 +41,7 @@ const DishInput = ({
 		}
 	}
 
-	const safeValue =
-		typeof inputValue === 'string' || typeof inputValue === 'number'
-			? inputValue
-			: inputValue instanceof Date
-				? inputValue.toISOString()
-				: typeof inputValue === 'object' && inputValue !== null
-					? JSON.stringify(inputValue)
-					: ''
+	const safeValue = formatValue(inputValue)
 
 	return (
 		<input

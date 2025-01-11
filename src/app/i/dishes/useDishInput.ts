@@ -43,7 +43,7 @@ export function useDishInput<T extends keyof DishResponse>({
 
 
 			try {
-				let updatedData = {} as DishResponse
+				let updatedData = { ...data } as DishResponse
 				if (key) {
 					updatedData = { ...data, [key]: value }
 				}
@@ -63,17 +63,19 @@ export function useDishInput<T extends keyof DishResponse>({
 				if (data?.id) {
 					const dish = await updateDish({ id: data.id, data: updatedData }).unwrap()
 					if (JSON.stringify(dish) !== JSON.stringify(updatedData)) {
-						setDish && setDish(updatedData)
+						setDish && setDish((prevDish) => { return { ...prevDish, ...dish } })
 					}
 				} else {
 					const dish = await createDish(updatedData).unwrap()
-					setDish && setDish(dish)
+
+					setDish && setDish(() => dish) // Directly set the new dish
+
 
 				}
 			} catch (error) {
 				console.error("Ошибка при обновлении/создании блюда:", error)
 			}
-		}, 500),
+		}, 700),
 		[data, key, updateDish, createDish, inputRef]
 	)
 

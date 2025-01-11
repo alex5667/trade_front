@@ -12,7 +12,6 @@ type Props = {
 }
 
 const DishIngredients = ({ dish, setDish }: Props) => {
-	console.log('DishIngredients dish', dish)
 	const [output, setOutput] = useState(0)
 	const [sum, setSum] = useState(0)
 	useEffect(() => {
@@ -48,11 +47,11 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 			<h2 className='text-lg font-bold mb-4'>Ингредиенты блюда</h2>
 			<div>
 				<div>
-					<span>Выход (чистый вес)</span>
+					<span className='mr-2'>Выход (чистый вес)</span>
 					<span>{output.toFixed(3)}</span>
 				</div>
 				<div>
-					<span>Сумма</span>
+					<span className='mr-2'>Сумма</span>
 					<span>{sum.toFixed(2)}</span>
 				</div>
 			</div>

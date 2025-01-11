@@ -47,7 +47,6 @@ export const AutocompleteInput = ({
 
 	const { isShow, ref, setIsShow } = useOutside(false)
 	const [dish, setDish] = useState<DishResponse>({} as DishResponse)
-	console.log('AutocompleteInput dish', dish)
 	const {
 		inputValue,
 		handleChange,
@@ -90,26 +89,24 @@ export const AutocompleteInput = ({
 
 	return (
 		<div className={cn(styles.autocompleteContainer, className)}>
-			<AutoCompleteTextarea
-				ref={inputRef}
-				setIsShow={setIsShow}
-				handleChange={handleChange}
-				inputValue={inputValue}
-				{...rest}
-			/>
-			{isShow && dishes && !isError && dishes.length > 0 && (
-				<AutocompleteList
-					ref={ref}
-					dishes={dishes}
-					handleOptionSelect={handleOptionSelect}
+			<div className='w-full relative'>
+				<AutoCompleteTextarea
+					ref={inputRef}
+					setIsShow={setIsShow}
+					handleChange={handleChange}
+					inputValue={inputValue}
+					{...rest}
 				/>
-			)}
-			{!isMenuItem && (
-				<DishCard
-					dish={dish}
-					setDish={memoizedSetDish}
-				/>
-			)}
+				{isShow && dishes && !isError && dishes.length > 0 && (
+					<AutocompleteList
+						ref={ref}
+						dishes={dishes}
+						handleOptionSelect={handleOptionSelect}
+					/>
+				)}
+			</div>
+
+			{!isMenuItem && <DishCard dish={dish} />}
 		</div>
 	)
 }

@@ -1,5 +1,5 @@
 import { URLS } from '@/config/urls'
-import { addAllDishes, addDish, deleteDishById, updateDish } from '@/store/dish/dish.slice'
+import { addAllDishes, addDish, deleteDishById } from '@/store/dish/dish.slice'
 import { TypeRootState } from '@/store/store'
 import { DishFormState, DishResponse } from '@/types/dish.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
@@ -86,18 +86,19 @@ export const dishApi = createApi({
 				url: `${URLS.DISHES}/${id}`,
 				method: 'PUT',
 				body: data
-			}), async onQueryStarted({ id, data }, { dispatch, queryFulfilled, getState }) {
-				const previousTask = (getState() as TypeRootState).dishSlice.items.find(item => item.id === id)
-				dispatch(updateDish({ id, data }))
-				try {
-					await queryFulfilled
-					dispatch(updateDish({ id, data }))
-				} catch (error) {
-					if (previousTask) updateDish({ id, data })
-					console.log("Error to update")
+			}),
+			// async onQueryStarted({ id, data }, { dispatch, queryFulfilled, getState }) {
+			// 	const previousTask = (getState() as TypeRootState).dishSlice.items.find(item => item.id === id)
+			// 	dispatch(updateDish({ id, data }))
+			// 	try {
+			// 		await queryFulfilled
+			// 		dispatch(updateDish({ id, data }))
+			// 	} catch (error) {
+			// 		if (previousTask) updateDish({ id, data })
+			// 		console.log("Error to update")
 
-				}
-			},
+			// 	}
+			// },
 			invalidatesTags: (result, error, arg) => [{ type: 'dishes', id: arg.id }]
 		}),
 		downloadFromExcelDish: builder.mutation<void, { data: string[][]; selectedSheet: string }>({
