@@ -10,7 +10,7 @@ export const ADMINBOARD_PAGES = {
 	SETTINGS: `/i/settings`,
 	AUTH: '/auth',
 }
-export const getSiteUrl = () => process.env.APP_URL as string
+export const getSiteUrl = () => process.env.NEXT_PUBLIC_APP_URL as string
 export const getAdminUrl = (path = '') => `${ADMINBOARD_PAGES.ADMIN}${path}`
 
 export type ADMINBOARD_PAGES_KEYS = keyof typeof ADMINBOARD_PAGES
