@@ -9,11 +9,12 @@ export const fetchInstitutions = async () => {
 		},
 		mode: 'cors'
 	})
-
+	console.log('res', res)
 	if (!res.ok) {
 		throw new Error('Failed to fetch menu items')
 	}
 
 	const data: InstitutionResponse[] = await res.json()
+	console.log('data', data)
 	return data
 }
