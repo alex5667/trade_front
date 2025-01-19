@@ -77,13 +77,13 @@ export type InstitutionType = {
 	slug: string
 }
 
-export const Institution = {
-	'slon-1': 'Слон 1',
-	'slon-2': 'Слон 2',
-	'slon-3': 'Слон 3',
-	kosmicheskaya: 'Космічна',
-	naberezhnaya: 'Набережна',
-}
+// export const Institution = {
+// 	'slon-1': 'Слон 1',
+// 	'slon-2': 'Слон 2',
+// 	'slon-3': 'Слон 3',
+// 	kosmicheskaya: 'Космічна',
+// 	naberezhnaya: 'Набережна',
+// }
 
 // export type InstitutionType = keyof typeof Institution
 
