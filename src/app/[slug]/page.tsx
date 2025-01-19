@@ -15,7 +15,7 @@ import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 import CustomerMenu from './CustomerMenu'
 
 export const metadata: Metadata = {
-	title: 'Home page',
+	title: 'Menu',
 	...NO_INDEX_PAGE
 }
 

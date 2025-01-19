@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 		default: SITE_NAME,
 		template: `%s | ${SITE_NAME}`
 	},
-	description: 'Best one for planning menu',
+	description: 'Boiko School Food Court',
 	metadataBase: new URL(getSiteUrl())
 }
 

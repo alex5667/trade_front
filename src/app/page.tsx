@@ -8,7 +8,7 @@ import { ADMINBOARD_PAGES, getSiteUrl } from '@/config/pages-url.config'
 import { fetchInstitutions } from '@/utils/fetchInstitutions'
 
 export const metadata: Metadata = {
-	title: 'Главная страница',
+	title: 'Головна сторінка',
 	...NO_INDEX_PAGE
 }
 
