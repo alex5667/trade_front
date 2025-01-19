@@ -19,12 +19,13 @@ export const metadata: Metadata = {
 	...NO_INDEX_PAGE
 }
 
-export const revalidate = 600
+export const revalidate = 300
 
 export default async function CustomerPage({ params }: PageSlugParam) {
 	const today = dayjs()
-	const isSaturday = today.day() === 0
-	let weekOffset = isSaturday ? 1 : 0
+	// const isWeekendDay = today.day() === 0
+	// let weekOffset = isWeekendDay ? 1 : 0
+	let weekOffset = 0
 
 	const { startOfWeek, endOfWeek } = getDatesOfWeek(weekOffset)
 
@@ -33,7 +34,6 @@ export default async function CustomerPage({ params }: PageSlugParam) {
 		endDate: endOfWeek,
 		institutionSlug: params.slug
 	} as MenuItemDataFilters)
-
 	if (items.length === 0) {
 		weekOffset = -1
 		const { startOfWeek, endOfWeek } = getDatesOfWeek(weekOffset)

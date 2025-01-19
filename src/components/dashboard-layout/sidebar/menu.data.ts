@@ -19,7 +19,7 @@ export const USERMENU: MenuItem[] = [
 	},
 	{
 		icon: CookingPot,
-		link: `${ADMINBOARD_PAGES.MENU}/slon-1`,
+		link: `${ADMINBOARD_PAGES.MENU}/dityachiy-sadok`,
 		name: 'Меню Слон-1',
 		endPoint: 'getAll'
 	}

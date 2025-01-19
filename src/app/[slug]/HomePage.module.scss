@@ -1,10 +1,10 @@
 @use "@/styles/variables.scss";
 
 .mainContent {
-	@apply grid w-full grid-cols-5 justify-between;
+	@apply grid w-full grid-cols-5 justify-between mx-auto;
 	@media (max-width: 1050px) {
 		grid-template-columns: 1fr;
-		width: 80%;
+		width: 90%;
 	}
 }
 

@@ -82,7 +82,7 @@
 	letter-spacing: 0.2rem;
 	font-weight: 600;
 
-	@include mixins.adaptiveValue("font-size", 32, 28);
+	@include mixins.adaptiveValue("font-size", 32, 30);
 
 	&::after {
 		content: "";
@@ -104,11 +104,18 @@
 			top: 0;
 		}
 		&:hover {
-			> span {
-				color: #ffff;
-			}
+			// > span {
+			color: #ffff;
+			// }
 		}
 	}
+}
+
+.formattedDate {
+	&:hover {
+		color: #ffff;
+	}
+	@include mixins.adaptiveValue("font-size", 18, 16);
 }
 
 .mealWrapper {
@@ -124,7 +131,7 @@
 	line-height: 1.4;
 	letter-spacing: 0.1rem;
 
-	@include mixins.adaptiveValue("font-size", 24, 20);
+	@include mixins.adaptiveValue("font-size", 24, 22);
 }
 
 .dishRow {
@@ -166,7 +173,7 @@
 	}
 
 	&:nth-child(even)::before {
-		background: rgba(121, 79, 69, 0.4);
+		background: rgba(121, 79, 69, 0.37);
 	}
 	&:nth-child(even)::after {
 		background: rgba(0, 0, 0, 0.15);
@@ -177,7 +184,7 @@
 		font-weight: 400;
 		letter-spacing: 0.1rem;
 		// font-size: 18px;
-		@include mixins.adaptiveValue("font-size", 20, 16);
+		@include mixins.adaptiveValue("font-size", 20, 18);
 		display: block;
 		// text-align: justify;
 		white-space: normal;
