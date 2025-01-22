@@ -1,7 +1,7 @@
 'use client'
 
 import cn from 'clsx'
-import { SetStateAction, useCallback, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { DishResponse } from '@/types/dish.type'
@@ -63,12 +63,12 @@ export const AutocompleteInput = ({
 	} = useGetDishByNameQuery(debouncedValue, {
 		skip: !shouldFetch || !debouncedValue || !debouncedValue.trim()
 	})
-	const memoizedSetDish = useCallback(
-		(value: SetStateAction<DishResponse>) => {
-			setDish(value)
-		},
-		[setDish]
-	)
+	// const memoizedSetDish = useCallback(
+	// 	(value: SetStateAction<DishResponse>) => {
+	// 		setDish(value)
+	// 	},
+	// 	[setDish]
+	// )
 	if (isError) {
 		toast.error(errorCatch(error))
 	}

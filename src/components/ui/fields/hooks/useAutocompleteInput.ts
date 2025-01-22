@@ -3,8 +3,8 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 
 
 interface useAutocompleteInput {
-	defaultInputValue: string
 	setIsShow: Dispatch<SetStateAction<boolean>>
+	defaultInputValue?: string
 }
 export function useAutocompleteInput({ defaultInputValue, setIsShow }: useAutocompleteInput) {
 	const [inputValue, setInputValue] = useState<string | ''>(defaultInputValue || '')

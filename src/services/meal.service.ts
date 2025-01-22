@@ -106,8 +106,16 @@ export const mealApi = createApi({
 				}
 			},
 			invalidatesTags: (result, error, arg) => [{ type: 'meals', id: arg.id }]
-		})
+		}),
+		getMealByName: builder.query<MealResponse[], string>({
+			query: (name) => ({
+				url: URLS.MEAL_BY_NAME_CONTAINS,
+				method: 'GET',
+				params: { name },
+			}),
+			providesTags: (result, error, name) => [{ type: 'meals', id: 'LIST' }],
+		}),
 
 	})
 })
-export const { useCreateMealMutation, useGetAllMealsQuery, useDeleteMealMutation, useUpdateMealMutation, useGetMealBySlugQuery } = mealApi
+export const { useCreateMealMutation, useGetAllMealsQuery, useDeleteMealMutation, useUpdateMealMutation, useGetMealBySlugQuery, useGetMealByNameQuery } = mealApi

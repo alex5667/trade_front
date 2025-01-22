@@ -7,7 +7,7 @@ export interface InstitutionResponse {
 	description: string
 	createdAt: string
 	updatedAt: string
-	MenuItem: MenuItemResponse[]
+	MenuItem?: MenuItemResponse[]
 	slug: string
 }
 

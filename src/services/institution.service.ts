@@ -74,14 +74,15 @@ export const institutionApi = createApi({
 		}),
 		getInstitutionByName: builder.query<InstitutionResponse[], string>({
 			query: (name) => ({
-				url: `${URLS.INSTITUTION_BY_NAME}/${name}`,
+				url: URLS.INSTITUTIONS_BY_NAME_CONTAINS,
 				method: 'GET',
+				params: { name },
 			}),
 			providesTags: (result, error, name) => [{ type: 'institutions', id: 'LIST' }],
 		}),
 		getInstitutionBySlug: builder.query<InstitutionResponse, string>({
 			query: (slug) => ({
-				url: `${URLS.INSTITUTION_BY_SLUG}/${slug}`,
+				url: `${URLS.INSTITUTIONS_BY_SLUG}/${slug}`,
 				method: 'GET',
 			}),
 			providesTags: (result, error, name) => [{ type: 'institutions', id: 'LIST' }],

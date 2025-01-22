@@ -6,7 +6,10 @@ export const ADMINBOARD_PAGES = {
 	EXCEL: `/i/excelLoader`,
 	CONSUMPTION: `/i/consumption`,
 	DISHES: `/i/dishes`,
+	DBEDITOR: `/i/dbEditor`,
 	INGREDIENTS: `/i/ingredients`,
+	INSTITUTIONS: `/i/institutions`,
+	MEALS: `/i/meals`,
 	SETTINGS: `/i/settings`,
 	AUTH: '/auth',
 }

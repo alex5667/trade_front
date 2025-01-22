@@ -2,6 +2,7 @@ import { useGetInstitutionBySlugQuery } from '@/services/institution.service'
 import { useGetMealBySlugQuery } from '@/services/meal.service'
 import { useCreateMenuItemMutation, useUpdateMenuItemMutation } from '@/services/menu-item.service'
 import { DishResponse } from '@/types/dish.type'
+import { InstitutionResponse } from '@/types/institution.type'
 import { MenuItemResponse } from '@/types/menuItem.type'
 import { Dispatch, MutableRefObject, SetStateAction, useCallback } from 'react'
 
@@ -30,7 +31,7 @@ export function useOptionSelect(
 
 
 	const handleOptionSelect = useCallback(
-		(dish: DishResponse) => {
+		(dish: DishResponse | InstitutionResponse) => {
 			const { name: option, id: dishId } = dish
 			setInputValue(option)
 			setDebouncedValue(option)

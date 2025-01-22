@@ -16,7 +16,7 @@ export default async function HomePage() {
 	const data = await fetchInstitutions()
 
 	return (
-		<div className='w-[70%}  m-auto flex flex-col items-center justify-start'>
+		<div className='w-[70%]  m-auto flex flex-col items-center justify-start'>
 			{data.map(institution => {
 				const link = `${getSiteUrl()}/${ADMINBOARD_PAGES.CUSTOMER}/${institution.slug}`
 				return (

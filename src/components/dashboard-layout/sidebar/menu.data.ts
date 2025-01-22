@@ -1,9 +1,10 @@
 import {
-	CookingPot,
+	DatabaseZap,
 	FileDown,
 	LayoutDashboard,
-	Salad,
-	Settings, Table
+	Logs,
+	Settings,
+	Table
 } from 'lucide-react'
 
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
@@ -18,9 +19,9 @@ export const USERMENU: MenuItem[] = [
 		endPoint: 'getProfile'
 	},
 	{
-		icon: CookingPot,
-		link: `${ADMINBOARD_PAGES.MENU}/dityachiy-sadok`,
-		name: 'Меню Слон-1',
+		icon: Logs,
+		link: `${ADMINBOARD_PAGES.MENU}`,
+		name: 'Меню',
 		endPoint: 'getAll'
 	}
 	,
@@ -31,7 +32,6 @@ export const USERMENU: MenuItem[] = [
 		endPoint: null
 	}
 	,
-
 
 
 	{
@@ -50,9 +50,9 @@ export const ADMINMENU: MenuItem[] = [
 		endPoint: 'getProfile'
 	},
 	{
-		icon: CookingPot,
-		link: `${ADMINBOARD_PAGES.MENU}/dityachiy-sadok`,
-		name: 'Меню Слон-1',
+		icon: Logs,
+		link: `${ADMINBOARD_PAGES.MENU}`,
+		name: 'Меню',
 		endPoint: 'getAll'
 	},
 	{
@@ -62,20 +62,36 @@ export const ADMINMENU: MenuItem[] = [
 		endPoint: null
 	},
 	{
-		icon: FileDown,
-		link: `${ADMINBOARD_PAGES.EXCEL}`,
-		name: 'Загрузка из excel',
-		endPoint: null
-	},
-	{
-		icon: Salad,
-		link: `${ADMINBOARD_PAGES.DISHES}`,
-		name: 'Блюда',
-		endPoint: null
+		icon: DatabaseZap,
+		link: `${ADMINBOARD_PAGES.DBEDITOR}`,
+		name: 'Работа с базой',
+		endPoint: 'getAll'
 	},
 
-
-
+	// {
+	// 	icon: FileDown,
+	// 	link: `${ADMINBOARD_PAGES.EXCEL}`,
+	// 	name: 'Загрузка из excel',
+	// 	endPoint: null
+	// },
+	// {
+	// 	icon: Salad,
+	// 	link: `${ADMINBOARD_PAGES.DISHES}`,
+	// 	name: 'Блюда',
+	// 	endPoint: null
+	// },
+	// {
+	// 	icon: Landmark,
+	// 	link: `${ADMINBOARD_PAGES.INSTITUTIONS}`,
+	// 	name: 'Точки выдачи',
+	// 	endPoint: null
+	// },
+	// {
+	// 	icon: EggFried,
+	// 	link: `${ADMINBOARD_PAGES.MEALS}`,
+	// 	name: 'Дневной рацион',
+	// 	endPoint: null
+	// },
 	{
 		icon: Settings,
 		link: ADMINBOARD_PAGES.SETTINGS,
