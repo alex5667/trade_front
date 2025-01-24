@@ -3,6 +3,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 
 import { authApi } from '@/services/auth.services'
+import { dishCategoryApi } from '@/services/dish-category.service'
 import { dishApi } from '@/services/dish.service'
 import { institutionApi } from '@/services/institution.service'
 import { mealConsumptionApi } from '@/services/meal-consumption.service'
@@ -10,6 +11,7 @@ import { mealApi } from '@/services/meal.service'
 import { menuItemApi } from '@/services/menu-item.service'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
+import { dishCategorySlice } from './dish-category/dishCategory.slice'
 import { dishSlice } from './dish/dish.slice'
 import { institutionSlice } from './institution/institution.slice'
 import { mealSlice } from './meal/meal.slice'
@@ -30,10 +32,13 @@ const rootReducer = combineReducers({
 	[institutionSlice.reducerPath]: institutionSlice.reducer,
 	[mealApi.reducerPath]: mealApi.reducer,
 	[dishApi.reducerPath]: dishApi.reducer,
+	[dishCategoryApi.reducerPath]: dishCategoryApi.reducer,
 	[institutionApi.reducerPath]: institutionApi.reducer,
 	[mealConsumptionApi.reducerPath]: mealConsumptionApi.reducer,
 	[sidebarSlice.reducerPath]: sidebarSlice.reducer,
 	[dishSlice.reducerPath]: dishSlice.reducer,
+	[dishCategorySlice.reducerPath]: dishCategorySlice.reducer,
+
 
 })
 
@@ -49,6 +54,7 @@ export const store = configureStore({
 			userApi.middleware,
 			authApi.middleware,
 			dishApi.middleware,
+			dishCategoryApi.middleware,
 			institutionApi.middleware,
 			mealApi.middleware,
 			mealConsumptionApi.middleware

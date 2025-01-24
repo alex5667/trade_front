@@ -9,6 +9,7 @@ export const ADMINBOARD_PAGES = {
 	DBEDITOR: `/i/dbEditor`,
 	INGREDIENTS: `/i/ingredients`,
 	INSTITUTIONS: `/i/institutions`,
+	DISHCATEGORIES: `/i/dishCategories`,
 	MEALS: `/i/meals`,
 	SETTINGS: `/i/settings`,
 	AUTH: '/auth',

@@ -15,12 +15,14 @@ import { useAutocompleteInput } from '../fields/hooks/useAutocompleteInput'
 import styles from './SimpleAutocompleteInput.module.scss'
 import { SimpleAutocompleteList } from './SimpleAutocompleteList'
 import { useSimpleOptionSelect } from './useSimpleOptionSelect'
+import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
 
 const fetchQueries = {
 	institution: useGetInstitutionByNameQuery,
-	meal: useGetMealByNameQuery
+	meal: useGetMealByNameQuery,
+	dishCategory: useGetDishCategoryByNameQuery
 }
 
 type SimpleAutocompleteInputProps<T extends { id: number; printName: string }> =
