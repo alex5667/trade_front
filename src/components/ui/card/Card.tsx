@@ -7,6 +7,7 @@ type CardProps<T extends NonNullable<{}>> = { item: T }
 const Card = <T extends NonNullable<{}>>({
 	item: itemInitial
 }: CardProps<T>) => {
+	console.log('itemInitial', itemInitial)
 	const [item, setItem] = useState<T>(itemInitial)
 
 	useEffect(() => {

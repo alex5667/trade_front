@@ -5,6 +5,8 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { authApi } from '@/services/auth.services'
 import { dishCategoryApi } from '@/services/dish-category.service'
 import { dishApi } from '@/services/dish.service'
+import { ingredientAliasApi } from '@/services/ingredient-alias.service'
+import { ingredientApi } from '@/services/ingredient.service'
 import { institutionApi } from '@/services/institution.service'
 import { mealConsumptionApi } from '@/services/meal-consumption.service'
 import { mealApi } from '@/services/meal.service'
@@ -13,6 +15,8 @@ import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { dishCategorySlice } from './dish-category/dishCategory.slice'
 import { dishSlice } from './dish/dish.slice'
+import { ingredientAliasSlice } from './ingredient-alias/ingredient-alias.slice'
+import { ingredientSlice } from './ingredient/ingredient.slice'
 import { institutionSlice } from './institution/institution.slice'
 import { mealSlice } from './meal/meal.slice'
 import { mealConsumptionSlice } from './mealConsumption/meal-consumption.slice'
@@ -38,6 +42,10 @@ const rootReducer = combineReducers({
 	[sidebarSlice.reducerPath]: sidebarSlice.reducer,
 	[dishSlice.reducerPath]: dishSlice.reducer,
 	[dishCategorySlice.reducerPath]: dishCategorySlice.reducer,
+	[ingredientSlice.reducerPath]: ingredientSlice.reducer,
+	[ingredientApi.reducerPath]: ingredientApi.reducer,
+	[ingredientAliasApi.reducerPath]: ingredientAliasApi.reducer,
+	[ingredientAliasSlice.reducerPath]: ingredientAliasSlice.reducer,
 
 
 })
@@ -50,14 +58,15 @@ export const store = configureStore({
 			immutableCheck: false,
 		}).concat(
 			menuItemApi.middleware,
-
 			userApi.middleware,
 			authApi.middleware,
 			dishApi.middleware,
 			dishCategoryApi.middleware,
 			institutionApi.middleware,
 			mealApi.middleware,
-			mealConsumptionApi.middleware
+			mealConsumptionApi.middleware,
+			ingredientApi.middleware,
+			ingredientAliasApi.middleware,
 
 		)
 })

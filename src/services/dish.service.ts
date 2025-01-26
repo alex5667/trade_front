@@ -101,6 +101,7 @@ export const dishApi = createApi({
 			// },
 			invalidatesTags: (result, error, arg) => [{ type: 'dishes', id: arg.id }]
 		}),
+
 		downloadFromExcelDish: builder.mutation<void, { data: string[][]; selectedSheet: string }>({
 			query: data => ({
 				url: URLS.DISHES_EXCEL,

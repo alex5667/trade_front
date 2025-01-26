@@ -1,36 +1,5 @@
 import { DishCategoryResponse } from './dishCategory.type'
-
-// export interface DishResponse {
-// 	id: number
-// 	name: string
-// 	printName: string | ''
-// 	description?: string | null
-// 	price?: number | null
-// 	category?: DishCategoryResponse
-// 	createdAt?: Date
-// 	updatedAt?: Date
-// 	slug: string
-// }
-
-
-export interface Ingredient {
-	id: number
-	name: string
-	printName: string
-	description?: string
-	unit?: string
-	price?: number
-	isAllergen?: boolean
-	createdAt: Date
-	updatedAt: Date
-}
-
-export interface DishIngredient {
-	grossWeight?: number
-	coldLossPercent?: number
-	heatLossPercent?: number
-	ingredient?: Ingredient
-}
+import { DishIngredient, IngredientDto } from './ingredient.type'
 
 export interface DishResponse {
 	id: number
@@ -46,12 +15,6 @@ export interface DishResponse {
 	ingredients: DishIngredient[]
 }
 
-export interface IngredientDto {
-	ingredientId: number
-	grossWeight: number
-	coldLossPercent?: number
-	heatLossPercent?: number
-}
 
 
 
