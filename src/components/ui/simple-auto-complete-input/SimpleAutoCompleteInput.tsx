@@ -44,7 +44,6 @@ export const SimpleAutocompleteInput = <
 	item: parentItem
 }: SimpleAutocompleteInputProps<T>): JSX.Element => {
 	const inputRef = useRef<HTMLTextAreaElement>(null)
-	console.log('parentItem', parentItem)
 	const { isShow, ref, setIsShow } = useOutside(false)
 	const [item, setItem] = useState<T | null>(parentItem?.id ? parentItem : null)
 

@@ -9,13 +9,20 @@ export type InputProps<T> = {
 	item: T
 	keyName?: keyof T
 	setItem?: (value: SetStateAction<T>) => void
+	fetchFunction: string
 }
 
-const CardInput = <T,>({ item, setItem, keyName }: InputProps<T>) => {
+const CardInput = <T,>({
+	item,
+	setItem,
+	keyName,
+	fetchFunction
+}: InputProps<T>) => {
 	const inputRef = useRef<HTMLInputElement>(null)
 	const { inputValue, handleChange, setInputValue } = useCardInput({
 		inputRef,
 		data: item,
+		fetchFunction,
 		setItem,
 		keyName
 	})
@@ -39,4 +46,4 @@ const CardInput = <T,>({ item, setItem, keyName }: InputProps<T>) => {
 }
 
 export default CardInput
-CardInput.displayName = 'DishInput'
+CardInput.displayName = 'CardInput'

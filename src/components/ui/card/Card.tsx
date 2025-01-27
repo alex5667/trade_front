@@ -2,12 +2,12 @@ import { SetStateAction, memo, useEffect, useState } from 'react'
 
 import CardInput from './CardInput'
 
-type CardProps<T extends NonNullable<{}>> = { item: T }
+type CardProps<T extends NonNullable<{}>> = { item: T; fetchFunction: string }
 
 const Card = <T extends NonNullable<{}>>({
-	item: itemInitial
+	item: itemInitial,
+	fetchFunction
 }: CardProps<T>) => {
-	console.log('itemInitial', itemInitial)
 	const [item, setItem] = useState<T>(itemInitial)
 
 	useEffect(() => {
@@ -31,6 +31,7 @@ const Card = <T extends NonNullable<{}>>({
 						item={item}
 						keyName={key as keyof T}
 						setItem={setItem as (value: SetStateAction<T>) => void}
+						fetchFunction={fetchFunction}
 					/>
 				</div>
 			))}
