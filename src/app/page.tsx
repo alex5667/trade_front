@@ -18,7 +18,7 @@ export default async function HomePage() {
 	return (
 		<div className='w-[70%]  m-auto flex flex-col items-center justify-start'>
 			{data.map(institution => {
-				const link = `${getSiteUrl()}/${ADMINBOARD_PAGES.CUSTOMER}/${institution.slug}`
+				const link = `${getSiteUrl()}${ADMINBOARD_PAGES.CUSTOMER}${institution.slug}`
 				return (
 					<Link
 						key={institution.id}

@@ -2,10 +2,10 @@ import { useCreateDishCategoryMutation, useUpdateDishCategoryMutation } from '@/
 import { useCreateIngredientMutation, useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useCreateInstitutionMutation, useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useCreateMealMutation, useUpdateMealMutation } from '@/services/meal.service'
-import { DishCategoryResponse } from '@/types/dishCategory.type'
-import { IngredientResponse } from '@/types/ingredient.type'
-import { InstitutionResponse } from '@/types/institution.type'
-import { MealResponse } from '@/types/meal.type'
+import { DishCategoryFormState } from '@/types/dishCategory.type'
+import { IngredientFormState } from '@/types/ingredient.type'
+import { InstitutionFormState } from '@/types/institution.type'
+import { MealFormState } from '@/types/meal.type'
 import { debounce } from '@/utils/debounce'
 import { MutableRefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
 const fetchQueries = {
@@ -15,10 +15,13 @@ const fetchQueries = {
   ingredient: [useUpdateIngredientMutation, useCreateIngredientMutation]
 }
 type FetchQueryData =
-  | (Partial<Omit<InstitutionResponse, "id" | "createdAt" | "updatedAt">> & { id?: string })
-  | (Partial<Omit<MealResponse, "id" | "updatedAt">> & { id?: string })
-  | (Partial<Omit<DishCategoryResponse, "id" | "createdAt" | "updatedAt">> & { id?: string })
-  | (Partial<Omit<IngredientResponse, "id" | "createdAt" | "updatedAt">> & { id?: string })
+  | InstitutionFormState
+  | MealFormState
+  | DishCategoryFormState
+  | IngredientFormState
+
+
+
 type UseCardInputProps<T> = {
   inputRef: MutableRefObject<HTMLInputElement | null>
   data: T
@@ -29,7 +32,7 @@ type UseCardInputProps<T> = {
 
 }
 
-export function useCardInput<T extends FetchQueryData, K extends keyof T>({
+export function useCardInput<T, K extends keyof T>({
   inputRef,
   data,
   setItem,
@@ -67,14 +70,14 @@ export function useCardInput<T extends FetchQueryData, K extends keyof T>({
         if ((data as any)?.id) {
           const item = await updateItem({
             id: (data as any).id,
-            data: updatedData,
+            data: updatedData as FetchQueryData,
           }).unwrap()
           if (JSON.stringify(item) !== JSON.stringify(updatedData)) {
             setItem && setItem((prevItem) => ({ ...prevItem, ...item }))
           }
         } else {
-          const item = await createItem(updatedData).unwrap()
-          setItem && setItem(() => item)
+          const item = await createItem(updatedData as any).unwrap()
+          setItem && setItem(() => item as T)
         }
       } catch (error) {
         console.error('Ошибка при обновлении/создании:', error)

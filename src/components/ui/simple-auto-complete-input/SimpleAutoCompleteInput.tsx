@@ -102,7 +102,12 @@ export const SimpleAutocompleteInput = <
 				)}
 			</div>
 
-			{item && <Card item={item} />}
+			{item && (
+				<Card
+					item={item}
+					fetchFunction={fetchFunction}
+				/>
+			)}
 		</div>
 	)
 }
