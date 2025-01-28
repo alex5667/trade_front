@@ -30,7 +30,7 @@ export function useOptionSelect(
 
 
 	const handleOptionSelect = useCallback(
-		(dish: DishResponse) => {
+		(dish: any) => {
 			const { name: option, id: dishId } = dish
 			setInputValue(option)
 			setDebouncedValue(option)
