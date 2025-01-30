@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 	...NO_INDEX_PAGE
 }
 
-export const revalidate = 300
+export const revalidate = 180
 
 export default async function CustomerPage({ params }: PageSlugParam) {
 	const today = dayjs()
