@@ -8,7 +8,7 @@ export const getDatesOfWeek = (weekOffset = 0) => {
 
 	const startOfWeek = today
 		.startOf('week')
-		.add(1, 'day')
+		.add(2, 'day')
 		.utc()
 		.startOf('day')
 		.toISOString()
@@ -20,7 +20,7 @@ export const getDatesOfWeek = (weekOffset = 0) => {
 	for (let i = 0; i < 7; i++) {
 		const date = today
 			.startOf('week')
-			.add(1, 'day').add(i, 'day').utc().startOf('day')
+			.add(2, 'day').add(i, 'day').utc().startOf('day')
 		const dayOfWeek = date.format('dddd').toUpperCase()
 		datesOfWeek[dayOfWeek] = date.toISOString()
 	}
