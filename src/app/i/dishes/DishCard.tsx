@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react'
+import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 
 import { DishResponse } from '@/types/dish.type'
 
@@ -16,6 +16,10 @@ const DishCard = memo(({ dish: initialDish }: DishCard) => {
 		setDish(initialDish)
 	}, [initialDish])
 
+	const memoizedSetDish = useCallback((value: SetStateAction<DishResponse>) => {
+		setDish(value)
+	}, [])
+
 	if (!dish || Object.keys(dish).length === 0) {
 		return <p>Блюдо не выбрано.</p>
 	}
@@ -30,7 +34,7 @@ const DishCard = memo(({ dish: initialDish }: DishCard) => {
 							<DishIngredients
 								key={index}
 								dish={dish}
-								setDish={setDish}
+								setDish={memoizedSetDish}
 							/>
 						)
 					}
@@ -44,7 +48,7 @@ const DishCard = memo(({ dish: initialDish }: DishCard) => {
 							<DishInput
 								dish={dish}
 								keyName={key}
-								setDish={setDish}
+								setDish={memoizedSetDish}
 							/>
 						</div>
 					)

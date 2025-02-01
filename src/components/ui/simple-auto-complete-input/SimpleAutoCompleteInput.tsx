@@ -29,10 +29,11 @@ const fetchQueries = {
 
 type SimpleAutocompleteInputProps<T extends { id: number; printName: string }> =
 	{
-		className?: string
 		fetchFunction: keyof typeof fetchQueries
+		className?: string
 		setItem?: (value: SetStateAction<T | null>) => void
-		item?: T
+		item?: T | null
+		isVisibleCard?: boolean
 	}
 
 export const SimpleAutocompleteInput = <
@@ -41,19 +42,17 @@ export const SimpleAutocompleteInput = <
 	className,
 	fetchFunction,
 	setItem: setItemToParent,
-	item: parentItem
+	item: parentItem,
+	isVisibleCard = true
 }: SimpleAutocompleteInputProps<T>): JSX.Element => {
 	const inputRef = useRef<HTMLTextAreaElement>(null)
 	const { isShow, ref, setIsShow } = useOutside(false)
 	const [item, setItem] = useState<T | null>(parentItem?.id ? parentItem : null)
-
 	useEffect(() => {
 		if (parentItem) setItem(parentItem)
 	}, [parentItem])
 
 	useEffect(() => {
-		console.log('Item updated:', item) // Для отладки
-
 		setItemToParent && setItemToParent(item)
 	}, [setItemToParent, item])
 	const {
@@ -65,6 +64,12 @@ export const SimpleAutocompleteInput = <
 		setDebouncedValue,
 		setInputValue
 	} = useAutocompleteInput({ setIsShow })
+
+	useEffect(() => {
+		if (parentItem) {
+			setInputValue(parentItem.printName)
+		}
+	}, [parentItem, setInputValue])
 
 	const queryHook = fetchQueries[fetchFunction]
 	const { data, isError, error } = queryHook(debouncedValue, {
@@ -102,7 +107,7 @@ export const SimpleAutocompleteInput = <
 				)}
 			</div>
 
-			{item && (
+			{item && isVisibleCard && (
 				<Card
 					item={item}
 					fetchFunction={fetchFunction}

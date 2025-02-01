@@ -4,8 +4,8 @@ import { debounce } from '@/utils/debounce'
 import { MutableRefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
 
 interface UseDishInputProps {
-	inputRef: MutableRefObject<HTMLInputElement | null>
 	dish: DishResponse
+	inputRef?: MutableRefObject<HTMLInputElement | null>
 	key?: keyof DishResponse
 	setDish?: (value: SetStateAction<DishResponse>) => void,
 	defaultValue?: string | number
@@ -22,7 +22,7 @@ export function useDishInput<T extends keyof DishResponse>({
 	setDish, defaultValue, ingredientKey, ingredientId
 }: UseDishInputProps) {
 	const [inputValue, setInputValue] = useState(
-		key ? data[key] : defaultValue
+		key ? dish[key] : defaultValue
 	)
 	const [updateDish] = useUpdateDishMutation()
 	const [createDish] = useCreateDishMutation()
@@ -45,10 +45,11 @@ export function useDishInput<T extends keyof DishResponse>({
 			try {
 				let updatedData = { ...dish } as DishResponse
 				if (key) {
-					updatedData = { ...dish, [key]: value }
+					updatedData = { ...dish, [key]: +value }
 				}
 				if (ingredientKey && ingredientId) {
 					const ingredients = dish.ingredients.map((ingredient, index) => {
+
 						if (ingredient.ingredient?.id === ingredientId) {
 							return { ...ingredient, [ingredientKey]: +value }
 						}

@@ -8,7 +8,7 @@
 
 .input {
 	background: transparent;
-	@apply hover:bg-sidebar w-full rounded-sm overflow-hidden text-ellipsis  mr-2 px-2 py-2	resize-none bg-transparent focus:bg-db-bg;
+	@apply hover:bg-sidebar w-full rounded-sm overflow-hidden text-ellipsis  mr-2 px-2 py-2	resize-none bg-transparent focus:bg-db-bg text-row-black;
 }
 
 .autocompleteList {
