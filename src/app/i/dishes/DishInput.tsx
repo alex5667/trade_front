@@ -28,7 +28,7 @@ const DishInput = ({
 	const inputRef = useRef<HTMLInputElement>(null)
 	const { inputValue, handleChange, setInputValue } = useDishInput({
 		inputRef,
-		data: dish,
+		dish,
 		setDish,
 		key: keyName,
 		defaultValue,

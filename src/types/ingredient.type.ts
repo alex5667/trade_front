@@ -1,4 +1,5 @@
 import { IngredientAliasResponse } from './ingredient-alias.type'
+import { IngredientSupplier } from './supplier.type'
 
 export interface IngredientResponse {
 	id: number
@@ -13,6 +14,8 @@ export interface IngredientResponse {
 	slug: string
 	priceUpdatedAt: Date
 	aliases: IngredientAliasResponse[]
+	suppliers: IngredientSupplier[]
+
 }
 
 export interface DishIngredient {

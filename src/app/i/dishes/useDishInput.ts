@@ -5,7 +5,7 @@ import { MutableRefObject, SetStateAction, useCallback, useEffect, useState } fr
 
 interface UseDishInputProps {
 	inputRef: MutableRefObject<HTMLInputElement | null>
-	data: DishResponse
+	dish: DishResponse
 	key?: keyof DishResponse
 	setDish?: (value: SetStateAction<DishResponse>) => void,
 	defaultValue?: string | number
@@ -17,7 +17,7 @@ interface UseDishInputProps {
 
 export function useDishInput<T extends keyof DishResponse>({
 	inputRef,
-	data,
+	dish,
 	key,
 	setDish, defaultValue, ingredientKey, ingredientId
 }: UseDishInputProps) {
@@ -29,26 +29,26 @@ export function useDishInput<T extends keyof DishResponse>({
 	useEffect(() => {
 		if (key) {
 
-			setInputValue(data[key] as DishResponse[T])
+			setInputValue(dish[key] as DishResponse[T])
 		}
 		if (defaultValue) {
 			setInputValue(defaultValue)
 
 		}
 
-	}, [data, key, defaultValue])
+	}, [dish, key, defaultValue])
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedInputChange = useCallback(
 		debounce(async (value: any) => {
 
 
 			try {
-				let updatedData = { ...data } as DishResponse
+				let updatedData = { ...dish } as DishResponse
 				if (key) {
-					updatedData = { ...data, [key]: value }
+					updatedData = { ...dish, [key]: value }
 				}
 				if (ingredientKey && ingredientId) {
-					const ingredients = data.ingredients.map((ingredient, index) => {
+					const ingredients = dish.ingredients.map((ingredient, index) => {
 						if (ingredient.ingredient?.id === ingredientId) {
 							return { ...ingredient, [ingredientKey]: +value }
 						}
@@ -56,19 +56,19 @@ export function useDishInput<T extends keyof DishResponse>({
 					})
 
 					updatedData = {
-						...data, ingredients: ingredients
+						...dish, ingredients: ingredients
 					}
 				}
 
-				if (data?.id) {
-					const dish = await updateDish({ id: data.id, data: updatedData }).unwrap()
-					if (JSON.stringify(dish) !== JSON.stringify(updatedData)) {
-						setDish && setDish((prevDish) => { return { ...prevDish, ...dish } })
+				if (dish?.id) {
+					const dishResponse = await updateDish({ id: dish.id, data: updatedData }).unwrap()
+					if (JSON.stringify(dishResponse) !== JSON.stringify(updatedData)) {
+						setDish && setDish((prevDish) => { return { ...prevDish, ...dishResponse } })
 					}
 				} else {
-					const dish = await createDish(updatedData).unwrap()
+					const dishResponse = await createDish(updatedData).unwrap()
 
-					setDish && setDish(() => dish) // Directly set the new dish
+					setDish && setDish(() => dishResponse) // Directly set the new dish
 
 
 				}
@@ -76,7 +76,7 @@ export function useDishInput<T extends keyof DishResponse>({
 				console.error("Ошибка при обновлении/создании блюда:", error)
 			}
 		}, 700),
-		[data, key, updateDish, createDish, inputRef]
+		[dish, key, updateDish, createDish, inputRef]
 	)
 
 	const handleChange = useCallback(

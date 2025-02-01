@@ -19,7 +19,6 @@ import {
 
 const Ingredients = () => {
 	const [ingredient, setIngredient] = useState<IngredientResponse | null>(null)
-	console.log('ingredient', ingredient)
 	const { isLoading } = useGetAliasesByIngredientNameQuery(
 		(ingredient?.name ?? '') as string,
 		{ skip: !ingredient?.name }
