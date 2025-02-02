@@ -4,7 +4,7 @@ import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 
 import { SimpleAutocompleteInput } from '@/components/ui/simple-auto-complete-input/SimpleAutoCompleteInput'
 
-import { DishResponse } from '@/types/dish.type'
+import { DishFormState } from '@/types/dish.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 
 import {
@@ -13,9 +13,9 @@ import {
 } from '@/services/dish.service'
 
 export type SelectionIngredientProps = {
-	dish: DishResponse
+	dish: DishFormState
 	ingredient: IngredientResponse | undefined
-	setDish?: (value: SetStateAction<DishResponse>) => void
+	setDish?: (value: SetStateAction<DishFormState>) => void
 }
 
 const SelectionIngredient = ({
@@ -24,7 +24,7 @@ const SelectionIngredient = ({
 	setDish
 }: SelectionIngredientProps) => {
 	console.log('parentIngredient', parentIngredient)
-	// Изначально значение берётся из parentIngredient (если оно задано)
+
 	const [ingredientSelection, setIngredientSelection] =
 		useState<IngredientResponse | null>(
 			parentIngredient?.id ? parentIngredient : null
@@ -33,7 +33,12 @@ const SelectionIngredient = ({
 
 	const [updateDish] = useUpdateDishMutation()
 	const [createDish] = useCreateDishMutation()
-	const clearIngredients = dish.ingredients.filter(ing => ing.ingredient?.id)
+
+	// Фильтруем ингредиенты, оставляя только те, у которых есть ingredient.id
+	const clearIngredients = (dish.ingredients ?? []).filter(
+		ing => ing.ingredient?.id
+	)
+
 	const memoizedSetIngredientSelection = useCallback(
 		(value: SetStateAction<IngredientResponse | null>) => {
 			setIngredientSelection(value)
@@ -42,74 +47,54 @@ const SelectionIngredient = ({
 	)
 
 	useEffect(() => {
-		// Если выбранный ингредиент не валиден – не обновляем
-		if (
-			!ingredientSelection ||
-			!('id' in ingredientSelection) ||
-			!ingredientSelection.id
-		) {
-			console.log(
-				'Нет валидного выбранного ингредиента, обновление не выполняется',
-				ingredientSelection
-			)
+		if (!ingredientSelection?.id) {
+			console.log('Нет валидного выбранного ингредиента')
 			return
 		}
 
-		let updatedIngredients
+		let updatedIngredients = [...clearIngredients]
 
 		if (parentIngredient?.id) {
-			// Редактирование существующей записи.
-			// Ищем запись по parentIngredient.id в текущем массиве ингредиентов
-			const ingredientIndex = clearIngredients.findIndex(
+			const ingredientIndex = updatedIngredients.findIndex(
 				ing => ing.ingredient?.id === parentIngredient.id
 			)
 
 			if (ingredientIndex === -1) {
-				// Если запись не найдена (например, рассинхронизация) – добавляем новый ингредиент.
-				updatedIngredients = [
-					...clearIngredients,
-					{
-						ingredient: ingredientSelection,
-						grossWeight: 0,
-						coldLossPercent: 0,
-						heatLossPercent: 0
-					}
-				]
-			} else {
-				// Если запись найдена, проверяем, изменился ли выбранный ингредиент.
-				if (
-					clearIngredients[ingredientIndex].ingredient?.id ===
-					ingredientSelection.id
-				) {
-					// Если выбранный ингредиент совпадает с текущим – выходим.
-					return
-				}
-				updatedIngredients = clearIngredients.map((ing, idx) =>
-					idx === ingredientIndex
-						? { ...ing, ingredient: ingredientSelection }
-						: ing
-				)
-			}
-		} else {
-			// Если parentIngredient отсутствует – добавляем новую запись.
-			updatedIngredients = [
-				...clearIngredients,
-				{
+				updatedIngredients.push({
 					ingredient: ingredientSelection,
 					grossWeight: 0,
 					coldLossPercent: 0,
 					heatLossPercent: 0
+				})
+			} else if (
+				updatedIngredients[ingredientIndex].ingredient?.id !==
+				ingredientSelection.id
+			) {
+				updatedIngredients[ingredientIndex] = {
+					...updatedIngredients[ingredientIndex],
+					ingredient: ingredientSelection
 				}
-			]
+			} else {
+				return
+			}
+		} else {
+			updatedIngredients.push({
+				ingredient: ingredientSelection,
+				grossWeight: 0,
+				coldLossPercent: 0,
+				heatLossPercent: 0
+			})
 		}
 
-		// Если новый массив ингредиентов совпадает с текущим – обновление не требуется.
-		if (
-			JSON.stringify(updatedIngredients) === JSON.stringify(clearIngredients)
-		) {
-			console.log(
-				'Новый массив ингредиентов совпадает с текущим, обновление не требуется.'
+		const arraysAreEqual =
+			updatedIngredients.length === clearIngredients.length &&
+			updatedIngredients.every(
+				(ing, idx) =>
+					ing.ingredient?.id === clearIngredients[idx]?.ingredient?.id
 			)
+
+		if (arraysAreEqual) {
+			console.log('Массив ингредиентов не изменился')
 			return
 		}
 
@@ -123,7 +108,6 @@ const SelectionIngredient = ({
 						id: dish.id,
 						data: updatedData
 					}).unwrap()
-					// Обновляем состояние блюда из ответа API
 					setDish && setDish(prevDish => ({ ...prevDish, ...dishResponse }))
 				} else {
 					const dishResponse = await createDish(updatedData).unwrap()
@@ -135,15 +119,16 @@ const SelectionIngredient = ({
 		}
 
 		updateOrCreateDish()
-		// Зависимости: вызываем эффект только при изменении выбранного ингредиента, parentIngredient или dish.id
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		ingredientSelection?.id,
 		parentIngredient?.id,
 		dish.id,
 		updateDish,
 		createDish,
-		setDish
+		setDish,
+		ingredientSelection,
+		clearIngredients,
+		dish
 	])
 
 	return (
@@ -160,28 +145,23 @@ const areEqual = (
 	prevProps: SelectionIngredientProps,
 	nextProps: SelectionIngredientProps
 ): boolean => {
-	if (prevProps.dish.id !== nextProps.dish.id) {
-		return false
+	if (prevProps.dish.id !== nextProps.dish.id) return false
+	if (prevProps.dish.name !== nextProps.dish.name) return false
+
+	const prevIngredients = prevProps.dish.ingredients ?? []
+	const nextIngredients = nextProps.dish.ingredients ?? []
+
+	if (prevIngredients.length !== nextIngredients.length) return false
+
+	for (let i = 0; i < prevIngredients.length; i++) {
+		const prevIng = prevIngredients[i].ingredient
+		const nextIng = nextIngredients[i].ingredient
+		if (prevIng?.id !== nextIng?.id) return false
 	}
-	if (prevProps.dish.name !== nextProps.dish.name) {
-		return false
-	}
-	if (prevProps.dish.ingredients.length !== nextProps.dish.ingredients.length) {
-		return false
-	}
-	for (let i = 0; i < prevProps.dish.ingredients.length; i++) {
-		const prevIng = prevProps.dish.ingredients[i].ingredient
-		const nextIng = nextProps.dish.ingredients[i].ingredient
-		if (prevIng?.id !== nextIng?.id) {
-			return false
-		}
-	}
-	if (prevProps.ingredient?.id !== nextProps.ingredient?.id) {
-		return false
-	}
-	if (prevProps.setDish !== nextProps.setDish) {
-		return false
-	}
+
+	if (prevProps.ingredient?.id !== nextProps.ingredient?.id) return false
+	if (prevProps.setDish !== nextProps.setDish) return false
+
 	return true
 }
 

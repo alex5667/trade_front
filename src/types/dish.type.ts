@@ -36,4 +36,4 @@ export interface DishDto extends Omit<DishResponse, 'ingredients'> {
 }
 
 export type DishResponseKeys = keyof DishResponse
-export type DishFormState = Pick<DishResponse, 'name' | 'printName' | 'category'> & Partial<Omit<DishResponse, 'name' | 'printName' | 'category'>>
+export type DishFormState = Pick<DishResponse, 'name' | 'printName'> & Partial<Omit<DishResponse, 'name' | 'printName'>>

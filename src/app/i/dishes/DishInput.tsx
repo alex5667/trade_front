@@ -1,16 +1,16 @@
 import cn from 'clsx'
 import { SetStateAction, useRef } from 'react'
 
-import { DishResponse } from '@/types/dish.type'
+import { DishFormState } from '@/types/dish.type'
 
 import { formatValue } from '@/utils/formatValue'
 
 import { useDishInput } from './useDishInput'
 
 export type DishInputProps = {
-	dish: DishResponse
-	keyName?: keyof DishResponse
-	setDish?: (value: SetStateAction<DishResponse>) => void
+	dish: DishFormState
+	keyName?: keyof DishFormState
+	setDish?: (value: SetStateAction<DishFormState>) => void
 	defaultValue?: string | number
 	ingredientKey?: string
 	ingredientId?: number

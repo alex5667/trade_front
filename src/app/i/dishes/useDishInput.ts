@@ -1,13 +1,13 @@
 import { useCreateDishMutation, useUpdateDishMutation } from '@/services/dish.service'
-import { DishResponse } from '@/types/dish.type'
+import { DishFormState, DishResponse } from '@/types/dish.type'
 import { debounce } from '@/utils/debounce'
 import { MutableRefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
 
 interface UseDishInputProps {
-	dish: DishResponse
+	dish: DishFormState
 	inputRef?: MutableRefObject<HTMLInputElement | null>
-	key?: keyof DishResponse
-	setDish?: (value: SetStateAction<DishResponse>) => void,
+	key?: keyof DishFormState
+	setDish?: (value: SetStateAction<DishFormState>) => void,
 	defaultValue?: string | number
 	ingredientKey?: string
 	ingredientId?: number
@@ -15,7 +15,7 @@ interface UseDishInputProps {
 
 }
 
-export function useDishInput<T extends keyof DishResponse>({
+export function useDishInput<T extends keyof DishFormState>({
 	inputRef,
 	dish,
 	key,
@@ -43,11 +43,11 @@ export function useDishInput<T extends keyof DishResponse>({
 
 
 			try {
-				let updatedData = { ...dish } as DishResponse
+				let updatedData = { ...dish } as DishFormState
 				if (key) {
 					updatedData = { ...dish, [key]: +value }
 				}
-				if (ingredientKey && ingredientId) {
+				if (ingredientKey && ingredientId && dish.ingredients) {
 					const ingredients = dish.ingredients.map((ingredient, index) => {
 
 						if (ingredient.ingredient?.id === ingredientId) {

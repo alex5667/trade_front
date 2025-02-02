@@ -4,15 +4,15 @@ import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 
-import { DishResponse } from '@/types/dish.type'
+import { DishFormState, DishResponse } from '@/types/dish.type'
 
 import DishInput from './DishInput'
 import SelectionIngredient from './SelectionIngredient'
 import { useUpdateDishMutation } from '@/services/dish.service'
 
 type Props = {
-	dish: DishResponse
-	setDish?: (value: SetStateAction<DishResponse>) => void
+	dish: DishFormState
+	setDish?: (value: SetStateAction<DishFormState>) => void
 }
 
 const DishIngredients = ({ dish, setDish }: Props) => {
@@ -50,7 +50,7 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 		// Обновляем состояние блюда, добавляя новый ингредиент
 		setDish(prevDish => ({
 			...prevDish,
-			ingredients: [...prevDish.ingredients, newIngredient]
+			ingredients: [...(prevDish.ingredients ?? []), newIngredient]
 		}))
 	}, [setDish])
 
@@ -71,28 +71,34 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 	// }
 
 	useEffect(() => {
-		const out = dish.ingredients.reduce((acc, curr) => {
-			let outputWeight = curr.grossWeight || 0
-			if (curr.grossWeight) {
-				if (curr.coldLossPercent) {
-					outputWeight *= 1 - curr.coldLossPercent / 100
+		const out =
+			dish.ingredients &&
+			dish.ingredients?.length > 0 &&
+			dish.ingredients.reduce((acc, curr) => {
+				let outputWeight = curr.grossWeight || 0
+				if (curr.grossWeight) {
+					if (curr.coldLossPercent) {
+						outputWeight *= 1 - curr.coldLossPercent / 100
+					}
+					if (curr.heatLossPercent) {
+						outputWeight *= 1 - curr.heatLossPercent / 100
+					}
 				}
-				if (curr.heatLossPercent) {
-					outputWeight *= 1 - curr.heatLossPercent / 100
-				}
-			}
-			return acc + outputWeight
-		}, 0)
-		setOutput(out)
+				return acc + outputWeight
+			}, 0)
+		setOutput(out ? out : 0)
 
-		const sumVal = dish.ingredients.reduce((acc, curr) => {
-			const price =
-				curr.ingredient?.price && curr.grossWeight
-					? curr.ingredient.price * curr.grossWeight
-					: 0
-			return acc + price
-		}, 0)
-		setSum(sumVal)
+		const sumVal =
+			dish.ingredients &&
+			dish.ingredients?.length > 0 &&
+			dish.ingredients.reduce((acc, curr) => {
+				const price =
+					curr.ingredient?.price && curr.grossWeight
+						? curr.ingredient.price * curr.grossWeight
+						: 0
+				return acc + price
+			}, 0)
+		setSum(sumVal ? sumVal : 0)
 	}, [dish.ingredients])
 
 	return (
@@ -109,7 +115,7 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 					<span>{sum.toFixed(2)}</span>
 				</div>
 			</div>
-			{dish.ingredients.length > 0 ? (
+			{dish.ingredients && dish.ingredients.length > 0 ? (
 				<table className='table-auto border-collapse border border-gray-300 w-full'>
 					<thead>
 						<tr>
