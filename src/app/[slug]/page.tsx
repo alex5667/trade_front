@@ -23,9 +23,9 @@ export const revalidate = 180
 
 export default async function CustomerPage({ params }: PageSlugParam) {
 	const today = dayjs()
-	const isWeekendDay = today.day() === 0
-	let weekOffset = isWeekendDay ? 1 : 0
-	// let weekOffset = 0
+	// const isWeekendDay = today.day() === 0
+	// let weekOffset = isWeekendDay ? 1 : 0
+	let weekOffset = 0
 
 	const { startOfWeek, endOfWeek } = getDatesOfWeek(weekOffset)
 
