@@ -1,35 +1,46 @@
 import dayjs from 'dayjs'
+import isoWeek from 'dayjs/plugin/isoWeek'
 import utc from 'dayjs/plugin/utc'
 
 dayjs.extend(utc)
+dayjs.extend(isoWeek) // Используем ISO-неделю (где понедельник — первый день недели)
 
 export const getDatesOfWeek = (weekOffset = 0) => {
 	const today = dayjs().add(weekOffset, 'week')
 
+	// Начало недели (ISO: понедельник)
 	const startOfWeek = today
-		.startOf('week')
-		.add(1, 'day')
+		.startOf('isoWeek') // Начало недели (ISO 8601: понедельник)
 		.utc()
 		.startOf('day')
 		.toISOString()
 
-	const endOfWeek = today.endOf('week').utc().startOf('day').toISOString()
+	// Конец недели (воскресенье)
+	const endOfWeek = today
+		.endOf('isoWeek') // Конец недели (ISO 8601: воскресенье)
+		.utc()
+		.startOf('day')
+		.toISOString()
 
+	// Генерация дат для каждого дня недели
 	const datesOfWeek: { [key: string]: string } = {}
 
 	for (let i = 0; i < 7; i++) {
 		const date = today
-			.startOf('week')
-			.add(1, 'day').add(i, 'day').utc().startOf('day')
+			.startOf('isoWeek') // Начало недели (понедельник)
+			.add(i, 'day') // Добавляем дни по порядку
+			.utc()
+			.startOf('day')
+
 		const dayOfWeek = date.format('dddd').toUpperCase()
 		datesOfWeek[dayOfWeek] = date.toISOString()
 	}
 
-
 	return {
-		startOfWeek, endOfWeek, datesOfWeek
+		startOfWeek,
+		endOfWeek,
+		datesOfWeek
 	}
-
 }
 
 
