@@ -11,7 +11,7 @@ export const getDatesOfWeek = (weekOffset = 0) => {
 	// Начало недели (ISO: понедельник)
 	const startOfWeek = today
 		.startOf('isoWeek')
-		.add(1, 'day')
+		// .add(1, 'day')
 		.utc()
 		.startOf('day')
 		.toISOString()
@@ -29,7 +29,7 @@ export const getDatesOfWeek = (weekOffset = 0) => {
 	for (let i = 0; i < 7; i++) {
 		const date = today
 			.startOf('isoWeek')
-			.add(1, 'day') // Начало недели (понедельник)
+			// .add(1, 'day') // Начало недели (понедельник)
 			.add(i, 'day') // Добавляем дни по порядку
 			.utc()
 			.startOf('day')
