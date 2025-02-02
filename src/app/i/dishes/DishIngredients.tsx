@@ -23,16 +23,21 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 	// Функция для удаления ингредиента по индексу
 	const handleDeleteIngredient = async (index: number) => {
 		if (setDish) {
-			const ingredients = dish.ingredients.filter((_, i) => i !== index)
+			const ingredients =
+				dish.ingredients &&
+				dish.ingredients.length > 0 &&
+				dish.ingredients.filter((_, i) => i !== index)
 			const updatedData = { ...dish, ingredients } as DishResponse
-			const dishResponse = await updateDish({
-				id: dish.id,
-				data: updatedData
-			}).unwrap()
-			if (JSON.stringify(dishResponse) !== JSON.stringify(updatedData)) {
-				setDish(prevDish => {
-					return { ...prevDish, ...dishResponse }
-				})
+			if (dish.id) {
+				const dishResponse = await updateDish({
+					id: dish.id,
+					data: updatedData
+				}).unwrap()
+				if (JSON.stringify(dishResponse) !== JSON.stringify(updatedData)) {
+					setDish(prevDish => {
+						return { ...prevDish, ...dishResponse }
+					})
+				}
 			}
 		}
 	}
