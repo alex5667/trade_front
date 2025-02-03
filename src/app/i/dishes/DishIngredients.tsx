@@ -98,7 +98,7 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 			dish.ingredients.reduce((acc, curr) => {
 				const price =
 					curr.ingredient?.price && curr.grossWeight
-						? curr.ingredient.price * curr.grossWeight
+						? +curr.ingredient.price * curr.grossWeight
 						: 0
 				return acc + price
 			}, 0)
@@ -142,7 +142,7 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 						{dish.ingredients.map((ingredient, index) => {
 							const ingredientSum =
 								ingredient.ingredient?.price && ingredient.grossWeight
-									? ingredient.ingredient.price * ingredient.grossWeight
+									? +ingredient.ingredient.price * ingredient.grossWeight
 									: 0
 							let outputWeight = ingredient.grossWeight || 0
 							if (ingredient.grossWeight) {
@@ -172,7 +172,9 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 											defaultValue={ingredient.grossWeight?.toFixed(3)}
 										/>
 									</td>
-									<td className='border px-4 py-2'>{price.toFixed(2)}</td>
+									<td className='border px-4 py-2'>
+										{Number(price).toFixed(2)}
+									</td>
 									<td className='border px-4 py-2'>
 										{ingredient.ingredient?.unit || '-'}
 									</td>
