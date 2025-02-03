@@ -11,9 +11,12 @@ interface DishCardProps {
 
 const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 	const [dish, setDish] = useState<DishFormState>(() => initialDish)
+	console.log('dish', dish)
 
 	useEffect(() => {
-		setDish(initialDish)
+		if (initialDish) {
+			setDish(prevDish => ({ ...prevDish, ...initialDish }))
+		}
 	}, [initialDish])
 
 	const memoizedSetDish = useCallback(
@@ -57,5 +60,12 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 	)
 })
 
-export default DishCard
+const areEqual = (
+	prevProps: DishCardProps,
+	nextProps: DishCardProps
+): boolean => {
+	return JSON.stringify(prevProps.dish) === JSON.stringify(nextProps.dish)
+}
+
+export default memo(DishCard, areEqual)
 DishCard.displayName = 'DishCard'

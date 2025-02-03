@@ -24,19 +24,17 @@ export function useDishInput<T extends keyof DishFormState>({
 	const [inputValue, setInputValue] = useState(
 		key ? dish[key] : defaultValue
 	)
+
 	const [updateDish] = useUpdateDishMutation()
 	const [createDish] = useCreateDishMutation()
 	useEffect(() => {
-		if (key) {
-
+		if (key && dish[key] !== undefined && dish[key] !== null) {
 			setInputValue(dish[key] as DishResponse[T])
-		}
-		if (defaultValue) {
+		} else if (defaultValue !== undefined) {
 			setInputValue(defaultValue)
-
 		}
-
 	}, [dish, key, defaultValue])
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedInputChange = useCallback(
 		debounce(async (value: any) => {
@@ -44,8 +42,9 @@ export function useDishInput<T extends keyof DishFormState>({
 
 			try {
 				let updatedData = { ...dish } as DishFormState
-				if (key) {
-					updatedData = { ...dish, [key]: +value }
+				console.log('updatedData', updatedData)
+				if (key && value !== undefined && value !== null) {
+					updatedData = { ...dish, [key]: value }
 				}
 				if (ingredientKey && ingredientId && dish.ingredients) {
 					const ingredients = dish.ingredients.map((ingredient, index) => {
@@ -82,7 +81,7 @@ export function useDishInput<T extends keyof DishFormState>({
 
 	const handleChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
-			const newValue = event.target.value as DishResponse[T]
+			const newValue = event.target.value as DishResponse[T] || ""
 			setInputValue(newValue)
 			debouncedInputChange(newValue)
 		},

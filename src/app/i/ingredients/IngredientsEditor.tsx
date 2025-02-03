@@ -3,6 +3,7 @@
 import { SetStateAction, useCallback, useState } from 'react'
 
 import Loader from '@/components/ui/Loader'
+import { Button } from '@/components/ui/buttons/Button'
 import { SimpleAutocompleteInput } from '@/components/ui/simple-auto-complete-input/SimpleAutoCompleteInput'
 
 import { IngredientAliasResponse } from '@/types/ingredient-alias.type'
@@ -59,12 +60,12 @@ const Ingredients = () => {
 			{aliasesState && ingredient?.name && !isLoading && (
 				<div className='flex flex-col w-[70%]'>
 					<span>Синонимы</span>
-					<button
+					<Button
 						className='ml-2'
 						onClick={addAlias}
 					>
 						Добавить
-					</button>
+					</Button>
 					{aliasesState.map((alias: IngredientAliasResponse) => (
 						<div
 							key={alias.id}
@@ -77,12 +78,12 @@ const Ingredients = () => {
 									ingredient={ingredient}
 									setIngredient={memoizedSetIngredient}
 								/>
-								<button
+								<Button
 									onClick={() => deleteAlias(alias.id)}
 									className='ml-2'
 								>
 									Удалить
-								</button>
+								</Button>
 							</div>
 						</div>
 					))}

@@ -50,12 +50,12 @@ export function useCardInput<T, K extends keyof T>({
   const [createItem] = createHook()
 
   useEffect(() => {
-    if (keyName) {
+    if (keyName && data[keyName] !== undefined && data[keyName] !== null) {
       setInputValue(data[keyName] as T[K])
-    }
-    if (defaultValue) {
+    } else if (defaultValue !== undefined) {
       setInputValue(defaultValue)
     }
+
   }, [data, keyName, defaultValue])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,9 +63,10 @@ export function useCardInput<T, K extends keyof T>({
     debounce(async (value: any) => {
       try {
         let updatedData = { ...data }
-        if (keyName) {
+        if (keyName && value !== undefined && value !== null) {
           updatedData = { ...data, [keyName]: value }
         }
+
 
         if ((data as any)?.id) {
           const item = await updateItem({
@@ -88,7 +89,7 @@ export function useCardInput<T, K extends keyof T>({
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = event.target.value as T[K]
+      const newValue = event.target.value as T[K] || ''
       setInputValue(newValue)
       debouncedInputChange(newValue)
     },

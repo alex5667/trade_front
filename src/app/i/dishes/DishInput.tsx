@@ -35,6 +35,7 @@ const DishInput = ({
 		ingredientKey,
 		ingredientId
 	})
+
 	const handleFocus = () => {
 		if (inputValue === 0) {
 			setInputValue('')

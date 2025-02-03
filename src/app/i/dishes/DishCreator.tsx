@@ -7,7 +7,7 @@ const DishCreator = () => {
 		name: 'Введите наименование блюда',
 		printName: 'Введите наименование блюда для печати',
 		description: 'Введите описание блюда',
-		price: 0,
+		price: '0',
 
 		createdAt: new Date(),
 		updatedAt: new Date(),
@@ -17,7 +17,7 @@ const DishCreator = () => {
 	}
 	return (
 		<>
-			<DishCard dish={{} as DishFormState} />
+			<DishCard dish={sampleDish} />
 		</>
 	)
 }

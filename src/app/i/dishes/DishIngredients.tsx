@@ -18,7 +18,6 @@ type Props = {
 const DishIngredients = ({ dish, setDish }: Props) => {
 	const [output, setOutput] = useState(0)
 	const [sum, setSum] = useState(0)
-	console.log('DishIngredients', dish)
 	const [updateDish] = useUpdateDishMutation()
 	// Функция для удаления ингредиента по индексу
 	const handleDeleteIngredient = async (index: number) => {

@@ -6,7 +6,7 @@ export interface DishResponse {
 	name: string
 	printName: string | ''
 	description?: string | null
-	price?: number | null
+	price?: number | null | string
 	category?: DishCategoryResponse
 	createdAt?: Date
 	updatedAt?: Date
