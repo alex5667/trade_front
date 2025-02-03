@@ -8,8 +8,9 @@ const IngredientsCreator = () => {
 		printName: ' Введите наименование для печати',
 		description: 'Описание',
 		unit: 'KG',
-		price: '0',
-		isAllergen: false
+		price: 0,
+		isAllergen: false,
+		aliases: []
 	}
 	return (
 		<Card

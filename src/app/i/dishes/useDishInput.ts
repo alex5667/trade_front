@@ -42,7 +42,6 @@ export function useDishInput<T extends keyof DishFormState>({
 
 			try {
 				let updatedData = { ...dish } as DishFormState
-				console.log('updatedData', updatedData)
 				if (key && value !== undefined && value !== null) {
 					updatedData = { ...dish, [key]: value }
 				}

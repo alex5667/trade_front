@@ -7,7 +7,7 @@ export interface IngredientResponse {
 	printName: string
 	description?: string
 	unit?: string
-	price?: number | string
+	price?: number | null | string
 	isAllergen?: boolean
 	createdAt: Date
 	updatedAt: Date
