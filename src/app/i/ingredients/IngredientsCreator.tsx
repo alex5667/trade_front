@@ -12,6 +12,7 @@ const IngredientsCreator = () => {
 		isAllergen: false,
 		aliases: []
 	}
+
 	return (
 		<Card
 			item={simpleIngredients}
