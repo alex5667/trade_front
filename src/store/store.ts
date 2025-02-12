@@ -1,5 +1,4 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-// import { filterSlice } from './filters/filters.slice'
 
 
 import { authApi } from '@/services/auth.services'
@@ -11,6 +10,7 @@ import { institutionApi } from '@/services/institution.service'
 import { mealConsumptionApi } from '@/services/meal-consumption.service'
 import { mealApi } from '@/services/meal.service'
 import { menuItemApi } from '@/services/menu-item.service'
+import { purchasingApi } from '@/services/purchasing.service'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { dishCategorySlice } from './dish-category/dishCategory.slice'
@@ -46,6 +46,7 @@ const rootReducer = combineReducers({
 	[ingredientApi.reducerPath]: ingredientApi.reducer,
 	[ingredientAliasApi.reducerPath]: ingredientAliasApi.reducer,
 	[ingredientAliasSlice.reducerPath]: ingredientAliasSlice.reducer,
+	[purchasingApi.reducerPath]: purchasingApi.reducer,
 
 
 })
@@ -67,6 +68,7 @@ export const store = configureStore({
 			mealConsumptionApi.middleware,
 			ingredientApi.middleware,
 			ingredientAliasApi.middleware,
+			purchasingApi.middleware,
 
 		)
 })

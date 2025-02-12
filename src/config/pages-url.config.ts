@@ -2,6 +2,7 @@ export const ADMINBOARD_PAGES = {
 	CUSTOMER: '/',
 	ADMIN: '/i',
 	MENU: `/i/menu`,
+	PURCHASING: `/i/purchasing`,
 	USER: `/i/user`,
 	EXCEL: `/i/excelLoader`,
 	CONSUMPTION: `/i/consumption`,

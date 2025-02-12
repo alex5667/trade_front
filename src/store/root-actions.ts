@@ -7,6 +7,7 @@ import { institutionSlice } from './institution/institution.slice'
 import { mealSlice } from './meal/meal.slice'
 import { mealConsumptionSlice } from './mealConsumption/meal-consumption.slice'
 import { menuItemSlice } from './menuItem/menu-item.slice'
+import { purchasingSlice } from './purchasing/purchasing.slice'
 import { sidebarSlice } from './sidebar/sidebar.slice'
 import { userSlice } from './user/user.slice'
 export const rootActions = {
@@ -20,5 +21,6 @@ export const rootActions = {
 	...dishSlice.actions,
 	...ingredientSlice.actions,
 	...ingredientAliasSlice.actions,
+	...purchasingSlice.actions,
 
 }

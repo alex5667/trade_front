@@ -4,6 +4,7 @@ import {
 	LayoutDashboard,
 	Logs,
 	Settings,
+	ShoppingCart,
 	Table
 } from 'lucide-react'
 
@@ -59,6 +60,13 @@ export const ADMINMENU: MenuItem[] = [
 		icon: Table,
 		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
 		name: 'Количество порций',
+		endPoint: null
+	},
+
+	{
+		icon: ShoppingCart,
+		link: `${ADMINBOARD_PAGES.PURCHASING}`,
+		name: 'Закупки',
 		endPoint: null
 	},
 	{
