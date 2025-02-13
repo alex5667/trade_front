@@ -2,15 +2,13 @@ import dayjs from 'dayjs'
 
 import { IngredientStats, PurchasingData } from '@/types/purchasing.type'
 
-// Тип для пропсов компонента
 interface PurchasingDetailProps {
 	weekDishes: PurchasingData
 }
 
-// Компонент для отображения данных
 const PurchasingDetail = ({ weekDishes }: PurchasingDetailProps) => {
 	return (
-		<div className='p-6'>
+		<div className='p-6 '>
 			<h1 className='text-3xl font-bold mb-6 text-center text-gray-800'>
 				Планирование
 			</h1>
@@ -70,15 +68,19 @@ const PurchasingDetail = ({ weekDishes }: PurchasingDetailProps) => {
 																	{name}
 																</td>
 																<td className='border border-gray-300 px-4 py-2 text-center'>
-																	{(stats as IngredientStats)?.grossWeight ||
-																		'N/A'}
+																	{typeof stats.grossWeight === 'string'
+																		? parseFloat(stats.grossWeight) || 0
+																		: stats.grossWeight}
 																</td>
 																<td className='border border-gray-300 px-4 py-2 text-center'>
-																	{(stats as IngredientStats)?.coast || 'N/A'}
+																	{typeof stats.coast === 'string'
+																		? parseFloat(stats.coast) || 0
+																		: stats.coast}
 																</td>
 																<td className='border border-gray-300 px-4 py-2 text-center'>
-																	{(stats as IngredientStats)?.quantity ||
-																		'N/A'}
+																	{typeof stats.quantity === 'string'
+																		? parseInt(stats.quantity, 10) || 0
+																		: stats.quantity}
 																</td>
 															</tr>
 														))

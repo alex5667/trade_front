@@ -18,6 +18,7 @@ import { useGetAllPurchasingQuery } from '@/services/purchasing.service'
 const Purchasing = () => {
 	const [weekOffset, setWeekOffset] = useState(0)
 	const [weekOffsetForCalculate, setWeekOffsetForCalculate] = useState(0)
+
 	const { startOfWeek, endOfWeek } = getDatesOfWeek(weekOffset)
 	const {
 		startOfWeek: startDateForCalculation,

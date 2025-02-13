@@ -62,12 +62,28 @@ export type PurshaingDataFilters = {
 
 // export type PurchasingData = Record<string, MealData>
 
+// export interface IngredientStat {
+// 	id: number
+// 	unit: string
+// 	price: string
+// 	grossWeight: string
+// 	coast: string
+// 	quantity: number
+// }
+
+// export type PurchasingData = {
+// 	[date: string]: {
+// 		[mealType: string]: {
+// 			[group: string]: Record<string, IngredientStat>[] // Explicitly typing array of ingredient objects
+// 		}
+// 	}
+// }
 export interface IngredientStat {
 	id: number
 	unit: string
-	price: string
-	grossWeight: string
-	coast: string
+	price: number // Ensure this is a number
+	grossWeight: number // Convert from string to number
+	coast: number // Convert from string to number
 	quantity: number
 }
 
