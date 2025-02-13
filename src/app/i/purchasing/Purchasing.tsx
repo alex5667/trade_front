@@ -4,9 +4,10 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
 import Loader from '@/components/ui/Loader'
+import { Button } from '@/components/ui/buttons/Button'
 import WeekChangeButtons from '@/components/weekChangeButtons/WeekChangeButtons'
 
-import { PurshaingDataFilters } from '@/types/purchasing.type'
+import { AgregateType, PurshaingDataFilters } from '@/types/purchasing.type'
 
 import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
@@ -18,7 +19,7 @@ import { useGetAllPurchasingQuery } from '@/services/purchasing.service'
 const Purchasing = () => {
 	const [weekOffset, setWeekOffset] = useState(0)
 	const [weekOffsetForCalculate, setWeekOffsetForCalculate] = useState(0)
-
+	const [aggregate, setAggregate] = useState<AgregateType>('byDay')
 	const { startOfWeek, endOfWeek } = getDatesOfWeek(weekOffset)
 	const {
 		startOfWeek: startDateForCalculation,
@@ -29,7 +30,8 @@ const Purchasing = () => {
 		startDate: startOfWeek,
 		endDate: endOfWeek,
 		startDateForCalculation,
-		endDateForCalculation
+		endDateForCalculation,
+		aggregate
 	} as PurshaingDataFilters)
 	const totalIngredientByWeek = data ? data.totalIngredientByWeek : undefined
 	const weekDishes = data ? data.weekDishes : undefined
@@ -44,6 +46,12 @@ const Purchasing = () => {
 	if (isLoading) {
 		return <Loader />
 	}
+	const getByDay = () => {
+		setAggregate('byDay')
+	}
+	const getByInstitution = () => {
+		setAggregate('byIstitution')
+	}
 
 	return (
 		<div>
@@ -56,16 +64,24 @@ const Purchasing = () => {
 				<span>{dayjs(startDateForCalculation).format('DD-MM-YYYY')}</span> |
 				<span>{dayjs(endDateForCalculation).format('DD-MM-YYYY')}</span>
 				<WeekChangeButtons setWeekOffset={setWeekOffsetForCalculate} />
+			</div>		
+			<div>
+				<Button onClick={getByDay}>По дням</Button>
+				<Button onClick={getByInstitution}>По точкам</Button>
 			</div>
 			{totalIngredientByWeek && (
 				<PurchasingAggregate totalIngredientByWeek={totalIngredientByWeek} />
 			)}
+
+{weekDishes && <PurchasingDetail weekDishes={weekDishes} />}
+
 			{nullableIngredientsInDishes && (
 				<NullableIngredientsList
 					nullableIngredientsInDishes={nullableIngredientsInDishes}
 				/>
 			)}
-			{weekDishes && <PurchasingDetail weekDishes={weekDishes} />}
+
+
 		</div>
 	)
 }

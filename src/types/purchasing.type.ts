@@ -5,7 +5,7 @@ import { EnumMenuSort } from './menuItem.type'
 export interface PurchasingResponse {
 	nullableIngredientsInDishes: string[]
 	totalIngredientByWeek?: PurchasingsAggregate
-	weekDishes: PurchasingData
+	weekDishes?: PurchasingData
 }
 
 
@@ -33,7 +33,7 @@ export type PurchasingsAggregate = {
 
 
 
-
+export type AgregateType = 'byDay' | 'byIstitution'
 export type PurshaingDataFilters = {
 	sort?: EnumMenuSort | string
 	searchTerm?: string
@@ -43,6 +43,7 @@ export type PurshaingDataFilters = {
 	endDate?: string
 	startDateForCalculation?: string
 	endDateForCalculation?: string
+	aggregate: AgregateType
 	institutionSlug?: string
 
 }
