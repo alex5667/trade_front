@@ -47,7 +47,22 @@ export type PurshaingDataFilters = {
 
 }
 
-export type Ingredient = {
+// export type Ingredient = {
+// 	id: number
+// 	unit: string
+// 	price: string
+// 	grossWeight: string
+// 	coast: string
+// 	quantity: number
+// }
+
+// export type InstitutionData = Record<string, Ingredient[] | Record<string, never>>
+
+// export type MealData = Record<string, InstitutionData>
+
+// export type PurchasingData = Record<string, MealData>
+
+export interface IngredientStat {
 	id: number
 	unit: string
 	price: string
@@ -56,8 +71,10 @@ export type Ingredient = {
 	quantity: number
 }
 
-export type InstitutionData = Record<string, Ingredient[] | Record<string, never>>
-
-export type MealData = Record<string, InstitutionData>
-
-export type PurchasingData = Record<string, MealData>
+export type PurchasingData = {
+	[date: string]: {
+		[mealType: string]: {
+			[group: string]: Record<string, IngredientStat>[] // Explicitly typing array of ingredient objects
+		}
+	}
+}

@@ -12,6 +12,7 @@ import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
 import NullableIngredientsList from './NullableIngredientsList'
 import PurchasingAggregate from './PurshasingAggregate'
+import PurchasingDetail from './PurshasingDetail'
 import { useGetAllPurchasingQuery } from '@/services/purchasing.service'
 
 const Purchasing = () => {
@@ -30,6 +31,7 @@ const Purchasing = () => {
 		endDateForCalculation
 	} as PurshaingDataFilters)
 	const totalIngredientByWeek = data ? data.totalIngredientByWeek : undefined
+	const weekDishes = data ? data.weekDishes : undefined
 	const nullableIngredientsInDishes = data
 		? data.nullableIngredientsInDishes
 		: undefined
@@ -62,6 +64,7 @@ const Purchasing = () => {
 					nullableIngredientsInDishes={nullableIngredientsInDishes}
 				/>
 			)}
+			{weekDishes && <PurchasingDetail weekDishes={weekDishes} />}
 		</div>
 	)
 }

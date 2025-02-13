@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { Ingredient, PurchasingData } from '@/types/purchasing.type'
+import { IngredientStats, PurchasingData } from '@/types/purchasing.type'
 
 // Тип для пропсов компонента
 interface PurchasingDetailProps {
@@ -10,7 +10,7 @@ interface PurchasingDetailProps {
 // Компонент для отображения данных
 const PurchasingDetail = ({ weekDishes }: PurchasingDetailProps) => {
 	return (
-		<div className='p-6 bg-gray-100 min-h-screen'>
+		<div className='p-6'>
 			<h1 className='text-3xl font-bold mb-6 text-center text-gray-800'>
 				Планирование
 			</h1>
@@ -41,7 +41,7 @@ const PurchasingDetail = ({ weekDishes }: PurchasingDetailProps) => {
 									{Array.isArray(ingredients) && ingredients.length > 0 ? (
 										<div className='overflow-x-auto'>
 											<table className='w-full border-collapse border border-gray-200'>
-												<thead className='bg-gray-200'>
+												<thead className='bg-db-sidebar'>
 													<tr>
 														<th className='border border-gray-300 px-4 py-2 text-left'>
 															Ингредиент
@@ -60,7 +60,7 @@ const PurchasingDetail = ({ weekDishes }: PurchasingDetailProps) => {
 												<tbody>
 													{ingredients.map((ingredient, index) =>
 														Object.entries(
-															ingredient as Record<string, Ingredient>
+															ingredient as Record<string, IngredientStats>
 														).map(([name, stats]) => (
 															<tr
 																key={`${name}-${index}`}
@@ -70,16 +70,15 @@ const PurchasingDetail = ({ weekDishes }: PurchasingDetailProps) => {
 																	{name}
 																</td>
 																<td className='border border-gray-300 px-4 py-2 text-center'>
-																	{typeof stats === 'object' &&
-																	'grossWeight' in stats
-																		? stats.grossWeight
-																		: 'N/A'}
+																	{(stats as IngredientStats)?.grossWeight ||
+																		'N/A'}
 																</td>
 																<td className='border border-gray-300 px-4 py-2 text-center'>
-																	{stats.coast}
+																	{(stats as IngredientStats)?.coast || 'N/A'}
 																</td>
 																<td className='border border-gray-300 px-4 py-2 text-center'>
-																	{stats.quantity}
+																	{(stats as IngredientStats)?.quantity ||
+																		'N/A'}
 																</td>
 															</tr>
 														))
