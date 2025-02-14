@@ -13,10 +13,10 @@ interface CreatorEditorProps {
 	type: 'dish' | 'ingredient'
 }
 
+export type ActiveComponentType=null | 'editor' | 'creator'
+
 const CreatorEditor = ({ type }: CreatorEditorProps) => {
-	const [activeComponent, setActiveComponent] = useState<
-		null | 'editor' | 'creator'
-	>(null)
+	const [activeComponent, setActiveComponent] = useState<ActiveComponentType>(null)
 
 	const handleEditor = () => setActiveComponent('editor')
 	const handleCreator = () => setActiveComponent('creator')
@@ -42,9 +42,9 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 			</div>
 			<div className='flex flex-col items-center justify-start pt-3 w-full'>
 				{activeComponent === 'editor' &&
-					(isDish ? <DishEditor /> : <IngredientsEditor />)}
+					(isDish ? <DishEditor /> : <IngredientsEditor setActiveComponent={setActiveComponent} />)}
 				{activeComponent === 'creator' &&
-					(isDish ? <DishCreator /> : <IngredientsCreator />)}
+					(isDish ? <DishCreator /> : <IngredientsCreator setActiveComponent={setActiveComponent}/>)}
 			</div>
 		</div>
 	)

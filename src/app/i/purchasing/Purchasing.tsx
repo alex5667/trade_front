@@ -64,7 +64,7 @@ const Purchasing = () => {
 				<span>{dayjs(startDateForCalculation).format('DD-MM-YYYY')}</span> |
 				<span>{dayjs(endDateForCalculation).format('DD-MM-YYYY')}</span>
 				<WeekChangeButtons setWeekOffset={setWeekOffsetForCalculate} />
-			</div>		
+			</div>
 			<div>
 				<Button onClick={getByDay}>По дням</Button>
 				<Button onClick={getByInstitution}>По точкам</Button>
@@ -73,15 +73,13 @@ const Purchasing = () => {
 				<PurchasingAggregate totalIngredientByWeek={totalIngredientByWeek} />
 			)}
 
-{weekDishes && <PurchasingDetail weekDishes={weekDishes} />}
+			{weekDishes && <PurchasingDetail weekDishes={weekDishes} />}
 
 			{nullableIngredientsInDishes && (
 				<NullableIngredientsList
 					nullableIngredientsInDishes={nullableIngredientsInDishes}
 				/>
 			)}
-
-
 		</div>
 	)
 }
