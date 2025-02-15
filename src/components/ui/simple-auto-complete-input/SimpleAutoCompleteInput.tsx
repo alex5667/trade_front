@@ -37,7 +37,7 @@ type SimpleAutocompleteInputProps<T extends { id: number; printName: string }> =
 	}
 
 export const SimpleAutocompleteInput = <
-	T extends { id: number; printName: string }
+	T extends { id: number ; printName: string }
 >({
 	className,
 	fetchFunction,

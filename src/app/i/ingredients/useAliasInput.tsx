@@ -11,7 +11,7 @@ import {
 } from '@/services/ingredient-alias.service'
 
 interface useAliasInput {
-	defaultInputValue: string
+	defaultInputValue: string|undefined
 	inputRef: MutableRefObject<HTMLInputElement | null>
 	aliasItem: IngredientAliasResponse | undefined
 	aliasKey: number

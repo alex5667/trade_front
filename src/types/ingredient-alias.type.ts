@@ -3,4 +3,4 @@ export interface IngredientAliasResponse {
 	alias: string
 	ingredientId: number
 }
-export type IngredientAliasFormState = Partial<Omit<IngredientAliasResponse, 'id'>>
+export type IngredientAliasFormState = Partial<IngredientAliasResponse>
