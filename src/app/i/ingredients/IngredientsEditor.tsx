@@ -1,12 +1,12 @@
 'use client'
 
-import { SetStateAction, useCallback, useState } from 'react'
+import { SetStateAction, useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/buttons/Button'
 import { SimpleField } from '@/components/ui/fields/SImpleField'
 import { SimpleAutocompleteInput } from '@/components/ui/simple-auto-complete-input/SimpleAutoCompleteInput'
-import { ActiveComponentType } from '@/components/сreator-editor/CreatorEditor'
+import { CreatorEditorStateProps } from '@/components/сreator-editor/CreatorEditor'
 
 import { IngredientAliasResponse } from '@/types/ingredient-alias.type'
 import { IngredientResponse } from '@/types/ingredient.type'
@@ -17,21 +17,28 @@ import { useUpdateIngredientMutation } from '@/services/ingredient.service'
 
 interface IngredientsEditorProps {
 	initialIngredient?: IngredientResponse
-	setActiveComponent?: (value: SetStateAction<ActiveComponentType>) => void
+	setActiveComponent?: (
+		value: SetStateAction<CreatorEditorStateProps | null>
+	) => void
 }
-const IngredientsEditor = ({ initialIngredient }: IngredientsEditorProps) => {
+
+const IngredientsEditor = ({
+	initialIngredient,
+	setActiveComponent
+}: IngredientsEditorProps) => {
+	// Состояние ингредиента, в котором будут храниться и синонимы
 	const [ingredient, setIngredient] = useState<IngredientResponse | null>(
 		initialIngredient ? initialIngredient : null
 	)
-	const [aliases, setAliases] = useState<IngredientAliasResponse[] | undefined>(
-		ingredient?.aliases ?? []
-	)
-	const [update, { isSuccess }] = useUpdateIngredientMutation()
+	console.log('ingredient', ingredient)
 
-	// const { isLoading } = useGetAliasesByIngredientNameQuery(
-	// 	(ingredient?.name ?? '') as string,
-	// 	{ skip: !ingredient?.name }
-	// )
+	useEffect(() => {
+		if (initialIngredient && initialIngredient.id) {
+			setIngredient(initialIngredient)
+		}
+	}, [initialIngredient])
+
+	const [update, { isSuccess }] = useUpdateIngredientMutation()
 
 	const memoizedSetIngredient = useCallback(
 		(value: SetStateAction<IngredientResponse | null>) => {
@@ -40,60 +47,79 @@ const IngredientsEditor = ({ initialIngredient }: IngredientsEditorProps) => {
 		[]
 	)
 
+	// Функция добавления нового синонима
 	const addAlias = () => {
-		if (ingredient?.id) {
-			const newAlias: IngredientAliasResponse = {
-				id: Date.now(),
-				ingredientId: ingredient && ingredient?.id,
-				alias: 'Введи синоним'
-			}
-			setAliases(prev => [...(prev ?? []), newAlias])
+		if (!ingredient?.id) return
+
+		const newAlias: IngredientAliasResponse = {
+			id: Date.now(),
+			ingredientId: ingredient.id,
+			alias: 'Введи синоним'
 		}
-	}
-	const deleteAlias = (id: string | number) => {
-		const filterdAliases = aliases?.filter(alias => alias.id !== id)
-		setAliases(() => [...(filterdAliases ?? [])])
+
+		setIngredient(prev => {
+			if (!prev) return prev
+			// Если синонимы уже существуют – добавляем новый, иначе создаём новый массив
+			const updatedAliases = prev.aliases
+				? [...prev.aliases, newAlias]
+				: [newAlias]
+			return { ...prev, aliases: updatedAliases }
+		})
 	}
 
+	// Функция удаления синонима по id
+	const deleteAlias = (id: string | number) => {
+		setIngredient(prev => {
+			if (!prev) return prev
+			const updatedAliases =
+				prev.aliases?.filter(alias => alias.id !== id) || []
+			return { ...prev, aliases: updatedAliases }
+		})
+	}
+
+	// Функция изменения значения синонима
 	const handleChange =
 		(id: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			setAliases(prev =>
-				prev
-					? prev.map(alias =>
-							alias.id === id ? { ...alias, alias: e.target.value } : alias
-						)
-					: []
-			)
+			const value = e.target.value
+			setIngredient(prev => {
+				if (!prev || !prev.aliases) return prev
+				const updatedAliases = prev.aliases.map(alias =>
+					alias.id === id ? { ...alias, alias: value } : alias
+				)
+				return { ...prev, aliases: updatedAliases }
+			})
 		}
 
+	// Функция сохранения ингредиента с обновлёнными синонимами
 	const handleSave = async () => {
-		const updatedIngredient = { ...ingredient, aliases }
-		if (ingredient?.id) {
-			try {
-				const responseIngredient = await update({
-					id: ingredient?.id,
-					data: updatedIngredient
-				}).unwrap()
-				if (isSuccess) {
-					setIngredient(responseIngredient)
-				}
-			} catch (error) {
-				toast.error(errorCatch(error))
-			}
+		if (!ingredient || !ingredient.id) {
+			toast.error('Ошибка: ингредиент отсутствует или не имеет ID')
+			return
 		}
+
+		try {
+			const responseIngredient = await update({
+				id: ingredient.id,
+				data: ingredient
+			}).unwrap()
+
+			// Проверяем успешность обновления
+			if (responseIngredient) {
+				setIngredient(responseIngredient)
+				toast.success('Ингредиент успешно обновлён!')
+			} else {
+				toast.error('Ошибка при обновлении ингредиента')
+			}
+		} catch (error) {
+			toast.error(errorCatch(error))
+		}
+
+		// Закрываем редактор после сохранения
+		setActiveComponent && setActiveComponent(null)
 	}
-	// const { addAliasIngredient } = useActions()
-	// const addAlias = useCallback(async () => {
-	// 	if (!ingredient?.id) return
-	// 	addAliasIngredient({
-	// 		id: 0,
-	// 		ingredientId: ingredient?.id,
-	// 		alias: 'Введи синоним'
-	// 	})
-	// }, [addAliasIngredient, ingredient?.id])
 
 	return (
-		<div className='flex flex-col relative'>
+		<div className='flex flex-col relative w-full'>
 			<span>Введите наименование</span>
 			<SimpleAutocompleteInput<IngredientResponse>
 				fetchFunction='ingredient'
@@ -101,7 +127,7 @@ const IngredientsEditor = ({ initialIngredient }: IngredientsEditorProps) => {
 				setItem={memoizedSetIngredient}
 				item={ingredient?.name ? ingredient : undefined}
 			/>
-			{aliases && ingredient?.name && (
+			{ingredient?.aliases && ingredient.name && (
 				<div className='flex flex-col w-[70%]'>
 					<span>Синонимы</span>
 					<Button
@@ -110,7 +136,7 @@ const IngredientsEditor = ({ initialIngredient }: IngredientsEditorProps) => {
 					>
 						Добавить
 					</Button>
-					{aliases.map((alias: IngredientAliasResponse) => (
+					{ingredient.aliases.map((alias: IngredientAliasResponse) => (
 						<div
 							key={alias.id}
 							className='flex flex-col items-center'
@@ -122,15 +148,10 @@ const IngredientsEditor = ({ initialIngredient }: IngredientsEditorProps) => {
 									placeholder='Введите наименование'
 									onChange={handleChange(alias.id)}
 									type='text'
+									value={alias.alias}
 								/>
-								{/* <AliasInput
-									aliasItem={alias}
-									aliasKey={alias.id}
-									ingredient={ingredient}
-									setIngredient={memoizedSetIngredient}
-								/> */}
 								<Button
-									onClick={() => deleteAlias(alias?.id)}
+									onClick={() => deleteAlias(alias.id)}
 									className='ml-2'
 								>
 									Удалить

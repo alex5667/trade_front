@@ -2,15 +2,16 @@ import { SetStateAction, useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 import { SimpleField } from '@/components/ui/fields/SImpleField'
-import { ActiveComponentType } from '@/components/сreator-editor/CreatorEditor'
+import { CreatorEditorStateProps } from '@/components/сreator-editor/CreatorEditor'
 
 import { IngredientFormState } from '@/types/ingredient.type'
 
-import IngredientsEditor from './IngredientsEditor'
 import { useCreateIngredientMutation } from '@/services/ingredient.service'
 
 interface IngredientsCreatorProps {
-	setActiveComponent: (value: SetStateAction<ActiveComponentType>) => void
+	setActiveComponent: (
+		value: SetStateAction<CreatorEditorStateProps | null>
+	) => void
 }
 const IngredientsCreator = ({
 	setActiveComponent
@@ -32,16 +33,18 @@ const IngredientsCreator = ({
 		}
 
 	const handeleClick = async () => {
-		const newIngredient = await create(ingredient).unwrap()
-		setIngredient(newIngredient)
-		setActiveComponent('editor')
-		if (isSuccess) {
-			return <IngredientsEditor initialIngredient={newIngredient} />
+		try {
+			const newIngredient = await create(ingredient).unwrap()
+			console.log('newIngredient', newIngredient)
+
+			setActiveComponent(() => ({ type: 'editor', data: newIngredient }))
+		} catch (error) {
+			console.error('Ошибка при создании ингредиента', error)
 		}
 	}
 
 	return (
-		<div className='flex flex-col'>
+		<div className='flex flex-col w-full'>
 			<SimpleField
 				id='name'
 				label='Наименование'
