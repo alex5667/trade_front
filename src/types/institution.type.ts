@@ -11,6 +11,6 @@ export interface InstitutionResponse {
 	slug: string
 }
 
-export type InstitutionFormState = Partial<Omit<InstitutionResponse, 'id' | 'createdAt' | 'updatedAt'>>
+export type InstitutionFormState = Partial<InstitutionResponse>
 
 export type InstitutionForm = Omit<InstitutionResponse, 'id' | 'createdAt' | 'updatedAt'>

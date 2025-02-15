@@ -1,6 +1,6 @@
 import { Dispatch, MutableRefObject, SetStateAction, useCallback } from 'react'
 
-export function useSimpleOptionSelect<T extends { id: number; printName: string }>(
+export function useSimpleOptionSelect<T extends { id: number; name: string }>(
 	setInputValue: (value: SetStateAction<string | ''>) => void,
 	setDebouncedValue: (value: SetStateAction<string>) => void,
 	setShouldFetch: (value: SetStateAction<boolean>) => void,
@@ -13,7 +13,7 @@ export function useSimpleOptionSelect<T extends { id: number; printName: string 
 
 	const handleOptionSelect = useCallback(
 		(item: T) => {
-			const { printName: option, id: itemId } = item
+			const { name: option, id: itemId } = item
 			setInputValue(option)
 			setDebouncedValue(option)
 			if (item) {

@@ -1,134 +1,128 @@
 'use client'
 
-import { SetStateAction, useCallback, useEffect, useState } from 'react'
-import { toast } from 'sonner'
+import { SetStateAction, useCallback, useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
-import { SimpleField } from '@/components/ui/fields/SImpleField'
 import { SimpleAutocompleteInput } from '@/components/ui/simple-auto-complete-input/SimpleAutoCompleteInput'
-import { CreatorEditorStateProps } from '@/components/сreator-editor/CreatorEditor'
+import { ActiveComponentProps } from '@/components/сreator-editor/CreatorEditor'
 
-import { IngredientAliasResponse } from '@/types/ingredient-alias.type'
+import {
+	IngredientAliasFormState,
+	IngredientAliasResponse
+} from '@/types/ingredient-alias.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 
-import { errorCatch } from '@/api/error'
-
+import AliasInput from './AliasInput'
 import { useUpdateIngredientMutation } from '@/services/ingredient.service'
 
 interface IngredientsEditorProps {
-	initialIngredient?: IngredientResponse
-	setActiveComponent?: (
-		value: SetStateAction<CreatorEditorStateProps | null>
-	) => void
+	ingredientResponse?: IngredientResponse | null
+	resetActiveComponent: (active: ActiveComponentProps) => void
 }
 
 const IngredientsEditor = ({
-	initialIngredient,
-	setActiveComponent
+	resetActiveComponent,
+	ingredientResponse = null
 }: IngredientsEditorProps) => {
-	// Состояние ингредиента, в котором будут храниться и синонимы
 	const [ingredient, setIngredient] = useState<IngredientResponse | null>(
-		initialIngredient ? initialIngredient : null
+		ingredientResponse
 	)
 	console.log('ingredient', ingredient)
 
-	useEffect(() => {
-		if (initialIngredient && initialIngredient.id) {
-			setIngredient(initialIngredient)
-		}
-	}, [initialIngredient])
-
-	const [update, { isSuccess }] = useUpdateIngredientMutation()
-
+	const [updateIngredient] = useUpdateIngredientMutation()
+	// Функция-обёртка для обновления ингредиента
 	const memoizedSetIngredient = useCallback(
 		(value: SetStateAction<IngredientResponse | null>) => {
-			setIngredient(value)
+			setIngredient(prev => {
+				const updatedValue = typeof value === 'function' ? value(prev) : value
+				return updatedValue
+					? { ...structuredClone(prev ?? {}), ...updatedValue }
+					: null
+			})
 		},
 		[]
 	)
 
-	// Функция добавления нового синонима
-	const addAlias = () => {
+	const addAlias = useCallback(async () => {
 		if (!ingredient?.id) return
 
+		const uniqueId = Date.now()
 		const newAlias: IngredientAliasResponse = {
-			id: Date.now(),
+			id: uniqueId,
 			ingredientId: ingredient.id,
 			alias: 'Введи синоним'
 		}
 
-		setIngredient(prev => {
-			if (!prev) return prev
-			// Если синонимы уже существуют – добавляем новый, иначе создаём новый массив
-			const updatedAliases = prev.aliases
-				? [...prev.aliases, newAlias]
-				: [newAlias]
-			return { ...prev, aliases: updatedAliases }
-		})
-	}
+		setIngredient(prev =>
+			prev ? { ...prev, aliases: [...(prev.aliases || []), newAlias] } : prev
+		)
+	}, [ingredient])
 
-	// Функция удаления синонима по id
-	const deleteAlias = (id: string | number) => {
-		setIngredient(prev => {
-			if (!prev) return prev
-			const updatedAliases =
-				prev.aliases?.filter(alias => alias.id !== id) || []
-			return { ...prev, aliases: updatedAliases }
-		})
-	}
+	const handleDeleteAlias = async (aliasId: number | undefined) => {
+		if (!ingredient) return
 
-	// Функция изменения значения синонима
-	const handleChange =
-		(id: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			const value = e.target.value
-			setIngredient(prev => {
-				if (!prev || !prev.aliases) return prev
-				const updatedAliases = prev.aliases.map(alias =>
-					alias.id === id ? { ...alias, alias: value } : alias
-				)
-				return { ...prev, aliases: updatedAliases }
-			})
+		try {
+			setIngredient(prevIngredient =>
+				prevIngredient
+					? {
+							...prevIngredient,
+							aliases: (prevIngredient.aliases || []).filter(
+								alias => alias.id !== aliasId
+							)
+						}
+					: prevIngredient
+			)
+		} catch (error) {
+			console.error('Ошибка при удалении alias:', error)
 		}
+	}
 
-	// Функция сохранения ингредиента с обновлёнными синонимами
+	// const handleSave = async () => {
+	// 	if (ingredient && ingredient.id) {
+	// 		const updatedIngredient = { id: ingredient?.id, data: { ...ingredient } }
+	// 		const responseIngredient =
+	// 			await updateIngredient(updatedIngredient).unwrap()
+	// 		console.log('responseIngredient', responseIngredient)
+	// 		// resetActiveComponent(null)
+	// 		setIngredient(responseIngredient)
+	// 	}
+
+	// 	// Здесь можно добавить логику сохранения (например, вызов API для обновления ингредиента)
+	// }
 	const handleSave = async () => {
-		if (!ingredient || !ingredient.id) {
-			toast.error('Ошибка: ингредиент отсутствует или не имеет ID')
-			return
+		if (!ingredient || !ingredient.id) return
+
+		// Создаем новый объект с актуальными alias
+		const updatedIngredientData: IngredientResponse = {
+			...ingredient,
+			aliases: [...(ingredient.aliases ?? [])] // Клонируем aliases
 		}
 
 		try {
-			const responseIngredient = await update({
+			const responseIngredient = await updateIngredient({
 				id: ingredient.id,
-				data: ingredient
+				data: updatedIngredientData
 			}).unwrap()
 
-			// Проверяем успешность обновления
-			if (responseIngredient) {
-				setIngredient(responseIngredient)
-				toast.success('Ингредиент успешно обновлён!')
-			} else {
-				toast.error('Ошибка при обновлении ингредиента')
-			}
+			console.log('responseIngredient', responseIngredient)
+			setIngredient(responseIngredient) // Обновляем состояние ингредиента
 		} catch (error) {
-			toast.error(errorCatch(error))
+			console.error('Ошибка при обновлении ингредиента:', error)
 		}
-
-		// Закрываем редактор после сохранения
-		setActiveComponent && setActiveComponent(null)
 	}
 
 	return (
-		<div className='flex flex-col relative w-full'>
+		<div className='flex flex-col relative min-w-full'>
+			<Button onClick={handleSave}>Сохранить изменения</Button>
 			<span>Введите наименование</span>
 			<SimpleAutocompleteInput<IngredientResponse>
 				fetchFunction='ingredient'
-				className='flex w-[70%] flex-col items-start'
+				className='flex  flex-col w-[70%] items-start relative'
 				setItem={memoizedSetIngredient}
-				item={ingredient?.name ? ingredient : undefined}
+				item={ingredientResponse}
 			/>
-			{ingredient?.aliases && ingredient.name && (
-				<div className='flex flex-col w-[70%]'>
+			{ingredient && ingredient.name && (
+				<div className='flex flex-col  w-[70%] mt-4'>
 					<span>Синонимы</span>
 					<Button
 						className='ml-2'
@@ -136,22 +130,21 @@ const IngredientsEditor = ({
 					>
 						Добавить
 					</Button>
-					{ingredient.aliases.map((alias: IngredientAliasResponse) => (
+					{ingredient.aliases?.map((alias: IngredientAliasFormState) => (
 						<div
 							key={alias.id}
-							className='flex flex-col items-center'
+							className='flex flex-col items-center mt-2'
 						>
-							<div>
-								<SimpleField
-									id='alias'
-									label='Наименование'
-									placeholder='Введите наименование'
-									onChange={handleChange(alias.id)}
-									type='text'
-									value={alias.alias}
+							<div className='flex items-center'>
+								<AliasInput
+									aliasItem={alias}
+									ingredient={ingredient}
+									setIngredient={value =>
+										memoizedSetIngredient(value as IngredientResponse)
+									}
 								/>
 								<Button
-									onClick={() => deleteAlias(alias.id)}
+									onClick={() => handleDeleteAlias(alias.id)}
 									className='ml-2'
 								>
 									Удалить
@@ -161,7 +154,6 @@ const IngredientsEditor = ({
 					))}
 				</div>
 			)}
-			<Button onClick={handleSave}>Сохранить зменения</Button>
 		</div>
 	)
 }

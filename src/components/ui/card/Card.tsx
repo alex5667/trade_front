@@ -1,18 +1,39 @@
-import { SetStateAction, memo, useEffect, useState } from 'react'
+import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 
 import CardInput from './CardInput'
 
-type CardProps<T extends NonNullable<{}>> = { item: T; fetchFunction: string }
+type CardProps<T extends Record<string, any>> = {
+	item: T
+	fetchFunction: string
+	setItemToParent?: (value: SetStateAction<any>) => void
+}
 
-const Card = <T extends NonNullable<{}>>({
+const Card = <T extends Record<string, any>>({
 	item: itemInitial,
-	fetchFunction
+	fetchFunction,
+	setItemToParent
 }: CardProps<T>) => {
 	const [item, setItem] = useState<T>(itemInitial)
-
+	console.log(' Card item', item)
 	useEffect(() => {
 		setItem(itemInitial)
 	}, [itemInitial])
+	const memoizedsetItem = useCallback(
+		(value: SetStateAction<T>) => {
+			setItem(prev => {
+				const updatedItem = typeof value === 'function' ? value(prev) : value
+				return { ...prev, ...updatedItem }
+			})
+
+			setItemToParent &&
+				setItemToParent(prevItem => {
+					const updatedParent =
+						typeof value === 'function' ? value(prevItem ?? ({} as T)) : value
+					return { ...structuredClone(prevItem ?? ({} as T)), ...updatedParent }
+				})
+		},
+		[setItemToParent]
+	)
 
 	if (!item || Object.keys(item).length === 0) {
 		return <p>Не выбрана опция.</p>
@@ -30,7 +51,7 @@ const Card = <T extends NonNullable<{}>>({
 					<CardInput
 						item={item}
 						keyName={key as keyof T}
-						setItem={setItem as (value: SetStateAction<T>) => void}
+						setItem={memoizedsetItem}
 						fetchFunction={fetchFunction}
 					/>
 				</div>

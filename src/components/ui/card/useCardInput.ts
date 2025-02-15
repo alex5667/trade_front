@@ -3,7 +3,7 @@ import { useCreateIngredientMutation, useUpdateIngredientMutation } from '@/serv
 import { useCreateInstitutionMutation, useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useCreateMealMutation, useUpdateMealMutation } from '@/services/meal.service'
 import { DishCategoryFormState } from '@/types/dishCategory.type'
-import { IngredientFormState } from '@/types/ingredient.type'
+import { IngredientResponse } from '@/types/ingredient.type'
 import { InstitutionFormState } from '@/types/institution.type'
 import { MealFormState } from '@/types/meal.type'
 import { debounce } from '@/utils/debounce'
@@ -18,7 +18,7 @@ type FetchQueryData =
   | InstitutionFormState
   | MealFormState
   | DishCategoryFormState
-  | IngredientFormState
+  | IngredientResponse
 
 
 
@@ -29,6 +29,7 @@ type UseCardInputProps<T> = {
   setItem?: (value: SetStateAction<T>) => void
   keyName?: keyof T
   defaultValue?: string | number
+
 
 }
 
@@ -73,8 +74,10 @@ export function useCardInput<T, K extends keyof T>({
             id: (data as any).id,
             data: updatedData as FetchQueryData,
           }).unwrap()
+          console.log('item', item)
           if (JSON.stringify(item) !== JSON.stringify(updatedData)) {
             setItem && setItem((prevItem) => ({ ...prevItem, ...item }))
+
           }
         } else {
           const item = await createItem(updatedData as any).unwrap()
@@ -83,7 +86,7 @@ export function useCardInput<T, K extends keyof T>({
       } catch (error) {
         console.error('Ошибка при обновлении/создании:', error)
       }
-    }, 700),
+    }, 500),
     [data, keyName, updateItem, createItem, inputRef]
   )
 

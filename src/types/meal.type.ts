@@ -11,6 +11,6 @@ export interface MealResponse {
 
 }
 
-export type MealFormState = Partial<Omit<MealResponse, 'id' | 'updatedAt'>>
+export type MealFormState = Partial<MealResponse>
 
 export type MealForm = Omit<MealResponse, 'id' | 'createdAt' | 'updatedAt'>

@@ -1,55 +1,39 @@
 import cn from 'clsx'
-import { SetStateAction, useRef } from 'react'
+import { useRef } from 'react'
 
-import { IngredientAliasFormState, IngredientAliasResponse } from '@/types/ingredient-alias.type'
-import { IngredientResponse } from '@/types/ingredient.type'
+import { IngredientAliasFormState } from '@/types/ingredient-alias.type'
+import { IngredientFormState } from '@/types/ingredient.type'
 
 import styles from './AliasPage.module.scss'
 import { useAliasInput } from './useAliasInput'
 
 type AliasInputProps = {
 	aliasItem: IngredientAliasFormState | undefined
-	aliasKey: number|undefined
-	ingredient: IngredientResponse
-	setIngredient: (value: SetStateAction<IngredientAliasFormState | null>) => void
+	ingredient: IngredientFormState
+	setIngredient: (
+		value: React.SetStateAction<IngredientFormState | null>
+	) => void
 }
 
 const AliasInput = ({
 	aliasItem,
 	setIngredient,
-	aliasKey,
 	ingredient
 }: AliasInputProps) => {
 	const inputRef = useRef<HTMLInputElement>(null)
-	const defaultInputValue = aliasItem ? aliasItem.alias : ''
-	const { inputValue, handleChange, setInputValue } = useAliasInput({
-		defaultInputValue,
-		inputRef,
+	const { inputValue, handleChange } = useAliasInput({
+		defaultInputValue: aliasItem ? aliasItem.alias : '',
 		aliasItem,
 		setIngredient,
-		aliasKey,
 		ingredient
 	})
 
-	const handleFocus = () => {
-		if (inputValue === '') {
-			setInputValue('')
-		}
-	}
-
-	const handleBlur = () => {
-		if (inputValue === '') {
-			setInputValue('')
-		}
-	}
 	return (
 		<input
 			ref={inputRef}
 			className={cn(styles.input)}
 			value={inputValue}
 			onChange={handleChange}
-			onFocus={handleFocus}
-			onBlur={handleBlur}
 		/>
 	)
 }

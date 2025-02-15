@@ -1,65 +1,83 @@
-import { SetStateAction, useState } from 'react'
+'use client'
+
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
-import { SimpleField } from '@/components/ui/fields/SImpleField'
-import { CreatorEditorStateProps } from '@/components/сreator-editor/CreatorEditor'
+import { FieldInput } from '@/components/ui/fields/FieldInput'
+import { ActiveComponentProps } from '@/components/сreator-editor/CreatorEditor'
 
-import { IngredientFormState } from '@/types/ingredient.type'
+import {
+	IngredientFormState,
+	IngredientResponse
+} from '@/types/ingredient.type'
 
+import IngredientsEditor from './IngredientsEditor'
 import { useCreateIngredientMutation } from '@/services/ingredient.service'
 
 interface IngredientsCreatorProps {
-	setActiveComponent: (
-		value: SetStateAction<CreatorEditorStateProps | null>
-	) => void
+	resetActiveComponent: (active: ActiveComponentProps) => void
 }
+
 const IngredientsCreator = ({
-	setActiveComponent
+	resetActiveComponent
 }: IngredientsCreatorProps) => {
-	const initialIngredient: IngredientFormState = {
-		name: 'Введите наименование',
-		printName: 'Введите наименование для печати'
+	const simpleIngredients: IngredientFormState = {
+		name: '',
+		printName: ''
 	}
+
 	const [ingredient, setIngredient] =
-		useState<IngredientFormState>(initialIngredient)
-	const [create, { isSuccess }] = useCreateIngredientMutation()
-	const handleChange =
-		(field: keyof IngredientFormState) =>
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setIngredient(prev => ({
-				...prev,
-				[field]: e.target.value
-			}))
-		}
+		useState<IngredientFormState>(simpleIngredients)
+	const [createdIngredient, setCreatedIngredient] =
+		useState<IngredientResponse | null>(null)
+	const [createIngredient] = useCreateIngredientMutation()
 
-	const handeleClick = async () => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { id, value } = e.target
+		setIngredient(prev => ({
+			...prev,
+			[id]: value // Теперь изменения корректно обновляют state
+		}))
+	}
+
+	const handleCreate = async () => {
 		try {
-			const newIngredient = await create(ingredient).unwrap()
-			console.log('newIngredient', newIngredient)
-
-			setActiveComponent(() => ({ type: 'editor', data: newIngredient }))
+			const newIngredient = await createIngredient(ingredient).unwrap()
+			setCreatedIngredient(newIngredient)
 		} catch (error) {
-			console.error('Ошибка при создании ингредиента', error)
+			console.error('Ошибка при создании ингредиента:', error)
 		}
+	}
+
+	if (createdIngredient) {
+		return (
+			<IngredientsEditor
+				resetActiveComponent={resetActiveComponent}
+				ingredientResponse={createdIngredient}
+			/>
+		)
 	}
 
 	return (
-		<div className='flex flex-col w-full'>
-			<SimpleField
+		<div className='flex flex-col gap-4 p-6 border rounded-lg shadow-md w-96'>
+			<h2 className='text-lg font-semibold'>Создание ингредиента</h2>
+			<FieldInput
 				id='name'
 				label='Наименование'
 				placeholder='Введите наименование'
-				onChange={handleChange('name')}
 				type='text'
+				value={ingredient.name || ''}
+				onChange={handleInputChange}
 			/>
-			<SimpleField
+			<FieldInput
 				id='printName'
 				label='Наименование для печати'
 				placeholder='Введите наименование для печати'
-				onChange={handleChange('printName')}
 				type='text'
+				value={ingredient.printName || ''}
+				onChange={handleInputChange}
 			/>
-			<Button onClick={handeleClick}> Создать ингредиент </Button>
+			<Button onClick={handleCreate}>Сохранить</Button>
 		</div>
 	)
 }

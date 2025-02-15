@@ -9,7 +9,7 @@ type AutocompleteListProps<T> = {
 
 export const SimpleAutocompleteList = forwardRef<
 	HTMLUListElement,
-	AutocompleteListProps<{ id: number; printName: string }>
+	AutocompleteListProps<{ id: number; name: string }>
 >(({ data, handleOptionSelect }, ref) => {
 	return (
 		<ul
@@ -22,7 +22,7 @@ export const SimpleAutocompleteList = forwardRef<
 					className={styles.autocompleteItem}
 					onClick={() => handleOptionSelect(item)}
 				>
-					{item.printName}
+					{item.name}
 				</li>
 			))}
 		</ul>

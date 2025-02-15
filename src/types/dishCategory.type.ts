@@ -4,9 +4,9 @@ export interface DishCategoryResponse {
 	slug: string,
 	printName: string,
 	description?: string,
-	createdAt: Date,
-	updatedAt: Date,
+	createdAt: string,
+	updatedAt: string,
 }
 
 export type DishCategory = Pick<DishCategoryResponse, 'name' | 'printName'>
-export type DishCategoryFormState = Partial<Omit<DishCategoryResponse, 'id' | 'createdAt' | 'updatedAt'>>
+export type DishCategoryFormState = Partial<DishCategoryResponse>

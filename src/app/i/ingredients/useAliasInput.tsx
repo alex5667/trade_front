@@ -1,84 +1,69 @@
-import { MutableRefObject, SetStateAction, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { IngredientAliasResponse } from '@/types/ingredient-alias.type'
-import { IngredientResponse } from '@/types/ingredient.type'
+import { IngredientAliasFormState } from '@/types/ingredient-alias.type'
+import { IngredientFormState } from '@/types/ingredient.type'
 
-import { debounce } from '@/utils/debounce'
-
-import {
-	useCreateAliasMutation,
-	useUpdateAliasMutation
-} from '@/services/ingredient-alias.service'
-
-interface useAliasInput {
-	defaultInputValue: string|undefined
-	inputRef: MutableRefObject<HTMLInputElement | null>
-	aliasItem: IngredientAliasResponse | undefined
-	aliasKey: number
-	ingredient: IngredientResponse
-	setIngredient: (value: SetStateAction<IngredientResponse | null>) => void
+interface UseAliasInputProps {
+	defaultInputValue: string | undefined
+	aliasItem: IngredientAliasFormState | undefined
+	ingredient: IngredientFormState
+	setIngredient: (
+		value: React.SetStateAction<IngredientFormState | null>
+	) => void
 }
 
 export function useAliasInput({
 	defaultInputValue,
-	inputRef,
 	aliasItem,
-	aliasKey,
 	setIngredient,
 	ingredient
-}: useAliasInput) {
+}: UseAliasInputProps) {
 	const [inputValue, setInputValue] = useState(defaultInputValue)
-	const [updateAlias] = useUpdateAliasMutation()
-	const [createAlias] = useCreateAliasMutation()
 
-	// Дебаунс обработчик изменений
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debouncedInputChange = useCallback(
-		debounce(async (value: string) => {
+	const handleAliasUpdate = useCallback(
+		async (value: string) => {
 			const updatedData = {
-				ingredientId: aliasItem?.ingredientId,
+				// ingredientId: aliasItem?.ingredientId ?? ingredient.id,
 				alias: value
 			}
 
 			if (aliasItem?.id) {
-				await updateAlias({
+				const updatedAlias: IngredientAliasFormState = {
 					id: aliasItem.id,
-					data: updatedData
-				})
-			} else {
-				const response = await createAlias(updatedData)
-				if (response.data) {
-					console.log('response.data', response.data)
-					const aliases = [...ingredient.aliases, response.data]
-					const updatedIngredient = {
-						...ingredient,
-						aliases
-					}
-					console.log('updatedIngredient', updatedIngredient)
-					setIngredient(() => updatedIngredient)
+					...updatedData
 				}
+				const updatedAliases = [
+					...(ingredient.aliases ?? []).filter(
+						alias => alias.id !== aliasItem.id
+					),
+					updatedAlias
+				]
+				setIngredient({ ...ingredient, aliases: updatedAliases })
+			} else {
+				const newAlias: IngredientAliasFormState = {
+					ingredientId: ingredient.id,
+					alias: value
+				}
+				const updatedAliases = [...(ingredient.aliases ?? []), newAlias]
+				setIngredient({ ...ingredient, aliases: updatedAliases })
 			}
-
-			if (inputRef.current) {
-				inputRef.current.blur()
-			}
-		}, 500),
-		[inputRef, aliasItem, updateAlias, createAlias, setIngredient]
+		},
+		[aliasItem, setIngredient, ingredient]
 	)
 
-	// Обработчик изменения input
+	// Обработчик изменения значения в input
 	const handleChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const newValue = event.target.value
+			console.log('newValue', newValue)
 			setInputValue(newValue)
-			debouncedInputChange(newValue)
+			handleAliasUpdate(newValue)
 		},
-		[debouncedInputChange]
+		[handleAliasUpdate]
 	)
 
 	return {
 		inputValue,
-		handleChange,
-		setInputValue
+		handleChange
 	}
 }

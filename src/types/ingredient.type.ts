@@ -9,10 +9,10 @@ export interface IngredientResponse {
 	unit?: string
 	price?: number | string
 	isAllergen?: boolean
-	createdAt: Date
-	updatedAt: Date
+	createdAt: string
+	updatedAt: string
 	slug: string
-	priceUpdatedAt: Date
+	priceUpdatedAt: string
 	aliases: IngredientAliasResponse[]
 	suppliers: IngredientSupplier[]
 

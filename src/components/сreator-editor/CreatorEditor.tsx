@@ -4,29 +4,24 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 
-import { IngredientResponse } from '@/types/ingredient.type'
-
 import DishCreator from '@/app/i/dishes/DishCreator'
 import DishEditor from '@/app/i/dishes/DishEditor'
 import IngredientsCreator from '@/app/i/ingredients/IngredientsCreator'
 import IngredientsEditor from '@/app/i/ingredients/IngredientsEditor'
 
+export type ActiveComponentProps = null | 'editor' | 'creator'
 interface CreatorEditorProps {
 	type: 'dish' | 'ingredient'
 }
 
-export type ActiveComponentType = null | 'editor' | 'creator'
-export type CreatorEditorStateProps = {
-	type: ActiveComponentType
-	data?: IngredientResponse | undefined
-}
-
 const CreatorEditor = ({ type }: CreatorEditorProps) => {
 	const [activeComponent, setActiveComponent] =
-		useState<CreatorEditorStateProps | null>(null)
+		useState<ActiveComponentProps>(null)
 
-	const handleEditor = () => setActiveComponent({ type: 'editor' })
-	const handleCreator = () => setActiveComponent({ type: 'creator' })
+	const handleEditor = () => setActiveComponent('editor')
+	const handleCreator = () => setActiveComponent('creator')
+	const resetActiveComponent = (active: ActiveComponentProps) =>
+		setActiveComponent(active)
 
 	const isDish = type === 'dish'
 	const title = isDish ? 'блюдо' : 'ингредиент'
@@ -48,20 +43,17 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 				</Button>
 			</div>
 			<div className='flex flex-col items-center justify-start pt-3 w-full'>
-				{activeComponent?.type === 'editor' &&
+				{activeComponent === 'editor' &&
 					(isDish ? (
 						<DishEditor />
 					) : (
-						<IngredientsEditor
-							initialIngredient={activeComponent.data}
-							setActiveComponent={setActiveComponent}
-						/>
+						<IngredientsEditor resetActiveComponent={resetActiveComponent} />
 					))}
-				{activeComponent?.type === 'creator' &&
+				{activeComponent === 'creator' &&
 					(isDish ? (
 						<DishCreator />
 					) : (
-						<IngredientsCreator setActiveComponent={setActiveComponent} />
+						<IngredientsCreator resetActiveComponent={resetActiveComponent} />
 					))}
 			</div>
 		</div>

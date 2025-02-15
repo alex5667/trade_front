@@ -27,17 +27,16 @@ const fetchQueries = {
 	ingredient: useGetIngredientByNameQuery
 }
 
-type SimpleAutocompleteInputProps<T extends { id: number; printName: string }> =
-	{
-		fetchFunction: keyof typeof fetchQueries
-		className?: string
-		setItem?: (value: SetStateAction<T | null>) => void
-		item?: T | null
-		isVisibleCard?: boolean
-	}
+type SimpleAutocompleteInputProps<T extends { id: number; name: string }> = {
+	fetchFunction: keyof typeof fetchQueries
+	className?: string
+	setItem?: (value: SetStateAction<T | null>) => void
+	item?: T | null
+	isVisibleCard?: boolean
+}
 
 export const SimpleAutocompleteInput = <
-	T extends { id: number ; printName: string }
+	T extends { id: number; name: string }
 >({
 	className,
 	fetchFunction,
@@ -53,7 +52,12 @@ export const SimpleAutocompleteInput = <
 	}, [parentItem])
 
 	useEffect(() => {
-		setItemToParent && setItemToParent(item)
+		if (setItemToParent) {
+			setItemToParent(prev => ({
+				...(prev ?? ({} as T)),
+				...(item ?? ({} as T))
+			}))
+		}
 	}, [setItemToParent, item])
 	const {
 		inputValue,
@@ -67,7 +71,7 @@ export const SimpleAutocompleteInput = <
 
 	useEffect(() => {
 		if (parentItem) {
-			setInputValue(parentItem.printName)
+			setInputValue(parentItem.name)
 		}
 	}, [parentItem, setInputValue])
 
@@ -111,6 +115,7 @@ export const SimpleAutocompleteInput = <
 				<Card
 					item={item}
 					fetchFunction={fetchFunction}
+					setItemToParent={setItemToParent}
 				/>
 			)}
 		</div>
