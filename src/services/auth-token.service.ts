@@ -15,7 +15,6 @@ export const getRefreshToken = () => {
 }
 
 export const saveTokenStorage = (accessToken: string) => {
-	console.log('accessToken', accessToken)
 	Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, {
 		domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN || 'localhost',
 		sameSite: 'lax',

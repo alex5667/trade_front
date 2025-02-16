@@ -27,7 +27,8 @@ export default function ExcelReader() {
 	const [sheetNames, setSheetNames] = useState<string[]>([])
 	const [selectedSheet, setSelectedSheet] = useState<string>('')
 	const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null)
-	const [downloadMenu] = useDownloadFromExcelMenuItemMutation()
+	const [downloadMenu, { isError, error }] =
+		useDownloadFromExcelMenuItemMutation()
 	// const [downloadDish] = useDownloadFromExcelDishMutation()
 
 	const [downloadDish, { isLoading }] = useDownloadFromExcelDishMutation({
@@ -94,8 +95,13 @@ export default function ExcelReader() {
 		}
 	}
 
-	const downloadMenuFromExcel = () => {
-		downloadMenuFromExcelService(data, datesOfWeek, selectedSheet, downloadMenu)
+	const downloadMenuFromExcel = async () => {
+		await downloadMenuFromExcelService(
+			data,
+			datesOfWeek,
+			selectedSheet,
+			downloadMenu
+		)
 	}
 
 	const downloadDishFromExcel = useCallback(async () => {

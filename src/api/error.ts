@@ -9,7 +9,12 @@
 
 export const errorCatch = (error: any): string => {
 	if (error?.data?.error) {
-		return error.data.error
+		try {
+			const parsedError = JSON.parse(error.data.error)
+			return parsedError?.message || 'Unknown error'
+		} catch (e) {
+			return error.data.error
+		}
 	}
 
 	const message = error?.response?.data?.message
