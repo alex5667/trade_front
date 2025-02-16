@@ -54,12 +54,18 @@ export const SimpleAutocompleteInput = <
 
 	useEffect(() => {
 		if (setItemToParent) {
-			setItemToParent(prev => ({
-				...(prev ?? ({} as T)),
-				...(item ?? ({} as T))
-			}))
+			setItemToParent(prev => {
+				const prevObj = prev ?? ({} as T)
+				const newObj = item ?? ({} as T)
+				// Если объекты равны, ничего не меняем
+				if (JSON.stringify(prevObj) === JSON.stringify(newObj)) {
+					return prev
+				}
+				return { ...prevObj, ...newObj }
+			})
 		}
 	}, [setItemToParent, item])
+
 	const {
 		inputValue,
 		handleChange,

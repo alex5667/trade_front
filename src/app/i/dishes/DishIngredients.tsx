@@ -1,5 +1,3 @@
-'use client'
-
 import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
@@ -19,6 +17,7 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 	const [output, setOutput] = useState(0)
 	const [sum, setSum] = useState(0)
 	const [updateDish] = useUpdateDishMutation()
+
 	// Функция для удаления ингредиента по индексу
 	const handleDeleteIngredient = async (index: number) => {
 		if (setDish) {
@@ -33,13 +32,12 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 					data: updatedData
 				}).unwrap()
 				if (JSON.stringify(dishResponse) !== JSON.stringify(updatedData)) {
-					setDish(prevDish => {
-						return { ...prevDish, ...dishResponse }
-					})
+					setDish(prevDish => ({ ...prevDish, ...dishResponse }))
 				}
 			}
 		}
 	}
+
 	const handleAddIngredient = useCallback(async () => {
 		if (!setDish) return
 
@@ -58,51 +56,36 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 		}))
 	}, [setDish])
 
-	// const handleAddIngredient = async () => {
-	// 	setDish &&
-	// 		setDish(prev => ({
-	// 			...prev,
-	// 			ingredients: [
-	// 				...prev.ingredients,
-	// 				{
-	// 					ingredient: undefined,
-	// 					grossWeight: 0,
-	// 					coldLossPercent: 0,
-	// 					heatLossPercent: 0
-	// 				}
-	// 			]
-	// 		}))
-	// }
-
 	useEffect(() => {
-		const out =
-			dish.ingredients &&
-			dish.ingredients?.length > 0 &&
-			dish.ingredients.reduce((acc, curr) => {
-				let outputWeight = curr.grossWeight || 0
-				if (curr.grossWeight) {
-					if (curr.coldLossPercent) {
-						outputWeight *= 1 - curr.coldLossPercent / 100
+		const calculateOutputAndSum = () => {
+			const out =
+				dish.ingredients?.reduce((acc, curr) => {
+					let outputWeight = curr.grossWeight || 0
+					if (curr.grossWeight) {
+						if (curr.coldLossPercent) {
+							outputWeight *= 1 - curr.coldLossPercent / 100
+						}
+						if (curr.heatLossPercent) {
+							outputWeight *= 1 - curr.heatLossPercent / 100
+						}
 					}
-					if (curr.heatLossPercent) {
-						outputWeight *= 1 - curr.heatLossPercent / 100
-					}
-				}
-				return acc + outputWeight
-			}, 0)
-		setOutput(out ? out : 0)
+					return acc + outputWeight
+				}, 0) || 0
 
-		const sumVal =
-			dish.ingredients &&
-			dish.ingredients?.length > 0 &&
-			dish.ingredients.reduce((acc, curr) => {
-				const price =
-					curr.ingredient?.price && curr.grossWeight
-						? +curr.ingredient.price * curr.grossWeight
-						: 0
-				return acc + price
-			}, 0)
-		setSum(sumVal ? sumVal : 0)
+			const sumVal =
+				dish.ingredients?.reduce((acc, curr) => {
+					const price =
+						curr.ingredient?.price && curr.grossWeight
+							? +curr.ingredient.price * curr.grossWeight
+							: 0
+					return acc + price
+				}, 0) || 0
+
+			setOutput(out)
+			setSum(sumVal)
+		}
+
+		calculateOutputAndSum()
 	}, [dish.ingredients])
 
 	return (
@@ -221,6 +204,29 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 		</div>
 	)
 }
+
+// Функция сравнения пропсов для мемоизации
+// const areEqual = (prevProps: Props, nextProps: Props): boolean => {
+// 	// Сравниваем id блюда
+// 	if (prevProps.dish.id !== nextProps.dish.id) return false
+// 	// Сравниваем название блюда
+// 	if (prevProps.dish.name !== nextProps.dish.name) return false
+
+// 	const prevIngredients = prevProps.dish.ingredients ?? []
+// 	const nextIngredients = nextProps.dish.ingredients ?? []
+
+// 	if (prevIngredients.length !== nextIngredients.length) return false
+
+// 	// Сравниваем ингредиенты по id
+// 	for (let i = 0; i < prevIngredients.length; i++) {
+// 		const prevIng = prevIngredients[i].ingredient
+// 		const nextIng = nextIngredients[i].ingredient
+// 		if (prevIng?.id !== nextIng?.id) return false
+// 	}
+
+// 	// Если все проверки совпадают, возвращаем true
+// 	return true
+// }
 
 export default memo(DishIngredients)
 DishIngredients.displayName = 'DishIngredients'

@@ -11,11 +11,10 @@ interface DishCardProps {
 
 const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 	const [dish, setDish] = useState<DishFormState>(() => initialDish)
-	console.log('dish', dish)
 
 	useEffect(() => {
 		if (initialDish) {
-			setDish(prevDish => ({ ...prevDish, ...initialDish }))
+			setDish(initialDish)
 		}
 	}, [initialDish])
 

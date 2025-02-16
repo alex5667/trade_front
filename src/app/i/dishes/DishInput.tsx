@@ -16,11 +16,48 @@ export type DishInputProps = {
 	ingredientId?: number
 }
 
+// const DishInput = ({
+// 	dish,
+// 	keyName,
+// 	setDish,
+
+// 	defaultValue,
+// 	ingredientKey,
+// 	ingredientId
+// }: DishInputProps) => {
+// 	const inputRef = useRef<HTMLInputElement>(null)
+// 	const { inputValue, handleChange, setInputValue } = useDishInput({
+// 		inputRef,
+// 		dish,
+// 		setDish,
+// 		key: keyName,
+// 		defaultValue,
+// 		ingredientKey,
+// 		ingredientId
+// 	})
+
+// 	const handleFocus = () => {
+// 		if (inputValue === 0) {
+// 			setInputValue('')
+// 		}
+// 	}
+
+// 	const safeValue = formatValue(inputValue)
+
+// 	return (
+// 		<input
+// 			ref={inputRef}
+// 			className={cn('w-full')}
+// 			value={safeValue}
+// 			onChange={handleChange}
+// 			onFocus={handleFocus}
+// 		/>
+// 	)
+// }
 const DishInput = ({
 	dish,
 	keyName,
 	setDish,
-
 	defaultValue,
 	ingredientKey,
 	ingredientId
@@ -54,6 +91,5 @@ const DishInput = ({
 		/>
 	)
 }
-
 export default DishInput
 DishInput.displayName = 'DishInput'

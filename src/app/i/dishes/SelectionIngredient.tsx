@@ -1,6 +1,11 @@
-'use client'
-
-import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
+import {
+	SetStateAction,
+	memo,
+	useCallback,
+	useEffect,
+	useRef,
+	useState
+} from 'react'
 
 import { SimpleAutocompleteInput } from '@/components/ui/simple-auto-complete-input/SimpleAutoCompleteInput'
 
@@ -23,22 +28,21 @@ const SelectionIngredient = ({
 	ingredient: parentIngredient,
 	setDish
 }: SelectionIngredientProps) => {
-	console.log('parentIngredient', parentIngredient)
-
+	// Локальное состояние для выбранного ингредиента
 	const [ingredientSelection, setIngredientSelection] =
 		useState<IngredientResponse | null>(
 			parentIngredient?.id ? parentIngredient : null
 		)
-	console.log('ingredientSelection', ingredientSelection)
 
 	const [updateDish] = useUpdateDishMutation()
 	const [createDish] = useCreateDishMutation()
 
-	// Фильтруем ингредиенты, оставляя только те, у которых есть ingredient.id
-	const clearIngredients = (dish.ingredients ?? []).filter(
-		ing => ing.ingredient?.id
-	)
+	// Фильтруем ингредиенты блюда, оставляя только те, у которых задан ingredient.id
+	// const clearIngredients = (dish.ingredients ?? []).filter(
+	// 	ing => ing.ingredient?.id
+	// )
 
+	// Мемоизированное обновление локального состояния выбранного ингредиента
 	const memoizedSetIngredientSelection = useCallback(
 		(value: SetStateAction<IngredientResponse | null>) => {
 			setIngredientSelection(value)
@@ -46,92 +50,116 @@ const SelectionIngredient = ({
 		[]
 	)
 
-	useEffect(() => {
-		if (!ingredientSelection?.id) {
-			console.log('Нет валидного выбранного ингредиента')
-			return
-		}
+	// Используем ref-флаг для предотвращения зацикливания обновлений
+	const updatePendingRef = useRef(false)
 
-		let updatedIngredients = [...clearIngredients]
+	// Эффект обновления блюда при изменении выбранного ингредиента.
+	// Зависимости: только изменения ingredientSelection и родительского ingredient.
+	useEffect(
+		() => {
+			if (!ingredientSelection?.id) {
+				console.log('Нет валидного выбранного ингредиента')
+				return
+			}
 
-		if (parentIngredient?.id) {
-			const ingredientIndex = updatedIngredients.findIndex(
-				ing => ing.ingredient?.id === parentIngredient.id
-			)
+			// Используем текущее блюдо из состояния (dish) для вычисления нового массива ингредиентов.
+			// Мы не включаем dish в зависимости эффекта, чтобы избежать зацикливания.
+			const currentIngredients = dish.ingredients || []
 
-			if (ingredientIndex === -1) {
+			let updatedIngredients = [...currentIngredients]
+
+			if (parentIngredient?.id) {
+				const ingredientIndex = currentIngredients.findIndex(
+					ing => ing.ingredient?.id === parentIngredient.id
+				)
+
+				if (ingredientIndex === -1) {
+					// Если родительского ингредиента нет в списке, добавляем новый ингредиент.
+					updatedIngredients.push({
+						ingredient: ingredientSelection,
+						grossWeight: 0,
+						coldLossPercent: 0,
+						heatLossPercent: 0
+					})
+				} else if (
+					currentIngredients[ingredientIndex].ingredient?.id !==
+					ingredientSelection.id
+				) {
+					// Если ингредиент изменился, обновляем его.
+					updatedIngredients[ingredientIndex] = {
+						...currentIngredients[ingredientIndex],
+						ingredient: ingredientSelection
+					}
+				} else {
+					// Если выбранный ингредиент совпадает с уже существующим – ничего не делаем.
+					return
+				}
+			} else {
+				// Если родительский ингредиент не задан, добавляем новый ингредиент.
 				updatedIngredients.push({
 					ingredient: ingredientSelection,
 					grossWeight: 0,
 					coldLossPercent: 0,
 					heatLossPercent: 0
 				})
-			} else if (
-				updatedIngredients[ingredientIndex].ingredient?.id !==
-				ingredientSelection.id
+			}
+
+			// Сравниваем текущий и обновленный массив ингредиентов.
+			if (
+				JSON.stringify(currentIngredients) ===
+				JSON.stringify(updatedIngredients)
 			) {
-				updatedIngredients[ingredientIndex] = {
-					...updatedIngredients[ingredientIndex],
-					ingredient: ingredientSelection
-				}
-			} else {
+				console.log('Массив ингредиентов не изменился')
 				return
 			}
-		} else {
-			updatedIngredients.push({
-				ingredient: ingredientSelection,
-				grossWeight: 0,
-				coldLossPercent: 0,
-				heatLossPercent: 0
-			})
-		}
-
-		const arraysAreEqual =
-			updatedIngredients.length === clearIngredients.length &&
-			updatedIngredients.every(
-				(ing, idx) =>
-					ing.ingredient?.id === clearIngredients[idx]?.ingredient?.id
+			const validIngredients = updatedIngredients.filter(
+				ing => ing.ingredient !== undefined
 			)
 
-		if (arraysAreEqual) {
-			console.log('Массив ингредиентов не изменился')
-			return
-		}
+			const updatedDish = { ...dish, ingredients: validIngredients }
+			console.log('updatedDish', updatedDish)
 
-		const updatedData = { ...dish, ingredients: updatedIngredients }
-		console.log('updatedData', updatedData)
-
-		const updateOrCreateDish = async () => {
-			try {
-				if (dish?.id) {
-					const dishResponse = await updateDish({
-						id: dish.id,
-						data: updatedData
-					}).unwrap()
-					setDish && setDish(prevDish => ({ ...prevDish, ...dishResponse }))
-				} else {
-					const dishResponse = await createDish(updatedData).unwrap()
-					setDish && setDish(() => dishResponse)
-				}
-			} catch (error) {
-				console.error('Ошибка при обновлении/создании блюда:', error)
+			// Если обновление уже выполняется, не запускаем новое.
+			if (updatePendingRef.current) {
+				console.log('Обновление уже в процессе')
+				return
 			}
-		}
+			updatePendingRef.current = true
 
-		updateOrCreateDish()
-	}, [
-		ingredientSelection?.id,
-		parentIngredient?.id,
-		dish.id,
-		updateDish,
-		createDish,
-		setDish,
-		ingredientSelection,
-		clearIngredients,
-		dish
-	])
+			const updateOrCreateDish = async () => {
+				try {
+					if (dish.id) {
+						const dishResponse = await updateDish({
+							id: dish.id,
+							data: updatedDish
+						}).unwrap()
+						setDish && setDish(prevDish => ({ ...prevDish, ...dishResponse }))
+					} else {
+						const dishResponse = await createDish(updatedDish).unwrap()
+						setDish && setDish(() => dishResponse)
+					}
+				} catch (error) {
+					console.error('Ошибка при обновлении/создании блюда:', error)
+				} finally {
+					updatePendingRef.current = false
+				}
+			}
+
+			updateOrCreateDish()
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[
+			ingredientSelection?.id,
+			parentIngredient?.id,
+			updateDish,
+			createDish,
+			setDish
+		]
+	)
 
 	return (
+		// <div>truble</div>
 		<SimpleAutocompleteInput
 			fetchFunction='ingredient'
 			item={ingredientSelection}
