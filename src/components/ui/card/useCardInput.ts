@@ -74,7 +74,6 @@ export function useCardInput<T, K extends keyof T>({
             id: (data as any).id,
             data: updatedData as FetchQueryData,
           }).unwrap()
-          console.log('item', item)
           if (JSON.stringify(item) !== JSON.stringify(updatedData)) {
             setItem && setItem((prevItem) => ({ ...prevItem, ...item }))
 

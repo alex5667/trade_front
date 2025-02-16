@@ -33,6 +33,7 @@ type SimpleAutocompleteInputProps<T extends { id: number; name: string }> = {
 	setItem?: (value: SetStateAction<T | null>) => void
 	item?: T | null
 	isVisibleCard?: boolean
+	style?: React.CSSProperties // Добавляем поддержку стилей
 }
 
 export const SimpleAutocompleteInput = <

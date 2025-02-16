@@ -1,17 +1,17 @@
 import cn from 'clsx'
 import { useRef } from 'react'
 
-import { IngredientAliasFormState } from '@/types/ingredient-alias.type'
-import { IngredientFormState } from '@/types/ingredient.type'
+import { IngredientAliasResponse } from '@/types/ingredient-alias.type'
+import { IngredientResponse } from '@/types/ingredient.type'
 
 import styles from './AliasPage.module.scss'
 import { useAliasInput } from './useAliasInput'
 
 type AliasInputProps = {
-	aliasItem: IngredientAliasFormState | undefined
-	ingredient: IngredientFormState
+	aliasItem: IngredientAliasResponse | undefined
+	ingredient: IngredientResponse
 	setIngredient: (
-		value: React.SetStateAction<IngredientFormState | null>
+		value: React.SetStateAction<IngredientResponse | null>
 	) => void
 }
 

@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react'
 
-import { IngredientAliasFormState } from '@/types/ingredient-alias.type'
-import { IngredientFormState } from '@/types/ingredient.type'
+import { IngredientAliasResponse } from '@/types/ingredient-alias.type'
+import { IngredientResponse } from '@/types/ingredient.type'
 
 interface UseAliasInputProps {
 	defaultInputValue: string | undefined
-	aliasItem: IngredientAliasFormState | undefined
-	ingredient: IngredientFormState
+	aliasItem: IngredientAliasResponse | undefined
+	ingredient: IngredientResponse
 	setIngredient: (
-		value: React.SetStateAction<IngredientFormState | null>
+		value: React.SetStateAction<IngredientResponse | null>
 	) => void
 }
 
@@ -26,26 +26,29 @@ export function useAliasInput({
 				// ingredientId: aliasItem?.ingredientId ?? ingredient.id,
 				alias: value
 			}
-
-			if (aliasItem?.id) {
-				const updatedAlias: IngredientAliasFormState = {
-					id: aliasItem.id,
-					...updatedData
+			if (ingredient.id) {
+				if (aliasItem?.id) {
+					const updatedAlias: IngredientAliasResponse = {
+						id: aliasItem.id,
+						ingredientId: ingredient.id,
+						...updatedData
+					}
+					const updatedAliases = [
+						...(ingredient.aliases ?? []).filter(
+							alias => alias.id !== aliasItem.id
+						),
+						updatedAlias
+					]
+					setIngredient({ ...ingredient, aliases: updatedAliases })
 				}
-				const updatedAliases = [
-					...(ingredient.aliases ?? []).filter(
-						alias => alias.id !== aliasItem.id
-					),
-					updatedAlias
-				]
-				setIngredient({ ...ingredient, aliases: updatedAliases })
-			} else {
-				const newAlias: IngredientAliasFormState = {
-					ingredientId: ingredient.id,
-					alias: value
-				}
-				const updatedAliases = [...(ingredient.aliases ?? []), newAlias]
-				setIngredient({ ...ingredient, aliases: updatedAliases })
+				// else {
+				// 	const newAlias: IngredientAliasResponse = {
+				// 		ingredientId: ingredient.id,
+				// 		alias: value
+				// 	}
+				// 	const updatedAliases = [...(ingredient.aliases ?? []), newAlias]
+				// 	setIngredient({ ...ingredient, aliases: updatedAliases })
+				// }
 			}
 		},
 		[aliasItem, setIngredient, ingredient]
@@ -55,7 +58,6 @@ export function useAliasInput({
 	const handleChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			const newValue = event.target.value
-			console.log('newValue', newValue)
 			setInputValue(newValue)
 			handleAliasUpdate(newValue)
 		},

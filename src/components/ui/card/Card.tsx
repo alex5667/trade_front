@@ -14,7 +14,6 @@ const Card = <T extends Record<string, any>>({
 	setItemToParent
 }: CardProps<T>) => {
 	const [item, setItem] = useState<T>(itemInitial)
-	console.log(' Card item', item)
 	useEffect(() => {
 		setItem(itemInitial)
 	}, [itemInitial])
@@ -26,7 +25,7 @@ const Card = <T extends Record<string, any>>({
 			})
 
 			setItemToParent &&
-				setItemToParent(prevItem => {
+				setItemToParent((prevItem: any) => {
 					const updatedParent =
 						typeof value === 'function' ? value(prevItem ?? ({} as T)) : value
 					return { ...structuredClone(prevItem ?? ({} as T)), ...updatedParent }

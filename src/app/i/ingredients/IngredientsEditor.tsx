@@ -6,10 +6,7 @@ import { Button } from '@/components/ui/buttons/Button'
 import { SimpleAutocompleteInput } from '@/components/ui/simple-auto-complete-input/SimpleAutoCompleteInput'
 import { ActiveComponentProps } from '@/components/сreator-editor/CreatorEditor'
 
-import {
-	IngredientAliasFormState,
-	IngredientAliasResponse
-} from '@/types/ingredient-alias.type'
+import { IngredientAliasResponse } from '@/types/ingredient-alias.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 
 import AliasInput from './AliasInput'
@@ -27,7 +24,6 @@ const IngredientsEditor = ({
 	const [ingredient, setIngredient] = useState<IngredientResponse | null>(
 		ingredientResponse
 	)
-	console.log('ingredient', ingredient)
 
 	const [updateIngredient] = useUpdateIngredientMutation()
 	// Функция-обёртка для обновления ингредиента
@@ -104,8 +100,8 @@ const IngredientsEditor = ({
 				data: updatedIngredientData
 			}).unwrap()
 
-			console.log('responseIngredient', responseIngredient)
-			setIngredient(responseIngredient) // Обновляем состояние ингредиента
+			setIngredient(responseIngredient)
+			resetActiveComponent(null)
 		} catch (error) {
 			console.error('Ошибка при обновлении ингредиента:', error)
 		}
@@ -130,7 +126,7 @@ const IngredientsEditor = ({
 					>
 						Добавить
 					</Button>
-					{ingredient.aliases?.map((alias: IngredientAliasFormState) => (
+					{ingredient.aliases?.map((alias: IngredientAliasResponse) => (
 						<div
 							key={alias.id}
 							className='flex flex-col items-center mt-2'
