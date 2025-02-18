@@ -4,9 +4,11 @@ import WeekDay from '@/components/menu-edit/WeekDay'
 import Loader from '@/components/ui/Loader'
 
 import { MealResponse } from '@/types/meal.type'
-import { DayOfWeek } from '@/types/menuItem.type'
+import { DayOfWeek, MenuItemResponse } from '@/types/menuItem.type'
 
-import { ListRowParent } from './ListRowParent'
+import { useTypedSelector } from '@/hooks/useTypedSelector'
+
+import ListRowParent from './ListRowParent'
 import { useGetAllMealsQuery } from '@/services/meal.service'
 
 interface ListDayView {
@@ -23,10 +25,13 @@ const ListDayView = ({
 	datesOfWeek
 }: ListDayView) => {
 	const { data: meals, isLoading, isError } = useGetAllMealsQuery()
+	const items = useTypedSelector(state => state.menuSlice.items)
 	if (isLoading) return <Loader />
 	if (isError) return <div>Error loading meals</div>
-
 	const dateForDay = datesOfWeek[day]
+	const dayItems: MenuItemResponse[] | [] =
+		items?.filter(item => item.dayOfWeek === day && item.date === dateForDay) ||
+		[]
 	return (
 		<>
 			<WeekDay
@@ -43,6 +48,7 @@ const ListDayView = ({
 						day={day}
 						institutionSlug={institutionSlug}
 						dateForDay={dateForDay}
+						dayItems={dayItems}
 					/>
 				))
 			) : (

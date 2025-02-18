@@ -15,32 +15,40 @@ export function useMealItemDnd() {
 
 		const [meal, date, institution] = source.droppableId.split('+')
 
-		const sortedItems = [...items].filter((item) => {
-			const isMealString = typeof item.meal === 'string'
-			const mealItem = isMealString
-				? item.meal
-				: (item.meal as MealResponse)?.name as string
 
-			// console.log('(mealItem as string).toLowerCase() === meal', (mealItem as string).toLowerCase() === meal)
-			// console.log('(item.date === date', item.date === date)
-			return (mealItem as string).toLowerCase() === meal && item.date === date
+		const sortedItems = items.filter((item) => {
+			const isMealString = typeof item.meal === 'string'
+			const mealItem = isMealString ? item.meal as string : (item.meal as MealResponse)?.slug
+
+			// Убеждаемся, что дата существует
+
+			// Преобразуем даты к формату YYYY-MM-DD
+			const formattedDate = date.split('T')[0].trim().toLowerCase()
+			const formattedItemDate = item.date.split('T')[0].trim().toLowerCase()
+
+			// Сравниваем значения
+			return mealItem?.toLowerCase().trim() === meal.toLowerCase().trim() && formattedDate == formattedItemDate
 		})
+
+
+		console.log('sortedItems', sortedItems)
 		if (!destination || !sortedItems) {
 			return
 		}
 		if (source.droppableId !== destination.droppableId) {
 			return
 		}
-		// console.log('sortedItems', sortedItems)
 		if (source.index !== destination.index) {
 			const newItems = Array.from(sortedItems)
 			const [movedItem] = newItems.splice(source.index, 1)
+			console.log('movedItem', movedItem)
 			newItems.splice(destination.index, 0, movedItem)
 
 			const updatedItems = newItems.map((item, index) => ({
 				...item,
 				dishOrder: index + 1
 			}))
+			console.log(updatedItems)
 
 			addAllMenuItems(updatedItems)
 

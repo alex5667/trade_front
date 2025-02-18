@@ -1,11 +1,10 @@
 import { Draggable, Droppable } from '@hello-pangea/dnd'
+import { memo } from 'react'
 
 import { DishResponse } from '@/types/dish.type'
 import { InstitutionResponse } from '@/types/institution.type'
 import { MealResponse } from '@/types/meal.type'
 import { DayOfWeek, MenuItemResponse } from '@/types/menuItem.type'
-
-import { useTypedSelector } from '@/hooks/useTypedSelector'
 
 import AddNewMenuItem from '../AddNewMenuItem'
 
@@ -18,38 +17,32 @@ interface ListRowParent {
 	institutionSlug: string
 	mealSlug: string
 	dateForDay: string
+	dayItems: MenuItemResponse[] | []
 }
 
-export function ListRowParent({
+function ListRowParent({
 	label,
 	day,
 	institutionSlug,
 	mealSlug,
-	dateForDay
+	dateForDay,
+	dayItems
 }: ListRowParent) {
-	const items = useTypedSelector(state => state.menuSlice.items)
-	const filteredItems: MenuItemResponse[] | [] =
-		items?.filter(item => {
+	console.log(' ListRowParent dayItems', dayItems)
+	const itemsFilteredByMealAndInstitution: MenuItemResponse[] | [] =
+		dayItems?.filter(item => {
 			const isString = typeof item?.meal === 'string'
-
 			if (isString) {
-				return (
-					item.dayOfWeek === day &&
-					item.date === dateForDay &&
-					item.meal === mealSlug &&
-					item.institution === institutionSlug
-				)
+				return item.meal === mealSlug && item.institution === institutionSlug
 			} else {
 				return (
 					(item?.meal as MealResponse)?.slug === mealSlug &&
-					item.dayOfWeek === day &&
-					item.date === dateForDay &&
 					(item.institution as InstitutionResponse)?.slug === institutionSlug
 				)
 			}
 		}) || []
 
-	const sortedItems = filteredItems.slice().sort((a, b) => {
+	const sortedItems = itemsFilteredByMealAndInstitution.slice().sort((a, b) => {
 		if (a.dishOrder !== undefined && b.dishOrder !== undefined) {
 			return a.dishOrder - b.dishOrder
 		}
@@ -59,7 +52,10 @@ export function ListRowParent({
 	const droppableId = `${mealSlug} + ${dateForDay}+${institutionSlug}`
 
 	return (
-		<Droppable droppableId={droppableId}>
+		<Droppable
+			droppableId={droppableId}
+			type={droppableId}
+		>
 			{provided => (
 				<div
 					ref={provided.innerRef}
@@ -116,3 +112,38 @@ export function ListRowParent({
 		</Droppable>
 	)
 }
+
+function arrEqual(
+	prevItems: MenuItemResponse[],
+	nextItems: MenuItemResponse[]
+): boolean {
+	// Если массивы разной длины, они не равны
+	if (prevItems.length !== nextItems.length) return false
+
+	return prevItems.every((prevItem, index) => {
+		const nextItem = nextItems[index]
+
+		// Проверяем каждое ключевое поле для сравнения
+		return (
+			prevItem.id === nextItem.id &&
+			prevItem.dishOrder === nextItem.dishOrder &&
+			prevItem.date === nextItem.date &&
+			prevItem.dayOfWeek === nextItem.dayOfWeek &&
+			prevItem.meal === nextItem.meal &&
+			prevItem.institution === nextItem.institution &&
+			prevItem.dish === nextItem.dish &&
+			prevItem.price === nextItem.price &&
+			prevItem.description === nextItem.description
+		)
+	})
+}
+export default memo(ListRowParent, (prevProps, nextProps) => {
+	return (
+		prevProps.label === nextProps.label &&
+		prevProps.day === nextProps.day &&
+		prevProps.institutionSlug === nextProps.institutionSlug &&
+		prevProps.mealSlug === nextProps.mealSlug &&
+		prevProps.dateForDay === nextProps.dateForDay &&
+		arrEqual(prevProps.dayItems, nextProps.dayItems)
+	)
+})
