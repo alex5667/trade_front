@@ -28,7 +28,6 @@ function ListRowParent({
 	dateForDay,
 	dayItems
 }: ListRowParent) {
-	console.log(' ListRowParent dayItems', dayItems)
 	const itemsFilteredByMealAndInstitution: MenuItemResponse[] | [] =
 		dayItems?.filter(item => {
 			const isString = typeof item?.meal === 'string'

@@ -1,7 +1,7 @@
 import { URLS } from '@/config/urls'
 import { addAllMenuItems, addMenuItem, deleteMenuItemById, updateMenuItem, updateOrderMenuItem } from '@/store/menuItem/menu-item.slice'
 import { TypeRootState } from '@/store/store'
-import { MenuItemDataFilters, MenuItemExcelDto, MenuItemResponse, TypeMenuItemFormState } from '@/types/menuItem.type'
+import { CopyMenuItemDataFilters, MenuItemDataFilters, MenuItemExcelDto, MenuItemResponse, TypeMenuItemFormState } from '@/types/menuItem.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
@@ -35,6 +35,24 @@ export const menuItemApi = createApi({
 						{ type: 'menuItems', id: 'LIST' }
 					]
 					: [{ type: 'menuItems', id: 'LIST' }]
+
+		}),
+		CopyMenuItem: builder.mutation<MenuItemResponse[], CopyMenuItemDataFilters>({
+			query: (queryData = {} as CopyMenuItemDataFilters) => ({
+				url: URLS.MENU_ITEM_COPY,
+				method: 'POST',
+				params: queryData
+			}),
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
+				try {
+					const data = await queryFulfilled
+					dispatch(addAllMenuItems(data.data))
+				} catch (err) {
+					console.error('Failed to fetch menu...', err)
+				}
+			},
+			invalidatesTags: [{ type: 'menuItems', id: 'LIST' }]
+
 
 		}),
 		deleteMenuItem: builder.mutation<void, number>({
@@ -146,4 +164,4 @@ export const menuItemApi = createApi({
 
 	})
 })
-export const { useGetAllMenuItemQuery, usePrefetch, useGetByInstitutionSlugQuery, useDeleteMenuItemMutation, useCreateMenuItemMutation, useUpdateMenuItemMutation, useUpdateOrderMenuItemMutation, useDownloadFromExcelMenuItemMutation } = menuItemApi
+export const { useGetAllMenuItemQuery, usePrefetch, useGetByInstitutionSlugQuery, useDeleteMenuItemMutation, useCreateMenuItemMutation, useUpdateMenuItemMutation, useUpdateOrderMenuItemMutation, useDownloadFromExcelMenuItemMutation, useCopyMenuItemMutation } = menuItemApi

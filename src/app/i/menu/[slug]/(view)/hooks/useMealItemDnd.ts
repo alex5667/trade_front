@@ -31,7 +31,6 @@ export function useMealItemDnd() {
 		})
 
 
-		console.log('sortedItems', sortedItems)
 		if (!destination || !sortedItems) {
 			return
 		}

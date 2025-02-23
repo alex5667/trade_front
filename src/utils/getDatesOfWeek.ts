@@ -4,7 +4,7 @@ import utc from 'dayjs/plugin/utc'
 
 dayjs.extend(utc)
 dayjs.extend(isoWeek)
-
+export type DatesOfWeek = { [key: string]: string }
 export const getDatesOfWeek = (weekOffset = 0) => {
 	const today = dayjs().utc().add(weekOffset, 'week')
 
@@ -23,7 +23,7 @@ export const getDatesOfWeek = (weekOffset = 0) => {
 		.toISOString()
 
 	// Генерация дат для каждого дня недели
-	const datesOfWeek: { [key: string]: string } = {}
+	const datesOfWeek: DatesOfWeek = {}
 
 	for (let i = 0; i < 7; i++) {
 		const date = today

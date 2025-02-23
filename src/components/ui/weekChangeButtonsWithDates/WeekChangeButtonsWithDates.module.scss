@@ -1,0 +1,19 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss";
+
+.btnsWrapper {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.btnWrapper {
+	display: flex;
+	flex-grow: 1;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: mixins.toRem(10);
+}

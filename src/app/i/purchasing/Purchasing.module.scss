@@ -1,0 +1,20 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss";
+
+.container {
+	width: 100%;
+}
+
+.btnContainer {
+	@apply w-full flex justify-between;
+}
+
+.weekChangeBtn {
+	width: 60%;
+	margin-right: 20px;
+}
+
+.getBtn {
+	@apply flex flex-col align-middle;
+	width: 40%;
+}

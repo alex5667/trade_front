@@ -1,7 +1,7 @@
 import cn from 'clsx'
 import { Dispatch, SetStateAction } from 'react'
 
-import { Button } from '../ui/buttons/Button'
+import { Button } from '../buttons/Button'
 
 import styles from './WeekChangeButtons.module.scss'
 

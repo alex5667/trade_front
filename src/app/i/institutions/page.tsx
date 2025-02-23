@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
-import { NO_INDEX_PAGE } from '@/constants/seo.constants'
+import CreatorEditor from '@/components/сreator-editor/CreatorEditor'
 
-import Institutions from './Institutions'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
 export const metadata: Metadata = {
 	title: 'Institutions',
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 }
 
 export default function InstitutionPage() {
-	return <Institutions />
+	return <CreatorEditor type='institution' />
 }

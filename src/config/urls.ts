@@ -5,6 +5,7 @@ export const URLS = {
 	AUTH_REGISTER: '/auth/register',
 	AUTH_LOGOUT: '/auth/logout',
 	MENU_ITEM: '/menu-item',
+	MENU_ITEM_COPY: '/menu-item/copy',
 	PURCHASING: '/purchasing',
 	MENU_ITEM_EXCEL: '/menu-item/excel',
 	MENU_ITEM_ORDER_UPDATE: '/menu-item/order/update',

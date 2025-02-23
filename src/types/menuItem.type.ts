@@ -104,6 +104,15 @@ export type MenuItemDataFilters = {
 	institutionSlug?: string
 
 }
+export type CopyMenuItemDataFilters = {
+	startDate?: string
+	endDate?: string
+	startDateForCopy?: string
+	endDateForCopy?: string
+	institutionSlug?: string
+
+
+}
 
 export interface MenuItemExcelDto {
 	data: string[][]

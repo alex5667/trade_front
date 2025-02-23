@@ -1,15 +1,18 @@
 'use client'
 
+import { memo } from 'react'
+
 import WeekDay from '@/components/menu-edit/WeekDay'
 import Loader from '@/components/ui/Loader'
 
 import { MealResponse } from '@/types/meal.type'
-import { DayOfWeek, MenuItemResponse } from '@/types/menuItem.type'
+import { DayOfWeek } from '@/types/menuItem.type'
 
 import { useTypedSelector } from '@/hooks/useTypedSelector'
+import { selectDayItems } from '@/store/menuItem/menu-item.selectors'
 
-import ListRowParent from './ListRowParent'
 import { useGetAllMealsQuery } from '@/services/meal.service'
+import ListRowParent from './ListRowParent'
 
 interface ListDayView {
 	day: DayOfWeek
@@ -25,13 +28,13 @@ const ListDayView = ({
 	datesOfWeek
 }: ListDayView) => {
 	const { data: meals, isLoading, isError } = useGetAllMealsQuery()
-	const items = useTypedSelector(state => state.menuSlice.items)
+	const dateForDay = datesOfWeek[day]
+	const dayItems = useTypedSelector(selectDayItems(day, dateForDay))
+
 	if (isLoading) return <Loader />
 	if (isError) return <div>Error loading meals</div>
-	const dateForDay = datesOfWeek[day]
-	const dayItems: MenuItemResponse[] | [] =
-		items?.filter(item => item.dayOfWeek === day && item.date === dateForDay) ||
-		[]
+
+
 	return (
 		<>
 			<WeekDay
@@ -58,4 +61,12 @@ const ListDayView = ({
 	)
 }
 
-export default ListDayView
+
+export default memo(ListDayView, (prevProps, nextProps) => {
+	return (
+		prevProps.label === nextProps.label &&
+		prevProps.day === nextProps.day &&
+		prevProps.institutionSlug === nextProps.institutionSlug &&
+		prevProps.datesOfWeek[prevProps.day] === nextProps.datesOfWeek[nextProps.day] 
+	)
+})

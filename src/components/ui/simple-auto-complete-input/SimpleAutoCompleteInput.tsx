@@ -4,6 +4,11 @@ import cn from 'clsx'
 import { SetStateAction, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
+import { DishCategoryResponse } from '@/types/dishCategory.type'
+import { IngredientResponse } from '@/types/ingredient.type'
+import { InstitutionResponse } from '@/types/institution.type'
+import { MealResponse } from '@/types/meal.type'
+
 import { useOutside } from '@/hooks/useOutside'
 
 import { errorCatch } from '@/api/error'
@@ -20,6 +25,12 @@ import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
 
+export type EntityType =
+	| InstitutionResponse
+	| MealResponse
+	| IngredientResponse
+	| DishCategoryResponse
+
 const fetchQueries = {
 	institution: useGetInstitutionByNameQuery,
 	meal: useGetMealByNameQuery,
@@ -27,18 +38,16 @@ const fetchQueries = {
 	ingredient: useGetIngredientByNameQuery
 }
 
-type SimpleAutocompleteInputProps<T extends { id: number; name: string }> = {
+type SimpleAutocompleteInputProps<T extends EntityType> = {
 	fetchFunction: keyof typeof fetchQueries
 	className?: string
 	setItem?: (value: SetStateAction<T | null>) => void
 	item?: T | null
 	isVisibleCard?: boolean
-	style?: React.CSSProperties // Добавляем поддержку стилей
+	style?: React.CSSProperties
 }
 
-export const SimpleAutocompleteInput = <
-	T extends { id: number; name: string }
->({
+export const SimpleAutocompleteInput = <T extends EntityType>({
 	className,
 	fetchFunction,
 	setItem: setItemToParent,

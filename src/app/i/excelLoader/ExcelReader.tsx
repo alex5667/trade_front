@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import * as XLSX from 'xlsx'
 
 import { Button } from '@/components/ui/buttons/Button'
-import WeekChangeButtons from '@/components/weekChangeButtons/WeekChangeButtons'
+import WeekChangeButtons from '@/components/ui/weekChangeButtons/WeekChangeButtons'
 
 import { DayOfWeekUkr } from '@/types/menuItem.type'
 

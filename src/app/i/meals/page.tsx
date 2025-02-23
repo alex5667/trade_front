@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
-import { NO_INDEX_PAGE } from '@/constants/seo.constants'
+import CreatorEditor from '@/components/сreator-editor/CreatorEditor'
 
-import Meals from './Meals'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
 export const metadata: Metadata = {
 	title: 'Meals',
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 }
 
 export default function MealPage() {
-	return <Meals />
+	return <CreatorEditor type={'meal'} />
 }
