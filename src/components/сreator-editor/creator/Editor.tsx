@@ -10,6 +10,7 @@ import {
 import { ActiveComponentProps } from '@/components/сreator-editor/CreatorEditor'
 
 import { useUpdateDishCategoryMutation } from '@/services/dish-category.service'
+import { useUpdateDishMutation } from '@/services/dish.service'
 import { useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useUpdateMealMutation } from '@/services/meal.service'
@@ -18,7 +19,10 @@ const fetchQueries = {
 	institution: useUpdateInstitutionMutation,
 	meal: useUpdateMealMutation,
 	ingredient: useUpdateIngredientMutation,
-	dishCategory: useUpdateDishCategoryMutation
+	dishCategory: useUpdateDishCategoryMutation,
+	dish: useUpdateDishMutation
+
+	
 }
 
 interface EditorProps<T extends EntityType> {

@@ -17,25 +17,29 @@ import Card from '../card/Card'
 import AutoCompleteTextarea from '../fields/auto-complete-input/AutoCompleteTextarea'
 import { useAutocompleteInput } from '../fields/hooks/useAutocompleteInput'
 
-import styles from './SimpleAutocompleteInput.module.scss'
-import { SimpleAutocompleteList } from './SimpleAutocompleteList'
-import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
+import { useGetDishByNameQuery } from '@/services/dish.service'
 import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
+import { DishResponse } from '@/types/dish.type'
+import styles from './SimpleAutocompleteInput.module.scss'
+import { SimpleAutocompleteList } from './SimpleAutocompleteList'
+import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 
 export type EntityType =
 	| InstitutionResponse
 	| MealResponse
 	| IngredientResponse
 	| DishCategoryResponse
+	| DishResponse
 
 const fetchQueries = {
 	institution: useGetInstitutionByNameQuery,
 	meal: useGetMealByNameQuery,
 	dishCategory: useGetDishCategoryByNameQuery,
-	ingredient: useGetIngredientByNameQuery
+	ingredient: useGetIngredientByNameQuery,
+	dish: useGetDishByNameQuery
 }
 
 type SimpleAutocompleteInputProps<T extends EntityType> = {

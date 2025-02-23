@@ -4,16 +4,17 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 
-import Creator from './creator/Creator'
-import Editor from './creator/Editor'
 import IngredientsCreator from '@/app/i/ingredients/IngredientsCreator'
 import IngredientsEditor from '@/app/i/ingredients/IngredientsEditor'
+import Creator from './creator/Creator'
+import Editor from './creator/Editor'
 
 export const componentMap = {
 	ingredient: ['ингредиент'],
 	institution: ['точку выдачи'],
 	meal: ['прием пищи'],
-	dishCategory: ['категорию']
+	dishCategory: ['категорию'],
+	dish: ['блюдо'],
 } as const
 
 const initialState = {

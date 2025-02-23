@@ -9,6 +9,7 @@ import { EntityType } from '@/components/ui/simple-auto-complete-input/SimpleAut
 import { ActiveComponentProps } from '../CreatorEditor'
 
 import { useCreateDishCategoryMutation } from '@/services/dish-category.service'
+import { useCreateDishMutation } from '@/services/dish.service'
 import { useCreateIngredientMutation } from '@/services/ingredient.service'
 import { useCreateInstitutionMutation } from '@/services/institution.service'
 import { useCreateMealMutation } from '@/services/meal.service'
@@ -17,7 +18,8 @@ const fetchQueries = {
 	institution: useCreateInstitutionMutation,
 	ingredient: useCreateIngredientMutation,
 	meal: useCreateMealMutation,
-	dishCategory: useCreateDishCategoryMutation
+	dishCategory: useCreateDishCategoryMutation,
+	dish: useCreateDishMutation
 }
 
 type PartialEntity = Partial<EntityType>
@@ -39,13 +41,12 @@ const Creator = <T extends PartialEntity>({
 	EditorComponent
 }: CreatorProps<T>) => {
 	const [entity, setEntity] = useState<T | undefined>(
-		initialState ?? initialState
+		initialState as T ?? undefined
 	)
 	const [createdEntity, setCreatedEntity] = useState<T | null>(null)
 
-	const [createEntity] = fetchQueries[type]() as ReturnType<
-		(typeof fetchQueries)[keyof typeof fetchQueries]
-	>
+	const createEntity = fetchQueries[type]() as any
+
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { id, value } = e.target

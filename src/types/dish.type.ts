@@ -5,11 +5,11 @@ export interface DishResponse {
 	id: number
 	name: string
 	printName: string | ''
-	description?: string | null
-	price?: number | null | string
+	description?: string
+	price?: number | string
 	category?: DishCategoryResponse
-	createdAt?: Date
-	updatedAt?: Date
+	createdAt?: string
+	updatedAt?: string
 	preparationSteps?: unknown | null
 	slug: string
 	ingredients: DishIngredient[]

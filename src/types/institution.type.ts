@@ -4,7 +4,7 @@ export interface InstitutionResponse {
 	id: number,
 	name: string
 	printName: string
-	description: string
+	description?: string
 	createdAt: string
 	updatedAt: string
 	MenuItem?: MenuItemResponse[]
