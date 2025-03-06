@@ -14,7 +14,10 @@ export interface MenuItemResponse {
 	institution: InstitutionType | string
 	description?: string
 	price?: number
+	outputWeight?: number
+	relativePercentage?: number
 }
+
 export type TypeMenuItemFormState = {
 	description?: string,
 	date: string,
@@ -77,15 +80,7 @@ export type InstitutionType = {
 	slug: string
 }
 
-// export const Institution = {
-// 	'slon-1': 'Слон 1',
-// 	'slon-2': 'Слон 2',
-// 	'slon-3': 'Слон 3',
-// 	kosmicheskaya: 'Космічна',
-// 	naberezhnaya: 'Набережна',
-// }
 
-// export type InstitutionType = keyof typeof Institution
 
 export enum EnumMenuSort {
 	HIGH_PRICE = 'high-price',
@@ -118,4 +113,4 @@ export interface MenuItemExcelDto {
 	data: string[][]
 	dates: { [key: string]: string },
 	institutionName: string
-}
+}			

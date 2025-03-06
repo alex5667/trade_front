@@ -12,12 +12,12 @@ import MealParent from './MealParent'
 interface DayView {
 	day: DayOfWeek
 	label: string
-	datesOfWeek: { [key: string]: string }
+	datesOfWeek: { [key: string]: string } | undefined
 }
 
 const DayView = ({ day, label, datesOfWeek }: DayView) => {
 	const meals = useTypedSelector(state => state.mealSlice.items)
-	const dateForDay = datesOfWeek[day]
+	const dateForDay = datesOfWeek ? datesOfWeek[day] : ''
 	return (
 		<div className='w-full flex flex-col items-center justify-start py-3'>
 			<WeekDay

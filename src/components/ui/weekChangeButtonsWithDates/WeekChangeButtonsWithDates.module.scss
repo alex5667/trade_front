@@ -17,3 +17,12 @@
 	align-items: center;
 	margin-bottom: mixins.toRem(10);
 }
+
+.dates {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	font-size: mixins.toRem(14);
+}

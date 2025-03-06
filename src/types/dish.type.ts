@@ -16,6 +16,7 @@ export interface DishResponse {
 	dishPhotos: DishPhoto[]
 	dishAlias: DishAlias[]
 
+
 }
 
 interface DishPhoto {

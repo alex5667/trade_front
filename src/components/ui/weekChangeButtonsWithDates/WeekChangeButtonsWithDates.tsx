@@ -28,6 +28,10 @@ const WeekChangeButtonsWithDates = ({
 	const [weekOffset, setWeekOffset] = useState(0)
 
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
+	const { startOfWeek: startOfWeekPrev, endOfWeek: endOfWeekPrev } =
+		getDatesOfWeek(weekOffset - 1)
+	const { startOfWeek: startOfWeekNext, endOfWeek: endOfWeekNext } =
+		getDatesOfWeek(weekOffset + 1)
 	const handleWeekChange = (direction: 'next' | 'prev') => {
 		setWeekOffset(prev => (direction === 'next' ? prev + 1 : prev - 1))
 	}
@@ -48,7 +52,11 @@ const WeekChangeButtonsWithDates = ({
 				>
 					Предыдущая неделя
 				</Button>
-				<span>{dayjs(startOfWeek).format('DD-MM-YYYY')}</span>
+				<div className={styles.dates}>
+					<span>{dayjs(startOfWeekPrev).format('DD-MM-YYYY')}</span>
+					&nbsp;-&nbsp;
+					<span>{dayjs(endOfWeekPrev).format('DD-MM-YYYY')}</span>
+				</div>
 			</div>
 
 			<div className={cn(styles.btnWrapper)}>
@@ -58,7 +66,11 @@ const WeekChangeButtonsWithDates = ({
 				>
 					Следующая неделя
 				</Button>
-				<span>{dayjs(endOfWeek).format('DD-MM-YYYY')}</span>
+				<div className={styles.dates}>
+					<span>{dayjs(startOfWeekNext).format('DD-MM-YYYY')}</span>
+					&nbsp;-&nbsp;
+					<span>{dayjs(endOfWeekNext).format('DD-MM-YYYY')}</span>
+				</div>
 			</div>
 		</div>
 	)

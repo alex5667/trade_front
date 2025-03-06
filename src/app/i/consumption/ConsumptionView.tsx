@@ -1,13 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import {
+	Dispatch,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useState
+} from 'react'
 
 import Loader from '@/components/ui/Loader'
-import { Button } from '@/components/ui/buttons/Button'
+import WeekChangeButtonsWithDates, {
+	StartEnDWeek
+} from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
 
 import { MealConsumptionDataFilters } from '@/types/mealConsumption.type'
-
-import { getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
 import { dayColumns } from '../menu/[slug]/(view)/columns.data'
 
@@ -18,23 +24,22 @@ import { useGetAllMealConsumptionsQuery } from '@/services/meal-consumption.serv
 import { useGetAllMealsQuery } from '@/services/meal.service'
 
 const ConsumptionView = () => {
-	const [weekOffset, setWeekOffset] = useState(0)
-	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
 	const { isLoading: isLoadingInstitutions } = useGetAllInstitutionsQuery()
+	const [startEndDate, setStartEndDate] = useState<StartEnDWeek | undefined>()
 
+	const handleSetStartEndDate: Dispatch<
+		SetStateAction<StartEnDWeek | undefined>
+	> = useCallback(dates => setStartEndDate(dates), [])
 	const { data, isFetching, isLoading, refetch } =
 		useGetAllMealConsumptionsQuery({
-			startDate: startOfWeek,
-			endDate: endOfWeek
+			startDate: startEndDate?.startOfWeek,
+			endDate: startEndDate?.endOfWeek
 		} as MealConsumptionDataFilters)
 	const { isLoading: isLoadingMeals } = useGetAllMealsQuery()
 
-	const handleWeekChange = (direction: 'next' | 'prev') => {
-		setWeekOffset(prev => (direction === 'next' ? prev + 1 : prev - 1))
-	}
 	useEffect(() => {
 		refetch()
-	}, [weekOffset, refetch])
+	}, [startEndDate?.startOfWeek, refetch])
 
 	if (isLoading || isFetching || isLoadingMeals || isLoadingInstitutions) {
 		return <Loader />
@@ -46,31 +51,19 @@ const ConsumptionView = () => {
 
 	return (
 		<div className={styles.wrapper}>
-			<div className={styles.btnWrapper}>
-				<Button
-					className='px-2 py-3 sm:px-4 sm:py-1'
-					onClick={() => handleWeekChange('prev')}
-				>
-					Предыдущая неделя
-				</Button>
-				<Button
-					className='px-2 py-3 sm:px-4 sm:py-1'
-					onClick={() => handleWeekChange('next')}
-				>
-					Следующая неделя
-				</Button>
-			</div>
+			<WeekChangeButtonsWithDates setStartEndDate={handleSetStartEndDate} />
 
-			{dayColumns().map(column => {
-				return (
-					<DayView
-						label={column.label}
-						day={column.value}
-						key={column.value}
-						datesOfWeek={datesOfWeek}
-					/>
-				)
-			})}
+			{startEndDate?.datesOfWeek &&
+				dayColumns().map(column => {
+					return (
+						<DayView
+							label={column.label}
+							day={column.value}
+							key={column.value}
+							datesOfWeek={startEndDate?.datesOfWeek}
+						/>
+					)
+				})}
 		</div>
 	)
 }
