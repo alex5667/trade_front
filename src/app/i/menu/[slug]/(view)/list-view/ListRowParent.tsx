@@ -1,5 +1,5 @@
 import { Draggable, Droppable } from '@hello-pangea/dnd'
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 
 import { DishResponse } from '@/types/dish.type'
 import { InstitutionResponse } from '@/types/institution.type'
@@ -28,25 +28,30 @@ function ListRowParent({
 	dateForDay,
 	dayItems
 }: ListRowParent) {
-	const itemsFilteredByMealAndInstitution: MenuItemResponse[] | [] =
-		dayItems?.filter(item => {
-			const isString = typeof item?.meal === 'string'
-			if (isString) {
-				return item.meal === mealSlug && item.institution === institutionSlug
-			} else {
-				return (
-					(item?.meal as MealResponse)?.slug === mealSlug &&
-					(item.institution as InstitutionResponse)?.slug === institutionSlug
-				)
-			}
-		}) || []
+	const itemsFilteredByMealAndInstitution = useMemo(() => {
+		return (
+			dayItems?.filter(item => {
+				const isString = typeof item?.meal === 'string'
+				if (isString) {
+					return item.meal === mealSlug && item.institution === institutionSlug
+				} else {
+					return (
+						(item?.meal as MealResponse)?.slug === mealSlug &&
+						(item.institution as InstitutionResponse)?.slug === institutionSlug
+					)
+				}
+			}) || []
+		)
+	}, [dayItems, mealSlug, institutionSlug])
 
-	const sortedItems = itemsFilteredByMealAndInstitution.slice().sort((a, b) => {
-		if (a.dishOrder !== undefined && b.dishOrder !== undefined) {
-			return a.dishOrder - b.dishOrder
-		}
-		return (a.id || 0) - (b.id || 0)
-	})
+	const sortedItems = useMemo(() => {
+		return itemsFilteredByMealAndInstitution.slice().sort((a, b) => {
+			if (a.dishOrder !== undefined && b.dishOrder !== undefined) {
+				return a.dishOrder - b.dishOrder
+			}
+			return (a.id || 0) - (b.id || 0)
+		})
+	}, [itemsFilteredByMealAndInstitution])
 
 	const droppableId = `${mealSlug} + ${dateForDay}+${institutionSlug}`
 

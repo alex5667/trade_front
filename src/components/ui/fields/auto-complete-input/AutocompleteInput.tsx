@@ -63,12 +63,7 @@ export const AutocompleteInput = ({
 	} = useGetDishByNameQuery(debouncedValue, {
 		skip: !shouldFetch || !debouncedValue || !debouncedValue.trim()
 	})
-	// const memoizedSetDish = useCallback(
-	// 	(value: SetStateAction<DishResponse>) => {
-	// 		setDish(value)
-	// 	},
-	// 	[setDish]
-	// )
+
 	if (isError) {
 		toast.error(errorCatch(error))
 	}

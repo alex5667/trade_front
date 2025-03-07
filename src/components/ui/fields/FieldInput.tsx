@@ -5,7 +5,7 @@ import styles from './Fields.module.scss'
 
 interface InputFieldsProps {
 	id: string
-	label: string
+	label?: string
 	extra?: string
 	placeholder: string
 	variant?: string
@@ -13,8 +13,8 @@ interface InputFieldsProps {
 	disabled?: boolean
 	type?: string
 	isNumber?: boolean
-	value?: string // Добавлено, чтобы можно было контролировать input
-	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void // Исправленный onChange
+	value?: string | number // Добавлено, чтобы можно было контролировать input
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
@@ -37,12 +37,14 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 	) => {
 		return (
 			<div className={cn(extra)}>
-				<label
-					htmlFor={id}
-					className={cn(styles.label)}
-				>
-					{label}
-				</label>
+				{label && (
+					<label
+						htmlFor={id}
+						className={cn(styles.label)}
+					>
+						{label}
+					</label>
+				)}
 				<input
 					ref={ref}
 					disabled={disabled}
@@ -50,17 +52,27 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 					id={id}
 					placeholder={placeholder}
 					value={value} // Передаём значение
-					onChange={onChange} // Обрабатываем изменения
-					className={cn(styles.fieldContainer, {
-						[styles.fieldDisabled]: disabled,
-						[styles.fieldError]: state === 'error',
-						[styles.fieldSuccess]: state === 'success',
-						[styles.fieldFocus]: !disabled && !state
-					})}
+					onChange={e => {
+						const newValue = isNumber ? Number(e.target.value) : e.target.value
+						if (onChange)
+							onChange(
+								e as React.ChangeEvent<HTMLInputElement> & {
+									target: { value: typeof newValue }
+								}
+							)
+					}}
+					className={cn(
+						styles.fieldContainer,
+						disabled && styles.fieldDisabled,
+						state === 'error' && styles.fieldError,
+						state === 'success' && styles.fieldSuccess,
+						!disabled && !state && styles.fieldFocus
+					)}
 					onKeyDown={event => {
 						if (
 							isNumber &&
-							!/^\d$/.test(event.key) && // Блокируем нечисловые символы
+							!/^\d$/.test(event.key) && // Числа
+							!['.', '-'].includes(event.key) && // Поддержка десятичной точки и минуса
 							![
 								'Backspace',
 								'Tab',

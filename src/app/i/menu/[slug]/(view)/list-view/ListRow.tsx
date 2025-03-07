@@ -1,7 +1,8 @@
 import cn from 'clsx'
 import { GripVertical, Loader, Trash } from 'lucide-react'
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 
+import { FieldInput } from '@/components/ui/fields/FieldInput'
 import { AutocompleteInput } from '@/components/ui/fields/auto-complete-input/AutocompleteInput'
 
 import { DishResponse } from '@/types/dish.type'
@@ -9,7 +10,10 @@ import { MealResponse } from '@/types/meal.type'
 import { MenuItemResponse } from '@/types/menuItem.type'
 
 import styles from './ListView.module.scss'
-import { useDeleteMenuItemMutation } from '@/services/menu-item.service'
+import {
+	useDeleteMenuItemMutation,
+	useUpdateMenuItemMutation
+} from '@/services/menu-item.service'
 
 interface ListRowProps {
 	item: MenuItemResponse
@@ -24,8 +28,13 @@ const ListRow = ({
 	mealSlug,
 	dateForDay
 }: ListRowProps) => {
+	const [menuItem, setMenuItem] = useState<MenuItemResponse>(() => item)
+	console.log('first', menuItem)
+	useEffect(() => {
+		setMenuItem(item) // Просто обновляем state при изменении item
+	}, [item])
 	const [deleteMenuItem, { isLoading }] = useDeleteMenuItemMutation()
-
+	const [updateItem] = useUpdateMenuItemMutation()
 	return (
 		<div className={cn(styles.row)}>
 			<div className={styles.transparentContainer}>
@@ -41,6 +50,16 @@ const ListRow = ({
 					isMenuItem={true}
 				/>
 			</div>
+			<FieldInput
+				id='outputWeight'
+				isNumber={true}
+				placeholder={''}
+				value={menuItem.outputWeight ?? ''}
+				onChange={e => {
+					const newValue = Number(e.target.value) || 0
+					setMenuItem(prev => ({ ...prev, outputWeight: newValue }))
+				}}
+			/>
 			{item.id && (
 				<button
 					onClick={() => deleteMenuItem(item.id!)}

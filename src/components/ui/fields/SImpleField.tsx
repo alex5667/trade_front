@@ -5,7 +5,7 @@ import styles from './Fields.module.scss'
 
 interface InputFieldsProps {
 	id: string
-	label: string
+	label?: string
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	extra?: string
 	placeholder?: string
@@ -32,12 +32,14 @@ export const SimpleField = forwardRef<HTMLInputElement, InputFieldsProps>(
 	) => {
 		return (
 			<div className={cn(extra)}>
-				<label
-					htmlFor={id}
-					className={cn(styles.label)}
-				>
-					{label}
-				</label>
+				{label && (
+					<label
+						htmlFor={id}
+						className={cn(styles.label)}
+					>
+						{label}
+					</label>
+				)}
 				<input
 					ref={ref}
 					disabled={disabled}
