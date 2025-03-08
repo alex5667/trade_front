@@ -19,10 +19,14 @@
 }
 
 .dates {
-	width: 100%;
+	min-width: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
 	font-size: mixins.toRem(14);
+	span {
+		display: inline-flex; // Выровняет все элементы внутри по центру
+		align-items: center;
+	}
 }

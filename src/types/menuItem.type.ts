@@ -17,17 +17,35 @@ export interface MenuItemResponse {
 	outputWeight?: number
 	relativePercentage?: number
 }
+export type TypeMenuItemFormState = Partial<MenuItemResponse>
 
-export type TypeMenuItemFormState = {
-	description?: string,
-	date: string,
-	dayOfWeek: DayOfWeek,
-	dishId: number,
-	institutionId: number,
-	mealId: number
+export type UpdateMenuDto = {
+	mealId?: number
+	dayOfWeek?: DayOfWeek
+	date?: string
+	dishId?: number
+	description?: string
+	institutionId?: number
+	price?: number
 	dishOrder?: number
-
+	outputWeight?: number
+	relativePercentage?: number
 }
+
+
+
+// export type TypeMenuItemFormState = {
+// 	description?: string,
+// 	date: string,
+// 	dayOfWeek: DayOfWeek,
+// 	dishId: number,
+// 	institutionId: number,
+// 	mealId: number
+// 	dishOrder?: number
+// 	outputWeight?: number
+// 	relativePercentage?: number
+
+// }
 
 
 // type ConvertToString<T> = {

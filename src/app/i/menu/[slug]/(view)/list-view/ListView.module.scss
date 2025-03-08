@@ -17,10 +17,9 @@
 
 	.row {
 		@apply font-normal  relative px-2 py-2 mb-4 dark:bg-sidebar/90 bg-db-row-light rounded-sm;
-		display: grid;
-		grid-template-columns: 7fr auto;
-		grid-template-rows: auto;
+		display: flex;
 		align-items: center;
+		justify-content: space-between;
 
 		&:hover {
 			@apply bg-db-row-light/40  dark:bg-db-bg/80  transition-all    duration-300;
@@ -35,7 +34,13 @@
 		}
 
 		.transparentContainer {
-			@apply flex items-center gap-2.5 w-full;
+			@apply flex items-center  w-[65%];
+		}
+		.rowInputs {
+			display: flex;
+			width: 25%;
+			justify-content: space-between;
+			align-items: center; // Выровняет все дочерние элементы по высоте
 		}
 	}
 }

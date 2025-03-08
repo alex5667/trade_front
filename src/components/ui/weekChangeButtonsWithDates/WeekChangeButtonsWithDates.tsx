@@ -53,9 +53,9 @@ const WeekChangeButtonsWithDates = ({
 					Предыдущая неделя
 				</Button>
 				<div className={styles.dates}>
-					<span>{dayjs(startOfWeekPrev).format('DD-MM-YYYY')}</span>
-					&nbsp;-&nbsp;
-					<span>{dayjs(endOfWeekPrev).format('DD-MM-YYYY')}</span>
+					<span>{dayjs(startOfWeekPrev).format('DD-MM')}</span>
+					&nbsp;/&nbsp;
+					<span>{dayjs(endOfWeekPrev).format('DD-MM')}</span>
 				</div>
 			</div>
 
@@ -67,9 +67,9 @@ const WeekChangeButtonsWithDates = ({
 					Следующая неделя
 				</Button>
 				<div className={styles.dates}>
-					<span>{dayjs(startOfWeekNext).format('DD-MM-YYYY')}</span>
-					&nbsp;-&nbsp;
-					<span>{dayjs(endOfWeekNext).format('DD-MM-YYYY')}</span>
+					<span>{dayjs(startOfWeekNext).format('DD-MM')}</span>
+					&nbsp;/&nbsp;
+					<span>{dayjs(endOfWeekNext).format('DD-MM')}</span>
 				</div>
 			</div>
 		</div>

@@ -7,6 +7,7 @@ interface InputFieldsProps {
 	id: string
 	label?: string
 	extra?: string
+	inputStyle?: string
 	placeholder: string
 	variant?: string
 	state?: 'error' | 'success'
@@ -15,6 +16,7 @@ interface InputFieldsProps {
 	isNumber?: boolean
 	value?: string | number // Добавлено, чтобы можно было контролировать input
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+	style?: React.CSSProperties // Добавляем поддержку inline-стилей
 }
 
 export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
@@ -23,6 +25,7 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 			id,
 			label,
 			extra,
+			inputStyle,
 			placeholder,
 			variant,
 			state,
@@ -63,6 +66,7 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 					}}
 					className={cn(
 						styles.fieldContainer,
+						inputStyle,
 						disabled && styles.fieldDisabled,
 						state === 'error' && styles.fieldError,
 						state === 'success' && styles.fieldSuccess,

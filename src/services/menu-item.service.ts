@@ -1,11 +1,11 @@
 import { URLS } from '@/config/urls'
 import { addAllMenuItems, addMenuItem, deleteMenuItemById, updateMenuItem, updateOrderMenuItem } from '@/store/menuItem/menu-item.slice'
 import { TypeRootState } from '@/store/store'
-import { CopyMenuItemDataFilters, MenuItemDataFilters, MenuItemExcelDto, MenuItemResponse, TypeMenuItemFormState } from '@/types/menuItem.type'
+import { CopyMenuItemDataFilters, MenuItemDataFilters, MenuItemExcelDto, MenuItemResponse, TypeMenuItemFormState, UpdateMenuDto } from '@/types/menuItem.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
-type MenuItemUpdate = { id: number; data: TypeMenuItemFormState }
+type MenuItemUpdate = { id: number; data: UpdateMenuDto }
 
 
 export const menuItemApi = createApi({
