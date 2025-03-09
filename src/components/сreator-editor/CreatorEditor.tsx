@@ -4,17 +4,17 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 
-import IngredientsCreator from '@/app/i/ingredients/IngredientsCreator'
-import IngredientsEditor from '@/app/i/ingredients/IngredientsEditor'
 import Creator from './creator/Creator'
 import Editor from './creator/Editor'
+import IngredientsCreator from '@/app/i/ingredients/IngredientsCreator'
+import IngredientsEditor from '@/app/i/ingredients/IngredientsEditor'
 
 export const componentMap = {
 	ingredient: ['ингредиент'],
 	institution: ['точку выдачи'],
 	meal: ['прием пищи'],
 	dishCategory: ['категорию'],
-	dish: ['блюдо'],
+	dish: ['блюдо']
 } as const
 
 const initialState = {
@@ -39,7 +39,6 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 	const resetActiveComponent = (active: ActiveComponentProps) =>
 		setActiveComponent(active)
 
-	// Проверяем, есть ли переданный тип в `componentMap`
 	if (!(type in componentMap)) {
 		return <div>Ошибка: Тип {type} не поддерживается</div>
 	}
@@ -62,7 +61,7 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 					Добавить {title}
 				</Button>
 			</div>
-			<div className='flex flex-col items-center justify-start pt-3 w-full'>
+			{/* <div className='flex flex-col items-center justify-start pt-3 w-full'>
 				{activeComponent === 'editor' && type !== 'ingredient' ? (
 					<Editor
 						type={type}
@@ -87,6 +86,35 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 				) : (
 					<IngredientsCreator resetActiveComponent={resetActiveComponent} />
 				)}
+			</div> */}
+			<div className='flex flex-col items-center justify-start pt-3 w-full'>
+				{activeComponent === 'editor' ? (
+					type !== 'ingredient' ? (
+						<Editor
+							type={type}
+							resetActiveComponent={resetActiveComponent}
+							initialState={null}
+						/>
+					) : (
+						<IngredientsEditor resetActiveComponent={resetActiveComponent} />
+					)
+				) : activeComponent === 'creator' ? (
+					type !== 'ingredient' ? (
+						<Creator
+							type={type}
+							EditorComponent={({ resetActiveComponent }) => (
+								<Editor
+									type={type}
+									resetActiveComponent={resetActiveComponent}
+								/>
+							)}
+							resetActiveComponent={resetActiveComponent}
+							initialState={initialState}
+						/>
+					) : (
+						<IngredientsCreator resetActiveComponent={resetActiveComponent} />
+					)
+				) : null}
 			</div>
 		</div>
 	)
