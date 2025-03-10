@@ -1,5 +1,5 @@
 .fieldContainer {
-	@apply relative  flex w-full items-center justify-center rounded-lg border border-border-light  bg-transparent p-1 text-sm text-white outline-none transition-colors duration-500 text-center;
+	@apply relative  flex w-full items-center justify-center rounded-lg border border-border-light  bg-transparent p-1 text-sm text-white outline-none transition-colors duration-500 text-center py-2;
 	&::placeholder {
 		color: white;
 		opacity: 0.7;

@@ -21,9 +21,7 @@ const fetchQueries = {
 	ingredient: useUpdateIngredientMutation,
 	dishCategory: useUpdateDishCategoryMutation,
 	dish: useUpdateDishMutation
-
-	
-}
+} as const
 
 interface EditorProps<T extends EntityType> {
 	initialState?: T | null
@@ -38,17 +36,30 @@ const Editor = <T extends EntityType>({
 }: EditorProps<T>) => {
 	const [item, setItem] = useState<T | null>(initialState)
 
-	// Получаем нужную мутацию из карты мутаций
-	const [update] = fetchQueries[type]() as ReturnType<
-		(typeof fetchQueries)[keyof typeof fetchQueries]
-	>
+	const [updateInstitution] = useUpdateInstitutionMutation()
+	const [updateMeal] = useUpdateMealMutation()
+	const [updateIngredient] = useUpdateIngredientMutation()
+	const [updateDishCategory] = useUpdateDishCategoryMutation()
+	const [updateDish] = useUpdateDishMutation()
+
+	// Выбираем функцию мутации в зависимости от type
+	const update =
+		type === 'institution'
+			? updateInstitution
+			: type === 'meal'
+				? updateMeal
+				: type === 'ingredient'
+					? updateIngredient
+					: type === 'dishCategory'
+						? updateDishCategory
+						: updateDish
 
 	// Мемоизированная функция для обновления состояния item
 	const memoizedSetItem = useCallback((value: SetStateAction<T | null>) => {
 		setItem(prev => {
 			const updatedValue = typeof value === 'function' ? value(prev) : value
 			return updatedValue
-				? { ...structuredClone(prev ?? {}), ...updatedValue }
+				? { ...(structuredClone(prev ?? {}) as T), ...updatedValue }
 				: null
 		})
 	}, [])
@@ -64,7 +75,7 @@ const Editor = <T extends EntityType>({
 			}).unwrap()) as T
 
 			setItem(responseItem)
-			// resetActiveComponent(null)
+			resetActiveComponent(null)
 		} catch (error) {
 			console.error('Ошибка при обновлении элемента:', error)
 		}

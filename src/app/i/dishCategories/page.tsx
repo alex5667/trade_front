@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
-import { NO_INDEX_PAGE } from '@/constants/seo.constants'
+import CreatorEditor from '@/components/сreator-editor/CreatorEditor'
 
-import DishCategories from './DishCategories'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
 export const metadata: Metadata = {
 	title: 'Categories',
@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 }
 
 export default function CategoriesPage() {
-	return <DishCategories />
+	return <CreatorEditor type='dishCategory' />
 }

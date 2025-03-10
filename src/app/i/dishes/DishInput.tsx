@@ -1,6 +1,8 @@
-import cn from 'clsx'
 import { SetStateAction, useRef } from 'react'
 
+import { FieldInput } from '@/components/ui/fields/FieldInput'
+
+// Укажи правильный путь
 import { DishFormState } from '@/types/dish.type'
 
 import { formatValue } from '@/utils/formatValue'
@@ -16,44 +18,6 @@ export type DishInputProps = {
 	ingredientId?: number
 }
 
-// const DishInput = ({
-// 	dish,
-// 	keyName,
-// 	setDish,
-
-// 	defaultValue,
-// 	ingredientKey,
-// 	ingredientId
-// }: DishInputProps) => {
-// 	const inputRef = useRef<HTMLInputElement>(null)
-// 	const { inputValue, handleChange, setInputValue } = useDishInput({
-// 		inputRef,
-// 		dish,
-// 		setDish,
-// 		key: keyName,
-// 		defaultValue,
-// 		ingredientKey,
-// 		ingredientId
-// 	})
-
-// 	const handleFocus = () => {
-// 		if (inputValue === 0) {
-// 			setInputValue('')
-// 		}
-// 	}
-
-// 	const safeValue = formatValue(inputValue)
-
-// 	return (
-// 		<input
-// 			ref={inputRef}
-// 			className={cn('w-full')}
-// 			value={safeValue}
-// 			onChange={handleChange}
-// 			onFocus={handleFocus}
-// 		/>
-// 	)
-// }
 const DishInput = ({
 	dish,
 	keyName,
@@ -66,15 +30,15 @@ const DishInput = ({
 	const { inputValue, handleChange, setInputValue } = useDishInput({
 		inputRef,
 		dish,
-		setDish,
 		key: keyName,
+		setDish,
 		defaultValue,
 		ingredientKey,
 		ingredientId
 	})
 
 	const handleFocus = () => {
-		if (inputValue === 0) {
+		if (inputValue === 0 || inputValue === '0') {
 			setInputValue('')
 		}
 	}
@@ -82,14 +46,22 @@ const DishInput = ({
 	const safeValue = formatValue(inputValue)
 
 	return (
-		<input
+		<FieldInput
 			ref={inputRef}
-			className={cn('w-full')}
+			id={`dish-input-${keyName || ingredientId || 'default'}`}
 			value={safeValue}
 			onChange={handleChange}
-			onFocus={handleFocus}
+			onFocus={handleFocus} // Теперь работает
+			extra='w-full bg-db-sidebar-light w-[80%]'
+			// inputStyle='py-2 text-red-500'
+			style={{
+				paddingTop: '0.7rem',
+				paddingBottom: '0.7rem'
+			}}
+			// isNumber={keyName === 'price' || ingredientKey === 'amount'} // Пример условия
 		/>
 	)
 }
+
 export default DishInput
 DishInput.displayName = 'DishInput'

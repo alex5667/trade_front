@@ -41,12 +41,11 @@ const Creator = <T extends PartialEntity>({
 	EditorComponent
 }: CreatorProps<T>) => {
 	const [entity, setEntity] = useState<T | undefined>(
-		initialState as T ?? undefined
+		(initialState as T) ?? undefined
 	)
 	const [createdEntity, setCreatedEntity] = useState<T | null>(null)
 
-	const createEntity = fetchQueries[type]() as any
-
+	const [createEntity] = fetchQueries[type]()
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { id, value } = e.target
@@ -56,10 +55,29 @@ const Creator = <T extends PartialEntity>({
 		}))
 	}
 
+	// const handleCreate = async () => {
+	// 	try {
+	// 		if (entity) {
+	// 			const newEntity = (await createEntity(entity).unwrap()) as T
+	// 			setCreatedEntity(prev => ({
+	// 				...(prev as T),
+	// 				...newEntity
+	// 			}))
+	// 		}
+	// 	} catch (error) {
+	// 		console.error(`Ошибка при создании ${type}:`, error)
+	// 	}
+	// }
 	const handleCreate = async () => {
 		try {
 			if (entity) {
-				const newEntity = (await createEntity(entity).unwrap()) as T
+				const entityWithDefaults = {
+					...entity,
+					name: entity.name ?? '', // Гарантируем, что name всегда string
+					printName: entity.printName ?? ''
+				}
+
+				const newEntity = (await createEntity(entityWithDefaults).unwrap()) as T
 				setCreatedEntity(prev => ({
 					...(prev as T),
 					...newEntity

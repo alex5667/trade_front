@@ -4,6 +4,7 @@ import cn from 'clsx'
 import { SetStateAction, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
+import { DishResponse } from '@/types/dish.type'
 import { DishCategoryResponse } from '@/types/dishCategory.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 import { InstitutionResponse } from '@/types/institution.type'
@@ -17,15 +18,14 @@ import Card from '../card/Card'
 import AutoCompleteTextarea from '../fields/auto-complete-input/AutoCompleteTextarea'
 import { useAutocompleteInput } from '../fields/hooks/useAutocompleteInput'
 
+import styles from './SimpleAutocompleteInput.module.scss'
+import { SimpleAutocompleteList } from './SimpleAutocompleteList'
+import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
 import { useGetDishByNameQuery } from '@/services/dish.service'
 import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
-import { DishResponse } from '@/types/dish.type'
-import styles from './SimpleAutocompleteInput.module.scss'
-import { SimpleAutocompleteList } from './SimpleAutocompleteList'
-import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 
 export type EntityType =
 	| InstitutionResponse
@@ -61,24 +61,27 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 	const inputRef = useRef<HTMLTextAreaElement>(null)
 	const { isShow, ref, setIsShow } = useOutside(false)
 	const [item, setItem] = useState<T | null>(parentItem?.id ? parentItem : null)
+
+	// Сохраняем предыдущее значение, чтобы избежать лишних ререндеров
+	const prevItemRef = useRef<T | null>(null)
+
+	// Обновляем `item`, если `parentItem` изменился
 	useEffect(() => {
-		if (parentItem) setItem(parentItem)
+		if (parentItem && parentItem !== prevItemRef.current) {
+			setItem(parentItem)
+			prevItemRef.current = parentItem
+		}
 	}, [parentItem])
 
+	// Обновляем `setItemToParent`, если `item` изменилось
 	useEffect(() => {
-		if (setItemToParent) {
-			setItemToParent(prev => {
-				const prevObj = prev ?? ({} as T)
-				const newObj = item ?? ({} as T)
-				// Если объекты равны, ничего не меняем
-				if (JSON.stringify(prevObj) === JSON.stringify(newObj)) {
-					return prev
-				}
-				return { ...prevObj, ...newObj }
-			})
+		if (setItemToParent && prevItemRef.current !== item) {
+			prevItemRef.current = item
+			setItemToParent(item)
 		}
 	}, [setItemToParent, item])
 
+	// Управление вводом
 	const {
 		inputValue,
 		handleChange,
@@ -89,21 +92,70 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 		setInputValue
 	} = useAutocompleteInput({ setIsShow })
 
+	// При изменении `parentItem` обновляем поле ввода
 	useEffect(() => {
 		if (parentItem) {
 			setInputValue(parentItem.name)
 		}
 	}, [parentItem, setInputValue])
 
-	const queryHook = fetchQueries[fetchFunction]
-	const { data, isError, error } = queryHook(debouncedValue, {
-		skip: !shouldFetch || !debouncedValue.trim()
+	// Добавляем задержку перед включением `shouldFetch`, чтобы не делать запросы при каждом символе
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			setShouldFetch(!!debouncedValue.trim())
+		}, 300) // 300мс задержка
+
+		return () => clearTimeout(timeoutId) // Очищаем таймер перед следующим обновлением
+	}, [debouncedValue, setShouldFetch])
+
+	// Отключаем запрос, если выпадающий список скрыт
+	useEffect(() => {
+		if (!isShow) {
+			setShouldFetch(false)
+		}
+	}, [isShow, setShouldFetch])
+
+	// Вызываем все хуки статически
+	const institutionQuery = useGetInstitutionByNameQuery(debouncedValue, {
+		skip:
+			fetchFunction !== 'institution' || !shouldFetch || !debouncedValue.trim()
+	})
+	const mealQuery = useGetMealByNameQuery(debouncedValue, {
+		skip: fetchFunction !== 'meal' || !shouldFetch || !debouncedValue.trim()
+	})
+	const dishCategoryQuery = useGetDishCategoryByNameQuery(debouncedValue, {
+		skip:
+			fetchFunction !== 'dishCategory' || !shouldFetch || !debouncedValue.trim()
+	})
+	const ingredientQuery = useGetIngredientByNameQuery(debouncedValue, {
+		skip:
+			fetchFunction !== 'ingredient' || !shouldFetch || !debouncedValue.trim()
+	})
+	const dishQuery = useGetDishByNameQuery(debouncedValue, {
+		skip: fetchFunction !== 'dish' || !shouldFetch || !debouncedValue.trim()
 	})
 
-	if (isError) {
-		toast.error(errorCatch(error))
-	}
+	// Выбираем нужный результат в зависимости от fetchFunction
+	const queryResult =
+		fetchFunction === 'institution'
+			? institutionQuery
+			: fetchFunction === 'meal'
+				? mealQuery
+				: fetchFunction === 'dishCategory'
+					? dishCategoryQuery
+					: fetchFunction === 'ingredient'
+						? ingredientQuery
+						: dishQuery
 
+	const { data, isError, error } = queryResult
+
+	useEffect(() => {
+		if (isError) {
+			toast.error(errorCatch(error))
+		}
+	}, [isError, error])
+
+	// Обработчик выбора элемента
 	const handleOptionSelect = useSimpleOptionSelect(
 		setInputValue,
 		setDebouncedValue,

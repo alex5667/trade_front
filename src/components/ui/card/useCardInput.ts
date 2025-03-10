@@ -1,7 +1,9 @@
 import { useCreateDishCategoryMutation, useUpdateDishCategoryMutation } from '@/services/dish-category.service'
+import { useCreateDishMutation, useUpdateDishMutation } from '@/services/dish.service'
 import { useCreateIngredientMutation, useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useCreateInstitutionMutation, useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useCreateMealMutation, useUpdateMealMutation } from '@/services/meal.service'
+import { DishResponse } from '@/types/dish.type'
 import { DishCategoryFormState } from '@/types/dishCategory.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 import { InstitutionFormState } from '@/types/institution.type'
@@ -12,13 +14,14 @@ const fetchQueries = {
   institution: [useUpdateInstitutionMutation, useCreateInstitutionMutation],
   meal: [useUpdateMealMutation, useCreateMealMutation],
   dishCategory: [useUpdateDishCategoryMutation, useCreateDishCategoryMutation],
+  dish: [useUpdateDishMutation, useCreateDishMutation],
   ingredient: [useUpdateIngredientMutation, useCreateIngredientMutation]
 }
 type FetchQueryData =
   | InstitutionFormState
   | MealFormState
   | DishCategoryFormState
-  | IngredientResponse
+  | IngredientResponse | DishResponse
 
 
 

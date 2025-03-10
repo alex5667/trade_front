@@ -1,3 +1,5 @@
+@import "../../../../styles/variables.scss";
+
 .autocompleteContainer {
 	// position: relative;
 	width: 100%;
@@ -7,8 +9,14 @@
 }
 
 .input {
+	@apply hover:bg-sidebar w-full rounded-sm overflow-hidden text-ellipsis  px-2 py-2	mb-2 resize-none bg-transparent focus:bg-db-bg;
 	background: transparent;
-	@apply hover:bg-sidebar w-full rounded-sm overflow-hidden text-ellipsis  mr-2 px-2 py-2	resize-none bg-transparent focus:bg-db-bg;
+	border-width: 1px;
+	border-style: solid;
+	transition: border-color 0.3s ease;
+	&:focus {
+		border-color: $secondary;
+	}
 }
 
 .autocompleteList {

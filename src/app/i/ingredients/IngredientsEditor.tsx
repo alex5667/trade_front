@@ -1,6 +1,7 @@
 'use client'
 
-import { SetStateAction, useCallback, useState } from 'react'
+import { SetStateAction, useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/buttons/Button'
 import { SimpleAutocompleteInput } from '@/components/ui/simple-auto-complete-input/SimpleAutoCompleteInput'
@@ -24,25 +25,40 @@ const IngredientsEditor = ({
 	const [ingredient, setIngredient] = useState<IngredientResponse | null>(
 		ingredientResponse
 	)
+	const [updateIngredient, { isLoading: isUpdating }] =
+		useUpdateIngredientMutation()
 
-	const [updateIngredient] = useUpdateIngredientMutation()
-	// Функция-обёртка для обновления ингредиента
+	// Синхронизация с пропсом ingredientResponse
+	useEffect(() => {
+		setIngredient(ingredientResponse)
+	}, [ingredientResponse])
+
+	// Мемоизированная функция для обновления ingredient
 	const memoizedSetIngredient = useCallback(
 		(value: SetStateAction<IngredientResponse | null>) => {
 			setIngredient(prev => {
 				const updatedValue = typeof value === 'function' ? value(prev) : value
-				return updatedValue
-					? { ...structuredClone(prev ?? {}), ...updatedValue }
-					: null
+				if (!updatedValue) return null
+
+				// Сохраняем существующие aliases, если они не перезаписаны
+				return {
+					...prev,
+					...updatedValue,
+					aliases: updatedValue.aliases ?? prev?.aliases ?? []
+				}
 			})
 		},
 		[]
 	)
 
-	const addAlias = useCallback(async () => {
-		if (!ingredient?.id) return
+	// Добавление нового алиаса
+	const addAlias = useCallback(() => {
+		if (!ingredient?.id) {
+			toast.error('Выберите ингредиент перед добавлением синонима')
+			return
+		}
 
-		const uniqueId = Date.now()
+		const uniqueId = Date.now() // Временный ID для локального использования
 		const newAlias: IngredientAliasResponse = {
 			id: uniqueId,
 			ingredientId: ingredient.id,
@@ -54,75 +70,74 @@ const IngredientsEditor = ({
 		)
 	}, [ingredient])
 
-	const handleDeleteAlias = async (aliasId: number | undefined) => {
-		if (!ingredient) return
+	// Удаление алиаса
+	const handleDeleteAlias = useCallback(
+		(aliasId: number | undefined) => {
+			if (!ingredient || aliasId === undefined) return
 
-		try {
-			setIngredient(prevIngredient =>
-				prevIngredient
+			setIngredient(prev =>
+				prev
 					? {
-							...prevIngredient,
-							aliases: (prevIngredient.aliases || []).filter(
+							...prev,
+							aliases: (prev.aliases || []).filter(
 								alias => alias.id !== aliasId
 							)
 						}
-					: prevIngredient
+					: prev
 			)
-		} catch (error) {
-			console.error('Ошибка при удалении alias:', error)
-		}
-	}
+		},
+		[ingredient]
+	)
 
-	// const handleSave = async () => {
-	// 	if (ingredient && ingredient.id) {
-	// 		const updatedIngredient = { id: ingredient?.id, data: { ...ingredient } }
-	// 		const responseIngredient =
-	// 			await updateIngredient(updatedIngredient).unwrap()
-	// 		console.log('responseIngredient', responseIngredient)
-	// 		// resetActiveComponent(null)
-	// 		setIngredient(responseIngredient)
-	// 	}
-
-	// 	// Здесь можно добавить логику сохранения (например, вызов API для обновления ингредиента)
-	// }
+	// Сохранение изменений
 	const handleSave = async () => {
-		if (!ingredient || !ingredient.id) return
-
-		// Создаем новый объект с актуальными alias
-		const updatedIngredientData: IngredientResponse = {
-			...ingredient,
-			aliases: [...(ingredient.aliases ?? [])] // Клонируем aliases
+		if (!ingredient || !ingredient.id) {
+			toast.error('Выберите ингредиент для сохранения')
+			return
 		}
 
 		try {
+			const updatedIngredientData: IngredientResponse = {
+				...ingredient,
+				aliases: [...(ingredient.aliases ?? [])] // Клонируем aliases
+			}
+
 			const responseIngredient = await updateIngredient({
 				id: ingredient.id,
 				data: updatedIngredientData
 			}).unwrap()
 
 			setIngredient(responseIngredient)
-			resetActiveComponent(null)
+			// resetActiveComponent(null)
+			toast.success('Ингредиент успешно обновлен')
 		} catch (error) {
 			console.error('Ошибка при обновлении ингредиента:', error)
+			toast.error('Ошибка при обновлении ингредиента')
 		}
 	}
 
 	return (
 		<div className='flex flex-col relative min-w-full'>
-			<Button onClick={handleSave}>Сохранить изменения</Button>
+			<Button
+				onClick={handleSave}
+				disabled={isUpdating}
+			>
+				{isUpdating ? 'Сохранение...' : 'Сохранить изменения'}
+			</Button>
 			<span>Введите наименование</span>
 			<SimpleAutocompleteInput<IngredientResponse>
 				fetchFunction='ingredient'
-				className='flex  flex-col w-[70%] items-start relative'
+				className='flex flex-col w-[70%] items-start relative'
 				setItem={memoizedSetIngredient}
-				item={ingredientResponse}
+				item={ingredient} // Используем текущее состояние ingredient
 			/>
 			{ingredient && ingredient.name && (
-				<div className='flex flex-col  w-[70%] mt-4'>
+				<div className='flex flex-col w-[70%] mt-4'>
 					<span>Синонимы</span>
 					<Button
 						className='ml-2'
 						onClick={addAlias}
+						disabled={isUpdating}
 					>
 						Добавить
 					</Button>
@@ -135,13 +150,12 @@ const IngredientsEditor = ({
 								<AliasInput
 									aliasItem={alias}
 									ingredient={ingredient}
-									setIngredient={value =>
-										memoizedSetIngredient(value as IngredientResponse)
-									}
+									setIngredient={memoizedSetIngredient}
 								/>
 								<Button
 									onClick={() => handleDeleteAlias(alias.id)}
 									className='ml-2'
+									disabled={isUpdating}
 								>
 									Удалить
 								</Button>

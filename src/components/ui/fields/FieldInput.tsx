@@ -4,19 +4,19 @@ import { forwardRef } from 'react'
 import styles from './Fields.module.scss'
 
 interface InputFieldsProps {
-	id: string
-	label?: string
-	extra?: string
-	inputStyle?: string
-	placeholder: string
-	variant?: string
-	state?: 'error' | 'success'
-	disabled?: boolean
-	type?: string
-	isNumber?: boolean
-	value?: string | number // Добавлено, чтобы можно было контролировать input
-	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-	style?: React.CSSProperties // Добавляем поддержку inline-стилей
+	id?: string // Уникальный идентификатор поля
+	label?: string // Метка над полем
+	extra?: string // Классы для обертки div
+	placeholder?: string // Подсказка внутри поля
+	variant?: string // Не используется в текущей версии, но оставлен для совместимости
+	state?: 'error' | 'success' // Состояние поля (ошибка или успех)
+	disabled?: boolean // Отключение поля
+	type?: string // Тип поля (text, number и т.д.)
+	isNumber?: boolean // Ограничение ввода только числами
+	value?: string | number // Значение для контролируемого input
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void // Обработчик изменения
+	onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void // Обработчик фокуса
+	style?: React.CSSProperties // Inline-стили для input
 }
 
 export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
@@ -25,16 +25,17 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 			id,
 			label,
 			extra,
-			inputStyle,
 			placeholder,
 			variant,
 			state,
 			disabled,
 			type = 'text',
 			isNumber,
-			value = '', // Устанавливаем значение по умолчанию
+			value = '', // Значение по умолчанию — пустая строка
 			onChange,
-			...rest
+			onFocus,
+			style, // Передаем inline-стили
+			...rest // Остальные пропсы для передачи в input
 		},
 		ref
 	) => {
@@ -54,7 +55,7 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 					type={type}
 					id={id}
 					placeholder={placeholder}
-					value={value} // Передаём значение
+					value={value}
 					onChange={e => {
 						const newValue = isNumber ? Number(e.target.value) : e.target.value
 						if (onChange)
@@ -64,31 +65,32 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 								}
 							)
 					}}
+					onFocus={onFocus} // Обработчик фокуса
 					className={cn(
-						styles.fieldContainer,
-						inputStyle,
-						disabled && styles.fieldDisabled,
-						state === 'error' && styles.fieldError,
-						state === 'success' && styles.fieldSuccess,
-						!disabled && !state && styles.fieldFocus
+						styles.fieldContainer, // Базовые стили из SCSS
+						disabled && styles.fieldDisabled, // Стили для отключенного состояния
+						state === 'error' && styles.fieldError, // Стили для ошибки
+						state === 'success' && styles.fieldSuccess, // Стили для успеха
+						!disabled && !state && styles.fieldFocus // Стили для фокуса
 					)}
+					style={style} // Inline-стили с приоритетом
 					onKeyDown={event => {
 						if (
 							isNumber &&
-							!/^\d$/.test(event.key) && // Числа
-							!['.', '-'].includes(event.key) && // Поддержка десятичной точки и минуса
+							!/^\d$/.test(event.key) && // Только цифры
+							!['.', '-'].includes(event.key) && // Поддержка точки и минуса
 							![
 								'Backspace',
 								'Tab',
 								'Enter',
 								'ArrowLeft',
 								'ArrowRight'
-							].includes(event.key)
+							].includes(event.key) // Разрешенные служебные клавиши
 						) {
 							event.preventDefault()
 						}
 					}}
-					{...rest}
+					{...rest} // Передаем остальные пропсы (например, name, maxLength и т.д.)
 				/>
 			</div>
 		)

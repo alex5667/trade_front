@@ -4,25 +4,12 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 
-import Creator from './creator/Creator'
-import Editor from './creator/Editor'
-import IngredientsCreator from '@/app/i/ingredients/IngredientsCreator'
-import IngredientsEditor from '@/app/i/ingredients/IngredientsEditor'
-
-export const componentMap = {
-	ingredient: ['ингредиент'],
-	institution: ['точку выдачи'],
-	meal: ['прием пищи'],
-	dishCategory: ['категорию'],
-	dish: ['блюдо']
-} as const
+import { ComponentMapKeys, componentMap } from './componentMap'
 
 const initialState = {
 	name: '',
 	printName: ''
-}
-
-export type ComponentMapKeys = keyof typeof componentMap
+} as const
 
 export type ActiveComponentProps = null | 'editor' | 'creator'
 
@@ -43,7 +30,7 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 		return <div>Ошибка: Тип {type} не поддерживается</div>
 	}
 
-	const [title] = componentMap[type]
+	const { title, EditorComponent, CreatorComponent } = componentMap[type]
 
 	return (
 		<div className='flex flex-col relative min-w-full'>
@@ -61,60 +48,22 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 					Добавить {title}
 				</Button>
 			</div>
-			{/* <div className='flex flex-col items-center justify-start pt-3 w-full'>
-				{activeComponent === 'editor' && type !== 'ingredient' ? (
-					<Editor
+			<div className='flex flex-col items-center justify-start pt-3 w-full'>
+				{activeComponent === 'editor' && (
+					<EditorComponent
 						type={type}
 						resetActiveComponent={resetActiveComponent}
 						initialState={null}
 					/>
-				) : (
-					<IngredientsEditor resetActiveComponent={resetActiveComponent} />
 				)}
-				{activeComponent === 'creator' && type !== 'ingredient' ? (
-					<Creator
-						type={type}
-						EditorComponent={({ resetActiveComponent }) => (
-							<Editor
-								type={type}
-								resetActiveComponent={resetActiveComponent}
-							/>
-						)}
+				{activeComponent === 'creator' && (
+					<CreatorComponent
+						type={type as any}
+						EditorComponent={EditorComponent as any}
 						resetActiveComponent={resetActiveComponent}
 						initialState={initialState}
 					/>
-				) : (
-					<IngredientsCreator resetActiveComponent={resetActiveComponent} />
 				)}
-			</div> */}
-			<div className='flex flex-col items-center justify-start pt-3 w-full'>
-				{activeComponent === 'editor' ? (
-					type !== 'ingredient' ? (
-						<Editor
-							type={type}
-							resetActiveComponent={resetActiveComponent}
-							initialState={null}
-						/>
-					) : (
-						<IngredientsEditor resetActiveComponent={resetActiveComponent} />
-					)
-				) : activeComponent === 'creator' ? (
-					type !== 'ingredient' ? (
-						<Creator
-							type={type}
-							EditorComponent={({ resetActiveComponent }) => (
-								<Editor
-									type={type}
-									resetActiveComponent={resetActiveComponent}
-								/>
-							)}
-							resetActiveComponent={resetActiveComponent}
-							initialState={initialState}
-						/>
-					) : (
-						<IngredientsCreator resetActiveComponent={resetActiveComponent} />
-					)
-				) : null}
 			</div>
 		</div>
 	)

@@ -29,7 +29,7 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 		return <p>Блюдо не выбрано.</p>
 	}
 	return (
-		<div className='w-full'>
+		<div className='w-full flex flex-col gap-2'>
 			{(Object.keys(dish) as (keyof DishResponse)[]).map((key, index) => {
 				if (key === 'ingredients') {
 					return (
@@ -43,9 +43,9 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 				return (
 					<div
 						key={index}
-						className='flex w-full items-center'
+						className='flex w-full items-center justify-between'
 					>
-						<p className='mr-2 p-1'>{index}</p>
+						{/* <p className='mr-2 p-1'>{index}</p> */}
 						<p className='mr-2 w-[10%] p-1'>{key}</p>
 						<DishInput
 							dish={dish}

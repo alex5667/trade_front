@@ -71,7 +71,7 @@ export function useDishInput<T extends keyof DishFormState>({
 			} catch (error) {
 				console.error('Ошибка при обновлении/создании блюда:', error)
 			}
-		}, 700),
+		}, 500),
 		[updateDish, createDish, setDish, key, ingredientKey, ingredientId]
 	)
 
