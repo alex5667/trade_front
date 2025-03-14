@@ -52,11 +52,11 @@ const DishInput = ({
 			value={safeValue}
 			onChange={handleChange}
 			onFocus={handleFocus} // Теперь работает
-			extra='w-full bg-db-sidebar-light w-[80%]'
+			extra='w-full bg-db-sidebar-light w-[80%] '
 			// inputStyle='py-2 text-red-500'
 			style={{
-				paddingTop: '0.7rem',
-				paddingBottom: '0.7rem'
+				paddingTop: '8px',
+				paddingBottom: '8px'
 			}}
 			// isNumber={keyName === 'price' || ingredientKey === 'amount'} // Пример условия
 		/>

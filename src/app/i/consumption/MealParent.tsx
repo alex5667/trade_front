@@ -1,9 +1,10 @@
-
-
+import {
+	selectInstitutionsWithConsumption,
+	selectTotalQuantity
+} from '@/store/meal-consumption/meal-consumption.selectors'
 
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 
-import { selectInstitutionsWithConsumption, selectTotalQuantity } from '@/store/meal-consumption/meal-consumption.selectors'
 import styles from './ConsumptionPage.module.scss'
 import MealRow from './MealRow'
 
@@ -80,22 +81,28 @@ interface MealParentProps {
 const MealParent = ({ label, mealSlug, dateForDay }: MealParentProps) => {
 	// const filteredItems = useTypedSelector(selectFilteredMealConsumptions(dateForDay, mealSlug))
 	const quantity = useTypedSelector(selectTotalQuantity(dateForDay, mealSlug))
-	const institutionsWithConsumption = useTypedSelector(selectInstitutionsWithConsumption(dateForDay, mealSlug))
+	const institutionsWithConsumption = useTypedSelector(
+		selectInstitutionsWithConsumption(dateForDay, mealSlug)
+	)
 
 	return (
 		<div className='flex flex-col items-center justify-start w-full'>
 			<h4 className={styles.colHeading}>{label}</h4>
 
-			{institutionsWithConsumption.map(institution => (
-				<MealRow
-					institutionSlug={institution.slug}
-					institutionName={institution.printName}
-					key={institution.id}
-					dateForDay={dateForDay}
-					mealSlug={mealSlug}
-					consumptionItem={institution.consumptionItem}
-				/>
-			))}
+			{institutionsWithConsumption.map(institution => {
+				if (institution.consumptionItem) {
+					return (
+						<MealRow
+							institutionSlug={institution.slug}
+							institutionName={institution.printName}
+							key={institution.id}
+							dateForDay={dateForDay}
+							mealSlug={mealSlug}
+							consumptionItem={institution.consumptionItem}
+						/>
+					)
+				}
+			})}
 			<div className='flex min-w-full'>
 				<div className='text-base w-[50%] bg-db-row-light border border-border-light py-2 px-3'>
 					Итого:

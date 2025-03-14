@@ -18,3 +18,10 @@
 	@apply flex flex-col align-middle;
 	width: 40%;
 }
+
+.weekChangeBtnItem {
+	@apply flex flex-col align-middle;
+	p {
+		@apply text-base text-center mb-2;
+	}
+}

@@ -56,10 +56,17 @@ const Purchasing = () => {
 		<div className={styles.container}>
 			<div className={styles.btnContainer}>
 				<div className={styles.weekChangeBtn}>
-					<WeekChangeButtonsWithDates setStartEndDate={setStartEndDate} />
-					<WeekChangeButtonsWithDates
-						setStartEndDate={setStartEndDateForCulculate}
-					/>
+					<div className={styles.weekChangeBtnItem}>
+						<p>На какую неделю считать</p>
+						<WeekChangeButtonsWithDates setStartEndDate={setStartEndDate} />
+					</div>
+					<div className={styles.weekChangeBtnItem}>
+						<p>По какой неделе считать</p>
+
+						<WeekChangeButtonsWithDates
+							setStartEndDate={setStartEndDateForCulculate}
+						/>
+					</div>
 				</div>
 
 				<div className={styles.getBtn}>

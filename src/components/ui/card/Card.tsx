@@ -1,5 +1,7 @@
 import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 
+import { Titlies } from '@/constants/titles'
+
 import CardInput from './CardInput'
 
 type CardProps<T extends Record<string, any>> = {
@@ -43,10 +45,12 @@ const Card = <T extends Record<string, any>>({
 			{Object.keys(item).map((key, index) => (
 				<div
 					key={index}
-					className='flex w-full items-center'
+					className='flex w-full items-center mb-2'
 				>
-					<p className='mr-2 p-1'>{index}</p>
-					<p className='mr-2 w-[10%] p-1'>{key}</p>
+					{/* <p className='mr-2 p-1'>{index}</p> */}
+					<p className='mr-2 p-2 text-sm rounded-lg border border-border-light flex-grow w-[20%] h-full'>
+						{Titlies[key as keyof typeof Titlies]}
+					</p>
 					<CardInput
 						item={item}
 						keyName={key as keyof T}

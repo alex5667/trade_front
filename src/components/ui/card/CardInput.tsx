@@ -1,7 +1,8 @@
-import cn from 'clsx'
 import { SetStateAction, useRef } from 'react'
 
 import { formatValue } from '@/utils/formatValue'
+
+import { FieldInput } from '../fields/FieldInput'
 
 import { useCardInput } from './useCardInput'
 
@@ -35,12 +36,17 @@ const CardInput = <T,>({
 	const safeValue = formatValue(inputValue)
 
 	return (
-		<input
+		<FieldInput
 			ref={inputRef}
-			className={cn('w-full')}
+			id={`card-input-${(keyName as string) || 'default'}`}
 			value={safeValue}
 			onChange={handleChange}
 			onFocus={handleFocus}
+			extra='w-full bg-db-sidebar-light w-[80%] h-full'
+			style={{
+				paddingTop: '8px',
+				paddingBottom: '8px'
+			}}
 		/>
 	)
 }

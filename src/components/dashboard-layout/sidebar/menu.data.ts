@@ -40,7 +40,13 @@ export const USERMENU: MenuItem[] = [
 		link: ADMINBOARD_PAGES.SETTINGS,
 		name: 'Settings',
 		endPoint: 'getProfile'
-	}
+	}, {
+		icon: DatabaseZap,
+		link: `${ADMINBOARD_PAGES.DBEDITOR}`,
+		name: 'Работа с базой',
+		endPoint: 'getAll'
+	},
+
 ]
 
 export const ADMINMENU: MenuItem[] = [

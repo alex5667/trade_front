@@ -1,5 +1,7 @@
 import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 
+import { Titlies } from '@/constants/titles'
+
 import { DishFormState, DishResponse } from '@/types/dish.type'
 
 import DishIngredients from './DishIngredients'
@@ -46,7 +48,9 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 						className='flex w-full items-center justify-between'
 					>
 						{/* <p className='mr-2 p-1'>{index}</p> */}
-						<p className='mr-2 w-[10%] p-1'>{key}</p>
+						<p className='mr-2 p-2 text-sm rounded-lg border border-border-light flex-grow w-[20%] h-full'>
+							{Titlies[key]}
+						</p>
 						<DishInput
 							dish={dish}
 							keyName={key}

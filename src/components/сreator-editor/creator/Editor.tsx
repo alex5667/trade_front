@@ -83,8 +83,13 @@ const Editor = <T extends EntityType>({
 
 	return (
 		<div className='flex flex-col relative min-w-full'>
-			<Button onClick={handleSave}>Сохранить изменения</Button>
-			<span>Введите наименование</span>
+			<Button
+				className='mb-2'
+				onClick={handleSave}
+			>
+				Сохранить изменения
+			</Button>
+			<span className='text-base font-medium mb-2'>Введите наименование</span>
 			<SimpleAutocompleteInput<T>
 				fetchFunction={type}
 				className='flex flex-col w-[70%] items-start relative'
