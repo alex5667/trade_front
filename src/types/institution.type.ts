@@ -10,7 +10,7 @@ export interface InstitutionResponse {
 	MenuItem?: MenuItemResponse[]
 	slug: string
 }
-
-export type InstitutionFormState = Partial<InstitutionResponse>
+export type InstitutionResponsePartial = Partial<InstitutionResponse>
+export type InstitutionFormState = Pick<InstitutionResponse, 'name' | 'printName'> & Partial<Omit<InstitutionResponse, 'name' | 'printName'>>
 
 export type InstitutionForm = Omit<InstitutionResponse, 'id' | 'createdAt' | 'updatedAt'>

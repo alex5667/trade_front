@@ -3,14 +3,15 @@ import { SetStateAction, memo, useCallback, useEffect, useState } from 'react'
 import { Titlies } from '@/constants/titles'
 
 import CardInput from './CardInput'
+import { FetchQueryData, FetchQueryKey } from './useCardInput'
 
-type CardProps<T extends Record<string, any>> = {
+type CardProps<T extends FetchQueryData> = {
 	item: T
 	fetchFunction: string
 	setItemToParent?: (value: SetStateAction<any>) => void
 }
 
-const Card = <T extends Record<string, any>>({
+const Card = <T extends FetchQueryData>({
 	item: itemInitial,
 	fetchFunction,
 	setItemToParent
@@ -20,7 +21,7 @@ const Card = <T extends Record<string, any>>({
 		setItem(itemInitial)
 	}, [itemInitial])
 	const memoizedsetItem = useCallback(
-		(value: SetStateAction<T>) => {
+		(value: SetStateAction<FetchQueryData>) => {
 			setItem(prev => {
 				const updatedItem = typeof value === 'function' ? value(prev) : value
 				return { ...prev, ...updatedItem }
@@ -53,9 +54,11 @@ const Card = <T extends Record<string, any>>({
 					</p>
 					<CardInput
 						item={item}
-						keyName={key as keyof T}
-						setItem={memoizedsetItem}
-						fetchFunction={fetchFunction}
+						keyName={key as keyof FetchQueryData}
+						setItem={
+							memoizedsetItem as (value: SetStateAction<FetchQueryData>) => void
+						}
+						fetchFunction={fetchFunction as FetchQueryKey}
 					/>
 				</div>
 			))}

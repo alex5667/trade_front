@@ -31,4 +31,5 @@ export interface IngredientDto {
 	heatLossPercent?: number
 }
 
-export type IngredientFormState = Partial<IngredientResponse>
+export type IngredientFormState = Pick<IngredientResponse, 'name' | 'printName'> & Partial<Omit<IngredientResponse, 'name' | 'printName'>>
+export type IngredientResponsePartial = Partial<IngredientResponse>

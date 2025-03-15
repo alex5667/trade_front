@@ -4,13 +4,13 @@ import { formatValue } from '@/utils/formatValue'
 
 import { FieldInput } from '../fields/FieldInput'
 
-import { useCardInput } from './useCardInput'
+import { FetchQueryData, FetchQueryKey, useCardInput } from './useCardInput'
 
 export type InputProps<T> = {
 	item: T
-	keyName?: keyof T
-	setItem?: (value: SetStateAction<T>) => void
-	fetchFunction: string
+	keyName?: keyof FetchQueryData
+	setItem?: (value: SetStateAction<FetchQueryData>) => void
+	fetchFunction: FetchQueryKey
 }
 
 const CardInput = <T,>({
@@ -22,7 +22,7 @@ const CardInput = <T,>({
 	const inputRef = useRef<HTMLInputElement>(null)
 	const { inputValue, handleChange, setInputValue } = useCardInput({
 		inputRef,
-		data: item,
+		data: item as FetchQueryData,
 		fetchFunction,
 		setItem,
 		keyName

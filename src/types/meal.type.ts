@@ -10,7 +10,7 @@ export interface MealResponse {
 
 
 }
-
-export type MealFormState = Partial<MealResponse>
+export type MealResponsePartial = Partial<MealResponse>
+export type MealFormState = Pick<MealResponse, 'name' | 'printName'> & Partial<Omit<MealResponse, 'name' | 'printName'>>
 
 export type MealForm = Omit<MealResponse, 'id' | 'createdAt' | 'updatedAt'>

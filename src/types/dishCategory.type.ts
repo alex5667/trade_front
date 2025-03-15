@@ -9,4 +9,5 @@ export interface DishCategoryResponse {
 }
 
 export type DishCategory = Pick<DishCategoryResponse, 'name' | 'printName'>
-export type DishCategoryFormState = Partial<DishCategoryResponse>
+export type DishCategoryFormState = Pick<DishCategoryResponse, 'name' | 'printName'> & Partial<Omit<DishCategoryResponse, 'name' | 'printName'>>
+export type DishCategoryResponsePartial = Partial<DishCategoryResponse>
