@@ -22,12 +22,12 @@ import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 import { DatesOfWeek } from '@/utils/getDatesOfWeek'
 
+import styles from './MenuView.module.scss'
+import { ListView } from './list-view/ListView'
 import {
 	useCopyMenuItemMutation,
 	useGetAllMenuItemQuery
 } from '@/services/menu-item.service'
-import styles from './MenuView.module.scss'
-import { ListView } from './list-view/ListView'
 
 interface MenuView {
 	institutionSlug: string
@@ -59,7 +59,11 @@ export function MenuView({ institutionSlug }: MenuView) {
 	>()
 
 	const [isVisible, setIsVisible] = useState(false)
-	const { data, isLoading: isLoadingMenu } = useGetAllMenuItemQuery(
+	const {
+		data,
+		isLoading: isLoadingMenu,
+		refetch
+	} = useGetAllMenuItemQuery(
 		{
 			startDate: startEndDate?.startOfWeek,
 			endDate: startEndDate?.endOfWeek,
@@ -83,12 +87,24 @@ export function MenuView({ institutionSlug }: MenuView) {
 
 	const datesOfWeek = useMemo(
 		() => startEndDate?.datesOfWeek || ({} as DatesOfWeek),
-		[startEndDate]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[startEndDate?.datesOfWeek, startEndDateForCopy?.datesOfWeek]
 	)
-
 	const handleSetStartEndDate: Dispatch<
 		SetStateAction<StartEnDWeek | undefined>
-	> = useCallback(dates => setStartEndDate(dates), [])
+	> = useCallback(dates => {
+		if (typeof dates === 'function') {
+			return
+		}
+		if (!dates || !dates.startOfWeek || !dates.endOfWeek) return
+
+		setStartEndDate(dates)
+	}, [])
+	useEffect(() => {
+		if (startEndDate?.startOfWeek && startEndDate?.endOfWeek) {
+			refetch()
+		}
+	}, [startEndDate, refetch])
 
 	const handleSetStartEndDateForCopy: Dispatch<
 		SetStateAction<StartEnDWeek | undefined>

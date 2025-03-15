@@ -42,7 +42,7 @@ const WeekChangeButtonsWithDates = ({
 			datesOfWeek
 		})
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [weekOffset])
+	}, [weekOffset, setStartEndDate, startOfWeek, endOfWeek, datesOfWeek])
 	return (
 		<div className={cn(styles.btnsWrapper, classNameWrapper)}>
 			<div className={cn(styles.btnWrapper)}>
