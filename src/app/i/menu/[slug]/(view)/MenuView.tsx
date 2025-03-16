@@ -104,7 +104,7 @@ export function MenuView({ institutionSlug }: MenuView) {
 		if (startEndDate?.startOfWeek && startEndDate?.endOfWeek) {
 			refetch()
 		}
-	}, [startEndDate, refetch])
+	}, [startEndDate?.startOfWeek, startEndDate?.endOfWeek, refetch])
 
 	const handleSetStartEndDateForCopy: Dispatch<
 		SetStateAction<StartEnDWeek | undefined>
