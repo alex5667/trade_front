@@ -18,14 +18,14 @@ import Card from '../card/Card'
 import AutoCompleteTextarea from '../fields/auto-complete-input/AutoCompleteTextarea'
 import { useAutocompleteInput } from '../fields/hooks/useAutocompleteInput'
 
-import styles from './SimpleAutocompleteInput.module.scss'
-import { SimpleAutocompleteList } from './SimpleAutocompleteList'
-import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
 import { useGetDishByNameQuery } from '@/services/dish.service'
 import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
+import styles from './SimpleAutocompleteInput.module.scss'
+import { SimpleAutocompleteList } from './SimpleAutocompleteList'
+import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 
 export type EntityType =
 	| InstitutionResponse
@@ -56,7 +56,8 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 	fetchFunction,
 	setItem: setItemToParent,
 	item: parentItem,
-	isVisibleCard = true
+	isVisibleCard = true,
+	style
 }: SimpleAutocompleteInputProps<T>): JSX.Element => {
 	const inputRef = useRef<HTMLTextAreaElement>(null)
 	const { isShow, ref, setIsShow } = useOutside(false)

@@ -5,7 +5,7 @@ import { DishFormState, DishResponse } from '@/types/dish.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
-type DishUpdate = { id: number; data: DishFormState }
+export type DishUpdate = { id: number; data: DishFormState }
 
 
 export const dishApi = createApi({
