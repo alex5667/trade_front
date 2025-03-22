@@ -33,6 +33,7 @@ export const URLS = {
 	MENU_ITEM_BY_INSTITUTION: '/menu-item/by-institution',
 	USER_PROFILE: '/user/profile',
 	MEALCONSUMPTIONS: '/meal-consumption',
+	RETAILSALES: '/retail-sales',
 	MEAL_CONSUMPTION_ITEM_BY_INSTITUTION: '/meal-consumption/by-institution',
 }
 

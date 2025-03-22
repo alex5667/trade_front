@@ -11,6 +11,7 @@ export const ADMINBOARD_PAGES = {
 	INGREDIENTS: `/i/ingredients`,
 	INSTITUTIONS: `/i/institutions`,
 	DISHCATEGORIES: `/i/dishCategories`,
+	RETAILSALE: `/i/retail-sale`,
 	MEALS: `/i/meals`,
 	SETTINGS: `/i/settings`,
 	AUTH: '/auth',

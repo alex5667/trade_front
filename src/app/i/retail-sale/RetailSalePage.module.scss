@@ -1,0 +1,62 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss";
+
+.wrapper {
+	padding: 20px;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.salesList {
+	margin-top: 20px;
+}
+.salesTable {
+	width: 100%;
+	border-collapse: collapse;
+
+	tr {
+		@apply flex hover:bg-db-row-light;
+		width: 100%;
+	}
+
+	th,
+	td {
+		padding: 10px;
+		border: 1px solid #ddd;
+		text-align: left;
+		&:nth-child(2),
+		&:nth-child(3),
+		&:nth-child(4) {
+			text-align: center;
+		}
+	}
+
+	th {
+		text-align: center;
+		background-color: rgba(0, 0, 0, 0.05);
+		border: 1px solid #ddd;
+		padding: 10px;
+	}
+
+	/* Указываем ширину столбцов */
+	th:nth-child(1),
+	td:nth-child(1) {
+		width: 55%;
+	} /* Блюдо */
+	th:nth-child(2),
+	td:nth-child(2) {
+		width: 15%;
+	} /* Кол-во */
+	th:nth-child(3),
+	td:nth-child(3) {
+		width: 15%;
+	} /* Цена */
+	th:nth-child(4),
+	td:nth-child(4) {
+		width: 15%;
+	} /* Сумма */
+
+	tfoot {
+		font-weight: bold;
+	}
+}

@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-import WeekDay from '@/components/menu-edit/WeekDay'
+import WeekDay from '@/components/ui/WeekDay'
 
 import { MealResponse } from '@/types/meal.type'
 import { DayOfWeek } from '@/types/menuItem.type'

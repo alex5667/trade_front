@@ -2,7 +2,7 @@ import cn from 'clsx'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import { X } from 'lucide-react'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 
@@ -10,37 +10,41 @@ import { useOutside } from '@/hooks/useOutside'
 
 import styles from './DatePicker.module.scss'
 import { formatCaption } from './DatePickerCaption'
-import { useUpdateMenuItemMutation } from '@/services/menu-item.service'
 
 dayjs.extend(LocalizedFormat)
 
 interface DatePicker {
 	position?: 'left' | 'right'
+	setDate?: Dispatch<SetStateAction<Date | undefined>>
+	extra?: string
 }
-export function DatePicker({ position = 'right' }: DatePicker) {
+export function DatePicker({ position = 'right', setDate, extra }: DatePicker) {
 	const [selected, setSelected] = useState<Date>()
 	const { isShow, setIsShow, ref } = useOutside(false)
-	const [updateMenuItem] = useUpdateMenuItemMutation()
 
 	const handleDaySelect = (date: Date | undefined) => {
 		const ISOdate = date?.toISOString()
+		setDate && setDate(date)
 		setSelected(date)
 		if (ISOdate) {
-			// const updatedData = { ...item, dishId }
-			// updateMenuItem({ id: item.id, date: ISOdate })
 		} else {
+			setDate && setDate(undefined)
 			setSelected(undefined)
 		}
 		setIsShow(false)
 	}
+	const handleClearDate = () => {
+		setDate && setDate(undefined)
+		setSelected(undefined)
+	}
 
 	return (
 		<div
-			className={cn(styles.container)}
+			className={cn(styles.container, extra)}
 			ref={ref}
 		>
 			<button
-				className='text-xs px-4 py-1 rounded-lg hover:bg-primary-color'
+				className='text-base px-4 py-2 rounded-lg border border-db-primary hover:bg-primary-color'
 				onClick={() => setIsShow(!isShow)}
 			>
 				{selected ? dayjs(selected).format('LL') : 'Click for select'}
@@ -48,7 +52,7 @@ export function DatePicker({ position = 'right' }: DatePicker) {
 			{selected && (
 				<button
 					className={styles.closeButton}
-					onClick={() => setSelected(undefined)}
+					onClick={handleClearDate}
 				>
 					<X size={14} />
 				</button>
@@ -70,11 +74,11 @@ export function DatePicker({ position = 'right' }: DatePicker) {
 						onSelect={handleDaySelect}
 						weekStartsOn={1}
 						formatters={{ formatCaption }}
-						disabled={[
-							{
-								before: new Date()
-							}
-						]}
+						// disabled={[
+						// 	{
+						// 		before: new Date()
+						// 	}
+						// ]}
 					/>
 				</div>
 			)}

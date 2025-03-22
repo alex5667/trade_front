@@ -90,18 +90,18 @@ const MealParent = ({ label, mealSlug, dateForDay }: MealParentProps) => {
 			<h4 className={styles.colHeading}>{label}</h4>
 
 			{institutionsWithConsumption.map(institution => {
-				if (institution.consumptionItem) {
-					return (
-						<MealRow
-							institutionSlug={institution.slug}
-							institutionName={institution.printName}
-							key={institution.id}
-							dateForDay={dateForDay}
-							mealSlug={mealSlug}
-							consumptionItem={institution.consumptionItem}
-						/>
-					)
-				}
+				// if (institution.consumptionItem) {
+				return (
+					<MealRow
+						institutionSlug={institution.slug}
+						institutionName={institution.printName}
+						key={institution.id}
+						dateForDay={dateForDay}
+						mealSlug={mealSlug}
+						consumptionItem={institution.consumptionItem}
+					/>
+				)
+				// }
 			})}
 			<div className='flex min-w-full'>
 				<div className='text-base w-[50%] bg-db-row-light border border-border-light py-2 px-3'>

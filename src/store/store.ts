@@ -11,6 +11,7 @@ import { mealConsumptionApi } from '@/services/meal-consumption.service'
 import { mealApi } from '@/services/meal.service'
 import { menuItemApi } from '@/services/menu-item.service'
 import { purchasingApi } from '@/services/purchasing.service'
+import { retailSaleApi } from '@/services/retail-sale.service'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { dishCategorySlice } from './dish-category/dishCategory.slice'
@@ -21,6 +22,7 @@ import { institutionSlice } from './institution/institution.slice'
 import { mealConsumptionSlice } from './meal-consumption/meal-consumption.slice'
 import { mealSlice } from './meal/meal.slice'
 import { menuItemSlice } from './menuItem/menu-item.slice'
+import { retailSaleSlice } from './retail-sale/retail-sale.slice'
 import { sidebarSlice } from './sidebar/sidebar.slice'
 import { userSlice } from './user/user.slice'
 
@@ -31,6 +33,7 @@ const rootReducer = combineReducers({
 	[menuItemApi.reducerPath]: menuItemApi.reducer,
 	[collapsedSlice.reducerPath]: collapsedSlice.reducer,
 	[mealConsumptionSlice.reducerPath]: mealConsumptionSlice.reducer,
+	[retailSaleSlice.reducerPath]: retailSaleSlice.reducer,
 	[menuItemSlice.reducerPath]: menuItemSlice.reducer,
 	[mealSlice.reducerPath]: mealSlice.reducer,
 	[institutionSlice.reducerPath]: institutionSlice.reducer,
@@ -39,6 +42,7 @@ const rootReducer = combineReducers({
 	[dishCategoryApi.reducerPath]: dishCategoryApi.reducer,
 	[institutionApi.reducerPath]: institutionApi.reducer,
 	[mealConsumptionApi.reducerPath]: mealConsumptionApi.reducer,
+	[retailSaleApi.reducerPath]: retailSaleApi.reducer,
 	[sidebarSlice.reducerPath]: sidebarSlice.reducer,
 	[dishSlice.reducerPath]: dishSlice.reducer,
 	[dishCategorySlice.reducerPath]: dishCategorySlice.reducer,
@@ -66,6 +70,7 @@ export const store = configureStore({
 			institutionApi.middleware,
 			mealApi.middleware,
 			mealConsumptionApi.middleware,
+			retailSaleApi.middleware,
 			ingredientApi.middleware,
 			ingredientAliasApi.middleware,
 			purchasingApi.middleware,

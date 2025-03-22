@@ -1,12 +1,6 @@
 'use client'
 
-import {
-	Dispatch,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useState
-} from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import Loader from '@/components/ui/Loader'
 import WeekChangeButtonsWithDates, {
@@ -29,17 +23,28 @@ const ConsumptionView = () => {
 
 	const handleSetStartEndDate: Dispatch<
 		SetStateAction<StartEnDWeek | undefined>
-	> = useCallback(dates => setStartEndDate(dates), [])
-	const { data, isFetching, isLoading, refetch } =
-		useGetAllMealConsumptionsQuery({
-			startDate: startEndDate?.startOfWeek,
-			endDate: startEndDate?.endOfWeek
-		} as MealConsumptionDataFilters)
-	const { isLoading: isLoadingMeals } = useGetAllMealsQuery()
+	> = value => {
+		setStartEndDate(prev => {
+			// Обрабатываем оба случая: если `value` - это функция, вызываем её
+			const newValue = typeof value === 'function' ? value(prev) : value
 
-	useEffect(() => {
-		refetch()
-	}, [startEndDate?.startOfWeek, refetch])
+			// Предотвращаем лишние обновления
+			if (
+				prev?.startOfWeek === newValue?.startOfWeek &&
+				prev?.endOfWeek === newValue?.endOfWeek
+			) {
+				return prev
+			}
+			return newValue
+		})
+	}
+
+	const { data, isFetching, isLoading } = useGetAllMealConsumptionsQuery({
+		startDate: startEndDate?.startOfWeek,
+		endDate: startEndDate?.endOfWeek
+	} as MealConsumptionDataFilters)
+
+	const { isLoading: isLoadingMeals } = useGetAllMealsQuery()
 
 	if (isLoading || isFetching || isLoadingMeals || isLoadingInstitutions) {
 		return <Loader />
@@ -54,16 +59,14 @@ const ConsumptionView = () => {
 			<WeekChangeButtonsWithDates setStartEndDate={handleSetStartEndDate} />
 
 			{startEndDate?.datesOfWeek &&
-				dayColumns().map(column => {
-					return (
-						<DayView
-							label={column.label}
-							day={column.value}
-							key={column.value}
-							datesOfWeek={startEndDate?.datesOfWeek}
-						/>
-					)
-				})}
+				dayColumns().map(column => (
+					<DayView
+						label={column.label}
+						day={column.value}
+						key={column.value}
+						datesOfWeek={startEndDate?.datesOfWeek}
+					/>
+				))}
 		</div>
 	)
 }

@@ -1,4 +1,5 @@
 import {
+	Apple,
 	DatabaseZap,
 	FileDown,
 	LayoutDashboard,
@@ -79,6 +80,12 @@ export const ADMINMENU: MenuItem[] = [
 		icon: DatabaseZap,
 		link: `${ADMINBOARD_PAGES.DBEDITOR}`,
 		name: 'Работа с базой',
+		endPoint: 'getAll'
+	},
+	{
+		icon: Apple,
+		link: `${ADMINBOARD_PAGES.RETAILSALE}`,
+		name: 'Розничные продажи',
 		endPoint: 'getAll'
 	},
 
