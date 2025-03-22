@@ -3,11 +3,11 @@
 import { URLS } from '@/config/urls'
 import { addAllRetailSales, addRetailSale, deleteRetailSaleById, updateRetailSale } from '@/store/retail-sale/retail-sale.slice'
 import { TypeRootState } from '@/store/store'
-import { MealFConsumptionFormState, RetailSaleDataFilters, RetailSaleResponse } from '@/types/retailSale.type'
+import { RetailSaleDataFilters, RetailSaleFormState, RetailSaleResponse } from '@/types/retailSale.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
-type RetailSaleUpdate = { id: number; data: MealFConsumptionFormState }
+type RetailSaleUpdate = { id: number; data: RetailSaleFormState }
 
 
 export const retailSaleApi = createApi({
@@ -60,7 +60,7 @@ export const retailSaleApi = createApi({
 		}),
 
 
-		createRetailSale: builder.mutation<RetailSaleResponse, MealFConsumptionFormState>({
+		createRetailSale: builder.mutation<RetailSaleResponse, RetailSaleFormState>({
 			query: data => ({
 				url: URLS.RETAILSALES,
 				method: 'POST',
