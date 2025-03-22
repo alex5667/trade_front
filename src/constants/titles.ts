@@ -14,7 +14,8 @@ export const Titlies = {
 	preparationSteps: 'Шаги приготовления',
 	slug: 'Slug',
 	dishPhotos: 'Фото блюда',
-	dishAlias: 'Алиасы блюда'
+	dishAlias: 'Алиасы блюда',
+	isSemiFinished: 'Полуфабрикат'
 
 }
 

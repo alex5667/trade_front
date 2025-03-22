@@ -15,7 +15,7 @@ export interface DishResponse {
 	ingredients: DishIngredient[]
 	dishPhotos: DishPhoto[]
 	dishAlias: DishAlias[]
-
+	isSemiFinished: boolean
 
 }
 

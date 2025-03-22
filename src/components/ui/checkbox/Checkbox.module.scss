@@ -1,9 +1,16 @@
 .defaultCheckboxes {
-	@apply relative inline-flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center justify-center rounded-md border border-gray-300 text-white/0 outline-none transition ease-linear hover:cursor-pointer dark:border-white/10;
-}
+	@apply relative inline-flex h-[20px] min-h-[20px] w-[20px] min-w-[20px] appearance-none items-center justify-center rounded-md border border-gray-300 outline-none transition ease-linear hover:cursor-pointer dark:border-white/10;
 
-.checked {
-	@apply border-none;
+	// Скрываем стандартный вид чекбокса
+	&:checked {
+		@apply border-none;
+	}
+
+	// Добавляем кастомную галочку через псевдоэлемент
+	&:checked::after {
+		content: "✔"; // Символ галочки
+		@apply absolute text-db-sidebar text-sm leading-none;
+	}
 }
 
 .checked-red {
@@ -22,6 +29,6 @@
 	@apply bg-yellow-500 dark:bg-yellow-400;
 }
 
-.checked-sidebar {
-	@apply bg-sidebar dark:bg-sidebar;
+.checked-brand {
+	@apply bg-gray-500 dark:bg-gray-400; // Замените на ваш брендовый цвет
 }

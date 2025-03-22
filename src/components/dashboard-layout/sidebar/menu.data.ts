@@ -30,7 +30,7 @@ export const USERMENU: MenuItem[] = [
 	{
 		icon: FileDown,
 		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
-		name: 'Кол-во порций',
+		name: 'Кол-во людей',
 		endPoint: null
 	}
 	,
@@ -66,7 +66,7 @@ export const ADMINMENU: MenuItem[] = [
 	{
 		icon: Table,
 		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
-		name: 'Количество порций',
+		name: 'Количество людей',
 		endPoint: null
 	},
 

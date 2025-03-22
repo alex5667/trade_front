@@ -2,14 +2,22 @@ import cn from 'clsx'
 
 import styles from './Checkbox.module.scss'
 
-interface Checkbox {
+interface CheckboxProps {
 	id?: string
 	extra?: string
 	color?: 'red' | 'blue' | 'green' | 'yellow'
-	[x: string]: any
+	checked?: boolean
+	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const Checkbox = ({ id, extra, color, ...rest }: Checkbox) => {
+export const Checkbox = ({
+	id,
+	extra,
+	color,
+	checked,
+	onChange,
+	...rest
+}: CheckboxProps) => {
 	const colorClass = cn({
 		[styles['checked-red']]: color === 'red',
 		[styles['checked-blue']]: color === 'blue',
@@ -24,13 +32,14 @@ export const Checkbox = ({ id, extra, color, ...rest }: Checkbox) => {
 		<input
 			id={id}
 			type='checkbox'
+			checked={checked}
+			onChange={onChange}
 			className={cn(
 				'defaultCheckbox',
 				styles.defaultCheckboxes,
 				colorClass,
 				extra
 			)}
-			name='weekly'
 			{...rest}
 		/>
 	)
