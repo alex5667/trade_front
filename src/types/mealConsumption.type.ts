@@ -13,7 +13,12 @@ export interface MealConsumptionResponse {
 	meal?: MealResponse
 }
 
-export type MealFConsumptionFormState = Partial<MealConsumptionResponse>
+export type MealFConsumptionFormState = {
+	date: string,
+	institutionId: number | undefined,
+	mealId: number | undefined,
+	quantity: number,
+}
 
 export type MealConsumptionForm = Omit<MealConsumptionResponse, 'id' | 'createdAt' | 'updatedAt'>
 

@@ -33,14 +33,17 @@ export function useConsumptionInput({
 	const debouncedInputChange = useCallback(
 		debounce(async (value: number) => {
 			const updatedData = {
-				...consumptionItem,
 				date: dateForDay,
-				mealSlug,
-				institutionSlug,
+				institutionId: consumptionItem?.institutionId,
+				mealId: consumptionItem?.mealId,
 				quantity: value
 			}
 
-			if (consumptionItem?.id) {
+			if (
+				consumptionItem?.id &&
+				consumptionItem?.institutionId &&
+				consumptionItem?.mealId
+			) {
 				await updateMealConsumption({
 					id: consumptionItem.id,
 					data: updatedData

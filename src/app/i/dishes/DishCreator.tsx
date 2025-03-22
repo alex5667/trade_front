@@ -5,9 +5,7 @@ import DishCard from './DishCard'
 const DishCreator = () => {
 	const sampleDish: DishFormState = {
 		name: 'Введите наименование блюда',
-		printName: 'Введите наименование блюда для печати',
-		description: 'Введите описание блюда',
-
+		printName: 'Введите наименование блюда для печати'
 	}
 	return (
 		<>
