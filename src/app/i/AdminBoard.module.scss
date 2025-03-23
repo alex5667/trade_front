@@ -15,7 +15,7 @@
 }
 
 .main {
-	@include mixins.adaptiveValue("padding", 20, 5);
+	@include mixins.adaptiveValue("padding", 20, 10);
 	width: 100%;
 	@media (max-width: $mobile) {
 		padding-top: 15px;

@@ -2,8 +2,10 @@
 @use "@/styles/variables.scss";
 
 .button {
-	@apply rounded-lg bg-transparent border border-border-light  transition hover:bg-primary active:bg-brand-700 py-2 px-4;
+	@apply rounded-lg bg-transparent border border-border-light  transition hover:bg-primary active:bg-brand-700 py-2;
+	@include mixins.adaptiveValue("padding-left", 16, 7);
+	@include mixins.adaptiveValue("padding-right", 16, 7);
 	font-weight: 400;
 	letter-spacing: 0.01rem;
-	@include mixins.adaptiveValue("font-size", 18, 14);
+	@include mixins.adaptiveValue("font-size", 18, 12);
 }

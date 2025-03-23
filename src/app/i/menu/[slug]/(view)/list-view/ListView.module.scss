@@ -1,9 +1,12 @@
 @use "@/styles/mixins.scss";
-@use "@/styles/variables.scss";
+@use "@/styles/variables.scss" as *;
 
 .parentsWrapper {
 	width: 100%;
-	padding: 0 3%;
+
+	@include mixins.adaptiveValue("padding-left", 20, 5);
+	@include mixins.adaptiveValue("padding-right", 20, 5);
+
 	.colHeading {
 		@apply py-2;
 		font-weight: 400;
@@ -16,7 +19,9 @@
 	}
 
 	.row {
-		@apply font-normal  relative px-2 py-2 mb-4 dark:bg-sidebar/90 bg-db-row-light rounded-sm;
+		@apply font-normal  relative  py-2 mb-4 dark:bg-sidebar/90 bg-db-row-light rounded-sm;
+		@include mixins.adaptiveValue("padding-left", 10, 5);
+		@include mixins.adaptiveValue("padding-right", 10, 5);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

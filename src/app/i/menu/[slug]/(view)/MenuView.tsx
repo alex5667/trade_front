@@ -62,6 +62,7 @@ export function MenuView({ institutionSlug }: MenuView) {
 	const {
 		data,
 		isLoading: isLoadingMenu,
+		isFetching,
 		refetch
 	} = useGetAllMenuItemQuery(
 		{
@@ -110,7 +111,7 @@ export function MenuView({ institutionSlug }: MenuView) {
 		SetStateAction<StartEnDWeek | undefined>
 	> = useCallback(dates => setStartEndDateForCopy(dates), [])
 
-	if (isLoading || isLoadingMenu || isCopying) {
+	if (isLoading || isLoadingMenu || isCopying || isFetching) {
 		return <Loader />
 	}
 

@@ -146,7 +146,7 @@ const ListRow = ({
 				<FieldInput
 					id='relativePercentage'
 					isNumber={true}
-					placeholder='процент'
+					placeholder='%'
 					value={menuItem.relativePercentage ?? ''}
 					onChange={e => {
 						const newValue = Number(e.target.value) || 0
