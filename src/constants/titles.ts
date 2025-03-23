@@ -15,7 +15,13 @@ export const Titlies = {
 	slug: 'Slug',
 	dishPhotos: 'Фото блюда',
 	dishAlias: 'Алиасы блюда',
-	isSemiFinished: 'Полуфабрикат'
+	isSemiFinished: 'Полуфабрикат',
+	ingredientAlias: 'Алиасы',
+	unit: 'Ед. изм.',
+	isAllergen: 'Аллерген',
+	priceUpdatedAt: 'Дата обн. цены',
+	suppliers: 'Поставщики',
+	aliases: 'Алиасы',
 
 }
 

@@ -8,7 +8,7 @@ import { DatePicker } from '@/components/date-piker/DatePicker'
 import {
 	RetailSaleDataFilters,
 	RetailSaleResponse
-} from '@/types/retailSale.type'
+} from '@/types/retail-sale.type'
 
 import styles from './RetailSalePage.module.scss'
 import { useGetAllRetailSalesQuery } from '@/services/retail-sale.service'
@@ -62,19 +62,19 @@ const RetailSaleView = () => {
 
 	return (
 		<div className={styles.wrapper}>
-			<div className='flex gap-2'>
+			<div className={styles.datePickers}>
 				<DatePicker
 					setDate={handleSetStartDate}
 					position='left'
-					extra='mr-7'
+					extra={styles.rightDatePicker}
 				/>
 				<DatePicker setDate={handleSetEndDate} />
 			</div>
 			{!isLoading && !isFetching && (
-				<div className={styles.salesList}>
+				<div className={styles.tableContainer}>
 					<table className={styles.salesTable}>
 						<thead>
-							<tr className={styles.row}>
+							<tr>
 								<th>Блюдо</th>
 								<th>Кол-во</th>
 								<th>Цена</th>
@@ -83,10 +83,7 @@ const RetailSaleView = () => {
 						</thead>
 						<tbody>
 							{data.map((item: RetailSaleResponse) => (
-								<tr
-									className={styles.row}
-									key={item.id}
-								>
+								<tr key={item.id}>
 									<td>{item.dish.name}</td>
 									<td>{item.quantity}</td>
 									<td>{item.price.toFixed(2)}</td>

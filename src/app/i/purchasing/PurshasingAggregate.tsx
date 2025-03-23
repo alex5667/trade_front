@@ -41,7 +41,7 @@ const PurchasingAggregate = ({
 							{Object.entries(week).map(([ingredient, stats]) => (
 								<tr
 									key={ingredient}
-									className='border-b'
+									className='border-b hover:bg-db-row-light'
 								>
 									<td className='border border-gray-300 px-4 py-2'>
 										{ingredient}
@@ -97,7 +97,7 @@ const PurchasingAggregate = ({
 										{Object.entries(ingredients).map(([ingredient, stats]) => (
 											<tr
 												key={ingredient}
-												className='border-b'
+												className='border-b hover:bg-db-row-light'
 											>
 												<td className='border border-gray-300 px-4 py-2'>
 													{ingredient}

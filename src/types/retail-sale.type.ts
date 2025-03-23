@@ -2,21 +2,24 @@
 
 import { DishResponse } from './dish.type'
 
-
-
 export interface RetailSaleResponse {
 	id?: number,
-	dish: DishResponse,
-	quantity: number,
+	createdAt?: string,
+	updatedAt?: string | undefined,
 	price: number,
 	totalAmount: number,
 	saleDate: string,
-	createdAt: string,
-	updatedAt: string
+	quantity: number,
+	dish: DishResponse
 
 }
 
-export type RetailSaleFormState = Partial<RetailSaleResponse>
+export type MealFConsumptionFormState = {
+	date: string,
+	institutionId: number | undefined,
+	mealId: number | undefined,
+	quantity: number,
+}
 
 export type RetailSaleForm = Omit<RetailSaleResponse, 'id' | 'createdAt' | 'updatedAt'>
 
@@ -39,6 +42,7 @@ export class RetailSaleDataFilters {
 
 
 	dishName?: string
+
 
 	minQuantity?: string
 

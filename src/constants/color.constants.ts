@@ -20,6 +20,7 @@ export const COLORS = {
 	'db-primary': '#d5d8df',
 	'db-secondary': '#9699a6',
 	'db-border': 'rgba(255,255,255,.12)',
+	'db-border-light': '#ffffff',
 	'db-sidebar': '#30324e',
 	'db-sidebar-light': '#4f3dace6',
 	'db-bg': '#181b34',
@@ -32,5 +33,6 @@ export const COLORS = {
 	'db-bg-button-hover': '#0d2e65',
 	'db-primary-selected-color': '#133774',
 	'db-row-light': '#473699',
-	'db-hover-light': '#1D7AFC'
+	'db-hover-light': '#473699',
+	'db-hover-black': '#0a1b27'
 }

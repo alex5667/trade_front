@@ -1,9 +1,12 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss" as *;
+
 .container {
 	@apply relative;
 }
 
 .closeButton {
-	@apply absolute -top-2 -right-4 opacity-30 hover:opacity-100 transition-opacity;
+	@apply absolute -top-2 -right-5 opacity-30 hover:opacity-100 transition-opacity rounded-full border border-db-border-light w-4 h-4 flex items-center justify-center;
 }
 
 .datePickerContainer {
@@ -15,3 +18,25 @@
 	background-color: #ffe0e0;
 	color: #a0a0a0;
 }
+
+.dateButton {
+	@apply rounded-lg border border-db-border-light hover:bg-db-hover-light;
+
+	@include mixins.adaptiveValue("font-size", 16, 12);
+	@include mixins.adaptiveValue("padding-left", 12, 5);
+	@include mixins.adaptiveValue("padding-right", 12, 5);
+	@include mixins.adaptiveValue("padding-top", 8, 4);
+	@include mixins.adaptiveValue("padding-bottom", 8, 4);
+}
+
+.leftPosition {
+	@apply -left-4;
+}
+
+.rightPosition {
+	@apply -right-4;
+}
+
+// .slide {
+// 	@apply animate-slideIn;
+// }

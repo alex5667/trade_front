@@ -9,7 +9,7 @@
 	@apply flex w-full items-center  cursor-pointer opacity-50 hover:opacity-100 mb-5;
 }
 .menuItemLink {
-	@apply flex gap-2.5 items-center  py-1.5 mt-2 px-3 transition-colors hover:bg-border rounded-lg;
+	@apply flex gap-2.5 items-center  py-1.5 mt-2 px-3 transition-colors hover:bg-db-bg-button-hover rounded-lg;
 }
 
 .logoutContainer {

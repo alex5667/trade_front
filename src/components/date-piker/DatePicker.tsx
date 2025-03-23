@@ -44,7 +44,7 @@ export function DatePicker({ position = 'right', setDate, extra }: DatePicker) {
 			ref={ref}
 		>
 			<button
-				className='text-base px-4 py-2 rounded-lg border border-db-primary hover:bg-primary-color'
+				className={styles.dateButton}
 				onClick={() => setIsShow(!isShow)}
 			>
 				{selected ? dayjs(selected).format('LL') : 'Click for select'}
@@ -60,9 +60,9 @@ export function DatePicker({ position = 'right', setDate, extra }: DatePicker) {
 			{isShow && (
 				<div
 					className={cn(
-						' slide ',
+						styles.slide,
 						styles.datePickerContainer,
-						position === 'left' ? '-left-4' : '-right-4'
+						position === 'left' ? styles.leftPosition : styles.rightPosition
 					)}
 				>
 					<DayPicker

@@ -1,62 +1,73 @@
 @use "@/styles/mixins.scss";
-@use "@/styles/variables.scss";
+@use "@/styles/variables.scss" as *;
 
 .wrapper {
-	padding: 20px;
+	@include mixins.adaptiveValue("padding", 20, 5);
+
 	width: 80%;
 	margin: 0 auto;
+	@media (max-width: $tablet) {
+		width: 100%;
+	}
 }
 
-.salesList {
+.datePickers {
+	display: flex;
+	align-items: center;
+}
+
+.rightDatePicker {
+	margin-right: 28px;
+}
+
+.tableContainer {
 	margin-top: 20px;
 }
+
 .salesTable {
 	width: 100%;
 	border-collapse: collapse;
 
 	tr {
-		@apply flex hover:bg-db-row-light;
+		@apply flex hover:bg-db-hover-light;
 		width: 100%;
 	}
 
 	th,
 	td {
-		padding: 10px;
-		border: 1px solid #ddd;
+		@include mixins.adaptiveValue("padding", 10, 3);
+		@include mixins.adaptiveValue("font-size", 18, 12);
+		@apply border border-db-border-light;
 		text-align: left;
-		&:nth-child(2),
-		&:nth-child(3),
-		&:nth-child(4) {
-			text-align: center;
-		}
 	}
 
 	th {
 		text-align: center;
 		background-color: rgba(0, 0, 0, 0.05);
-		border: 1px solid #ddd;
-		padding: 10px;
 	}
 
 	/* Указываем ширину столбцов */
 	th:nth-child(1),
 	td:nth-child(1) {
-		width: 55%;
+		width: 49%;
 	} /* Блюдо */
+
+	td:nth-child(1) {
+		text-align: left;
+	}
+
 	th:nth-child(2),
-	td:nth-child(2) {
-		width: 15%;
-	} /* Кол-во */
+	td:nth-child(2),
 	th:nth-child(3),
-	td:nth-child(3) {
-		width: 15%;
-	} /* Цена */
+	td:nth-child(3),
 	th:nth-child(4),
 	td:nth-child(4) {
-		width: 15%;
-	} /* Сумма */
+		width: 17%;
+		text-align: center;
+	}
 
 	tfoot {
 		font-weight: bold;
+		@include mixins.adaptiveValue("font-size", 18, 12);
 	}
 }

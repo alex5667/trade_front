@@ -49,7 +49,7 @@ const TotalIngredientByWeekTable = ({
 									{Object.entries(ingredients).map(([name, stats]) => (
 										<tr
 											key={name}
-											className='border-b'
+											className='border-b hover:bg-db-row-light'
 										>
 											<td className='border p-2'>{name}</td>
 											<td className='border p-2 text-center'>
@@ -87,7 +87,7 @@ const TotalIngredientByWeekTable = ({
 							([name, stats]) => (
 								<tr
 									key={name}
-									className='border-b'
+									className='border-b hover:bg-db-row-light'
 								>
 									<td className='border p-2'>{name}</td>
 									<td className='border p-2 text-center'>

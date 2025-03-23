@@ -6,3 +6,6 @@ $containerWidth: $maxWidthContainer + $containerPadding;
 $borderRed: #f95454;
 $secondary: #afbfc0cc;
 $white: #ffff;
+$tablet: 991.98px; // Планшети, деякі телефони в горизонтальному положенні
+$mobile: 767.98px; // Телефони L
+$mobileSmall: 479.98px;

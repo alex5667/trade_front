@@ -50,7 +50,7 @@ const Card = <T extends FetchQueryData>({
 				>
 					{/* <p className='mr-2 p-1'>{index}</p> */}
 					<p className='mr-2 p-2 text-sm rounded-lg border border-border-light flex-grow w-[20%] h-full'>
-						{Titlies[key as keyof typeof Titlies]}
+						{Titlies[key as keyof typeof Titlies] ?? key}
 					</p>
 					<CardInput
 						item={item}

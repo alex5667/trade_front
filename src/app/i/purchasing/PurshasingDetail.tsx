@@ -62,7 +62,7 @@ const PurchasingDetail = ({ weekDishes }: PurchasingDetailProps) => {
 														).map(([name, stats]) => (
 															<tr
 																key={`${name}-${index}`}
-																className='border-b'
+																className='border-b hover:bg-db-row-light'
 															>
 																<td className='border border-gray-300 px-4 py-2'>
 																	{name}
