@@ -14,7 +14,7 @@ export interface RetailSaleResponse {
 
 }
 
-export type MealFConsumptionFormState = {
+export type RetailSaleFormState = {
 	date: string,
 	institutionId: number | undefined,
 	mealId: number | undefined,
@@ -41,7 +41,7 @@ export class RetailSaleDataFilters {
 	endDate?: string
 
 
-	dishName?: string
+	dish?: DishResponse
 
 
 	minQuantity?: string

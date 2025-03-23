@@ -1,4 +1,4 @@
-import { RetailSaleResponse } from '@/types/retailSale.type'
+import { RetailSaleResponse } from '@/types/retail-sale.type'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface InitialRetailSaleState {

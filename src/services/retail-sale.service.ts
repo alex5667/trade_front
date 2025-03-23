@@ -3,7 +3,8 @@
 import { URLS } from '@/config/urls'
 import { addAllRetailSales, addRetailSale, deleteRetailSaleById, updateRetailSale } from '@/store/retail-sale/retail-sale.slice'
 import { TypeRootState } from '@/store/store'
-import { RetailSaleDataFilters, RetailSaleFormState, RetailSaleResponse } from '@/types/retailSale.type'
+
+import { RetailSaleDataFilters, RetailSaleFormState, RetailSaleResponse } from '@/types/retail-sale.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
