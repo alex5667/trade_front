@@ -1,19 +1,64 @@
+@use "@/styles/variables.scss" as *;
+@use "@/styles/mixins.scss";
+
 .aside {
-	@apply fixed border-r border-r-border z-10 min-h-full flex flex-col justify-start bg-sidebar-light dark:bg-sidebar whitespace-nowrap overflow-hidden;
+	@apply fixed border-r border-r-border z-10 bg-sidebar-light dark:bg-sidebar whitespace-nowrap overflow-hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: center;
+	@media (max-width: $mobile) {
+		min-height: auto !important;
+		height: 60px !important;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		width: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		border-r: none;
+		border-b: 1px solid var(--color-border);
+		overflow-x: auto;
+		overflow-y: hidden;
+		z-index: 100;
+	}
 }
 
 .menuContainer {
 	@apply pt-10 px-2 relative;
+	@media (max-width: $mobile) {
+		@apply pt-0 px-4;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		gap: 5px;
+		padding-bottom: 0;
+		@apply px-0;
+	}
 }
+
 .toggle {
-	@apply flex w-full items-center  cursor-pointer opacity-50 hover:opacity-100 mb-5;
+	@apply flex w-full items-center cursor-pointer opacity-50 hover:opacity-100 mb-5;
+	@media (max-width: $mobile) {
+		@apply mb-0 mr-4;
+		display: none;
+	}
 }
+
 .menuItemLink {
-	@apply flex gap-2.5 items-center  py-1.5 mt-2 px-3 transition-colors hover:bg-db-bg-button-hover rounded-lg;
+	@apply flex gap-1 items-center px-1.5 py-1.5 mt-2 transition-colors hover:bg-db-bg-button-hover rounded-lg;
+	@media (max-width: $mobile) {
+		@apply mt-0 px-2 py-1;
+	}
 }
 
 .logoutContainer {
 	@apply text-right mb-8 px-2;
+	@media (max-width: $mobile) {
+		@apply mb-0 ml-0 px-1;
+	}
 }
 
 .logoutButton {
@@ -22,16 +67,27 @@
 
 .linkHome {
 	@apply flex items-center justify-center gap-2.5 mb-4;
+	@media (max-width: $mobile) {
+		display: none;
+		// @apply mb-0 mr-4;
+	}
 }
+
 .spanTitle {
 	@apply text-2xl font-bold relative;
 	> span {
-		@apply absolute -top-1 -right-6 text-xs opacity-40 rotate-[18deg] font-normal  mb-4;
+		@apply absolute -top-1 -right-6 text-xs opacity-40 rotate-[18deg] font-normal mb-4;
+		@media (max-width: $mobile) {
+			@apply hidden;
+		}
 	}
 }
 
 .footer {
 	@apply text-xs opacity-40 font-normal text-center p-layout;
+	@media (max-width: $mobile) {
+		@apply hidden;
+	}
 	> a {
 		@apply text-white/70 transition-colors hover:text-primary;
 	}

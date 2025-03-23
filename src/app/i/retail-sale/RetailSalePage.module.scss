@@ -2,7 +2,7 @@
 @use "@/styles/variables.scss" as *;
 
 .wrapper {
-	@include mixins.adaptiveValue("padding", 20, 5);
+	@include mixins.adaptiveValue("padding", 20, 0);
 
 	width: 80%;
 	margin: 0 auto;
@@ -36,7 +36,7 @@
 	th,
 	td {
 		@include mixins.adaptiveValue("padding", 10, 3);
-		@include mixins.adaptiveValue("font-size", 18, 12);
+		@include mixins.adaptiveValue("font-size", 18, 10);
 		@apply border border-db-border-light;
 		text-align: left;
 	}
@@ -68,6 +68,6 @@
 
 	tfoot {
 		font-weight: bold;
-		@include mixins.adaptiveValue("font-size", 18, 12);
+		@include mixins.adaptiveValue("font-size", 18, 10);
 	}
 }

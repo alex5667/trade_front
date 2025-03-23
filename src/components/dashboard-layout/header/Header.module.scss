@@ -1,0 +1,14 @@
+@use "@/styles/variables.scss" as *;
+@use "@/styles/mixins.scss";
+
+.header {
+	padding: 0.75rem 1.25rem;
+
+	@media (min-width: $mobile) {
+		margin-top: 0;
+	}
+
+	@media (max-width: $mobile) {
+		display: none;
+	}
+}

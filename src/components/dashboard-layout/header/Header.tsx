@@ -1,9 +1,10 @@
 import { GlobalLoader } from './GlobalLoader'
+import styles from './Header.module.scss'
 import { Profile } from './profile/Profile'
 
 export function Header() {
 	return (
-		<header className='px-5 py-3'>
+		<header className={styles.header}>
 			<GlobalLoader />
 			<Profile />
 		</header>
