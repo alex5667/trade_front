@@ -22,32 +22,20 @@ import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 import { DatesOfWeek } from '@/utils/getDatesOfWeek'
 
-import styles from './MenuView.module.scss'
-import { ListView } from './list-view/ListView'
 import {
 	useCopyMenuItemMutation,
 	useGetAllMenuItemQuery
 } from '@/services/menu-item.service'
+import styles from './MenuView.module.scss'
+import { ListView } from './list-view/ListView'
 
-interface MenuView {
+interface MenuViewProps {
 	institutionSlug: string
 }
 
 export type TypeView = 'list' | 'kanban'
-// const ListView = dynamic(
-// 	() => import('./list-view/ListView').then(mod => mod.ListView),
-// 	{
-// 		loading: () => <Loader />
-// 	}
-// )
-// const KanbanView = dynamic(
-// 	() => import('./kanban-view/KanbanView').then(mod => mod.KanbanView),
-// 	{
-// 		loading: () => <Loader />
-// 	}
-// )
 
-export function MenuView({ institutionSlug }: MenuView) {
+export function MenuView({ institutionSlug }: MenuViewProps) {
 	const [type, setType, isLoading] = useLocalStorage<TypeView>({
 		key: 'view-type',
 		defaultValue: 'list'
@@ -57,8 +45,8 @@ export function MenuView({ institutionSlug }: MenuView) {
 	const [startEndDateForCopy, setStartEndDateForCopy] = useState<
 		StartEnDWeek | undefined
 	>()
-
 	const [isVisible, setIsVisible] = useState(false)
+
 	const {
 		data,
 		isLoading: isLoadingMenu,
@@ -70,9 +58,7 @@ export function MenuView({ institutionSlug }: MenuView) {
 			endDate: startEndDate?.endOfWeek,
 			institutionSlug
 		} as MenuItemDataFilters,
-		{
-			skip: !startEndDate?.startOfWeek || !startEndDate?.endOfWeek
-		}
+		{ skip: !startEndDate?.startOfWeek || !startEndDate?.endOfWeek }
 	)
 
 	const [copyMenuItems, { isLoading: isCopying }] = useCopyMenuItemMutation()
@@ -83,33 +69,43 @@ export function MenuView({ institutionSlug }: MenuView) {
 		} else {
 			setIsVisible(false)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data?.length])
+	}, [data])
 
 	const datesOfWeek = useMemo(
 		() => startEndDate?.datesOfWeek || ({} as DatesOfWeek),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[startEndDate?.datesOfWeek, startEndDateForCopy?.datesOfWeek]
+		[startEndDate?.datesOfWeek]
 	)
+
 	const handleSetStartEndDate: Dispatch<
 		SetStateAction<StartEnDWeek | undefined>
 	> = useCallback(dates => {
 		if (typeof dates === 'function') {
+			setStartEndDate(prevDates => {
+				const newDates = dates(prevDates)
+				return newDates
+			})
 			return
 		}
 		if (!dates || !dates.startOfWeek || !dates.endOfWeek) return
-
 		setStartEndDate(dates)
 	}, [])
-	useEffect(() => {
-		if (startEndDate?.startOfWeek && startEndDate?.endOfWeek) {
-			refetch()
-		}
-	}, [startEndDate?.startOfWeek, startEndDate?.endOfWeek, refetch])
 
-	const handleSetStartEndDateForCopy: Dispatch<
-		SetStateAction<StartEnDWeek | undefined>
-	> = useCallback(dates => setStartEndDateForCopy(dates), [])
+	const handleSetStartEndDateForCopy = useCallback(
+		(
+			dates:
+				| StartEnDWeek
+				| undefined
+				| ((prev: StartEnDWeek | undefined) => StartEnDWeek | undefined)
+		) => {
+			if (typeof dates === 'function') {
+				setStartEndDateForCopy(prev => dates(prev))
+			} else {
+				if (!dates || !dates.startOfWeek || !dates.endOfWeek) return
+				setStartEndDateForCopy(dates)
+			}
+		},
+		[]
+	)
 
 	if (isLoading || isLoadingMenu || isCopying || isFetching) {
 		return <Loader />
@@ -134,11 +130,6 @@ export function MenuView({ institutionSlug }: MenuView) {
 
 	return (
 		<div className={styles.menuWrapper}>
-			{/* <SwitcherView
-				setType={setType}
-				type={type}
-			/> */}
-
 			<div className={styles.weekChangeBtn}>
 				<div className={styles.weekBtn}>
 					<span>Выберите неделю</span>
@@ -160,9 +151,6 @@ export function MenuView({ institutionSlug }: MenuView) {
 					datesOfWeek={datesOfWeek}
 				/>
 			)}
-
-			{/* <ListView /> */}
-			{/* {type === 'list' ? <ListView /> : <KanbanView />} */}
 		</div>
 	)
 }
