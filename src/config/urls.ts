@@ -13,6 +13,8 @@ export const URLS = {
 	DISHES_EXCEL: '/dishes/excel',
 	DISHES_BY_NAME: '/dishes/by-name',
 	DISHES_BY_NAME_CONTAINS: '/dishes/findByNameContains',
+	DISH_ALIAS: '/dish-aliases',
+	DISH_ALIAS_BY_NAME: '/dish-aliases/dish',
 	INSTITUTIONS: '/institutions',
 	INSTITUTIONS_BY_NAME: '/institutions/by-name',
 	INSTITUTIONS_BY_NAME_CONTAINS: '/institutions/findByNameContains',
@@ -23,6 +25,7 @@ export const URLS = {
 	INGREDIENTS_BY_SLUG: '/ingredients/by-slug',
 	INGREDIENT_ALIAS: '/ingredient-alias',
 	INGREDIENT_ALIAS_BY_NAME: '/ingredient-alias/ingredient',
+
 	DISHCATEGORIES: '/dish-categories',
 	DISHCATEGORIES_BY_NAME: '/dish-categories/by-name',
 	DISHCATEGORIES_BY_NAME_CONTAINS: '/dish-categories/findByNameContains',

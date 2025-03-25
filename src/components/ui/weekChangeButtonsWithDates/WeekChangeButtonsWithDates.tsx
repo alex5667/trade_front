@@ -2,7 +2,7 @@
 
 import cn from 'clsx'
 import dayjs from 'dayjs'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import { DatesOfWeek, getDatesOfWeek } from '@/utils/getDatesOfWeek'
 
@@ -32,6 +32,16 @@ const WeekChangeButtonsWithDates = ({
 	const { startOfWeek, endOfWeek, datesOfWeek } = getDatesOfWeek(weekOffset)
 	const prevWeek = getDatesOfWeek(weekOffset - 1)
 	const nextWeek = getDatesOfWeek(weekOffset + 1)
+
+	// Set initial dates when component mounts
+	useEffect(() => {
+		setStartEndDate({
+			startOfWeek,
+			endOfWeek,
+			datesOfWeek
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []) // Empty dependency array - run only once on mount
 
 	const handleWeekChange = (direction: 'next' | 'prev') => {
 		const newOffset = direction === 'next' ? weekOffset + 1 : weekOffset - 1

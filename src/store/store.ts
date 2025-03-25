@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 
 import { authApi } from '@/services/auth.services'
+import { dishAliasApi } from '@/services/dish-alias.service'
 import { dishCategoryApi } from '@/services/dish-category.service'
 import { dishApi } from '@/services/dish.service'
 import { ingredientAliasApi } from '@/services/ingredient-alias.service'
@@ -14,6 +15,7 @@ import { purchasingApi } from '@/services/purchasing.service'
 import { retailSaleApi } from '@/services/retail-sale.service'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
+import { dishAliasSlice } from './dish-alias/dih-alias.slice'
 import { dishCategorySlice } from './dish-category/dishCategory.slice'
 import { dishSlice } from './dish/dish.slice'
 import { ingredientAliasSlice } from './ingredient-alias/ingredient-alias.slice'
@@ -25,7 +27,6 @@ import { menuItemSlice } from './menuItem/menu-item.slice'
 import { retailSaleSlice } from './retail-sale/retail-sale.slice'
 import { sidebarSlice } from './sidebar/sidebar.slice'
 import { userSlice } from './user/user.slice'
-
 const rootReducer = combineReducers({
 	[userSlice.reducerPath]: userSlice.reducer,
 	[userApi.reducerPath]: userApi.reducer,
@@ -51,6 +52,9 @@ const rootReducer = combineReducers({
 	[ingredientAliasApi.reducerPath]: ingredientAliasApi.reducer,
 	[ingredientAliasSlice.reducerPath]: ingredientAliasSlice.reducer,
 	[purchasingApi.reducerPath]: purchasingApi.reducer,
+	[dishAliasApi.reducerPath]: dishAliasApi.reducer,
+	[dishAliasSlice.reducerPath]: dishAliasSlice.reducer,
+
 
 
 })
@@ -74,7 +78,7 @@ export const store = configureStore({
 			ingredientApi.middleware,
 			ingredientAliasApi.middleware,
 			purchasingApi.middleware,
-
+			dishAliasApi.middleware,
 		)
 })
 

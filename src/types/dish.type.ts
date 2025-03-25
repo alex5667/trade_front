@@ -1,3 +1,4 @@
+import { DishAliasResponse } from './dish-alias.type'
 import { DishCategoryResponse } from './dishCategory.type'
 import { DishIngredient, IngredientDto } from './ingredient.type'
 
@@ -14,7 +15,7 @@ export interface DishResponse {
 	slug: string
 	ingredients: DishIngredient[]
 	dishPhotos: DishPhoto[]
-	dishAlias: DishAlias[]
+	aliases: DishAliasResponse[]
 	isSemiFinished: boolean
 
 }
@@ -25,11 +26,7 @@ interface DishPhoto {
 
 }
 
-interface DishAlias {
-	id: number
-	alias: string
 
-}
 
 
 export interface DishDto extends Omit<DishResponse, 'ingredients'> {

@@ -14,14 +14,12 @@ export const Titlies = {
 	preparationSteps: 'Шаги приготовления',
 	slug: 'Slug',
 	dishPhotos: 'Фото блюда',
-	dishAlias: 'Алиасы блюда',
+	aliases: 'Алиасы',
 	isSemiFinished: 'Полуфабрикат',
 	ingredientAlias: 'Алиасы',
 	unit: 'Ед. изм.',
 	isAllergen: 'Аллерген',
 	priceUpdatedAt: 'Дата обн. цены',
 	suppliers: 'Поставщики',
-	aliases: 'Алиасы',
-
 }
 
