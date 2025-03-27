@@ -1,9 +1,5 @@
+import { User } from '@/types/auth.types'
 import { jwtDecode } from 'jwt-decode'
-
-export interface User {
-  id: number
-  roles: string[]
-}
 
 export const decodeToken = (token: string): User | null => {
   if (!token) {

@@ -26,7 +26,7 @@ const Auth = () => {
 		mode: 'onChange'
 	})
 	const [isLoginForm, setIsLoginForm] = useState(false)
-	const { replace } = useRouter()
+	const { replace, push } = useRouter()
 	const [login] = useLoginMutation()
 	const [auth] = useRegisterMutation()
 	const { user } = useAuth()
@@ -46,6 +46,12 @@ const Auth = () => {
 			toast.error(`${isLoginForm ? `Login` : `Register`} failed`)
 		}
 	}
+
+	const handleGoogleLogin = () => {
+		// Перенаправляем на страницу с Google OAuth
+		push('/auth/google')
+	}
+
 	return (
 		<div className={styles.authContainer}>
 			<form
@@ -78,16 +84,24 @@ const Auth = () => {
 				/>
 				<div className={styles.authButtons}>
 					<Button
-						className=' text-white w-full py-2'
+						className='text-white w-full py-2'
 						onClick={() => setIsLoginForm(true)}
 					>
 						Login
 					</Button>
 					<Button
-						className='text-white w-full py-2 px-4  md:w-auto md:py-2 md:px-7  '
+						className='text-white w-full py-2 px-4 md:w-auto md:py-2 md:px-7'
 						onClick={() => setIsLoginForm(false)}
 					>
 						Register
+					</Button>
+				</div>
+				<div className='mt-4'>
+					<Button
+						className='w-full py-2 bg-white text-gray-800 hover:bg-gray-100'
+						onClick={handleGoogleLogin}
+					>
+						Continue with Google
 					</Button>
 				</div>
 			</form>

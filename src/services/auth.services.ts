@@ -4,7 +4,7 @@ import { AuthForm, AuthResponse } from '@/types/auth.types'
 
 import { URLS } from '@/config/urls'
 import { addUser } from '@/store/user/user.slice'
-import { removeFromStorage, saveTokenStorage } from './auth-token.service'
+import { removeFromStorage, saveRefreshToken, saveTokenStorage } from './auth-token.service'
 import { baseQueryWIthReAuth } from './baseQueries'
 
 export const authApi = createApi({
@@ -72,8 +72,65 @@ export const authApi = createApi({
 					console.error('Logout error:', err)
 				}
 			}
+		}),
+		loginGoogle: builder.mutation<AuthResponse, void>({
+			query: () => ({
+				url: URLS.AUTH_GOOGLE,
+				method: 'GET',
+				credentials: 'include'
+			}),
+			transformResponse: (response: AuthResponse) => {
+				if (!response.accessToken) {
+					throw new Error('Google login failed: Access token is missing')
+				}
+				saveTokenStorage(response.accessToken)
+				if (response.refreshToken) {
+					saveRefreshToken(response.refreshToken)
+				}
+				return response
+			},
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
+				try {
+					const { data } = await queryFulfilled
+					dispatch(addUser(data.user))
+				} catch (err) {
+					console.error('Google login error:', err)
+				}
+			}
+		}),
+		handleGoogleCallback: builder.mutation<AuthResponse, void>({
+			query: () => ({
+				url: URLS.USER_PROFILE,
+				method: 'GET',
+				credentials: 'include'
+			}),
+			transformResponse: (response: any) => {
+				if (response?.accessToken) {
+					saveTokenStorage(response.accessToken)
+					if (response.refreshToken) {
+						saveRefreshToken(response.refreshToken)
+					}
+				}
+				return response
+			},
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
+				try {
+					const { data } = await queryFulfilled
+					if (data?.user) {
+						dispatch(addUser(data.user))
+					}
+				} catch (err) {
+					console.error('Failed to get user profile:', err)
+				}
+			}
 		})
 	})
 })
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
-	authApi
+
+export const {
+	useLoginMutation,
+	useRegisterMutation,
+	useLogoutMutation,
+	useLoginGoogleMutation,
+	useHandleGoogleCallbackMutation
+} = authApi

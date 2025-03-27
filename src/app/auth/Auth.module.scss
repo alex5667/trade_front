@@ -7,10 +7,14 @@
 }
 
 .authButtons {
-	@apply flex  items-center justify-between;
+	@apply flex items-center justify-between;
 	@media (max-width: 767.98px) {
 		display: flex;
 		flex-direction: column;
 		min-width: 100%;
 	}
+}
+
+.googleButton {
+	@apply w-full py-2 bg-white text-gray-800 hover:bg-gray-100 rounded-lg transition-colors;
 }

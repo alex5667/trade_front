@@ -4,6 +4,8 @@ export const URLS = {
 	AUTH: '/auth',
 	AUTH_REGISTER: '/auth/register',
 	AUTH_LOGOUT: '/auth/logout',
+	AUTH_GOOGLE: '/auth/google',
+	AUTH_GOOGLE_CALLBACK: '/auth/google/callback',
 	MENU_ITEM: '/menu-item',
 	MENU_ITEM_COPY: '/menu-item/copy',
 	PURCHASING: '/purchasing',
