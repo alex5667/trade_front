@@ -15,10 +15,16 @@ dayjs.extend(LocalizedFormat)
 
 interface DatePicker {
 	position?: 'left' | 'right'
+	placement?: 'top' | 'bottom'
 	setDate?: Dispatch<SetStateAction<Date | undefined>>
 	extra?: string
 }
-export function DatePicker({ position = 'right', setDate, extra }: DatePicker) {
+export function DatePicker({
+	position = 'right',
+	placement = 'bottom',
+	setDate,
+	extra
+}: DatePicker) {
 	const [selected, setSelected] = useState<Date>()
 	const { isShow, setIsShow, ref } = useOutside(false)
 
@@ -62,7 +68,8 @@ export function DatePicker({ position = 'right', setDate, extra }: DatePicker) {
 					className={cn(
 						styles.slide,
 						styles.datePickerContainer,
-						position === 'left' ? styles.leftPosition : styles.rightPosition
+						position === 'left' ? styles.leftPosition : styles.rightPosition,
+						placement === 'top' ? styles.topPlacement : styles.bottomPlacement
 					)}
 				>
 					<DayPicker

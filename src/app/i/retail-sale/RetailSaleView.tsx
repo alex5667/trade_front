@@ -2,23 +2,34 @@
 
 import dayjs from 'dayjs'
 import { Dispatch, SetStateAction, useState } from 'react'
+import { toast } from 'sonner'
 
 import { DatePicker } from '@/components/date-piker/DatePicker'
 
 import {
+	RetailSaleByRangeDataFilters,
 	RetailSaleDataFilters,
 	RetailSaleResponse
 } from '@/types/retail-sale.type'
 
 import styles from './RetailSalePage.module.scss'
-import { useGetAllRetailSalesQuery } from '@/services/retail-sale.service'
+import {
+	useGetAllRetailSalesByRangeQuery,
+	useGetAllRetailSalesQuery
+} from '@/services/retail-sale.service'
 
 const RetailSaleView = () => {
 	const today = dayjs().startOf('day').toISOString()
 
 	const [startDate, setStartDate] = useState<Date | undefined>(new Date(today))
-
 	const [endDate, setEndDate] = useState<Date | undefined>(new Date(today))
+
+	const [rangeStartDate, setRangeStartDate] = useState<Date | undefined>(
+		undefined
+	)
+	const [rangeEndDate, setRangeEndDate] = useState<Date | undefined>(undefined)
+	const [triggerDataLoad, setTriggerDataLoad] = useState(false)
+
 	const handleSetStartDate: Dispatch<
 		SetStateAction<Date | undefined>
 	> = value => {
@@ -38,6 +49,34 @@ const RetailSaleView = () => {
 		})
 	}
 
+	const handleSetRangeStartDate: Dispatch<
+		SetStateAction<Date | undefined>
+	> = value => {
+		setRangeStartDate(prev => {
+			const newValue = typeof value === 'function' ? value(prev) : value
+			return prev?.getTime() === newValue?.getTime() ? prev : newValue
+		})
+		setRangeEndDate(undefined)
+		setTriggerDataLoad(false)
+	}
+
+	const handleSetRangeEndDate: Dispatch<
+		SetStateAction<Date | undefined>
+	> = value => {
+		setRangeEndDate(prev => {
+			const newValue = typeof value === 'function' ? value(prev) : value
+			return prev?.getTime() === newValue?.getTime() ? prev : newValue
+		})
+		setTriggerDataLoad(false)
+	}
+
+	const handleLoadData = () => {
+		if (rangeStartDate && rangeEndDate) {
+			setTriggerDataLoad(true)
+			toast.info('Процесс загрузки запущен')
+		}
+	}
+
 	const { data, isFetching, isLoading } = useGetAllRetailSalesQuery(
 		{
 			startDate: startDate,
@@ -45,6 +84,16 @@ const RetailSaleView = () => {
 		} as RetailSaleDataFilters,
 		{
 			skip: !startDate || !endDate
+		}
+	)
+
+	const {} = useGetAllRetailSalesByRangeQuery(
+		{
+			startDate: rangeStartDate,
+			endDate: rangeEndDate
+		} as RetailSaleByRangeDataFilters,
+		{
+			skip: !rangeStartDate || !rangeEndDate || !triggerDataLoad
 		}
 	)
 
@@ -66,9 +115,13 @@ const RetailSaleView = () => {
 				<DatePicker
 					setDate={handleSetStartDate}
 					position='left'
+					placement='top'
 					extra={styles.rightDatePicker}
 				/>
-				<DatePicker setDate={handleSetEndDate} />
+				<DatePicker
+					setDate={handleSetEndDate}
+					placement='top'
+				/>
 			</div>
 			{!isLoading && !isFetching && (
 				<div className={styles.tableContainer}>
@@ -102,6 +155,26 @@ const RetailSaleView = () => {
 					</table>
 				</div>
 			)}
+			<div className={styles.datePickers}>
+				<h2>Загрузка в базу по диапазону дат</h2>
+				<DatePicker
+					setDate={handleSetRangeStartDate}
+					position='left'
+					placement='top'
+					extra={styles.rightDatePicker}
+				/>
+				<DatePicker
+					setDate={handleSetRangeEndDate}
+					placement='top'
+				/>
+				<button
+					onClick={handleLoadData}
+					disabled={!rangeStartDate || !rangeEndDate}
+					className={styles.loadButton}
+				>
+					Загрузить данные
+				</button>
+			</div>
 		</div>
 	)
 }

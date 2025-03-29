@@ -39,6 +39,7 @@ export const URLS = {
 	USER_PROFILE: '/user/profile',
 	MEALCONSUMPTIONS: '/meal-consumption',
 	RETAILSALES: '/retail-sales',
+	RETAILSALES_BY_RANGE: '/browser/retailByDateRange',
 	MEAL_CONSUMPTION_ITEM_BY_INSTITUTION: '/meal-consumption/by-institution',
 }
 

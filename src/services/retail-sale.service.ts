@@ -4,7 +4,7 @@ import { URLS } from '@/config/urls'
 import { addAllRetailSales, addRetailSale, deleteRetailSaleById, updateRetailSale } from '@/store/retail-sale/retail-sale.slice'
 import { TypeRootState } from '@/store/store'
 
-import { RetailSaleDataFilters, RetailSaleFormState, RetailSaleResponse } from '@/types/retail-sale.type'
+import { RetailSaleByRangeDataFilters, RetailSaleDataFilters, RetailSaleFormState, RetailSaleResponse } from '@/types/retail-sale.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 
@@ -39,6 +39,17 @@ export const retailSaleApi = createApi({
 						{ type: 'retailSales', id: 'LIST' }
 					]
 					: [{ type: 'retailSales', id: 'LIST' }]
+
+		}),
+		getAllRetailSalesByRange: builder.query<void, RetailSaleByRangeDataFilters>({
+			query: (queryData = {} as RetailSaleByRangeDataFilters) => ({
+				url: URLS.RETAILSALES_BY_RANGE,
+				method: 'GET',
+				params: queryData
+
+			}),
+
+
 
 		}),
 		deleteRetailSale: builder.mutation<void, number>({
@@ -116,4 +127,4 @@ export const retailSaleApi = createApi({
 
 	})
 })
-export const { useCreateRetailSaleMutation, useGetAllRetailSalesQuery, useDeleteRetailSaleMutation, useUpdateRetailSaleMutation } = retailSaleApi
+export const { useCreateRetailSaleMutation, useGetAllRetailSalesQuery, useDeleteRetailSaleMutation, useUpdateRetailSaleMutation, useGetAllRetailSalesByRangeQuery } = retailSaleApi

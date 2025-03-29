@@ -10,8 +10,15 @@
 }
 
 .datePickerContainer {
-	@apply absolute p-2.5  bg-sidebar z-10 shadow rounded-lg;
+	@apply absolute p-2.5 bg-sidebar z-10 shadow rounded-lg;
+}
+
+.bottomPlacement {
 	top: calc(100% + 0.7rem);
+}
+
+.topPlacement {
+	bottom: calc(100% + 0.7rem);
 }
 
 .past {

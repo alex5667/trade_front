@@ -50,3 +50,10 @@ export class RetailSaleDataFilters {
 	maxQuantity?: string
 
 }
+export class RetailSaleByRangeDataFilters {
+
+	startDate?: string
+
+	endDate?: string
+
+}
