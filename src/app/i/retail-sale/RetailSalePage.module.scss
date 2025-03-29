@@ -65,7 +65,23 @@
 		width: 17%;
 		text-align: center;
 	}
+}
 
+.rangeDatePickers {
+	display: flex;
+	min-width: 100%;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	margin-top: 20px;
+
+	h2 {
+		@include mixins.adaptiveValue("font-size", 16, 14);
+		font-weight: 600;
+	}
+}
+
+.salesTable {
 	tfoot {
 		font-weight: bold;
 		@include mixins.adaptiveValue("font-size", 18, 10);

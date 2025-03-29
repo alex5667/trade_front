@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { toast } from 'sonner'
 
 import { DatePicker } from '@/components/date-piker/DatePicker'
+import { Button } from '@/components/ui/buttons/Button'
 
 import {
 	RetailSaleByRangeDataFilters,
@@ -155,7 +156,7 @@ const RetailSaleView = () => {
 					</table>
 				</div>
 			)}
-			<div className={styles.datePickers}>
+			<div className={styles.rangeDatePickers}>
 				<h2>Загрузка в базу по диапазону дат</h2>
 				<DatePicker
 					setDate={handleSetRangeStartDate}
@@ -167,13 +168,13 @@ const RetailSaleView = () => {
 					setDate={handleSetRangeEndDate}
 					placement='top'
 				/>
-				<button
+				<Button
 					onClick={handleLoadData}
 					disabled={!rangeStartDate || !rangeEndDate}
 					className={styles.loadButton}
 				>
 					Загрузить данные
-				</button>
+				</Button>
 			</div>
 		</div>
 	)
