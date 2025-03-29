@@ -1,12 +1,21 @@
-import type { Metadata } from 'next'
+'use client'
 
-import { NO_INDEX_PAGE } from '@/constants/seo.constants'
+import { useAuth } from '@/hooks/useAuth'
 
-export const metadata: Metadata = {
-	title: 'Admin board',
-	...NO_INDEX_PAGE
-}
+import AdminBoardPage from './(admin-board)/AdminBoardPage'
+import UserBoardPage from './UserBoardPage'
 
-export default function AdminBoardPage() {
-	return <>AdminBoardPage</>
+export default function IPage() {
+	const { user } = useAuth()
+	const isAdmin = user?.roles?.includes('admin')
+
+	if (isAdmin === undefined) {
+		return (
+			<div className='w-full h-screen flex items-center justify-center'>
+				Loading...
+			</div>
+		)
+	}
+
+	return isAdmin ? <AdminBoardPage /> : <UserBoardPage />
 }

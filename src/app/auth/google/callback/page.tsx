@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/buttons/Button'
 
@@ -16,9 +15,7 @@ export default function GoogleCallback() {
 		const errorParam = searchParams.get('error')
 
 		if (errorParam) {
-			console.error('Google auth error:', errorParam)
 			setError('Error during Google authentication')
-			toast.error('Error during Google authentication')
 
 			// Редирект обратно на страницу логина
 			setTimeout(() => {
@@ -29,7 +26,6 @@ export default function GoogleCallback() {
 
 		// Если нет ошибки, значит мы должны быть уже перенаправлены на /auth/success
 		// бэкендом. Если по какой-то причине мы все еще здесь, перенаправим вручную
-		console.log('Redirecting to success page...')
 		router.replace('/auth/success')
 	}, [router, searchParams])
 

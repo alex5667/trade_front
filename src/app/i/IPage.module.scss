@@ -1,0 +1,25 @@
+@use "@/styles/variables.scss" as *;
+@use "@/styles/mixins.scss";
+
+.dashBoardWrapper {
+	@apply dark:text-primary dark:bg-db-bg bg-db-bg-light text-db-text-color-on-primary min-h-svh relative;
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+	@media (max-width: $mobile) {
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		padding-top: 60px; /* Account for the fixed sidebar */
+	}
+}
+
+.main {
+	@include mixins.adaptiveValue("padding", 20, 10);
+	width: 100%;
+	@media (max-width: $mobile) {
+		padding-top: 15px;
+		width: 100%;
+		margin-left: 0;
+	}
+}

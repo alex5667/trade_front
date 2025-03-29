@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react'
 import { Header } from '@/components/dashboard-layout/header/Header'
 import Sidebar from '@/components/dashboard-layout/sidebar/Sidebar'
 
-import styles from './AdminBoard.module.scss'
+import styles from './IPage.module.scss'
 
 export default function DashboardLayout({
 	children

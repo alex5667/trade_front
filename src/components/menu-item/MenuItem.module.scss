@@ -1,0 +1,23 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss" as *;
+
+.menuItem {
+	@apply text-db-text-color-on-primary hover:text-primary-hover bg-lightPrimary/30  mb-3 border rounded-md;
+	min-width: 100%;
+	text-align: center;
+	margin-bottom: 0.75rem;
+	@include mixins.adaptiveValue("padding-top", 20, 10);
+	@include mixins.adaptiveValue("padding-bottom", 20, 10);
+	@include mixins.adaptiveValue("padding-left", 12, 10);
+	@include mixins.adaptiveValue("padding-right", 12, 10);
+
+	&:hover {
+		@apply text-primary-hover;
+	}
+}
+
+.menuItemText {
+	letter-spacing: 0.025em;
+	font-weight: 500;
+	@include mixins.adaptiveValue("font-size", 18, 14);
+}

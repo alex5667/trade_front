@@ -1,16 +1,16 @@
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 import { MenuItem } from '@/types/menu.interface'
-import { ChartBarStacked, EggFried, FileDown, Landmark, Salad, ShoppingBasket } from 'lucide-react'
+import { ChartBarStacked, EggFried, Landmark, Salad, ShoppingBasket } from 'lucide-react'
 
 export const DBEDITORMENU: MenuItem[] = [
 
 
-	{
-		icon: FileDown,
-		link: `${ADMINBOARD_PAGES.EXCEL}`,
-		name: 'Загрузка из excel',
-		endPoint: null
-	},
+	// {
+	// 	icon: FileDown,
+	// 	link: `${ADMINBOARD_PAGES.EXCEL}`,
+	// 	name: 'Загрузка из excel',
+	// 	endPoint: null
+	// },
 	{
 		icon: Salad,
 		link: `${ADMINBOARD_PAGES.DISHES}`,
