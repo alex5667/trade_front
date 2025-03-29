@@ -1,4 +1,3 @@
-
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { dishAliasSlice } from './dish-alias/dih-alias.slice'
 import { dishSlice } from './dish/dish.slice'
@@ -12,6 +11,7 @@ import { purchasingSlice } from './purchasing/purchasing.slice'
 import { retailSaleSlice } from './retail-sale/retail-sale.slice'
 import { sidebarSlice } from './sidebar/sidebar.slice'
 import { userSlice } from './user/user.slice'
+import { warehouseSlice } from './warehouse/warehouse.slice'
 
 export const rootActions = {
 	...userSlice.actions,
@@ -27,4 +27,5 @@ export const rootActions = {
 	...ingredientAliasSlice.actions,
 	...purchasingSlice.actions,
 	...dishAliasSlice.actions,
+	...warehouseSlice.actions,
 }

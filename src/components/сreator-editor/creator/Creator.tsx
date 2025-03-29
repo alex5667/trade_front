@@ -13,13 +13,15 @@ import { useCreateDishMutation } from '@/services/dish.service'
 import { useCreateIngredientMutation } from '@/services/ingredient.service'
 import { useCreateInstitutionMutation } from '@/services/institution.service'
 import { useCreateMealMutation } from '@/services/meal.service'
+import { useCreateWarehouseMutation } from '@/services/warehouse.service'
 
 const fetchQueries = {
 	institution: useCreateInstitutionMutation,
 	ingredient: useCreateIngredientMutation,
 	meal: useCreateMealMutation,
 	dishCategory: useCreateDishCategoryMutation,
-	dish: useCreateDishMutation
+	dish: useCreateDishMutation,
+	warehouse: useCreateWarehouseMutation
 }
 
 type PartialEntity = Partial<EntityType>
@@ -55,26 +57,13 @@ const Creator = <T extends PartialEntity>({
 		}))
 	}
 
-	// const handleCreate = async () => {
-	// 	try {
-	// 		if (entity) {
-	// 			const newEntity = (await createEntity(entity).unwrap()) as T
-	// 			setCreatedEntity(prev => ({
-	// 				...(prev as T),
-	// 				...newEntity
-	// 			}))
-	// 		}
-	// 	} catch (error) {
-	// 		console.error(`Ошибка при создании ${type}:`, error)
-	// 	}
-	// }
 	const handleCreate = async () => {
 		try {
 			if (entity) {
 				const entityWithDefaults = {
 					...entity,
-					name: entity.name ?? '', // Гарантируем, что name всегда string
-					printName: entity.printName ?? ''
+					name: entity.name ?? '', // Ensure name is always a string
+					printName: entity.printName ?? entity.name ?? '' // Ensure printName exists (copy from name if not provided)
 				}
 
 				const newEntity = (await createEntity(entityWithDefaults).unwrap()) as T

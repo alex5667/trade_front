@@ -14,6 +14,7 @@ import { menuItemApi } from '@/services/menu-item.service'
 import { purchasingApi } from '@/services/purchasing.service'
 import { retailSaleApi } from '@/services/retail-sale.service'
 import { userApi } from '@/services/user.services'
+import { warehouseApi } from '@/services/warehouse.service'
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { dishAliasSlice } from './dish-alias/dih-alias.slice'
 import { dishCategorySlice } from './dish-category/dishCategory.slice'
@@ -27,6 +28,8 @@ import { menuItemSlice } from './menuItem/menu-item.slice'
 import { retailSaleSlice } from './retail-sale/retail-sale.slice'
 import { sidebarSlice } from './sidebar/sidebar.slice'
 import { userSlice } from './user/user.slice'
+import { warehouseSlice } from './warehouse/warehouse.slice'
+
 const rootReducer = combineReducers({
 	[userSlice.reducerPath]: userSlice.reducer,
 	[userApi.reducerPath]: userApi.reducer,
@@ -54,9 +57,8 @@ const rootReducer = combineReducers({
 	[purchasingApi.reducerPath]: purchasingApi.reducer,
 	[dishAliasApi.reducerPath]: dishAliasApi.reducer,
 	[dishAliasSlice.reducerPath]: dishAliasSlice.reducer,
-
-
-
+	[warehouseApi.reducerPath]: warehouseApi.reducer,
+	[warehouseSlice.name]: warehouseSlice.reducer
 })
 
 export const store = configureStore({
@@ -79,6 +81,7 @@ export const store = configureStore({
 			ingredientAliasApi.middleware,
 			purchasingApi.middleware,
 			dishAliasApi.middleware,
+			warehouseApi.middleware,
 		)
 })
 

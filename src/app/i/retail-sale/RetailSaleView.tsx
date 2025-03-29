@@ -116,12 +116,12 @@ const RetailSaleView = () => {
 				<DatePicker
 					setDate={handleSetStartDate}
 					position='left'
-					placement='top'
+					placement='bottom'
 					extra={styles.rightDatePicker}
 				/>
 				<DatePicker
 					setDate={handleSetEndDate}
-					placement='top'
+					placement='bottom'
 				/>
 			</div>
 			{!isLoading && !isFetching && (

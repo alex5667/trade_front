@@ -9,6 +9,7 @@ import { DishCategoryResponse } from '@/types/dishCategory.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 import { InstitutionResponse } from '@/types/institution.type'
 import { MealResponse } from '@/types/meal.type'
+import { WarehouseResponse } from '@/types/warehouse.type'
 
 import { useOutside } from '@/hooks/useOutside'
 
@@ -18,14 +19,15 @@ import Card from '../card/Card'
 import AutoCompleteTextarea from '../fields/auto-complete-input/AutoCompleteTextarea'
 import { useAutocompleteInput } from '../fields/hooks/useAutocompleteInput'
 
+import styles from './SimpleAutocompleteInput.module.scss'
+import { SimpleAutocompleteList } from './SimpleAutocompleteList'
+import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
 import { useGetDishByNameQuery } from '@/services/dish.service'
 import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
-import styles from './SimpleAutocompleteInput.module.scss'
-import { SimpleAutocompleteList } from './SimpleAutocompleteList'
-import { useSimpleOptionSelect } from './useSimpleOptionSelect'
+import { useGetWarehouseByNameQuery } from '@/services/warehouse.service'
 
 export type EntityType =
 	| InstitutionResponse
@@ -33,13 +35,15 @@ export type EntityType =
 	| IngredientResponse
 	| DishCategoryResponse
 	| DishResponse
+	| WarehouseResponse
 
 const fetchQueries = {
 	institution: useGetInstitutionByNameQuery,
 	meal: useGetMealByNameQuery,
 	dishCategory: useGetDishCategoryByNameQuery,
 	ingredient: useGetIngredientByNameQuery,
-	dish: useGetDishByNameQuery
+	dish: useGetDishByNameQuery,
+	warehouse: useGetWarehouseByNameQuery
 }
 
 type SimpleAutocompleteInputProps<T extends EntityType> = {
@@ -135,6 +139,10 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 	const dishQuery = useGetDishByNameQuery(debouncedValue, {
 		skip: fetchFunction !== 'dish' || !shouldFetch || !debouncedValue.trim()
 	})
+	const warehouseQuery = useGetWarehouseByNameQuery(debouncedValue, {
+		skip:
+			fetchFunction !== 'warehouse' || !shouldFetch || !debouncedValue.trim()
+	})
 
 	// Выбираем нужный результат в зависимости от fetchFunction
 	const queryResult =
@@ -146,7 +154,9 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 					? dishCategoryQuery
 					: fetchFunction === 'ingredient'
 						? ingredientQuery
-						: dishQuery
+						: fetchFunction === 'warehouse'
+							? warehouseQuery
+							: dishQuery
 
 	const { data, isError, error } = queryResult
 

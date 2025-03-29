@@ -72,8 +72,16 @@
 	min-width: 100%;
 	align-items: center;
 	justify-content: space-between;
-	gap: 20px;
 	margin-top: 20px;
+	@include mixins.adaptiveValue("gap", 20, 10);
+	@media (max-width: $mobile) {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		.rightDatePicker {
+			margin-right: 0px;
+		}
+	}
 
 	h2 {
 		@include mixins.adaptiveValue("font-size", 16, 14);

@@ -1,6 +1,6 @@
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 import { MenuItem } from '@/types/menu.interface'
-import { ChartBarStacked, EggFried, Landmark, Salad, ShoppingBasket } from 'lucide-react'
+import { ChartBarStacked, EggFried, Landmark, Salad, ShoppingBasket, Warehouse } from 'lucide-react'
 
 export const DBEDITORMENU: MenuItem[] = [
 
@@ -39,6 +39,12 @@ export const DBEDITORMENU: MenuItem[] = [
 		icon: ChartBarStacked,
 		link: `${ADMINBOARD_PAGES.DISHCATEGORIES}`,
 		name: 'Категории',
+		endPoint: null
+	},
+	{
+		icon: Warehouse,
+		link: `${ADMINBOARD_PAGES.WAREHOUSES}`,
+		name: 'Склады',
 		endPoint: null
 	},
 

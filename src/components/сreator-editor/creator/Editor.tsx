@@ -14,13 +14,15 @@ import { useUpdateDishMutation } from '@/services/dish.service'
 import { useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useUpdateMealMutation } from '@/services/meal.service'
+import { useUpdateWarehouseMutation } from '@/services/warehouse.service'
 
 const fetchQueries = {
 	institution: useUpdateInstitutionMutation,
 	meal: useUpdateMealMutation,
 	ingredient: useUpdateIngredientMutation,
 	dishCategory: useUpdateDishCategoryMutation,
-	dish: useUpdateDishMutation
+	dish: useUpdateDishMutation,
+	warehouse: useUpdateWarehouseMutation
 } as const
 
 interface EditorProps<T extends EntityType> {
@@ -41,6 +43,7 @@ const Editor = <T extends EntityType>({
 	const [updateIngredient] = useUpdateIngredientMutation()
 	const [updateDishCategory] = useUpdateDishCategoryMutation()
 	const [updateDish] = useUpdateDishMutation()
+	const [updateWarehouse] = useUpdateWarehouseMutation()
 
 	// Выбираем функцию мутации в зависимости от type
 	const update =
@@ -52,7 +55,9 @@ const Editor = <T extends EntityType>({
 					? updateIngredient
 					: type === 'dishCategory'
 						? updateDishCategory
-						: updateDish
+						: type === 'warehouse'
+							? updateWarehouse
+							: updateDish
 
 	// Мемоизированная функция для обновления состояния item
 	const memoizedSetItem = useCallback((value: SetStateAction<T | null>) => {

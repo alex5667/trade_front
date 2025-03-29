@@ -39,26 +39,35 @@ const ConsumptionView = () => {
 		})
 	}
 
-	const { data, isFetching, isLoading } = useGetAllMealConsumptionsQuery({
-		startDate: startEndDate?.startOfWeek,
-		endDate: startEndDate?.endOfWeek
-	} as MealConsumptionDataFilters)
+	const { data, isFetching, isLoading } = useGetAllMealConsumptionsQuery(
+		{
+			startDate: startEndDate?.startOfWeek,
+			endDate: startEndDate?.endOfWeek
+		} as MealConsumptionDataFilters,
+		{
+			skip: !startEndDate?.startOfWeek || !startEndDate?.endOfWeek
+		}
+	)
 
 	const { isLoading: isLoadingMeals } = useGetAllMealsQuery()
 
-	if (isLoading || isFetching || isLoadingMeals || isLoadingInstitutions) {
-		return <Loader />
-	}
+	const isLoadingData =
+		isLoading || isFetching || isLoadingMeals || isLoadingInstitutions
 
-	if (!data) {
-		return <p>Нет данных ...</p>
+	if (isLoadingData) {
+		return <Loader />
 	}
 
 	return (
 		<div className={styles.wrapper}>
 			<WeekChangeButtonsWithDates setStartEndDate={handleSetStartEndDate} />
 
-			{startEndDate?.datesOfWeek &&
+			{!startEndDate?.datesOfWeek ? (
+				<p>Выберите неделю для просмотра данных</p>
+			) : !data && !isLoadingData ? (
+				<p>Нет данных ...</p>
+			) : (
+				startEndDate?.datesOfWeek &&
 				dayColumns().map(column => (
 					<DayView
 						label={column.label}
@@ -66,7 +75,8 @@ const ConsumptionView = () => {
 						key={column.value}
 						datesOfWeek={startEndDate?.datesOfWeek}
 					/>
-				))}
+				))
+			)}
 		</div>
 	)
 }

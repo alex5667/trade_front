@@ -6,7 +6,8 @@ import {
 	Logs,
 	Settings,
 	ShoppingCart,
-	Table
+	Table,
+	Warehouse
 } from 'lucide-react'
 
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
@@ -74,6 +75,12 @@ export const ADMINMENU: MenuItem[] = [
 		icon: ShoppingCart,
 		link: `${ADMINBOARD_PAGES.PURCHASING}`,
 		name: 'Закупки',
+		endPoint: null
+	},
+	{
+		icon: Warehouse,
+		link: `${ADMINBOARD_PAGES.WAREHOUSES}`,
+		name: 'Склады',
 		endPoint: null
 	},
 	{

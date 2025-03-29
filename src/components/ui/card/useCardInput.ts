@@ -3,11 +3,13 @@ import { useCreateDishMutation, useUpdateDishMutation } from '@/services/dish.se
 import { useCreateIngredientMutation, useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useCreateInstitutionMutation, useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useCreateMealMutation, useUpdateMealMutation } from '@/services/meal.service'
+import { useCreateWarehouseMutation, useUpdateWarehouseMutation } from '@/services/warehouse.service'
 import { DishFormState } from '@/types/dish.type'
 import { DishCategoryFormState } from '@/types/dishCategory.type'
 import { IngredientFormState } from '@/types/ingredient.type'
 import { InstitutionFormState } from '@/types/institution.type'
 import { MealFormState } from '@/types/meal.type'
+import { WarehouseFormState } from '@/types/warehouse.type'
 import { debounce } from '@/utils/debounce'
 import { MutableRefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
 
@@ -17,6 +19,7 @@ const fetchQueries = {
   dishCategory: [useUpdateDishCategoryMutation, useCreateDishCategoryMutation] as const,
   dish: [useUpdateDishMutation, useCreateDishMutation] as const,
   ingredient: [useUpdateIngredientMutation, useCreateIngredientMutation] as const,
+  warehouse: [useUpdateWarehouseMutation, useCreateWarehouseMutation] as const,
 }
 
 // Определяем возможные ключи для fetchQueries
@@ -29,6 +32,7 @@ export type FetchQueryData =
   | DishCategoryFormState
   | IngredientFormState
   | DishFormState
+  | WarehouseFormState
 
 // Маппинг типов для конкретных мутаций
 export type FetchQueryDataMap = {
@@ -37,6 +41,7 @@ export type FetchQueryDataMap = {
   dishCategory: DishCategoryFormState
   dish: DishFormState
   ingredient: IngredientFormState
+  warehouse: WarehouseFormState
 }
 
 // Ограничиваем T типами из FetchQueryData и добавляем необязательное поле id

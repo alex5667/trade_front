@@ -30,6 +30,11 @@ export const componentMap = {
 		title: 'блюдо',
 		EditorComponent: DishEditor,
 		CreatorComponent: DishCreator
+	},
+	warehouse: {
+		title: 'склад',
+		EditorComponent: Editor,
+		CreatorComponent: Creator
 	}
 } as const
 

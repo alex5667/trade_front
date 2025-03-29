@@ -41,5 +41,6 @@ export const URLS = {
 	RETAILSALES: '/retail-sales',
 	RETAILSALES_BY_RANGE: '/browser/retailByDateRange',
 	MEAL_CONSUMPTION_ITEM_BY_INSTITUTION: '/meal-consumption/by-institution',
+	WAREHOUSES: '/warehouses',
 }
 
