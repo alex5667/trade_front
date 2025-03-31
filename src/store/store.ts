@@ -13,6 +13,7 @@ import { mealApi } from '@/services/meal.service'
 import { menuItemApi } from '@/services/menu-item.service'
 import { purchasingApi } from '@/services/purchasing.service'
 import { retailSaleApi } from '@/services/retail-sale.service'
+import { stockTransferApi } from '@/services/stock-transfer.service'
 import { userApi } from '@/services/user.services'
 import { warehouseApi } from '@/services/warehouse.service'
 import { collapsedSlice } from './collapsed/collapsed.slice'
@@ -27,6 +28,7 @@ import { mealSlice } from './meal/meal.slice'
 import { menuItemSlice } from './menuItem/menu-item.slice'
 import { retailSaleSlice } from './retail-sale/retail-sale.slice'
 import { sidebarSlice } from './sidebar/sidebar.slice'
+import { stockTransferSlice } from './stock-transfer/stock-transfer.slice'
 import { userSlice } from './user/user.slice'
 import { warehouseSlice } from './warehouse/warehouse.slice'
 
@@ -38,6 +40,7 @@ const rootReducer = combineReducers({
 	[collapsedSlice.reducerPath]: collapsedSlice.reducer,
 	[mealConsumptionSlice.reducerPath]: mealConsumptionSlice.reducer,
 	[retailSaleSlice.reducerPath]: retailSaleSlice.reducer,
+	[stockTransferSlice.reducerPath]: stockTransferSlice.reducer,
 	[menuItemSlice.reducerPath]: menuItemSlice.reducer,
 	[mealSlice.reducerPath]: mealSlice.reducer,
 	[institutionSlice.reducerPath]: institutionSlice.reducer,
@@ -47,6 +50,7 @@ const rootReducer = combineReducers({
 	[institutionApi.reducerPath]: institutionApi.reducer,
 	[mealConsumptionApi.reducerPath]: mealConsumptionApi.reducer,
 	[retailSaleApi.reducerPath]: retailSaleApi.reducer,
+	[stockTransferApi.reducerPath]: stockTransferApi.reducer,
 	[sidebarSlice.reducerPath]: sidebarSlice.reducer,
 	[dishSlice.reducerPath]: dishSlice.reducer,
 	[dishCategorySlice.reducerPath]: dishCategorySlice.reducer,
@@ -58,7 +62,8 @@ const rootReducer = combineReducers({
 	[dishAliasApi.reducerPath]: dishAliasApi.reducer,
 	[dishAliasSlice.reducerPath]: dishAliasSlice.reducer,
 	[warehouseApi.reducerPath]: warehouseApi.reducer,
-	[warehouseSlice.name]: warehouseSlice.reducer
+	[warehouseSlice.reducerPath]: warehouseSlice.reducer,
+
 })
 
 export const store = configureStore({
@@ -77,6 +82,7 @@ export const store = configureStore({
 			mealApi.middleware,
 			mealConsumptionApi.middleware,
 			retailSaleApi.middleware,
+			stockTransferApi.middleware,
 			ingredientApi.middleware,
 			ingredientAliasApi.middleware,
 			purchasingApi.middleware,

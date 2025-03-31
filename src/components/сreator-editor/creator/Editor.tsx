@@ -10,7 +10,6 @@ import {
 import { ActiveComponentProps } from '@/components/сreator-editor/CreatorEditor'
 
 import { useUpdateDishCategoryMutation } from '@/services/dish-category.service'
-import { useUpdateDishMutation } from '@/services/dish.service'
 import { useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useUpdateMealMutation } from '@/services/meal.service'
@@ -21,7 +20,6 @@ const fetchQueries = {
 	meal: useUpdateMealMutation,
 	ingredient: useUpdateIngredientMutation,
 	dishCategory: useUpdateDishCategoryMutation,
-	dish: useUpdateDishMutation,
 	warehouse: useUpdateWarehouseMutation
 } as const
 
@@ -42,7 +40,6 @@ const Editor = <T extends EntityType>({
 	const [updateMeal] = useUpdateMealMutation()
 	const [updateIngredient] = useUpdateIngredientMutation()
 	const [updateDishCategory] = useUpdateDishCategoryMutation()
-	const [updateDish] = useUpdateDishMutation()
 	const [updateWarehouse] = useUpdateWarehouseMutation()
 
 	// Выбираем функцию мутации в зависимости от type
@@ -55,9 +52,7 @@ const Editor = <T extends EntityType>({
 					? updateIngredient
 					: type === 'dishCategory'
 						? updateDishCategory
-						: type === 'warehouse'
-							? updateWarehouse
-							: updateDish
+						: updateWarehouse
 
 	// Мемоизированная функция для обновления состояния item
 	const memoizedSetItem = useCallback((value: SetStateAction<T | null>) => {

@@ -41,7 +41,7 @@ export const warehouseApi = createApi({
 
 		getWarehouseByName: builder.query<WarehouseResponse[], string>({
 			query: (name) => ({
-				url: URLS.WAREHOUSES,
+				url: URLS.WAREHOUSES_BY_NAME_CONTAINS,
 				method: 'GET',
 				params: { name },
 			}),

@@ -21,5 +21,8 @@ export const Titlies = {
 	isAllergen: 'Аллерген',
 	priceUpdatedAt: 'Дата обн. цены',
 	suppliers: 'Поставщики',
+	warehouse: 'Склад',
+	location: 'Местоположение',
+
 }
 

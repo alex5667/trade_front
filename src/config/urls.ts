@@ -42,5 +42,8 @@ export const URLS = {
 	RETAILSALES_BY_RANGE: '/browser/retailByDateRange',
 	MEAL_CONSUMPTION_ITEM_BY_INSTITUTION: '/meal-consumption/by-institution',
 	WAREHOUSES: '/warehouses',
+	WAREHOUSES_BY_NAME_CONTAINS: '/warehouses/findByNameContains',
+	STOCK_TRANSFERS: '/stock-transfers',
+	STOCK_TRANSFERS_BY_RANGE: '/browser/stockTransferByDateRange',
 }
 

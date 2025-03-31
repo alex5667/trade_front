@@ -4,7 +4,6 @@ import cn from 'clsx'
 import { SetStateAction, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { DishResponse } from '@/types/dish.type'
 import { DishCategoryResponse } from '@/types/dishCategory.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 import { InstitutionResponse } from '@/types/institution.type'
@@ -23,7 +22,6 @@ import styles from './SimpleAutocompleteInput.module.scss'
 import { SimpleAutocompleteList } from './SimpleAutocompleteList'
 import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
-import { useGetDishByNameQuery } from '@/services/dish.service'
 import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
@@ -34,7 +32,6 @@ export type EntityType =
 	| MealResponse
 	| IngredientResponse
 	| DishCategoryResponse
-	| DishResponse
 	| WarehouseResponse
 
 const fetchQueries = {
@@ -42,7 +39,6 @@ const fetchQueries = {
 	meal: useGetMealByNameQuery,
 	dishCategory: useGetDishCategoryByNameQuery,
 	ingredient: useGetIngredientByNameQuery,
-	dish: useGetDishByNameQuery,
 	warehouse: useGetWarehouseByNameQuery
 }
 
@@ -136,9 +132,6 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 		skip:
 			fetchFunction !== 'ingredient' || !shouldFetch || !debouncedValue.trim()
 	})
-	const dishQuery = useGetDishByNameQuery(debouncedValue, {
-		skip: fetchFunction !== 'dish' || !shouldFetch || !debouncedValue.trim()
-	})
 	const warehouseQuery = useGetWarehouseByNameQuery(debouncedValue, {
 		skip:
 			fetchFunction !== 'warehouse' || !shouldFetch || !debouncedValue.trim()
@@ -154,9 +147,7 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 					? dishCategoryQuery
 					: fetchFunction === 'ingredient'
 						? ingredientQuery
-						: fetchFunction === 'warehouse'
-							? warehouseQuery
-							: dishQuery
+						: warehouseQuery
 
 	const { data, isError, error } = queryResult
 
