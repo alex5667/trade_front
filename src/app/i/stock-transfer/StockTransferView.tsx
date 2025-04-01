@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { toast } from 'sonner'
 
 import { DatePicker } from '@/components/date-piker/DatePicker'
-import { Loader } from '@/components/ui/Loader'
+import Loader from '@/components/ui/Loader'
 import { Button } from '@/components/ui/buttons/Button'
 
 import {

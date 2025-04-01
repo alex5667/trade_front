@@ -150,7 +150,7 @@ const RetailSaleView = () => {
 								<td>Итого:</td>
 								<td>{totalQuantity}</td>
 								<td>-</td>
-								<td>{totalAmount}</td>
+								<td>{totalAmount.toFixed(2)}</td>
 							</tr>
 						</tfoot>
 					</table>

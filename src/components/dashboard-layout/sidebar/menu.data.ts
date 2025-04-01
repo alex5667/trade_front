@@ -1,5 +1,4 @@
 import {
-	Apple,
 	DatabaseZap,
 	FileDown,
 	LayoutDashboard,
@@ -47,6 +46,18 @@ export const USERMENU: MenuItem[] = [
 		name: 'Работа с базой',
 		endPoint: 'getAll'
 	},
+	// {
+	// 	icon: Apple,
+	// 	link: `${ADMINBOARD_PAGES.RETAILSALE}`,
+	// 	name: 'Розничные продажи',
+	// 	endPoint: 'getAll'
+	// },
+	// {
+	// 	icon: Truck,
+	// 	link: `${ADMINBOARD_PAGES.STOCKTRANSFER}`,
+	// 	name: 'Перемещения',
+	// 	endPoint: 'getAll'
+	// },
 
 ]
 
@@ -83,42 +94,13 @@ export const ADMINMENU: MenuItem[] = [
 		name: 'Работа с базой',
 		endPoint: 'getAll'
 	},
-	{
-		icon: Apple,
-		link: `${ADMINBOARD_PAGES.RETAILSALE}`,
-		name: 'Розничные продажи',
-		endPoint: 'getAll'
-	},
-
-	// {
-	// 	icon: FileDown,
-	// 	link: `${ADMINBOARD_PAGES.EXCEL}`,
-	// 	name: 'Загрузка из excel',
-	// 	endPoint: null
-	// },
-	// {
-	// 	icon: Salad,
-	// 	link: `${ADMINBOARD_PAGES.DISHES}`,
-	// 	name: 'Блюда',
-	// 	endPoint: null
-	// },
-	// {
-	// 	icon: Landmark,
-	// 	link: `${ADMINBOARD_PAGES.INSTITUTIONS}`,
-	// 	name: 'Точки выдачи',
-	// 	endPoint: null
-	// },
-	// {
-	// 	icon: EggFried,
-	// 	link: `${ADMINBOARD_PAGES.MEALS}`,
-	// 	name: 'Дневной рацион',
-	// 	endPoint: null
-	// },
+	,
 	{
 		icon: Settings,
 		link: ADMINBOARD_PAGES.SETTINGS,
 		name: 'Settings',
 		endPoint: 'getProfile'
 	}
+
 ]
 

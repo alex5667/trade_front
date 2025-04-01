@@ -12,10 +12,11 @@ export const ADMINBOARD_PAGES = {
 	INSTITUTIONS: `/i/institutions`,
 	DISHCATEGORIES: `/i/dishCategories`,
 	RETAILSALE: `/i/retail-sale`,
+	STOCKTRANSFER: `/i/stock-transfer`,
 	MEALS: `/i/meals`,
 	WAREHOUSES: `/i/warehouses`,
 	SETTINGS: `/i/settings`,
-	AUTH: '/auth',
+	AUTH: '/auth'
 }
 export const getSiteUrl = () => process.env.NEXT_PUBLIC_APP_URL as string
 export const getAdminUrl = (path = '') => `${ADMINBOARD_PAGES.ADMIN}${path}`
