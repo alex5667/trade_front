@@ -4,6 +4,7 @@ import cn from 'clsx'
 import { SetStateAction, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
+import { DishResponse } from '@/types/dish.type'
 import { DishCategoryResponse } from '@/types/dishCategory.type'
 import { IngredientResponse } from '@/types/ingredient.type'
 import { InstitutionResponse } from '@/types/institution.type'
@@ -22,6 +23,7 @@ import styles from './SimpleAutocompleteInput.module.scss'
 import { SimpleAutocompleteList } from './SimpleAutocompleteList'
 import { useSimpleOptionSelect } from './useSimpleOptionSelect'
 import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
+import { useGetDishByNameQuery } from '@/services/dish.service'
 import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
 import { useGetInstitutionByNameQuery } from '@/services/institution.service'
 import { useGetMealByNameQuery } from '@/services/meal.service'
@@ -33,13 +35,15 @@ export type EntityType =
 	| IngredientResponse
 	| DishCategoryResponse
 	| WarehouseResponse
+	| DishResponse
 
 const fetchQueries = {
 	institution: useGetInstitutionByNameQuery,
 	meal: useGetMealByNameQuery,
 	dishCategory: useGetDishCategoryByNameQuery,
 	ingredient: useGetIngredientByNameQuery,
-	warehouse: useGetWarehouseByNameQuery
+	warehouse: useGetWarehouseByNameQuery,
+	dish: useGetDishByNameQuery
 }
 
 type SimpleAutocompleteInputProps<T extends EntityType> = {

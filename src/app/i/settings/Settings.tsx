@@ -50,7 +50,7 @@ export function Settings() {
 							id='name'
 							label='Name'
 							placeholder='Enter name:'
-							{...register('name')}
+							{...register('firstName')}
 							extra='mb-4'
 						/>
 						<Field

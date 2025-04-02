@@ -93,7 +93,7 @@ export const ADMINMENU: MenuItem[] = [
 		link: `${ADMINBOARD_PAGES.DBEDITOR}`,
 		name: 'Работа с базой',
 		endPoint: 'getAll'
-	},
+	}
 	,
 	{
 		icon: Settings,

@@ -15,11 +15,11 @@ export function Profile() {
 			) : (
 				<div className={styles.loaderContainer}>
 					<div className={styles.userInfo}>
-						<p className={styles.userName}>{data?.user.name}</p>
+						<p className={styles.userName}>{data?.user.firstName}</p>
 						<p className={styles.userEmail}>{data?.user.email}</p>
 					</div>
 					<div className={styles.userAvatar}>
-						{data?.user.name?.charAt(0) || 'A'}
+						{data?.user.firstName?.charAt(0) || 'A'}
 					</div>
 				</div>
 			)}

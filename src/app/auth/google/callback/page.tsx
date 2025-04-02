@@ -1,58 +1,31 @@
-'use client'
+// app/auth/google/callback/page.tsx
+import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
-import { Button } from '@/components/ui/buttons/Button'
+import GoogleCallbackClient from './GoogleCallbackClient'
 
-export default function GoogleCallback() {
-	const router = useRouter()
-	const searchParams = useSearchParams()
-	const [error, setError] = useState<string | null>(null)
+export const metadata: Metadata = {
+	title: 'Google callback',
+	...NO_INDEX_PAGE
+}
 
-	useEffect(() => {
-		// Проверяем наличие ошибки в параметрах
-		const errorParam = searchParams.get('error')
-
-		if (errorParam) {
-			setError('Error during Google authentication')
-
-			// Редирект обратно на страницу логина
-			setTimeout(() => {
-				router.replace('/auth')
-			}, 2000)
-			return
-		}
-
-		// Если нет ошибки, значит мы должны быть уже перенаправлены на /auth/success
-		// бэкендом. Если по какой-то причине мы все еще здесь, перенаправим вручную
-		router.replace('/auth/success')
-	}, [router, searchParams])
-
-	if (error) {
-		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-center'>
-					<h1 className='text-2xl font-bold mb-4 text-red-500'>{error}</h1>
-					<Button
-						className='mt-4'
-						onClick={() => router.push('/auth')}
-					>
-						Back to Login
-					</Button>
-				</div>
-			</div>
-		)
-	}
-
+export default function GoogleCallBackPage() {
 	return (
-		<div className='flex items-center justify-center min-h-screen'>
-			<div className='text-center'>
-				<h1 className='text-2xl font-bold mb-4'>
-					Completing authentication...
-				</h1>
-				<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto'></div>
-			</div>
-		</div>
+		<Suspense
+			fallback={
+				<div className='flex items-center justify-center min-h-screen'>
+					<div className='text-center'>
+						<h1 className='text-2xl font-bold mb-4'>
+							Completing authentication...
+						</h1>
+						<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto'></div>
+					</div>
+				</div>
+			}
+		>
+			<GoogleCallbackClient />
+		</Suspense>
 	)
 }

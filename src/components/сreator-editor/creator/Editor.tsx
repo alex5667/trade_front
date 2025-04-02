@@ -10,6 +10,7 @@ import {
 import { ActiveComponentProps } from '@/components/сreator-editor/CreatorEditor'
 
 import { useUpdateDishCategoryMutation } from '@/services/dish-category.service'
+import { useUpdateDishMutation } from '@/services/dish.service'
 import { useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useUpdateMealMutation } from '@/services/meal.service'
@@ -20,7 +21,8 @@ const fetchQueries = {
 	meal: useUpdateMealMutation,
 	ingredient: useUpdateIngredientMutation,
 	dishCategory: useUpdateDishCategoryMutation,
-	warehouse: useUpdateWarehouseMutation
+	warehouse: useUpdateWarehouseMutation,
+	dish: useUpdateDishMutation
 } as const
 
 interface EditorProps<T extends EntityType> {
@@ -41,6 +43,7 @@ const Editor = <T extends EntityType>({
 	const [updateIngredient] = useUpdateIngredientMutation()
 	const [updateDishCategory] = useUpdateDishCategoryMutation()
 	const [updateWarehouse] = useUpdateWarehouseMutation()
+	const [updateDish] = useUpdateDishMutation()
 
 	// Выбираем функцию мутации в зависимости от type
 	const update =
@@ -52,7 +55,9 @@ const Editor = <T extends EntityType>({
 					? updateIngredient
 					: type === 'dishCategory'
 						? updateDishCategory
-						: updateWarehouse
+						: type === 'dish'
+							? updateDish
+							: updateWarehouse
 
 	// Мемоизированная функция для обновления состояния item
 	const memoizedSetItem = useCallback((value: SetStateAction<T | null>) => {
@@ -71,7 +76,7 @@ const Editor = <T extends EntityType>({
 		try {
 			const responseItem = (await update({
 				id: item.id,
-				data: item
+				data: item as any
 			}).unwrap()) as T
 
 			setItem(responseItem)

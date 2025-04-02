@@ -92,13 +92,15 @@ export function useCardInput<T extends FetchQueryData, K extends keyof T>({
         if (data.id) {
           const item = await updateItem({
             id: data.id,
-            data: updatedData as FetchQueryDataMap[typeof fetchFunction],
+            // data: updatedData as FetchQueryDataMap[typeof fetchFunction],
+            data: updatedData as any,
           }).unwrap()
           if (JSON.stringify(item) !== JSON.stringify(updatedData)) {
             setItem?.((prevItem) => ({ ...prevItem, ...item }))
           }
         } else {
-          const item = await createItem(updatedData as FetchQueryDataMap[typeof fetchFunction]).unwrap()
+          // const item = await createItem(updatedData as FetchQueryDataMap[typeof fetchFunction]).unwrap()
+          const item = await createItem(updatedData as any).unwrap()
           setItem?.(() => item as T)
         }
       } catch (error) {

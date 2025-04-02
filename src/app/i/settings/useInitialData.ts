@@ -11,7 +11,7 @@ export function useInitialData(reset: UseFormReset<TypeUserForm>) {
 		if (isSuccess && data) {
 			reset({
 				email: data?.user.email,
-				name: data?.user.name,
+				firstName: data?.user.firstName,
 
 			})
 		}

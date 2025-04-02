@@ -66,7 +66,9 @@ const Creator = <T extends PartialEntity>({
 					printName: entity.printName ?? entity.name ?? '' // Ensure printName exists (copy from name if not provided)
 				}
 
-				const newEntity = (await createEntity(entityWithDefaults).unwrap()) as T
+				const newEntity = (await createEntity(
+					entityWithDefaults as any
+				).unwrap()) as T
 				setCreatedEntity(prev => ({
 					...(prev as T),
 					...newEntity
