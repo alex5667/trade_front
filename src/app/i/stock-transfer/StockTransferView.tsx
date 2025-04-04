@@ -87,8 +87,8 @@ const StockTransferView = () => {
 
 	const { data, isFetching, isLoading } = useGetAllStockTransfersQuery(
 		{
-			startDate: startDate?.toISOString(),
-			endDate: endDate?.toISOString()
+			startDate: startDate,
+			endDate: endDate
 		} as StockTransferDataFilters,
 		{
 			skip: !startDate || !endDate
@@ -97,8 +97,8 @@ const StockTransferView = () => {
 
 	const {} = useGetAllStockTransfersByRangeQuery(
 		{
-			startDate: rangeStartDate?.toISOString(),
-			endDate: rangeEndDate?.toISOString()
+			startDate: rangeStartDate,
+			endDate: rangeEndDate
 		} as StockTransferByRangeDataFilters,
 		{
 			skip: !rangeStartDate || !rangeEndDate || !triggerDataLoad
