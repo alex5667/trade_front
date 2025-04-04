@@ -141,6 +141,7 @@ const StockTransferView = () => {
 								<th>Куда</th>
 								<th>Блюдо</th>
 								<th>Кол-во</th>
+								<th>Регистратор</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -151,7 +152,7 @@ const StockTransferView = () => {
 										className={expandedId === item.id ? styles.expandedRow : ''}
 										onClick={() => toggleExpand(item.id)}
 									>
-										<td>{dayjs(item.date).format('DD.MM.YYYY')}</td>
+										<td>{dayjs(item.date).format('DD.MM.YY')}</td>
 										<td>
 											{item.fromWarehouse?.name ||
 												`Склад #${item.fromWarehouseId}`}
@@ -161,10 +162,11 @@ const StockTransferView = () => {
 										</td>
 										<td>{item.dish?.name || `Блюдо #${item.dishId}`}</td>
 										<td>{item.quantity}</td>
+										<td>{item.registrar || 'Не указан'}</td>
 									</tr>
 									{expandedId === item.id && (
 										<tr className={styles.detailsRow}>
-											<td colSpan={5}>
+											<td colSpan={6}>
 												<div className={styles.detailsTable}>
 													<table>
 														<tbody>
@@ -211,7 +213,7 @@ const StockTransferView = () => {
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colSpan={3}>Итого:</td>
+								<td colSpan={4}>Итого:</td>
 								<td>Кол-во перемещений: {totalTransfers}</td>
 								<td>Кол-во товаров: {totalQuantity}</td>
 							</tr>
