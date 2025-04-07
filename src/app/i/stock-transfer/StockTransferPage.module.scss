@@ -28,11 +28,6 @@
 	width: 100%;
 	border-collapse: collapse;
 
-	tr {
-		@apply flex hover:bg-db-hover-light;
-		width: 100%;
-	}
-
 	th,
 	td {
 		@include mixins.adaptiveValue("padding", 10, 3);
@@ -46,35 +41,42 @@
 		background-color: rgba(0, 0, 0, 0.05);
 	}
 
-	/* Указываем ширину столбцов */
+	tr {
+		@apply hover:bg-db-hover-light;
+		// width: 100%;
+	}
+
+	/* Указываем ширину столбцов в процентах */
 	th:nth-child(1),
 	td:nth-child(1) {
-		width: 15%;
-	} /* Дата */
+		width: 10%; /* Дата */
+	}
 
 	th:nth-child(2),
 	td:nth-child(2) {
-		width: 25%;
-	} /* Склад отправления */
+		width: 10%; /* Откуда */
+	}
 
 	th:nth-child(3),
 	td:nth-child(3) {
-		width: 25%;
-	} /* Склад назначения */
+		width: 20%; /* Куда */
+	}
 
 	th:nth-child(4),
 	td:nth-child(4) {
-		width: 20%;
-	} /* Блюдо */
+		width: 30%; /* Блюдо */
+	}
 
 	th:nth-child(5),
 	td:nth-child(5) {
-		width: 15%;
+		width: 10%; /* Кол-во */
 		text-align: center;
-	} /* Количество */
+	}
 
-	td {
-		text-align: left;
+	th:nth-child(6),
+	td:nth-child(6) {
+		width: 20%; /* Регистратор */
+		@include mixins.adaptiveValue("font-size", 14, 10);
 	}
 }
 
@@ -101,17 +103,9 @@
 }
 
 .loadButton {
-	// background-color: $primary;
 	color: #fff;
 	&:disabled {
 		opacity: 0.6;
-	}
-}
-
-.transfersTable {
-	tfoot {
-		font-weight: bold;
-		@include mixins.adaptiveValue("font-size", 18, 10);
 	}
 }
 
@@ -147,9 +141,19 @@
 		}
 
 		th {
-			background-color: #eaeaea;
+			// background-color: #eaeaea;
 			font-weight: 600;
 			font-size: 0.9rem;
 		}
 	}
+}
+
+.total {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 20px;
+	margin-top: 20px;
+	padding: 0 20px;
 }

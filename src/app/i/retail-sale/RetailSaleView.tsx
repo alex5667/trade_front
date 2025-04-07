@@ -12,12 +12,18 @@ import {
 	RetailSaleDataFilters,
 	RetailSaleResponse
 } from '@/types/retail-sale.type'
+import { StockTransferResponse } from '@/types/stockTransfer.type'
 
 import styles from './RetailSalePage.module.scss'
 import {
 	useGetAllRetailSalesByRangeQuery,
 	useGetAllRetailSalesQuery
 } from '@/services/retail-sale.service'
+
+type RetailWithTransfers = {
+	retail: RetailSaleResponse
+	transfer: StockTransferResponse | null
+}
 
 const RetailSaleView = () => {
 	const today = dayjs().startOf('day').toISOString()
@@ -81,12 +87,17 @@ const RetailSaleView = () => {
 	const { data, isFetching, isLoading } = useGetAllRetailSalesQuery(
 		{
 			startDate: startDate,
-			endDate: endDate
+			endDate: endDate,
+			transfer: 'transfer'
 		} as RetailSaleDataFilters,
 		{
 			skip: !startDate || !endDate
 		}
 	)
+	// console.log('data', JSON.stringify(data, null, 2))
+	// Запрос на получение перемещений товаров
+
+	// Преобразуем данные о перемещениях в структуру по id блюд
 
 	const {} = useGetAllRetailSalesByRangeQuery(
 		{
@@ -130,9 +141,12 @@ const RetailSaleView = () => {
 						<thead>
 							<tr>
 								<th>Блюдо</th>
-								<th>Кол-во</th>
+								<th>Продажи</th>
 								<th>Цена</th>
 								<th>Сумма</th>
+								<th>Приход</th>
+								<th>Возврат</th>
+								<th>Баланс</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -142,6 +156,15 @@ const RetailSaleView = () => {
 									<td>{item.quantity}</td>
 									<td>{item.price.toFixed(2)}</td>
 									<td>{item.totalAmount.toFixed(2)}</td>
+									<td>{item.transferQuantity.toFixed(2) || '0.00'}</td>
+									<td>{item.toMainQuantity.toFixed(2) || '0.00'}</td>
+									<td
+										className={
+											item.balanceQuantity > 0 ? styles.highlightRed : ''
+										}
+									>
+										{item.balanceQuantity.toFixed(2) || '0.00'}
+									</td>
 								</tr>
 							))}
 						</tbody>

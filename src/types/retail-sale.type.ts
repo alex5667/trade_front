@@ -11,6 +11,9 @@ export interface RetailSaleResponse {
 	saleDate: string,
 	quantity: number,
 	dish: DishResponse
+	transferQuantity: number
+	toMainQuantity: number
+	balanceQuantity: number
 
 }
 
@@ -48,6 +51,8 @@ export class RetailSaleDataFilters {
 
 
 	maxQuantity?: string
+
+	transfer?: string
 
 }
 export class RetailSaleByRangeDataFilters {

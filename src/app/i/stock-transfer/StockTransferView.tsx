@@ -154,14 +154,11 @@ const StockTransferView = () => {
 									>
 										<td>{dayjs(item.date).format('DD.MM.YY')}</td>
 										<td>
-											{item.fromWarehouse?.name ||
-												`Склад #${item.fromWarehouseId}`}
+											{item.fromWarehouse?.name || `${item.fromWarehouseId}`}
 										</td>
-										<td>
-											{item.toWarehouse?.name || `Склад #${item.toWarehouseId}`}
-										</td>
+										<td>{item.toWarehouse?.name || `${item.toWarehouseId}`}</td>
 										<td>{item.dish?.name || `Блюдо #${item.dishId}`}</td>
-										<td>{item.quantity}</td>
+										<td>{item.quantity.toFixed(3)}</td>
 										<td>{item.registrar || 'Не указан'}</td>
 									</tr>
 									{expandedId === item.id && (
@@ -211,14 +208,12 @@ const StockTransferView = () => {
 								</>
 							))}
 						</tbody>
-						<tfoot>
-							<tr>
-								<td colSpan={4}>Итого:</td>
-								<td>Кол-во перемещений: {totalTransfers}</td>
-								<td>Кол-во товаров: {totalQuantity}</td>
-							</tr>
-						</tfoot>
 					</table>
+					<div className={styles.total}>
+						<p>Итого:</p>
+						<p>Кол-во перемещений: {totalTransfers}</p>
+						<p>Кол-во товаров: {totalQuantity.toFixed(3)}</p>
+					</div>
 				</div>
 			)}
 			<div className={styles.rangeDatePickers}>
