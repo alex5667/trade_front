@@ -8,37 +8,69 @@ import { EntityType } from '@/components/ui/simple-auto-complete-input/SimpleAut
 
 import { ActiveComponentProps } from '../CreatorEditor'
 
-import { useCreateDishCategoryMutation } from '@/services/dish-category.service'
-import { useCreateDishMutation } from '@/services/dish.service'
-import { useCreateIngredientMutation } from '@/services/ingredient.service'
-import { useCreateInstitutionMutation } from '@/services/institution.service'
-import { useCreateMealMutation } from '@/services/meal.service'
-import { useCreateWarehouseMutation } from '@/services/warehouse.service'
+import {
+	useCreateDishCategoryMutation,
+	useUpdateDishCategoryMutation
+} from '@/services/dish-category.service'
+import {
+	useCreateDishMutation,
+	useUpdateDishMutation
+} from '@/services/dish.service'
+import {
+	useCreateIngredientMutation,
+	useUpdateIngredientMutation
+} from '@/services/ingredient.service'
+import {
+	useCreateInstitutionMutation,
+	useUpdateInstitutionMutation
+} from '@/services/institution.service'
+import {
+	useCreateMealMutation,
+	useUpdateMealMutation
+} from '@/services/meal.service'
+import {
+	useCreateWarehouseMutation,
+	useUpdateWarehouseMutation
+} from '@/services/warehouse.service'
+
+const initialState = {
+	name: '',
+	printName: ''
+} as const
 
 const fetchQueries = {
-	institution: useCreateInstitutionMutation,
-	ingredient: useCreateIngredientMutation,
-	meal: useCreateMealMutation,
-	dishCategory: useCreateDishCategoryMutation,
-	dish: useCreateDishMutation,
-	warehouse: useCreateWarehouseMutation
+	institution: [
+		useUpdateInstitutionMutation,
+		useCreateInstitutionMutation
+	] as const,
+	ingredient: [
+		useUpdateIngredientMutation,
+		useCreateIngredientMutation
+	] as const,
+	meal: [useUpdateMealMutation, useCreateMealMutation] as const,
+	dishCategory: [
+		useUpdateDishCategoryMutation,
+		useCreateDishCategoryMutation
+	] as const,
+	dish: [useUpdateDishMutation, useCreateDishMutation] as const,
+	warehouse: [useUpdateWarehouseMutation, useCreateWarehouseMutation] as const
 }
 
 type PartialEntity = Partial<EntityType>
 
 interface CreatorProps<T extends PartialEntity> {
 	resetActiveComponent: (active: ActiveComponentProps) => void
-	initialState?: T
+	// initialState?: T
 	type: keyof typeof fetchQueries
 	EditorComponent: React.ComponentType<{
 		resetActiveComponent: (active: ActiveComponentProps) => void
-		entity: T
+		initialState: T
 	}>
 }
 
 const Creator = <T extends PartialEntity>({
 	resetActiveComponent,
-	initialState,
+	// initialState,
 	type,
 	EditorComponent
 }: CreatorProps<T>) => {
@@ -47,7 +79,7 @@ const Creator = <T extends PartialEntity>({
 	)
 	const [createdEntity, setCreatedEntity] = useState<T | null>(null)
 
-	const [createEntity] = fetchQueries[type]()
+	const [createEntity] = fetchQueries[type][1]()
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { id, value } = e.target
@@ -83,7 +115,7 @@ const Creator = <T extends PartialEntity>({
 		return (
 			<EditorComponent
 				resetActiveComponent={resetActiveComponent}
-				entity={createdEntity}
+				initialState={createdEntity}
 			/>
 		)
 	}

@@ -1,6 +1,6 @@
 'use client'
 
-import { SetStateAction, useCallback, useState } from 'react'
+import { SetStateAction, useCallback, useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 import {
@@ -37,6 +37,7 @@ const Editor = <T extends EntityType>({
 	type
 }: EditorProps<T>) => {
 	const [item, setItem] = useState<T | null>(initialState)
+	const [inputKey, setInputKey] = useState(0)
 
 	const [updateInstitution] = useUpdateInstitutionMutation()
 	const [updateMeal] = useUpdateMealMutation()
@@ -44,6 +45,20 @@ const Editor = <T extends EntityType>({
 	const [updateDishCategory] = useUpdateDishCategoryMutation()
 	const [updateWarehouse] = useUpdateWarehouseMutation()
 	const [updateDish] = useUpdateDishMutation()
+
+	// Эффект для очистки состояния при монтировании компонента
+	useEffect(() => {
+		// Сбрасываем состояние при монтировании компонента
+		if (!initialState) {
+			setItem(null)
+			setInputKey(prev => prev + 1) // Обновляем ключ для форсированного ререндера
+		}
+
+		// Очистка при размонтировании
+		return () => {
+			setItem(null)
+		}
+	}, [initialState])
 
 	// Выбираем функцию мутации в зависимости от type
 	const update =
@@ -63,10 +78,20 @@ const Editor = <T extends EntityType>({
 	const memoizedSetItem = useCallback((value: SetStateAction<T | null>) => {
 		setItem(prev => {
 			const updatedValue = typeof value === 'function' ? value(prev) : value
-			return updatedValue
-				? { ...(structuredClone(prev ?? {}) as T), ...updatedValue }
-				: null
+
+			// Если значение null или undefined, однозначно возвращаем null
+			if (updatedValue === null || updatedValue === undefined) {
+				return null
+			}
+
+			// Иначе объединяем объекты
+			return { ...(structuredClone(prev ?? {}) as T), ...updatedValue }
 		})
+
+		// Если установлено null значение, обновляем ключ для ререндера
+		if (value === null) {
+			setInputKey(prev => prev + 1)
+		}
 	}, [])
 
 	// Обработчик сохранения
@@ -74,12 +99,16 @@ const Editor = <T extends EntityType>({
 		if (!item || !item.id) return
 
 		try {
-			const responseItem = (await update({
+			;(await update({
 				id: item.id,
 				data: item as any
 			}).unwrap()) as T
 
-			setItem(responseItem)
+			// Сначала устанавливаем item в null, чтобы очистить данные
+			setItem(null)
+			// Обновляем ключ для форсированного ререндера SimpleAutocompleteInput
+			setInputKey(prev => prev + 1)
+			// Затем сбрасываем активный компонент
 			resetActiveComponent(null)
 		} catch (error) {
 			console.error('Ошибка при обновлении элемента:', error)
@@ -96,6 +125,7 @@ const Editor = <T extends EntityType>({
 			</Button>
 			<span className='text-base font-medium mb-2'>Введите наименование</span>
 			<SimpleAutocompleteInput<T>
+				key={inputKey}
 				fetchFunction={type}
 				className='flex flex-col w-[70%] items-start relative'
 				setItem={memoizedSetItem}

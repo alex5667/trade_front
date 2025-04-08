@@ -31,6 +31,14 @@ export const dishAliasApi = createApi({
 					]
 					: [{ type: 'DishAlias', id: 'LIST' }],
 		}),
+		getDishAliasByName: builder.query<DishAliasResponse[], string>({
+			query: (name) => ({
+				url: URLS.DISH_ALIAS_BY_NAME_CONTAINS,
+				method: 'GET',
+				params: { name },
+			}),
+			providesTags: (result, error, name) => [{ type: 'DishAlias', id: 'LIST' }],
+		}),
 		getDishAliasesByDishName: builder.query<DishAliasResponse[], string | undefined>({
 			query: (name) => `${URLS.DISH_ALIAS_BY_NAME}/${name}`,
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
@@ -48,8 +56,7 @@ export const dishAliasApi = createApi({
 						{ type: 'DishAlias', id: 'LIST' }
 					]
 					: [{ type: 'DishAlias', id: 'LIST' }],
-		})
-		,
+		}),
 		getDishAliasById: builder.query<DishAliasResponse, number>({
 			query: (id) => `${URLS.DISH_ALIAS}/${id}`,
 			providesTags: (result, error, id) => [{ type: 'DishAlias', id }],
@@ -105,4 +112,5 @@ export const {
 	useCreateDishAliasMutation,
 	useUpdateDishAliasMutation,
 	useDeleteDishAliasMutation,
+	useGetDishAliasByNameQuery
 } = dishAliasApi

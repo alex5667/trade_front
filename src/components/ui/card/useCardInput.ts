@@ -1,9 +1,11 @@
+import { useCreateDishAliasMutation, useUpdateDishAliasMutation } from '@/services/dish-alias.service'
 import { useCreateDishCategoryMutation, useUpdateDishCategoryMutation } from '@/services/dish-category.service'
 import { useCreateDishMutation, useUpdateDishMutation } from '@/services/dish.service'
 import { useCreateIngredientMutation, useUpdateIngredientMutation } from '@/services/ingredient.service'
 import { useCreateInstitutionMutation, useUpdateInstitutionMutation } from '@/services/institution.service'
 import { useCreateMealMutation, useUpdateMealMutation } from '@/services/meal.service'
 import { useCreateWarehouseMutation, useUpdateWarehouseMutation } from '@/services/warehouse.service'
+import { DishAliasFormState } from '@/types/dish-alias.type'
 import { DishFormState } from '@/types/dish.type'
 import { DishCategoryFormState } from '@/types/dishCategory.type'
 import { IngredientFormState } from '@/types/ingredient.type'
@@ -20,6 +22,7 @@ const fetchQueries = {
   dish: [useUpdateDishMutation, useCreateDishMutation] as const,
   ingredient: [useUpdateIngredientMutation, useCreateIngredientMutation] as const,
   warehouse: [useUpdateWarehouseMutation, useCreateWarehouseMutation] as const,
+  dishAlias: [useUpdateDishAliasMutation, useCreateDishAliasMutation] as const,
 }
 
 // Определяем возможные ключи для fetchQueries
@@ -33,6 +36,7 @@ export type FetchQueryData =
   | IngredientFormState
   | DishFormState
   | WarehouseFormState
+  | DishAliasFormState
 
 // Маппинг типов для конкретных мутаций
 export type FetchQueryDataMap = {
@@ -42,6 +46,7 @@ export type FetchQueryDataMap = {
   dish: DishFormState
   ingredient: IngredientFormState
   warehouse: WarehouseFormState
+  dishAlias: DishAliasFormState
 }
 
 // Ограничиваем T типами из FetchQueryData и добавляем необязательное поле id
@@ -66,11 +71,28 @@ export function useCardInput<T extends FetchQueryData, K extends keyof T>({
     keyName ? (data[keyName] as T[K]) : defaultValue
   )
 
-  const updateHook = fetchQueries[fetchFunction][0]
-  const createHook = fetchQueries[fetchFunction][1]
+  // Create mock functions that simulate the RTK Query API
+  const mockResponse = { unwrap: () => Promise.resolve({}) }
+  const defaultUpdateItem = () => mockResponse
+  const defaultCreateItem = () => mockResponse
 
+  // Check if the fetch function exists
+  const isValidFetchFunction = !!fetchQueries[fetchFunction]
+
+  // Get hooks safely
+  const updateHook = isValidFetchFunction ? fetchQueries[fetchFunction][0] : () => [defaultUpdateItem]
+  const createHook = isValidFetchFunction ? fetchQueries[fetchFunction][1] : () => [defaultCreateItem]
+
+  // Use hooks
   const [updateItem] = updateHook()
   const [createItem] = createHook()
+
+  // Log an error if the fetch function doesn't exist
+  useEffect(() => {
+    if (!isValidFetchFunction) {
+      console.error(`Error: No fetch queries defined for "${fetchFunction}"`)
+    }
+  }, [fetchFunction, isValidFetchFunction])
 
   useEffect(() => {
     if (keyName && data[keyName] !== undefined && data[keyName] !== null) {
@@ -83,6 +105,8 @@ export function useCardInput<T extends FetchQueryData, K extends keyof T>({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedInputChange = useCallback(
     debounce(async (value: T[K] | string | number) => {
+      if (!isValidFetchFunction) return
+
       try {
         let updatedData = { ...data }
         if (keyName && value !== undefined && value !== null) {
@@ -92,14 +116,12 @@ export function useCardInput<T extends FetchQueryData, K extends keyof T>({
         if (data.id) {
           const item = await updateItem({
             id: data.id,
-            // data: updatedData as FetchQueryDataMap[typeof fetchFunction],
             data: updatedData as any,
           }).unwrap()
           if (JSON.stringify(item) !== JSON.stringify(updatedData)) {
             setItem?.((prevItem) => ({ ...prevItem, ...item }))
           }
         } else {
-          // const item = await createItem(updatedData as FetchQueryDataMap[typeof fetchFunction]).unwrap()
           const item = await createItem(updatedData as any).unwrap()
           setItem?.(() => item as T)
         }
@@ -107,7 +129,7 @@ export function useCardInput<T extends FetchQueryData, K extends keyof T>({
         console.error('Ошибка при обновлении/создании:', error)
       }
     }, 500),
-    [data, keyName, updateItem, createItem, setItem, fetchFunction]
+    [data, keyName, updateItem, createItem, setItem, fetchFunction, isValidFetchFunction]
   )
 
   const handleChange = useCallback(

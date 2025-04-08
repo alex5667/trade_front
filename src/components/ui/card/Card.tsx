@@ -7,7 +7,7 @@ import { FetchQueryData, FetchQueryKey } from './useCardInput'
 
 type CardProps<T extends FetchQueryData> = {
 	item: T
-	fetchFunction: string
+	fetchFunction: FetchQueryKey
 	setItemToParent?: (value: SetStateAction<any>) => void
 }
 

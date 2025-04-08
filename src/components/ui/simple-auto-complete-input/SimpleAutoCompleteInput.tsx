@@ -22,6 +22,7 @@ import { useAutocompleteInput } from '../fields/hooks/useAutocompleteInput'
 import styles from './SimpleAutocompleteInput.module.scss'
 import { SimpleAutocompleteList } from './SimpleAutocompleteList'
 import { useSimpleOptionSelect } from './useSimpleOptionSelect'
+import { useGetDishAliasByNameQuery } from '@/services/dish-alias.service'
 import { useGetDishCategoryByNameQuery } from '@/services/dish-category.service'
 import { useGetDishByNameQuery } from '@/services/dish.service'
 import { useGetIngredientByNameQuery } from '@/services/ingredient.service'
@@ -43,11 +44,14 @@ const fetchQueries = {
 	dishCategory: useGetDishCategoryByNameQuery,
 	ingredient: useGetIngredientByNameQuery,
 	warehouse: useGetWarehouseByNameQuery,
-	dish: useGetDishByNameQuery
+	dish: useGetDishByNameQuery,
+	dishAlias: useGetDishAliasByNameQuery
 }
 
+type FetchQueryKey = keyof typeof fetchQueries
+
 type SimpleAutocompleteInputProps<T extends EntityType> = {
-	fetchFunction: keyof typeof fetchQueries
+	fetchFunction: FetchQueryKey
 	className?: string
 	setItem?: (value: SetStateAction<T | null>) => void
 	item?: T | null
@@ -141,6 +145,15 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 			fetchFunction !== 'warehouse' || !shouldFetch || !debouncedValue.trim()
 	})
 
+	const dishQuery = useGetDishByNameQuery(debouncedValue, {
+		skip: fetchFunction !== 'dish' || !shouldFetch || !debouncedValue.trim()
+	})
+
+	const dishAliasQuery = useGetDishAliasByNameQuery(debouncedValue, {
+		skip:
+			fetchFunction !== 'dishAlias' || !shouldFetch || !debouncedValue.trim()
+	})
+
 	// Выбираем нужный результат в зависимости от fetchFunction
 	const queryResult =
 		fetchFunction === 'institution'
@@ -151,7 +164,11 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 					? dishCategoryQuery
 					: fetchFunction === 'ingredient'
 						? ingredientQuery
-						: warehouseQuery
+						: fetchFunction === 'dish'
+							? dishQuery
+							: fetchFunction === 'dishAlias'
+								? dishAliasQuery
+								: warehouseQuery
 
 	const { data, isError, error } = queryResult
 
@@ -192,7 +209,7 @@ export const SimpleAutocompleteInput = <T extends EntityType>({
 			{item && isVisibleCard && (
 				<Card
 					item={item}
-					fetchFunction={fetchFunction}
+					fetchFunction={fetchFunction as FetchQueryKey}
 					setItemToParent={setItemToParent}
 				/>
 			)}
