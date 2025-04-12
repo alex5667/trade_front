@@ -140,13 +140,14 @@ const ListRow = ({
 						setMenuItem(prev => ({ ...prev, outputWeight: newValue }))
 					}}
 					disabled={isUpdating}
-					extra='mr-2 '
+					extra='mr-2 border  border-db-border-light rounded-sm'
 					style={{ fontSize: '14px' }}
 				/>
 				<FieldInput
 					id='relativePercentage'
 					isNumber={true}
 					placeholder='%'
+					extra='border  border-db-border-light rounded-sm'
 					value={menuItem.relativePercentage ?? ''}
 					onChange={e => {
 						const newValue = Number(e.target.value) || 0
@@ -155,17 +156,16 @@ const ListRow = ({
 					disabled={isUpdating}
 					style={{ fontSize: '14px' }}
 				/>
+				{item.id && (
+					<button
+						onClick={handleDelete}
+						className={styles.deleteButton}
+						disabled={isDeleting}
+					>
+						{isDeleting ? <Loader size={17} /> : <Trash size={17} />}
+					</button>
+				)}
 			</div>
-
-			{item.id && (
-				<button
-					onClick={handleDelete}
-					className={styles.deleteButton}
-					disabled={isDeleting}
-				>
-					{isDeleting ? <Loader size={17} /> : <Trash size={17} />}
-				</button>
-			)}
 		</div>
 	)
 }

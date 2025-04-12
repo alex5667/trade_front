@@ -4,36 +4,38 @@ import { useState } from 'react'
 
 import Loader from '@/components/ui/Loader'
 import { Button } from '@/components/ui/buttons/Button'
-import WeekChangeButtonsWithDates, {
-	StartEnDWeek
-} from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
+import WeekChangeButtonsWithDates from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
 
 import { AgregateType, PurshaingDataFilters } from '@/types/purchasing.type'
 
+import { useWeeklyNavigation } from '@/hooks/useWeeklyNavigation'
+
+import { useGetAllPurchasingQuery } from '@/services/purchasing.service'
 import NullableIngredientsList from './NullableIngredientsList'
 import styles from './Purchasing.module.scss'
 import PurchasingAggregate from './PurshasingAggregate'
 import PurchasingDetail from './PurshasingDetail'
-import { useGetAllPurchasingQuery } from '@/services/purchasing.service'
 
 const Purchasing = () => {
 	const [aggregate, setAggregate] = useState<AgregateType>('byDay')
 
-	const [startEndDate, setStartEndDate] = useState<StartEnDWeek | undefined>()
-	const [startEndDateForCulculate, setStartEndDateForCulculate] = useState<
-		StartEnDWeek | undefined
-	>()
+	const { weekOffset, startEndDate, changeWeek } = useWeeklyNavigation()
+	const {
+		weekOffset: weekOffsetForCalculate,
+		startEndDate: startEndDateForCalculate,
+		changeWeek: changeWeekForCalculate
+	} = useWeeklyNavigation()
 
 	const { data, isLoading } = useGetAllPurchasingQuery(
 		{
-			startDate: startEndDate?.startOfWeek,
-			endDate: startEndDate?.endOfWeek,
-			startDateForCalculation: startEndDateForCulculate?.startOfWeek,
-			endDateForCalculation: startEndDateForCulculate?.endOfWeek,
+			startDate: startEndDate.startOfWeek,
+			endDate: startEndDate.endOfWeek,
+			startDateForCalculation: startEndDateForCalculate.startOfWeek,
+			endDateForCalculation: startEndDateForCalculate.endOfWeek,
 			aggregate
 		} as PurshaingDataFilters,
 		{
-			skip: !startEndDate?.startOfWeek || !startEndDate?.endOfWeek
+			skip: !startEndDate.startOfWeek || !startEndDate.endOfWeek
 		}
 	)
 	const totalIngredientByWeek = data ? data.totalIngredientByWeek : undefined
@@ -58,13 +60,16 @@ const Purchasing = () => {
 				<div className={styles.weekChangeBtn}>
 					<div className={styles.weekChangeBtnItem}>
 						<p>На какую неделю считать</p>
-						<WeekChangeButtonsWithDates setStartEndDate={setStartEndDate} />
+						<WeekChangeButtonsWithDates
+							weekOffset={weekOffset}
+							onChangeWeek={changeWeek}
+						/>
 					</div>
 					<div className={styles.weekChangeBtnItem}>
 						<p>По какой неделе считать</p>
-
 						<WeekChangeButtonsWithDates
-							setStartEndDate={setStartEndDateForCulculate}
+							weekOffset={weekOffsetForCalculate}
+							onChangeWeek={changeWeekForCalculate}
 						/>
 					</div>
 				</div>

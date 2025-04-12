@@ -1,33 +1,25 @@
 'use client'
 
-import {
-	Dispatch,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState
-} from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import Loader from '@/components/ui/Loader'
 import { Button } from '@/components/ui/buttons/Button'
-import WeekChangeButtonsWithDates, {
-	StartEnDWeek
-} from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
+import WeekChangeButtonsWithDates from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
 
 import { MenuItemDataFilters } from '@/types/menuItem.type'
 
 import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { useWeeklyNavigation } from '@/hooks/useWeeklyNavigation'
 
 import { DatesOfWeek } from '@/utils/getDatesOfWeek'
 
+import styles from './MenuView.module.scss'
+import { ListView } from './list-view/ListView'
 import {
 	useCopyMenuItemMutation,
 	useGetAllMenuItemQuery
 } from '@/services/menu-item.service'
-import styles from './MenuView.module.scss'
-import { ListView } from './list-view/ListView'
 
 interface MenuViewProps {
 	institutionSlug: string
@@ -41,10 +33,13 @@ export function MenuView({ institutionSlug }: MenuViewProps) {
 		defaultValue: 'list'
 	})
 
-	const [startEndDate, setStartEndDate] = useState<StartEnDWeek | undefined>()
-	const [startEndDateForCopy, setStartEndDateForCopy] = useState<
-		StartEnDWeek | undefined
-	>()
+	const { weekOffset, startEndDate, queryArgs, changeWeek } =
+		useWeeklyNavigation()
+	const {
+		weekOffset: weekOffsetForCopy,
+		startEndDate: startEndDateForCopy,
+		changeWeek: changeWeekForCopy
+	} = useWeeklyNavigation()
 	const [isVisible, setIsVisible] = useState(false)
 
 	const {
@@ -54,11 +49,11 @@ export function MenuView({ institutionSlug }: MenuViewProps) {
 		refetch
 	} = useGetAllMenuItemQuery(
 		{
-			startDate: startEndDate?.startOfWeek,
-			endDate: startEndDate?.endOfWeek,
+			startDate: startEndDate.startOfWeek,
+			endDate: startEndDate.endOfWeek,
 			institutionSlug
 		} as MenuItemDataFilters,
-		{ skip: !startEndDate?.startOfWeek || !startEndDate?.endOfWeek }
+		{ skip: !startEndDate.startOfWeek || !startEndDate.endOfWeek }
 	)
 
 	const [copyMenuItems, { isLoading: isCopying }] = useCopyMenuItemMutation()
@@ -75,41 +70,6 @@ export function MenuView({ institutionSlug }: MenuViewProps) {
 		() => startEndDate?.datesOfWeek || ({} as DatesOfWeek),
 		[startEndDate?.datesOfWeek]
 	)
-
-	const handleSetStartEndDate: Dispatch<
-		SetStateAction<StartEnDWeek | undefined>
-	> = useCallback(dates => {
-		if (typeof dates === 'function') {
-			setStartEndDate(prevDates => {
-				const newDates = dates(prevDates)
-				return newDates
-			})
-			return
-		}
-		if (!dates || !dates.startOfWeek || !dates.endOfWeek) return
-		setStartEndDate(dates)
-	}, [])
-
-	const handleSetStartEndDateForCopy = useCallback(
-		(
-			dates:
-				| StartEnDWeek
-				| undefined
-				| ((prev: StartEnDWeek | undefined) => StartEnDWeek | undefined)
-		) => {
-			if (typeof dates === 'function') {
-				setStartEndDateForCopy(prev => dates(prev))
-			} else {
-				if (!dates || !dates.startOfWeek || !dates.endOfWeek) return
-				setStartEndDateForCopy(dates)
-			}
-		},
-		[]
-	)
-
-	if (isLoading || isLoadingMenu || isCopying || isFetching) {
-		return <Loader />
-	}
 
 	const handleCopy = async () => {
 		if (startEndDate && startEndDateForCopy) {
@@ -128,27 +88,35 @@ export function MenuView({ institutionSlug }: MenuViewProps) {
 		}
 	}
 
+	if (isLoading || isLoadingMenu || isCopying || isFetching) {
+		return <Loader />
+	}
+
 	return (
 		<div className={styles.menuWrapper}>
 			<div className={styles.weekChangeBtn}>
 				<div className={styles.weekBtn}>
 					<span>Выберите неделю</span>
-					<WeekChangeButtonsWithDates setStartEndDate={handleSetStartEndDate} />
+					<WeekChangeButtonsWithDates
+						weekOffset={weekOffset}
+						onChangeWeek={changeWeek}
+					/>
 				</div>
 				{isVisible && (
 					<div className={styles.weekBtn}>
 						<span>Выберите неделю для копирования</span>
 						<WeekChangeButtonsWithDates
-							setStartEndDate={handleSetStartEndDateForCopy}
+							weekOffset={weekOffsetForCopy}
+							onChangeWeek={changeWeekForCopy}
 						/>
 					</div>
 				)}
 			</div>
 			{isVisible && <Button onClick={handleCopy}>Копировать меню</Button>}
-			{startEndDate?.datesOfWeek && (
+			{startEndDate.datesOfWeek && (
 				<ListView
 					institutionSlug={institutionSlug}
-					datesOfWeek={datesOfWeek}
+					datesOfWeek={startEndDate.datesOfWeek}
 				/>
 			)}
 		</div>

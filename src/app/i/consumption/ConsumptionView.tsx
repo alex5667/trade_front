@@ -1,13 +1,9 @@
 'use client'
 
-import { Dispatch, SetStateAction, useState } from 'react'
-
 import Loader from '@/components/ui/Loader'
-import WeekChangeButtonsWithDates, {
-	StartEnDWeek
-} from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
+import WeekChangeButtonsWithDates from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
 
-import { MealConsumptionDataFilters } from '@/types/meal-consumption.type'
+import { useWeeklyNavigation } from '@/hooks/useWeeklyNavigation'
 
 import { dayColumns } from '../menu/[slug]/(view)/columns.data'
 
@@ -18,62 +14,37 @@ import { useGetAllMealConsumptionsQuery } from '@/services/meal-consumption.serv
 import { useGetAllMealsQuery } from '@/services/meal.service'
 
 const ConsumptionView = () => {
+	const { weekOffset, startEndDate, queryArgs, changeWeek } =
+		useWeeklyNavigation()
+
 	const { isLoading: isLoadingInstitutions } = useGetAllInstitutionsQuery()
-	const [startEndDate, setStartEndDate] = useState<StartEnDWeek | undefined>()
-
-	const handleSetStartEndDate: Dispatch<
-		SetStateAction<StartEnDWeek | undefined>
-	> = value => {
-		setStartEndDate(prev => {
-			// Обрабатываем оба случая: если `value` - это функция, вызываем её
-			const newValue = typeof value === 'function' ? value(prev) : value
-
-			// Предотвращаем лишние обновления
-			if (
-				prev?.startOfWeek === newValue?.startOfWeek &&
-				prev?.endOfWeek === newValue?.endOfWeek
-			) {
-				return prev
-			}
-			return newValue
-		})
-	}
-
-	const { data, isFetching, isLoading } = useGetAllMealConsumptionsQuery(
-		{
-			startDate: startEndDate?.startOfWeek,
-			endDate: startEndDate?.endOfWeek
-		} as MealConsumptionDataFilters,
-		{
-			skip: !startEndDate?.startOfWeek || !startEndDate?.endOfWeek
-		}
-	)
-
 	const { isLoading: isLoadingMeals } = useGetAllMealsQuery()
+	const { data, isFetching, isLoading } =
+		useGetAllMealConsumptionsQuery(queryArgs)
 
 	const isLoadingData =
 		isLoading || isFetching || isLoadingMeals || isLoadingInstitutions
 
-	if (isLoadingData) {
-		return <Loader />
-	}
+	if (isLoadingData) return <Loader />
 
 	return (
 		<div className={styles.wrapper}>
-			<WeekChangeButtonsWithDates setStartEndDate={handleSetStartEndDate} />
+			<WeekChangeButtonsWithDates
+				weekOffset={weekOffset}
+				onChangeWeek={changeWeek}
+			/>
 
-			{!startEndDate?.datesOfWeek ? (
+			{!startEndDate.datesOfWeek ? (
 				<p>Выберите неделю для просмотра данных</p>
 			) : !data && !isLoadingData ? (
 				<p>Нет данных ...</p>
 			) : (
-				startEndDate?.datesOfWeek &&
 				dayColumns().map(column => (
 					<DayView
+						key={column.value}
 						label={column.label}
 						day={column.value}
-						key={column.value}
-						datesOfWeek={startEndDate?.datesOfWeek}
+						datesOfWeek={startEndDate.datesOfWeek}
 					/>
 				))
 			)}

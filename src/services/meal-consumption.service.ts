@@ -19,7 +19,6 @@ export const mealConsumptionApi = createApi({
 				url: URLS.MEALCONSUMPTIONS,
 				method: 'GET',
 				params: queryData
-
 			}),
 			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
 				try {
@@ -29,14 +28,13 @@ export const mealConsumptionApi = createApi({
 					console.error('Failed to fetch item...', err)
 				}
 			},
-			providesTags: result =>
-				result
-					? [
-						...result.map(({ id }) => ({ type: 'mealConsumptions' as const, id })),
-						{ type: 'mealConsumptions', id: 'LIST' }
-					]
-					: [{ type: 'mealConsumptions', id: 'LIST' }]
-
+			providesTags: (result, error, arg) => {
+				if (!arg.startDate || !arg.endDate) return [{ type: 'mealConsumptions', id: 'LIST' }]
+				return [
+					{ type: 'mealConsumptions', id: `LIST-${arg.startDate}-${arg.endDate}` },
+					{ type: 'mealConsumptions', id: 'LIST' }
+				]
+			}
 		}),
 		deleteMealConsumption: builder.mutation<void, number>({
 			query: id => ({
@@ -72,16 +70,18 @@ export const mealConsumptionApi = createApi({
 					console.log("Error to create")
 				}
 			},
-			// invalidatesTags: (result, error, arg) =>
-			// 	result ? [{ type: 'mealConsumptions', id: result.id }, { type: 'mealConsumptions', id: 'LIST' }] : [{ type: 'mealConsumptions', id: 'LIST' }]
-			invalidatesTags: (result, error, arg) => result ? [{ type: 'mealConsumptions', id: result.id }] : []
+			invalidatesTags: (result, error, arg) => [
+				{ type: 'mealConsumptions', id: 'LIST' },
+				{ type: 'mealConsumptions', id: `LIST-${arg.date}-${arg.date}` }
+			]
 		}),
 		updateMealConsumption: builder.mutation<MealConsumptionResponse, MealConsumptionUpdate>({
 			query: ({ id, data }) => ({
 				url: `${URLS.MEALCONSUMPTIONS}/${id}`,
 				method: 'PUT',
 				body: data
-			}), async onQueryStarted({ id, data }, { dispatch, queryFulfilled, getState }) {
+			}),
+			async onQueryStarted({ id, data }, { dispatch, queryFulfilled, getState }) {
 				const previousTask = (getState() as TypeRootState).mealConsumptionSlice.items.find(item => item.id === id)
 				dispatch(updateMealConsumption({ id, data }))
 				try {
@@ -90,10 +90,12 @@ export const mealConsumptionApi = createApi({
 				} catch (error) {
 					if (previousTask) updateMealConsumption({ id, data })
 					console.log("Error to update")
-
 				}
 			},
-			// invalidatesTags: (result, error, arg) => result ? [{ type: 'mealConsumptions', id: result.id }] : []
+			invalidatesTags: (result, error, { data }) => [
+				{ type: 'mealConsumptions', id: 'LIST' },
+				{ type: 'mealConsumptions', id: `LIST-${data.date}-${data.date}` }
+			]
 		}),
 
 		getByInstitutionSlug: builder.query<MealConsumptionResponse[], string>({

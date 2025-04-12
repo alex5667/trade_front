@@ -51,7 +51,7 @@
 	@apply flex min-w-full hover:bg-db-hover-light;
 
 	.mealRowCell {
-		@apply text-base w-[70%] bg-db-row-light border border-border-light py-2 px-3;
+		@apply text-base w-[70%] border border-border-light py-2 px-3;
 	}
 
 	// .mealRowCellCenter {
