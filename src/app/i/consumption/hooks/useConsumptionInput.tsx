@@ -1,6 +1,6 @@
 import { MutableRefObject, useCallback, useState } from 'react'
 
-import { MealConsumptionResponse } from '@/types/mealConsumption.type'
+import { MealConsumptionResponse } from '@/types/meal-consumption.type'
 
 import { debounce } from '@/utils/debounce'
 
@@ -12,18 +12,18 @@ import {
 interface useConsumptionInput {
 	defaultInputValue: number | string
 	inputRef: MutableRefObject<HTMLInputElement | null>
-	institutionSlug: string
+	institutionId: number
 	consumptionItem: MealConsumptionResponse | undefined
 	dateForDay: string
-	mealSlug: string
+	mealId: number
 }
 export function useConsumptionInput({
 	defaultInputValue,
 	inputRef,
-	institutionSlug,
+	institutionId,
 	consumptionItem,
 	dateForDay,
-	mealSlug
+	mealId
 }: useConsumptionInput) {
 	const [inputValue, setInputValue] = useState(defaultInputValue)
 	const [updateMealConsumption] = useUpdateMealConsumptionMutation()
@@ -32,6 +32,10 @@ export function useConsumptionInput({
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const debouncedInputChange = useCallback(
 		debounce(async (value: number) => {
+			if (value === 0 && !consumptionItem?.id) {
+				return
+			}
+
 			const updatedData = {
 				date: dateForDay,
 				institutionId: consumptionItem?.institutionId,
@@ -49,7 +53,17 @@ export function useConsumptionInput({
 					data: updatedData
 				})
 			} else {
-				await createMealConsumption(updatedData)
+				// For new items, we need to fetch institutionId and mealId
+				const response = await createMealConsumption({
+					...updatedData,
+					institutionId,
+					mealId
+				})
+
+				if ('data' in response && response.data) {
+					// Update local state with new consumption item
+					setInputValue(response.data.quantity)
+				}
 			}
 
 			if (inputRef.current) {
@@ -60,8 +74,8 @@ export function useConsumptionInput({
 			inputRef,
 			consumptionItem,
 			dateForDay,
-			mealSlug,
-			institutionSlug,
+			mealId,
+			institutionId,
 			updateMealConsumption,
 			createMealConsumption
 		]

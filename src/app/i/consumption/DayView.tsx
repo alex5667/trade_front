@@ -7,6 +7,7 @@ import { DayOfWeek } from '@/types/menuItem.type'
 
 import { useTypedSelector } from '@/hooks/useTypedSelector'
 
+import styles from './ConsumptionPage.module.scss'
 import MealParent from './MealParent'
 
 interface DayView {
@@ -19,7 +20,7 @@ const DayView = ({ day, label, datesOfWeek }: DayView) => {
 	const meals = useTypedSelector(state => state.mealSlice.items)
 	const dateForDay = datesOfWeek ? datesOfWeek[day] : ''
 	return (
-		<div className='w-full flex flex-col items-center justify-start py-3'>
+		<div className={styles.dayViewWrapper}>
 			<WeekDay
 				dateForDay={dateForDay}
 				day={label}
@@ -29,7 +30,7 @@ const DayView = ({ day, label, datesOfWeek }: DayView) => {
 				meals.map((meal: MealResponse) => (
 					<MealParent
 						label={meal.printName}
-						mealSlug={meal.slug}
+						mealId={meal.id}
 						key={meal.id}
 						dateForDay={dateForDay}
 					/>

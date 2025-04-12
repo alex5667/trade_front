@@ -1,5 +1,5 @@
 import { TypeRootState } from '@/store/store'
-import { MealConsumptionResponse } from '@/types/mealConsumption.type'
+import { MealConsumptionResponse } from '@/types/meal-consumption.type'
 import { createSelector } from 'reselect'
 
 // Базовый селектор для получения всех потреблений

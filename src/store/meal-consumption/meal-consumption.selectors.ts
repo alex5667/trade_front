@@ -1,5 +1,5 @@
 import { TypeRootState } from '@/store/store'
-import { MealConsumptionResponse } from '@/types/mealConsumption.type'
+import { MealConsumptionResponse } from '@/types/meal-consumption.type'
 import { createSelector } from 'reselect'
 
 // Базовый селектор для получения всех потреблений
@@ -9,24 +9,24 @@ const selectAllMealConsumptions = (state: TypeRootState) => state.mealConsumptio
 const selectAllInstitutions = (state: TypeRootState) => state.institutionSlice.items
 
 // Фильтрация потребления по дню и типу приема пищи
-export const selectFilteredMealConsumptions = (dateForDay: string, mealSlug: string) =>
+export const selectFilteredMealConsumptions = (dateForDay: string, mealId: number) =>
 	createSelector([selectAllMealConsumptions], (items) =>
 		items.filter((item: MealConsumptionResponse) =>
-			item.date === dateForDay && item.meal?.slug === mealSlug
+			item.date === dateForDay && item.mealId === mealId
 		)
 	)
 
 // Вычисляем общее количество потребления для выбранных фильтров
-export const selectTotalQuantity = (dateForDay: string, mealSlug: string) =>
-	createSelector([selectFilteredMealConsumptions(dateForDay, mealSlug)], (filteredItems) =>
+export const selectTotalQuantity = (dateForDay: string, mealId: number) =>
+	createSelector([selectFilteredMealConsumptions(dateForDay, mealId)], (filteredItems) =>
 		filteredItems.reduce((acc, curr) => acc + (curr.quantity || 0), 0)
 	)
 
 // Группируем потребление по учреждениям
-export const selectInstitutionsWithConsumption = (dateForDay: string, mealSlug: string) =>
-	createSelector([selectAllInstitutions, selectFilteredMealConsumptions(dateForDay, mealSlug)], (institutions, filteredItems) =>
+export const selectInstitutionsWithConsumption = (dateForDay: string, mealId: number) =>
+	createSelector([selectAllInstitutions, selectFilteredMealConsumptions(dateForDay, mealId)], (institutions, filteredItems) =>
 		institutions.map(institution => ({
 			...institution,
-			consumptionItem: filteredItems.find(item => item.institution?.slug === institution.slug) || undefined
+			consumptionItem: filteredItems.find(item => item.institution?.id === institution.id) || undefined
 		}))
 	)

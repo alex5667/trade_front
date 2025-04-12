@@ -3,7 +3,7 @@
 
 .wrapper {
 	display: flex;
-	width: 70%;
+	width: 100%;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
@@ -25,5 +25,37 @@
 	@include mixins.adaptiveValue("font-size", 18, 14);
 }
 .input {
-	@apply text-base w-[50%] text-center bg-db-row-light/50 border border-border-light py-2 px-3 focus:bg-db-sidebar-light hover:bg-db-row-light;
+	@apply text-base w-[30%] text-center bg-db-row-light/50 border border-border-light py-2 px-3 focus:bg-db-sidebar-light hover:bg-db-row-light;
+}
+
+.dayViewWrapper {
+	@apply w-full flex flex-col items-center justify-start py-3;
+}
+
+.mealParentWrapper {
+	@apply w-full flex flex-col items-center justify-start py-3;
+
+	.totalRow {
+		@apply flex min-w-full;
+
+		.totalRowCell {
+			@apply text-base w-[70%] bg-db-row-light border border-border-light py-2 px-3;
+		}
+
+		.totalRowCellCenter {
+			@apply text-base w-[30%] text-center bg-db-row-light/50 border border-border-light py-2 px-3;
+		}
+	}
+}
+.mealRowWrapper {
+	@apply flex min-w-full hover:bg-db-hover-light;
+
+	.mealRowCell {
+		@apply text-base w-[70%] bg-db-row-light border border-border-light py-2 px-3;
+	}
+
+	// .mealRowCellCenter {
+	// 	// @apply text-base w-[30%] text-center bg-db-row-light/50 border border-border-light py-2 px-3;
+	// 	@apply text-base w-[30%];
+	// }
 }

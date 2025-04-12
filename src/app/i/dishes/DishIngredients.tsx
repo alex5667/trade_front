@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/buttons/Button'
 
 import { DishFormState, DishResponse } from '@/types/dish.type'
 
+import styles from './DishIngredients.module.scss'
 import DishInput from './DishInput'
 import SelectionIngredient from './SelectionIngredient'
 import { useUpdateDishMutation } from '@/services/dish.service'
@@ -18,7 +19,6 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 	const [sum, setSum] = useState(0)
 	const [updateDish] = useUpdateDishMutation()
 
-	// Функция для удаления ингредиента по индексу
 	const handleDeleteIngredient = async (index: number) => {
 		if (setDish) {
 			const ingredients =
@@ -41,7 +41,6 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 	const handleAddIngredient = useCallback(async () => {
 		if (!setDish) return
 
-		// Создаем новый ингредиент с начальными значениями
 		const newIngredient = {
 			ingredient: undefined,
 			grossWeight: 0,
@@ -49,7 +48,6 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 			heatLossPercent: 0
 		}
 
-		// Обновляем состояние блюда, добавляя новый ингредиент
 		setDish(prevDish => ({
 			...prevDish,
 			ingredients: [...(prevDish.ingredients ?? []), newIngredient]
@@ -89,36 +87,32 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 	}, [dish.ingredients])
 
 	return (
-		<div className='p-4'>
-			<h2 className='text-lg font-bold mb-4'>Ингредиенты блюда</h2>
+		<div className={styles.wrapper}>
+			<h2 className={styles.title}>Ингредиенты блюда</h2>
 			<Button onClick={handleAddIngredient}>Добавить ингредиент</Button>
-			<div>
-				<div>
-					<span className='mr-2'>Выход (чистый вес)</span>
+			<div className={styles.outputSumContainer}>
+				<div className={styles.outputSumItem}>
+					<span className={styles.outputSumLabel}>Выход (чистый вес)</span>
 					<span>{output.toFixed(3)}</span>
 				</div>
-				<div>
-					<span className='mr-2'>Сумма</span>
+				<div className={styles.outputSumItem}>
+					<span className={styles.outputSumLabel}>Сумма</span>
 					<span>{sum.toFixed(2)}</span>
 				</div>
 			</div>
 			{dish.ingredients && dish.ingredients.length > 0 ? (
-				<table className='table-auto border-collapse border border-gray-300 w-full'>
+				<table className={styles.table}>
 					<thead>
 						<tr>
-							<th className='border px-4 py-2'>Название ингредиента</th>
-							<th className='border px-4 py-2'>Вес (брутто)</th>
-							<th className='border px-4 py-2'>Цена за ед.изм.</th>
-							<th className='border'>Ед. изм.</th>
-							<th className='border px-4 py-2'>Сумма</th>
-							<th className='border px-4 py-2'>
-								Отход при холодной обработке (%)
-							</th>
-							<th className='border px-4 py-2'>
-								Отход при тепловой обработке (%)
-							</th>
-							<th className='border px-4 py-2'>Выход (чистый вес)</th>
-							<th className='border px-4 py-2'>Удалить</th>
+							<th>Название ингредиента</th>
+							<th>Вес (брутто)</th>
+							<th>Цена за ед.изм.</th>
+							<th>Ед. изм.</th>
+							<th>Сумма</th>
+							<th>Отход при холодной обработке (%)</th>
+							<th>Отход при тепловой обработке (%)</th>
+							<th>Выход (чистый вес)</th>
+							<th>Удалить</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -139,14 +133,14 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 							const price = ingredient.ingredient?.price || 0
 							return (
 								<tr key={index}>
-									<td className='border px-4 py-2'>
+									<td>
 										<SelectionIngredient
 											dish={dish}
 											ingredient={ingredient.ingredient}
 											setDish={setDish}
 										/>
 									</td>
-									<td className='border px-4 py-2'>
+									<td>
 										<DishInput
 											dish={dish}
 											ingredientKey='grossWeight'
@@ -155,16 +149,10 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 											defaultValue={ingredient.grossWeight?.toFixed(3)}
 										/>
 									</td>
-									<td className='border px-4 py-2'>
-										{Number(price).toFixed(2)}
-									</td>
-									<td className='border px-4 py-2'>
-										{ingredient.ingredient?.unit || '-'}
-									</td>
-									<td className='border px-4 py-2'>
-										{ingredientSum.toFixed(2)}
-									</td>
-									<td className='border px-4 py-2'>
+									<td>{Number(price).toFixed(2)}</td>
+									<td>{ingredient.ingredient?.unit || '-'}</td>
+									<td>{ingredientSum.toFixed(2)}</td>
+									<td>
 										<DishInput
 											dish={dish}
 											ingredientKey='coldLossPercent'
@@ -173,7 +161,7 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 											defaultValue={ingredient.coldLossPercent?.toFixed(0)}
 										/>
 									</td>
-									<td className='border px-4 py-2'>
+									<td>
 										<DishInput
 											dish={dish}
 											ingredientKey='heatLossPercent'
@@ -182,12 +170,10 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 											defaultValue={ingredient.heatLossPercent?.toFixed(0)}
 										/>
 									</td>
-									<td className='border px-4 py-2'>
-										{outputWeight.toFixed(3) || '-'}
-									</td>
-									<td className='border px-4 py-2'>
+									<td>{outputWeight.toFixed(3) || '-'}</td>
+									<td>
 										<button
-											className='bg-red-500 text-white px-2 py-1 rounded'
+											className={styles.deleteButton}
 											onClick={() => handleDeleteIngredient(index)}
 										>
 											Удалить
@@ -199,34 +185,11 @@ const DishIngredients = ({ dish, setDish }: Props) => {
 					</tbody>
 				</table>
 			) : (
-				<p>Нет данных об ингредиентах.</p>
+				<p className={styles.noData}>Нет данных об ингредиентах.</p>
 			)}
 		</div>
 	)
 }
-
-// Функция сравнения пропсов для мемоизации
-// const areEqual = (prevProps: Props, nextProps: Props): boolean => {
-// 	// Сравниваем id блюда
-// 	if (prevProps.dish.id !== nextProps.dish.id) return false
-// 	// Сравниваем название блюда
-// 	if (prevProps.dish.name !== nextProps.dish.name) return false
-
-// 	const prevIngredients = prevProps.dish.ingredients ?? []
-// 	const nextIngredients = nextProps.dish.ingredients ?? []
-
-// 	if (prevIngredients.length !== nextIngredients.length) return false
-
-// 	// Сравниваем ингредиенты по id
-// 	for (let i = 0; i < prevIngredients.length; i++) {
-// 		const prevIng = prevIngredients[i].ingredient
-// 		const nextIng = nextIngredients[i].ingredient
-// 		if (prevIng?.id !== nextIng?.id) return false
-// 	}
-
-// 	// Если все проверки совпадают, возвращаем true
-// 	return true
-// }
 
 export default memo(DishIngredients)
 DishIngredients.displayName = 'DishIngredients'

@@ -8,6 +8,7 @@ import { DishAliasResponse } from '@/types/dish-alias.type'
 import { DishFormState } from '@/types/dish.type'
 
 import DishAliasInput from './DishAliasInput'
+import styles from './DishAliases.module.scss'
 
 interface DishAliasesProps {
 	dish: DishFormState
@@ -15,11 +16,9 @@ interface DishAliasesProps {
 }
 
 const DishAliases = ({ dish, setDish }: DishAliasesProps) => {
-	// Добавление нового алиаса
 	const addAlias = useCallback(() => {
 		if (!dish.id) return
 
-		// Use the full DishAliasResponse instead of Partial to ensure all required properties are present
 		const newAlias: DishAliasResponse = {
 			id: Date.now(),
 			alias: 'Новый синоним',
@@ -30,12 +29,8 @@ const DishAliases = ({ dish, setDish }: DishAliasesProps) => {
 			...prev,
 			aliases: [...(prev.aliases || []), newAlias]
 		}))
-
-		// Убираем отправку обновления на сервер
-		// Теперь это будет происходить при нажатии на кнопку "Сохранить" в DishCard
 	}, [dish.id, setDish])
 
-	// Удаление алиаса
 	const handleDeleteAlias = useCallback(
 		(aliasId: number) => {
 			if (!dish.id) return
@@ -44,19 +39,14 @@ const DishAliases = ({ dish, setDish }: DishAliasesProps) => {
 				...prev,
 				aliases: (prev.aliases || []).filter(alias => alias.id !== aliasId)
 			}))
-
-			// Убираем отправку обновления на сервер
-			// Теперь это будет происходить при нажатии на кнопку "Сохранить" в DishCard
 		},
 		[dish.id, setDish]
 	)
 
 	return (
-		<div className='flex flex-col w-full gap-2'>
-			<div className='flex w-full items-center justify-between'>
-				<p className='mr-2 p-2 text-sm rounded-lg border border-border-light flex-grow w-[20%] h-full'>
-					{Titlies.aliases || 'Синонимы'}
-				</p>
+		<div className={styles.wrapper}>
+			<div className={styles.header}>
+				<p className={styles.title}>{Titlies.aliases || 'Синонимы'}</p>
 				<Button
 					onClick={addAlias}
 					className='ml-auto'
@@ -65,11 +55,11 @@ const DishAliases = ({ dish, setDish }: DishAliasesProps) => {
 				</Button>
 			</div>
 			{dish.aliases && dish.aliases.length > 0 ? (
-				<div className='flex flex-col gap-2 pl-[21%]'>
+				<div className={styles.aliasesContainer}>
 					{dish.aliases.map(alias => (
 						<div
 							key={alias.id}
-							className='flex items-center gap-2'
+							className={styles.aliasItem}
 						>
 							<DishAliasInput
 								aliasItem={alias}
@@ -86,7 +76,7 @@ const DishAliases = ({ dish, setDish }: DishAliasesProps) => {
 					))}
 				</div>
 			) : (
-				<div className='pl-[21%] text-sm text-gray-500'>Нет синонимов</div>
+				<div className={styles.noAliases}>Нет синонимов</div>
 			)}
 		</div>
 	)

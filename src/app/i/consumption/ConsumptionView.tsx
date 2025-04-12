@@ -7,7 +7,7 @@ import WeekChangeButtonsWithDates, {
 	StartEnDWeek
 } from '@/components/ui/weekChangeButtonsWithDates/WeekChangeButtonsWithDates'
 
-import { MealConsumptionDataFilters } from '@/types/mealConsumption.type'
+import { MealConsumptionDataFilters } from '@/types/meal-consumption.type'
 
 import { dayColumns } from '../menu/[slug]/(view)/columns.data'
 

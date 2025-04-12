@@ -52,7 +52,7 @@ const DishInput = ({
 			value={safeValue}
 			onChange={handleChange}
 			onFocus={handleFocus} // Теперь работает
-			extra='w-full bg-db-sidebar-light w-[80%] '
+			extra=' bg-db-sidebar-light w-[80%]'
 			// inputStyle='py-2 text-red-500'
 			style={{
 				paddingTop: '8px',

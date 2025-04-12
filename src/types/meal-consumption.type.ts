@@ -40,8 +40,8 @@ export class MealConsumptionDataFilters {
 	endDate?: string
 
 
-	institutionSlug?: string
-	mealSlug?: string
+	institutionId?: number
+	mealId?: number
 
 	minQuantity?: string
 

@@ -1,7 +1,7 @@
 import cn from 'clsx'
 import { memo } from 'react'
 
-import { MealConsumptionResponse } from '@/types/mealConsumption.type'
+import { MealConsumptionResponse } from '@/types/meal-consumption.type'
 
 import { useActions } from '@/hooks/useActions'
 

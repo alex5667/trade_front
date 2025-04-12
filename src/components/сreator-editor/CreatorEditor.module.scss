@@ -1,0 +1,25 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss" as *;
+
+.wrapper {
+	@apply flex flex-col relative min-w-full;
+}
+
+.header {
+	@apply w-full gap-4;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr;
+	@media (max-width: $mobile) {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 2fr;
+	}
+}
+
+.content {
+	@apply flex flex-col items-center justify-start pt-3 w-full;
+}
+
+.error {
+	@apply text-center;
+}

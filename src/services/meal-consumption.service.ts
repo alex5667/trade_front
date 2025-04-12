@@ -1,7 +1,7 @@
 import { URLS } from '@/config/urls'
 import { addAllMealConsumptions, addMealConsumption, deleteMealConsumptionById, updateMealConsumption } from '@/store/meal-consumption/meal-consumption.slice'
 import { TypeRootState } from '@/store/store'
-import { MealConsumptionDataFilters, MealConsumptionResponse, MealFConsumptionFormState } from '@/types/mealConsumption.type'
+import { MealConsumptionDataFilters, MealConsumptionResponse, MealFConsumptionFormState } from '@/types/meal-consumption.type'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWIthReAuth } from './baseQueries'
 

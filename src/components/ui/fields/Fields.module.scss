@@ -2,8 +2,8 @@
 @use "@/styles/variables.scss" as *;
 
 .fieldContainer {
-	@apply relative  flex w-full items-center justify-center rounded-lg border  border-db-border-light  bg-transparent p-1 text-sm text-white outline-none transition-colors duration-500 text-center py-2;
-	border-width: 0.5px;
+	// border  border-db-border-light rounded-lg
+	@apply relative  flex w-full items-center justify-center   bg-transparent p-1 text-sm text-white outline-none transition-colors duration-500 text-center py-2;
 
 	&::placeholder {
 		color: $white;

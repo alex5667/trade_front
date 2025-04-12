@@ -1,4 +1,4 @@
-import { MealConsumptionResponse } from '@/types/mealConsumption.type'
+import { MealConsumptionResponse } from '@/types/meal-consumption.type'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface InitialMealConsumptionState {

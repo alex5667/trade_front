@@ -1,33 +1,34 @@
-import cn from 'clsx'
 import { useRef } from 'react'
 
-import { MealConsumptionResponse } from '@/types/mealConsumption.type'
+import { FieldInput } from '@/components/ui/fields/FieldInput'
+
+import { MealConsumptionResponse } from '@/types/meal-consumption.type'
 
 import styles from './ConsumptionPage.module.scss'
 import { useConsumptionInput } from './hooks/useConsumptionInput'
 
 type ConsumptionInputProps = {
-	institutionSlug: string
+	institutionId: number
 	consumptionItem: MealConsumptionResponse | undefined
 	dateForDay: string
-	mealSlug: string
+	mealId: number
 }
 
 const ConsumptionInput = ({
-	institutionSlug,
+	institutionId,
 	consumptionItem,
 	dateForDay,
-	mealSlug
+	mealId
 }: ConsumptionInputProps) => {
 	const inputRef = useRef<HTMLInputElement>(null)
 	const defaultInputValue = consumptionItem ? consumptionItem.quantity : 0
 	const { inputValue, handleChange, setInputValue } = useConsumptionInput({
 		defaultInputValue,
 		inputRef,
-		institutionSlug,
+		institutionId,
 		consumptionItem,
 		dateForDay,
-		mealSlug
+		mealId
 	})
 
 	const handleFocus = () => {
@@ -42,9 +43,9 @@ const ConsumptionInput = ({
 		}
 	}
 	return (
-		<input
+		<FieldInput
 			ref={inputRef}
-			className={cn(styles.input)}
+			extra={styles.input}
 			value={inputValue}
 			onChange={handleChange}
 			onFocus={handleFocus}

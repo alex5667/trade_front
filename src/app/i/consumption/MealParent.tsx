@@ -10,106 +10,38 @@ import MealRow from './MealRow'
 
 interface MealParentProps {
 	label: string
-	mealSlug: string
+	mealId: number
 	dateForDay: string
 }
 
-// const MealParent = ({ label, mealSlug, dateForDay }: MealParentProps) => {
-// 	const institutions = useTypedSelector(state => state.institutionSlice.items)
-// 	const items = useTypedSelector(state => state.mealConsumptionSlice.items)
-// 	const [quantity, setQuantity] = useState(0)
-// 	const [filteredItems, setFilteredItems] = useState<
-// 		MealConsumptionResponse[] | []
-// 	>([])
-// 	const [isLoading, setIsLoading] = useState(true)
-
-// 	useEffect(() => {
-// 		setIsLoading(true)
-
-// 		const filteredItems: MealConsumptionResponse[] = items.filter(
-// 			item =>
-// 				item.date === dateForDay && item.meal && item.meal.slug === mealSlug
-// 		)
-// 		const quantity = filteredItems.reduce((acc, curr) => {
-// 			return acc + (curr.quantity || 0)
-// 		}, 0)
-
-// 		setFilteredItems(filteredItems)
-// 		setQuantity(quantity)
-// 		setIsLoading(false)
-// 	}, [dateForDay, items, mealSlug])
-
-// 	return (
-// 		<div className='flex flex-col items-center justify-start w-full'>
-// 			<h4 className={styles.colHeading}>{label}</h4>
-
-// 			{isLoading ? (
-// 				<Loader />
-// 			) : (
-// 				<>
-// 					{institutions &&
-// 						institutions.length > 0 &&
-// 						institutions.map(institution => {
-// 							const consumptionItem = filteredItems.find(item => {
-// 								return item.institution?.slug === institution.slug
-// 							})
-
-// 							return (
-// 								<MealRow
-// 									institutionSlug={institution.slug}
-// 									institutionName={institution.printName}
-// 									key={institution.id}
-// 									dateForDay={dateForDay}
-// 									mealSlug={mealSlug}
-// 									consumptionItem={consumptionItem}
-// 								/>
-// 							)
-// 						})}
-// 					<div className='flex min-w-full'>
-// 						<div className='text-base w-[50%] bg-db-row-light border border-border-light py-2 px-3'>
-// 							Итого:
-// 						</div>
-// 						<div className='text-base w-[50%] text-center bg-db-row-light/50 border border-border-light py-2 px-3 '>
-// 							{quantity}
-// 						</div>
-// 					</div>
-// 				</>
-// 			)}
-// 		</div>
-// 	)
-// }
-const MealParent = ({ label, mealSlug, dateForDay }: MealParentProps) => {
+const MealParent = ({ label, mealId, dateForDay }: MealParentProps) => {
 	// const filteredItems = useTypedSelector(selectFilteredMealConsumptions(dateForDay, mealSlug))
-	const quantity = useTypedSelector(selectTotalQuantity(dateForDay, mealSlug))
+	const quantity = useTypedSelector(selectTotalQuantity(dateForDay, mealId))
 	const institutionsWithConsumption = useTypedSelector(
-		selectInstitutionsWithConsumption(dateForDay, mealSlug)
+		selectInstitutionsWithConsumption(dateForDay, mealId)
 	)
 
 	return (
-		<div className='flex flex-col items-center justify-start w-full'>
+		<div className={styles.mealParentWrapper}>
 			<h4 className={styles.colHeading}>{label}</h4>
 
 			{institutionsWithConsumption.map(institution => {
 				// if (institution.consumptionItem) {
 				return (
 					<MealRow
-						institutionSlug={institution.slug}
+						institutionId={institution.id}
 						institutionName={institution.printName}
 						key={institution.id}
 						dateForDay={dateForDay}
-						mealSlug={mealSlug}
+						mealId={mealId}
 						consumptionItem={institution.consumptionItem}
 					/>
 				)
 				// }
 			})}
-			<div className='flex min-w-full'>
-				<div className='text-base w-[50%] bg-db-row-light border border-border-light py-2 px-3'>
-					Итого:
-				</div>
-				<div className='text-base w-[50%] text-center bg-db-row-light/50 border border-border-light py-2 px-3 '>
-					{quantity}
-				</div>
+			<div className={styles.totalRow}>
+				<div className={styles.totalRowCell}>Итого:</div>
+				<div className={styles.totalRowCellCenter}>{quantity}</div>
 			</div>
 		</div>
 	)

@@ -12,6 +12,7 @@ import { DishFormState, DishResponse } from '@/types/dish.type'
 import { DishCategoryResponse } from '@/types/dishCategory.type'
 
 import DishAliases from './DishAliases'
+import styles from './DishCard.module.scss'
 import DishIngredients from './DishIngredients'
 import DishInput from './DishInput'
 import { DishUpdate, useUpdateDishMutation } from '@/services/dish.service'
@@ -21,19 +22,14 @@ interface DishCardProps {
 }
 
 const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
-	const [dish, setDish] = useState<DishFormState>(() => {
-		// Ensure aliases exists with default empty array if not provided
-		return {
-			...initialDish,
-			aliases: initialDish.aliases || []
-		}
-	})
-	console.log('DishCard', JSON.stringify(dish, null, 2))
+	const [dish, setDish] = useState<DishFormState>(() => ({
+		...initialDish,
+		aliases: initialDish.aliases || []
+	}))
 
 	const [category, setCategory] = useState<DishCategoryResponse | null>(null)
 	const [updateDish, { isLoading }] = useUpdateDishMutation()
 
-	// Синхронизация с пропсами только при монтировании или если initialDish изменился извне
 	useEffect(() => {
 		setDish({
 			...initialDish,
@@ -42,17 +38,17 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [initialDish])
 
-	// Отправка обновлений на сервер при изменении category
 	useEffect(() => {
-		if (dish && dish.id && category) {
-			const dishUpdate: DishUpdate = {
-				data: { ...dish, category },
-				id: dish.id
+		const fetchedDish = async () => {
+			if (dish && dish.id && category) {
+				const dishUpdate: DishUpdate = {
+					data: { ...dish, category },
+					id: dish.id
+				}
+				await updateDish(dishUpdate)
 			}
-			updateDish(dishUpdate).then(response => {
-				console.log('Update response (category):', response)
-			})
 		}
+		fetchedDish()
 	}, [category, dish, updateDish])
 
 	const memoizedSetDish = useCallback(
@@ -79,7 +75,6 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 		[dish, updateDish]
 	)
 
-	// Сохранение изменений
 	const handleSave = async () => {
 		console.log('dish', JSON.stringify(dish, null, 2))
 		if (!dish || !dish.id) {
@@ -91,8 +86,8 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 			const dishUpdate: DishUpdate = {
 				data: {
 					...dish,
-					aliases: dish.aliases || [], // Ensure aliases is always an array
-					category: category || dish.category // Use the current category state
+					aliases: dish.aliases || [],
+					category: category || dish.category
 				},
 				id: dish.id
 			}
@@ -103,7 +98,7 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 			if (response) {
 				setDish({
 					...response,
-					aliases: response.aliases || dish.aliases || [] // Preserve aliases from response or current state
+					aliases: response.aliases || dish.aliases || []
 				})
 				toast.success('Блюдо успешно обновлено')
 			}
@@ -114,24 +109,23 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 	}
 
 	if (!dish || Object.keys(dish).length === 0) {
-		return <p>Блюдо не выбрано.</p>
+		return <p className={styles.noDish}>Блюдо не выбрано.</p>
 	}
 	if (isLoading) {
 		return <Loader />
 	}
 
 	return (
-		<div className='w-full flex flex-col gap-2 mt-5'>
+		<div className={styles.wrapper}>
 			<Button
 				onClick={handleSave}
 				disabled={isLoading}
-				className='mb-4'
+				className={styles.saveButton}
 			>
 				{isLoading ? 'Сохранение...' : 'Сохранить изменения'}
 			</Button>
-			<div className=''>
+			<div className={styles.fieldsContainer}>
 				{(Object.keys(dish) as (keyof DishResponse)[]).map((key, index) => {
-					// Skip aliases as we're already rendering it separately
 					if (key === 'aliases') {
 						return null
 					}
@@ -148,11 +142,9 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 						return (
 							<div
 								key={index}
-								className='flex w-full items-center justify-between'
+								className={styles.fieldRow}
 							>
-								<p className='mr-2 p-2 text-sm rounded-lg border border-border-light flex-grow w-[20%] h-full'>
-									{Titlies[key]}
-								</p>
+								<p className={styles.fieldLabel}>{Titlies[key]}</p>
 								<SimpleAutocompleteInput<DishCategoryResponse>
 									fetchFunction='dishCategory'
 									setItem={setCategory}
@@ -166,11 +158,9 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 						return (
 							<div
 								key={index}
-								className='flex w-full items-center justify-between'
+								className={styles.fieldRow}
 							>
-								<p className='mr-2 p-2 text-sm rounded-lg border border-border-light flex-grow w-[20%] h-full'>
-									{Titlies[key] || key}
-								</p>
+								<p className={styles.fieldLabel}>{Titlies[key] || key}</p>
 								<Checkbox
 									id={key}
 									checked={dish.isSemiFinished}
@@ -182,11 +172,9 @@ const DishCard = memo(({ dish: initialDish }: DishCardProps) => {
 					return (
 						<div
 							key={index}
-							className='flex w-full items-center justify-between'
+							className={styles.fieldRow}
 						>
-							<p className='mr-2 p-2 text-sm rounded-lg border border-border-light flex-grow w-[20%] h-full'>
-								{Titlies[key] || key}
-							</p>
+							<p className={styles.fieldLabel}>{Titlies[key] || key}</p>
 							<DishInput
 								dish={dish}
 								keyName={key}

@@ -6,8 +6,11 @@ import { Button } from '@/components/ui/buttons/Button'
 
 import { URLS } from '@/config/urls'
 
+import Loader from '../ui/Loader'
+
 import { ActiveComponentProps } from './CreatorEditor'
-import { ComponentMapKeys, componentMap } from './componentMap'
+import styles from './EntitiesViewer.module.scss'
+import { ComponentMapKeys } from './componentMap'
 import { baseQueryWIthReAuth } from '@/services/baseQueries'
 import { useGetAllDishesQuery } from '@/services/dish.service'
 import { useGetAllIngredientsQuery } from '@/services/ingredient.service'
@@ -112,13 +115,13 @@ const EntitiesViewer = ({
 	const handleBack = () => resetActiveComponent(null)
 
 	if (loading || isDishesLoading || isIngredientsLoading) {
-		return <div className='text-center p-4'>Загрузка...</div>
+		return <Loader />
 	}
 
 	if (error) {
 		return (
-			<div className='flex flex-col items-center'>
-				<div className='text-red-500 mb-4'>{error}</div>
+			<div className={styles.errorContainer}>
+				<div className={styles.errorMessage}>{error}</div>
 				<Button
 					onClick={handleBack}
 					className='btn btn-secondary'
@@ -130,11 +133,9 @@ const EntitiesViewer = ({
 	}
 
 	return (
-		<div className='w-full'>
-			<div className='mb-4 flex justify-between items-center'>
-				<h2 className='text-xl font-bold'>
-					{componentMap[type].title}: {entities.length}
-				</h2>
+		<div className={styles.wrapper}>
+			<div className={styles.header}>
+				<h2 className={styles.title}>Количество: {entities.length}</h2>
 				<Button
 					onClick={handleBack}
 					className='btn btn-secondary'
@@ -144,52 +145,27 @@ const EntitiesViewer = ({
 			</div>
 
 			{entities.length === 0 ? (
-				<div className='text-center p-4'>Нет данных</div>
+				<div className={styles.emptyMessage}>Нет данных</div>
 			) : (
-				<div className='border rounded-lg overflow-hidden'>
-					<table className='min-w-full divide-y divide-gray-200'>
-						<thead className='bg-gray-50'>
+				<div className={styles.tableContainer}>
+					<table className={styles.table}>
+						<thead>
 							<tr>
-								<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-									ID
-								</th>
-								<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-									Название
-								</th>
-								{type === 'dish' && (
-									<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-										Категория
-									</th>
-								)}
-								{type === 'ingredient' && (
-									<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-										Единица измерения
-									</th>
-								)}
+								<th>ID</th>
+								<th>Название</th>
+								{type === 'dish' && <th>Категория</th>}
+								{type === 'ingredient' && <th>Единица измерения</th>}
 							</tr>
 						</thead>
-						<tbody className='bg-white divide-y divide-gray-200'>
+						<tbody>
 							{entities.map(entity => (
-								<tr
-									key={entity.id}
-									className='hover:bg-gray-50'
-								>
-									<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-										{entity.id}
-									</td>
-									<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
-										{entity.name}
-									</td>
+								<tr key={entity.id}>
+									<td>{entity.id}</td>
+									<td className={styles.nameColumn}>{entity.name}</td>
 									{type === 'dish' && (
-										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-											{entity.dishCategory?.name || '-'}
-										</td>
+										<td>{entity.dishCategory?.name || '-'}</td>
 									)}
-									{type === 'ingredient' && (
-										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-											{entity.unit || '-'}
-										</td>
-									)}
+									{type === 'ingredient' && <td>{entity.unit || '-'}</td>}
 								</tr>
 							))}
 						</tbody>

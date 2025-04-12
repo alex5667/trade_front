@@ -1,35 +1,33 @@
 import { memo } from 'react'
 
-import { MealConsumptionResponse } from '@/types/mealConsumption.type'
+import { MealConsumptionResponse } from '@/types/meal-consumption.type'
 
 import ConsumptionInput from './ConsumptionInput'
+import styles from './ConsumptionPage.module.scss'
 
 interface MealRow {
-	institutionSlug: string
+	institutionId: number
 	dateForDay: string
-	mealSlug: string
+	mealId: number
 	institutionName: string
 	consumptionItem: MealConsumptionResponse | undefined
 }
 
 const MealRow = ({
-	institutionSlug,
+	institutionId,
 	dateForDay,
-	mealSlug,
+	mealId,
 	institutionName,
 	consumptionItem
 }: MealRow) => {
 	return (
-		<div className='flex min-w-full'>
-			<div className='text-base w-[50%] bg-db-row-light border border-border-light py-2 px-3'>
-				{institutionName}
-			</div>
-
+		<div className={styles.mealRowWrapper}>
+			<div className={styles.mealRowCell}>{institutionName}</div>
 			<ConsumptionInput
-				institutionSlug={institutionSlug}
+				institutionId={institutionId}
 				consumptionItem={consumptionItem}
 				dateForDay={dateForDay}
-				mealSlug={mealSlug}
+				mealId={mealId}
 			/>
 		</div>
 	)
@@ -49,9 +47,9 @@ const areEqual = (prevProps: MealRow, nextProps: MealRow) => {
 		prevItem.updatedAt === nextItem.updatedAt &&
 		prevItem.date === nextItem.date &&
 		prevItem.quantity === nextItem.quantity &&
-		prevProps.institutionSlug === nextProps.institutionSlug &&
+		prevProps.institutionId === nextProps.institutionId &&
 		prevProps.dateForDay === nextProps.dateForDay &&
-		prevProps.mealSlug === nextProps.mealSlug &&
+		prevProps.mealId === nextProps.mealId &&
 		prevProps.institutionName === nextProps.institutionName
 	)
 }

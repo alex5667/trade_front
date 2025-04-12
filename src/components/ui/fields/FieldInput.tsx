@@ -16,6 +16,7 @@ interface InputFieldsProps {
 	value?: string | number // Значение для контролируемого input
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void // Обработчик изменения
 	onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void // Обработчик фокуса
+	onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void // Обработчик фокуса
 	style?: React.CSSProperties // Inline-стили для input
 }
 
@@ -34,6 +35,7 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 			value = '', // Значение по умолчанию — пустая строка
 			onChange,
 			onFocus,
+			onBlur,
 			style, // Передаем inline-стили
 			...rest // Остальные пропсы для передачи в input
 		},
@@ -90,6 +92,7 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 							event.preventDefault()
 						}
 					}}
+					onBlur={onBlur}
 					{...rest} // Передаем остальные пропсы (например, name, maxLength и т.д.)
 				/>
 			</div>

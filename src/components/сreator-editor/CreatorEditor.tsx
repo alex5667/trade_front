@@ -4,13 +4,9 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/buttons/Button'
 
+import styles from './CreatorEditor.module.scss'
 import EntitiesViewer from './EntitiesViewer'
 import { ComponentMapKeys, componentMap } from './componentMap'
-
-// const initialState = {
-// 	name: '',
-// 	printName: ''
-// } as const
 
 export type ActiveComponentProps =
 	| null
@@ -35,41 +31,43 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 		setActiveComponent(active)
 
 	if (!(type in componentMap)) {
-		return <div>Ошибка: Тип {type} не поддерживается</div>
+		return (
+			<div className={styles.error}>Ошибка: Тип {type} не поддерживается</div>
+		)
 	}
 
 	const { title, EditorComponent, CreatorComponent, DeleterComponent } =
 		componentMap[type]
 
 	return (
-		<div className='flex flex-col relative min-w-full'>
-			<div className='flex items-center justify-between w-full gap-4'>
+		<div className={styles.wrapper}>
+			<div className={styles.header}>
 				<Button
 					onClick={handleEditor}
-					className='btn btn-primary'
+					className='btn'
 				>
 					Изменить {title}
 				</Button>
 				<Button
 					onClick={handleCreator}
-					className='btn btn-primary'
+					className='btn'
 				>
 					Добавить {title}
 				</Button>
 				<Button
 					onClick={handleDeleter}
-					className='btn btn-danger'
+					className='btn '
 				>
 					Удалить {title}
 				</Button>
 				<Button
 					onClick={handleViewer}
-					className='btn btn-secondary'
+					className='btn'
 				>
 					Получить все
 				</Button>
 			</div>
-			<div className='flex flex-col items-center justify-start pt-3 w-full'>
+			<div className={styles.content}>
 				{activeComponent === 'editor' && (
 					<EditorComponent
 						type={type}
@@ -82,7 +80,6 @@ const CreatorEditor = ({ type }: CreatorEditorProps) => {
 						type={type as any}
 						EditorComponent={EditorComponent as any}
 						resetActiveComponent={resetActiveComponent}
-						// initialState={initialState}
 					/>
 				)}
 				{activeComponent === 'deleter' && (
