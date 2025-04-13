@@ -16,6 +16,7 @@ import { DatesOfWeek } from '@/utils/getDatesOfWeek'
 
 import styles from './MenuView.module.scss'
 import { ListView } from './list-view/ListView'
+import { useGetInstitutionBySlugQuery } from '@/services/institution.service'
 import {
 	useCopyMenuItemMutation,
 	useGetAllMenuItemQuery
@@ -41,6 +42,8 @@ export function MenuView({ institutionSlug }: MenuViewProps) {
 		changeWeek: changeWeekForCopy
 	} = useWeeklyNavigation()
 	const [isVisible, setIsVisible] = useState(false)
+	const { data: institution, isLoading: isLoadingInstitution } =
+		useGetInstitutionBySlugQuery(institutionSlug)
 
 	const {
 		data,
@@ -88,12 +91,21 @@ export function MenuView({ institutionSlug }: MenuViewProps) {
 		}
 	}
 
-	if (isLoading || isLoadingMenu || isCopying || isFetching) {
+	if (
+		isLoading ||
+		isLoadingMenu ||
+		isCopying ||
+		isFetching ||
+		isLoadingInstitution
+	) {
 		return <Loader />
 	}
 
 	return (
 		<div className={styles.menuWrapper}>
+			<div className={styles.headerSticky}>
+				<h1>{institution?.name}</h1>
+			</div>
 			<div className={styles.weekChangeBtn}>
 				<div className={styles.weekBtn}>
 					<span>Выберите неделю</span>
