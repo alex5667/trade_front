@@ -10,11 +10,11 @@ import { AgregateType, PurshaingDataFilters } from '@/types/purchasing.type'
 
 import { useWeeklyNavigation } from '@/hooks/useWeeklyNavigation'
 
-import { useGetAllPurchasingQuery } from '@/services/purchasing.service'
 import NullableIngredientsList from './NullableIngredientsList'
 import styles from './Purchasing.module.scss'
 import PurchasingAggregate from './PurshasingAggregate'
 import PurchasingDetail from './PurshasingDetail'
+import { useGetAllPurchasingQuery } from '@/services/purchasing.service'
 
 const Purchasing = () => {
 	const [aggregate, setAggregate] = useState<AgregateType>('byDay')
@@ -57,31 +57,35 @@ const Purchasing = () => {
 	return (
 		<div className={styles.container}>
 			<div className={styles.btnContainer}>
-				<div className={styles.weekChangeBtn}>
-					<div className={styles.weekChangeBtnItem}>
-						<p>На какую неделю считать</p>
-						<WeekChangeButtonsWithDates
-							weekOffset={weekOffset}
-							onChangeWeek={changeWeek}
-						/>
-					</div>
-					<div className={styles.weekChangeBtnItem}>
-						<p>По какой неделе считать</p>
-						<WeekChangeButtonsWithDates
-							weekOffset={weekOffsetForCalculate}
-							onChangeWeek={changeWeekForCalculate}
-						/>
-					</div>
+				<div className={styles.weekChangeBtnItem}>
+					<p>На какую неделю считать</p>
+					<WeekChangeButtonsWithDates
+						weekOffset={weekOffset}
+						onChangeWeek={changeWeek}
+					/>
+				</div>
+
+				<div className={styles.weekChangeBtnItemCalculate}>
+					<p>По какой неделе считать</p>
+					<WeekChangeButtonsWithDates
+						weekOffset={weekOffsetForCalculate}
+						onChangeWeek={changeWeekForCalculate}
+					/>
 				</div>
 
 				<div className={styles.getBtn}>
 					<Button
-						className='mb-2'
+						className='mb-2 w-full'
 						onClick={getByDay}
 					>
 						По дням
 					</Button>
-					<Button onClick={getByInstitution}>По точкам</Button>
+					<Button
+						onClick={getByInstitution}
+						className='w-full'
+					>
+						По точкам
+					</Button>
 				</div>
 			</div>
 

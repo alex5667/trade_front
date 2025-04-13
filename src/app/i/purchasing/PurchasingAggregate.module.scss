@@ -1,0 +1,62 @@
+@use "@/styles/variables.scss" as *;
+@use "@/styles/mixins.scss";
+
+.wrapper {
+	padding: 1.5rem;
+	min-height: 100vh;
+}
+
+.title {
+	@apply font-bold mb-3 text-center;
+	@include mixins.adaptiveValue("font-size", 24, 20);
+}
+
+.sectionTitle {
+	@apply font-semibold mb-4;
+	@include mixins.adaptiveValue("font-size", 20, 16);
+}
+
+.subTitle {
+	@apply font-semibold mb-4;
+	@include mixins.adaptiveValue("font-size", 20, 16);
+}
+
+.dateBlock {
+	@apply border border-db-border-light rounded-sm shadow-md p-4 mb-6;
+}
+
+.dateHeading {
+	@apply mb-2;
+	@include mixins.adaptiveValue("font-size", 20, 16);
+}
+
+.table {
+	@apply w-full border-collapse border border-db-border-light;
+}
+
+.th,
+.td {
+	@apply border border-db-border-light px-4 py-2;
+}
+
+.thCenter,
+.tdCenter {
+	@apply border border-db-border-light px-4 py-2 text-center;
+}
+
+.row {
+	@apply border-b hover:bg-db-row-light;
+}
+
+.noData {
+	@apply text-text-secondary;
+}
+.tableHeader {
+	@apply bg-db-bg;
+}
+.tableContainer {
+	@apply overflow-x-auto;
+}
+.section {
+	@apply mb-10;
+}
