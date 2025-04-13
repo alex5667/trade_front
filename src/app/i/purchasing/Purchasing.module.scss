@@ -7,7 +7,7 @@
 
 .btnContainer {
 	@apply w-full grid mb-5;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 80% 20%;
 	grid-template-rows: 1fr 1fr;
 }
 
