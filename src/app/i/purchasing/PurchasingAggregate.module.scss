@@ -8,26 +8,27 @@
 
 .title {
 	@apply font-bold mb-3 text-center;
-	@include mixins.adaptiveValue("font-size", 24, 20);
+	@include mixins.adaptiveValue("font-size", 24, 16);
 }
 
 .sectionTitle {
-	@apply font-semibold mb-4;
-	@include mixins.adaptiveValue("font-size", 20, 16);
+	@apply font-semibold mb-4 mt-4;
+	@include mixins.adaptiveValue("font-size", 20, 14);
 }
 
 .subTitle {
-	@apply font-semibold mb-4;
-	@include mixins.adaptiveValue("font-size", 20, 16);
+	@apply font-semibold mb-4 mt-4;
+	@include mixins.adaptiveValue("font-size", 20, 14);
 }
 
 .dateBlock {
 	@apply border border-db-border-light rounded-sm shadow-md p-4 mb-6;
+	@include mixins.adaptiveValue("padding", 12, 5);
 }
 
 .dateHeading {
 	@apply mb-2;
-	@include mixins.adaptiveValue("font-size", 20, 16);
+	@include mixins.adaptiveValue("font-size", 20, 14);
 }
 
 .table {
@@ -36,12 +37,19 @@
 
 .th,
 .td {
-	@apply border border-db-border-light px-4 py-2;
+	@apply border border-db-border-light;
+	@include mixins.adaptiveValue("padding-left", 16, 5);
+	@include mixins.adaptiveValue("padding-right", 16, 5);
+	@include mixins.adaptiveValue("font-size", 20, 14);
 }
 
 .thCenter,
 .tdCenter {
-	@apply border border-db-border-light px-4 py-2 text-center;
+	@apply border border-db-border-light  text-center;
+	@include mixins.adaptiveValue("padding-left", 16, 5);
+	@include mixins.adaptiveValue("padding-right", 16, 5);
+
+	@include mixins.adaptiveValue("font-size", 20, 14);
 }
 
 .row {
@@ -58,5 +66,5 @@
 	@apply overflow-x-auto;
 }
 .section {
-	@apply mb-10;
+	@apply mb-6;
 }
