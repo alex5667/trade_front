@@ -2,7 +2,7 @@
 
 import cn from 'clsx'
 import { m } from 'framer-motion'
-import { Notebook, PanelLeftCloseIcon, PanelLeftOpen } from 'lucide-react'
+import { Infinity, PanelLeftCloseIcon, PanelLeftOpen } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -63,13 +63,13 @@ const Sidebar = () => {
 						'p-layout': !isCollapsed && !isMobile
 					})}
 				>
-					<Notebook
-						color={'#1D7AFC'}
+					<Infinity
+						// color={'#1D7AFC'}
 						size={isCollapsed && !isMobile ? 20 : 28}
 					/>
 					{(!isCollapsed || isMobile) && (
 						<span className={styles.spanTitle}>
-							BOIKO
+							Trade
 							<span>management</span>
 						</span>
 					)}

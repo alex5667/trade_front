@@ -49,7 +49,7 @@
 }
 
 .menuItemLink {
-	@apply flex gap-1 items-center px-1.5 py-1.5 mt-2 transition-colors hover:bg-db-bg-button-hover rounded-lg;
+	@apply flex gap-1 items-center px-1.5 py-1.5 mt-2 transition-colors hover:bg-bg-btn-hover rounded-sm;
 	@media (max-width: $mobile) {
 		@apply mt-0 px-2 py-1;
 	}

@@ -9,7 +9,7 @@
 	// Добавляем кастомную галочку через псевдоэлемент
 	&:checked::after {
 		content: "✔"; // Символ галочки
-		@apply absolute text-db-sidebar text-sm leading-none;
+		@apply absolute text-sidebar text-sm leading-none;
 	}
 }
 

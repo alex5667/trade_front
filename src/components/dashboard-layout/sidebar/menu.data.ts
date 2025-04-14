@@ -1,11 +1,7 @@
 import {
 	DatabaseZap,
-	FileDown,
 	LayoutDashboard,
-	Logs,
-	Settings,
-	ShoppingCart,
-	Table
+	Settings
 } from 'lucide-react'
 
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
@@ -19,20 +15,6 @@ export const USERMENU: MenuItem[] = [
 		name: 'User board',
 		endPoint: 'getProfile'
 	},
-	{
-		icon: Logs,
-		link: `${ADMINBOARD_PAGES.MENU}`,
-		name: 'Меню',
-		endPoint: 'getAll'
-	}
-	,
-	{
-		icon: FileDown,
-		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
-		name: 'Кол-во людей',
-		endPoint: null
-	}
-	,
 
 
 	{
@@ -68,33 +50,7 @@ export const ADMINMENU: MenuItem[] = [
 		name: 'Admin Board',
 		endPoint: 'getProfile'
 	},
-	{
-		icon: Logs,
-		link: `${ADMINBOARD_PAGES.MENU}`,
-		name: 'Меню',
-		endPoint: 'getAll'
-	},
-	{
-		icon: Table,
-		link: `${ADMINBOARD_PAGES.CONSUMPTION}`,
-		name: 'Количество людей',
-		endPoint: null
-	},
 
-	{
-		icon: ShoppingCart,
-		link: `${ADMINBOARD_PAGES.PURCHASING}`,
-		name: 'Закупки',
-		endPoint: null
-	},
-
-	{
-		icon: DatabaseZap,
-		link: `${ADMINBOARD_PAGES.DBEDITOR}`,
-		name: 'Работа с базой',
-		endPoint: 'getAll'
-	}
-	,
 	{
 		icon: Settings,
 		link: ADMINBOARD_PAGES.SETTINGS,

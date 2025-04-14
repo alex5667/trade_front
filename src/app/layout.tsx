@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 		default: SITE_NAME,
 		template: `%s | ${SITE_NAME}`
 	},
-	description: 'Boiko School Food Court',
+	description: 'Trade Management',
 	metadataBase: new URL(getSiteUrl())
 }
 
@@ -38,10 +38,14 @@ export default function RootLayout({
 }>) {
 	return (
 		<html
-			lang='uk'
+			lang='ru'
 			className='dark'
+			suppressHydrationWarning
 		>
-			<body className={zen.className}>
+			<body
+				className={zen.className}
+				suppressHydrationWarning
+			>
 				<Providers>
 					<Suspense fallback={<Loader />}>
 						<Background />

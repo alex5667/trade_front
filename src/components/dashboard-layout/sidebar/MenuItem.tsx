@@ -56,7 +56,7 @@ export function MenuItem({ item }: { item: ItemMenu }) {
 				// 	prefetch()
 				// }}
 				className={cn(styles.menuItemLink, {
-					'bg-db-row-light dark:!bg-[#1c2b41]': path === link,
+					'bg-row-light dark:!bg-bg-dark': path === link,
 					'justify-start': !isCollapsed,
 					'justify-center': isCollapsed
 				})}

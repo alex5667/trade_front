@@ -11,7 +11,7 @@ const Header = () => {
 				<div className={styles.logoImage}>
 					<Image
 						src={logo}
-						alt='Boiko logo'
+						alt='Trade logo'
 						width={60}
 						height={60}
 						style={{
@@ -21,7 +21,7 @@ const Header = () => {
 					/>
 				</div>
 
-				<h1 className={styles.headerTitle}>Boiko school</h1>
+				<h1 className={styles.headerTitle}>Trade</h1>
 			</div>
 		</header>
 	)

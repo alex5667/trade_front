@@ -8,11 +8,11 @@
 
 .input {
 	background: transparent;
-	@apply hover:bg-sidebar w-full overflow-hidden text-ellipsis  px-2 py-2	resize-none bg-transparent focus:bg-db-bg border    border-db-border-light rounded-sm border-solid;
+	@apply hover:bg-sidebar w-full overflow-hidden text-ellipsis  px-2 py-2	resize-none bg-transparent focus:bg-bg border    border-border-light rounded-sm border-solid;
 }
 
 .autocompleteList {
-	@apply absolute top-full mt-1 w-full bg-db-row-light/90 border border-db-border p-1 rounded-md z-20;
+	@apply absolute top-full mt-1 w-full bg-row-light/90 border border-border p-1 rounded-md z-20;
 }
 
 .autocompleteItem {

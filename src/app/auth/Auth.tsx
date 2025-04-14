@@ -89,12 +89,12 @@ const Auth = () => {
 					>
 						Login
 					</Button>
-					{/* <Button
+					<Button
 						className='text-white w-full py-2 px-4 md:w-auto md:py-2 md:px-7'
 						onClick={() => setIsLoginForm(false)}
 					>
 						Register
-					</Button> */}
+					</Button>
 				</div>
 				<div className='mt-4'>
 					<Button

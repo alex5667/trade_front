@@ -2,7 +2,7 @@
 @use "@/styles/variables.scss" as *;
 
 .fieldContainer {
-	// border  border-db-border-light rounded-lg
+	// border  border-border-light rounded-lg
 	@apply relative  flex w-full items-center justify-center   bg-transparent p-1 text-sm text-white outline-none transition-colors duration-500 text-center py-2;
 
 	&::placeholder {
@@ -17,7 +17,7 @@
 }
 
 .fieldFocus {
-	@apply focus:border-db-border-light text-white/90;
+	@apply focus:border-border-light text-white/90;
 	&::placeholder {
 		color: $white;
 		opacity: 0.9;
@@ -46,7 +46,7 @@
 
 	&:hover,
 	:focus {
-		@apply overflow-visible h-20 z-10 absolute top-0 left-[4%] p-3 rounded-sm  bg-lightPrimary;
+		@apply overflow-visible h-20 z-10 absolute top-0 left-[4%] p-3 rounded-sm  bg-row-light;
 		transition: all 0.3s ease;
 	}
 }

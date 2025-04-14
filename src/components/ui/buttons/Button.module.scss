@@ -2,7 +2,7 @@
 @use "@/styles/variables.scss";
 
 .button {
-	@apply rounded-lg bg-transparent border border-border-light  transition hover:bg-primary active:bg-brand-700 py-2;
+	@apply rounded-lg bg-transparent border border-border-light  transition hover:bg-primary active:bg-primary py-2;
 	@include mixins.adaptiveValue("padding-left", 16, 7);
 	@include mixins.adaptiveValue("padding-right", 16, 7);
 	font-weight: 400;
