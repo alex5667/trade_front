@@ -1,13 +1,10 @@
-import Image from 'next/image'
-
-import background from '../../../public/backround.webp'
-
 import styles from './Background.module.scss'
 
 export default function Background({ z = 1 }: { z?: number }) {
 	return (
 		<div className={styles.backgroundWrapper}>
-			<Image
+			background
+			{/* <Image
 				alt='Background'
 				src={background}
 				placeholder='blur'
@@ -148,7 +145,7 @@ export default function Background({ z = 1 }: { z?: number }) {
 						</text>
 					</svg>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	)
 }

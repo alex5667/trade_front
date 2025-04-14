@@ -12,7 +12,7 @@ export function Providers({ children }: PropsWithChildren) {
 		<Provider store={store}>
 			<ThemeProvider
 				attribute='class'
-				defaultTheme='system'
+				defaultTheme='dark'
 				enableSystem
 			>
 				<LazyMotion features={domAnimation}>{children}</LazyMotion>

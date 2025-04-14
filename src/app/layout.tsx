@@ -37,7 +37,10 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang='uk'>
+		<html
+			lang='uk'
+			className='dark'
+		>
 			<body className={zen.className}>
 				<Providers>
 					<Suspense fallback={<Loader />}>
