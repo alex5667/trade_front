@@ -20,15 +20,26 @@ export default function IPage() {
 		)
 	}, [isAdmin])
 
-	if (isAdmin === undefined) {
-		console.log('Rendering SignalTable (auth loading state)')
-		return (
-			<div className='w-full h-screen flex items-center justify-center'>
+	// Always display the SignalTable alongside the appropriate board
+	return (
+		<div className='flex flex-col h-screen'>
+			{/* SignalTable at the top */}
+			<div className='mb-4'>
 				<SignalTable />
 			</div>
-		)
-	}
 
-	console.log('Auth determined, rendering appropriate board')
-	return isAdmin ? <AdminBoardPage /> : <UserBoardPage />
+			{/* Main content below - either AdminBoard or UserBoard */}
+			<div className='flex-1 border-t border-gray-200 dark:border-gray-700 pt-4'>
+				{isAdmin === undefined ? (
+					<div className='w-full h-full flex items-center justify-center'>
+						<p className='text-xl'>Загрузка...</p>
+					</div>
+				) : isAdmin ? (
+					<AdminBoardPage />
+				) : (
+					<UserBoardPage />
+				)}
+			</div>
+		</div>
+	)
 }

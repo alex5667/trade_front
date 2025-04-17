@@ -4,15 +4,38 @@ import { useEffect, useState } from 'react'
 
 import { useSignalSocket } from '@/hooks/useSignalSocket'
 
+import { PriceChangeTable } from './PriceChangeTable'
+import { TabSelector } from './TabSelector'
+import { TopCoinsTable } from './TopCoinsTable'
+import { VolatilityTable } from './VolatilityTable'
+import { VolumeSpikeTable } from './VolumeSpikeTable'
+
+type TabType =
+	| 'volatility'
+	| 'volume'
+	| 'priceChange'
+	| 'topGainers'
+	| 'topLosers'
+	| 'volatilityRanges'
+
 export function SignalTable() {
 	const [connectionStatus, setConnectionStatus] = useState<
 		'connecting' | 'connected' | 'error'
 	>('connecting')
-	const signals = useSignalSocket()
+	const [activeTab, setActiveTab] = useState<TabType>('volatility')
+
+	const signalData = useSignalSocket()
 
 	useEffect(() => {
 		const checkConnection = () => {
-			if (signals.length > 0) {
+			if (
+				signalData?.volatilitySpikes?.length > 0 ||
+				signalData?.topGainers?.length > 0 ||
+				signalData?.topLosers?.length > 0 ||
+				signalData?.volumeSpikes?.length > 0 ||
+				signalData?.priceChanges?.length > 0 ||
+				signalData?.volatilityRanges?.length > 0
+			) {
 				setConnectionStatus('connected')
 			} else {
 				// After 5 seconds, if still no signals, show connected anyway
@@ -33,7 +56,48 @@ export function SignalTable() {
 		return () => {
 			window.removeEventListener('load', checkConnection)
 		}
-	}, [signals])
+	}, [signalData])
+
+	const renderActiveTab = () => {
+		switch (activeTab) {
+			case 'volatility':
+				return (
+					<VolatilityTable
+						signals={signalData?.volatilitySpikes || []}
+						title='Волатильность'
+					/>
+				)
+			case 'volatilityRanges':
+				return (
+					<VolatilityTable
+						signals={signalData?.volatilityRanges || []}
+						title='Волатильность в диапазоне'
+					/>
+				)
+			case 'volume':
+				return <VolumeSpikeTable signals={signalData?.volumeSpikes || []} />
+			case 'priceChange':
+				return <PriceChangeTable signals={signalData?.priceChanges || []} />
+			case 'topGainers':
+				return (
+					<TopCoinsTable
+						coins={signalData?.topGainers || []}
+						title='растущих монетах'
+						isGainer={true}
+					/>
+				)
+			case 'topLosers':
+				return (
+					<TopCoinsTable
+						coins={signalData?.topLosers || []}
+						title='падающих монетах'
+						isGainer={false}
+					/>
+				)
+			default:
+				return <VolatilityTable signals={signalData?.volatilitySpikes || []} />
+		}
+	}
 
 	return (
 		<div className='p-4'>
@@ -51,69 +115,12 @@ export function SignalTable() {
 				</p>
 			)}
 
-			<div className='overflow-x-auto'>
-				<table className='w-full text-sm border'>
-					<thead>
-						<tr className='bg-gray-100 dark:bg-gray-800'>
-							<th className='p-2 border'>Монета</th>
-							<th className='p-2 border'>Интервал</th>
-							<th className='p-2 border'>Открытие</th>
-							<th className='p-2 border'>Макс</th>
-							<th className='p-2 border'>Мин</th>
-							<th className='p-2 border'>Закрытие</th>
-							<th className='p-2 border'>Волатильность</th>
-						</tr>
-					</thead>
-					<tbody>
-						{signals.length > 0 ? (
-							signals.map((signal, idx) => {
-								// Check signal format and handle accordingly
-								const k = signal.k || signal
+			<TabSelector
+				activeTab={activeTab}
+				onChange={setActiveTab}
+			/>
 
-								if (!k) {
-									console.error('Invalid signal format:', signal)
-									return null
-								}
-
-								// Calculate volatility
-								const vol = (
-									((parseFloat(k.h) - parseFloat(k.l)) / parseFloat(k.o)) *
-									100
-								).toFixed(2)
-
-								return (
-									<tr
-										key={idx}
-										className='hover:bg-gray-50 dark:hover:bg-gray-700'
-									>
-										<td className='p-2 border'>{k.s}</td>
-										<td className='p-2 border'>{k.i}</td>
-										<td className='p-2 border'>{k.o}</td>
-										<td className='p-2 border'>{k.h}</td>
-										<td className='p-2 border'>{k.l}</td>
-										<td className='p-2 border'>{k.c}</td>
-										<td className='p-2 border text-red-600 font-bold'>
-											{vol}%
-										</td>
-									</tr>
-								)
-							})
-						) : (
-							<tr>
-								<td
-									colSpan={7}
-									className='p-4 text-center'
-								>
-									Ожидание сигналов... (проверьте что сервер запущен на{' '}
-									{process.env.NEXT_PUBLIC_SOCKET_URL ||
-										'http://localhost:4200'}
-									)
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
-			</div>
+			{renderActiveTab()}
 		</div>
 	)
 }
