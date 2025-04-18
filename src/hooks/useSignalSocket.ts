@@ -1,5 +1,8 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
+import { io, Socket } from 'socket.io-client'
+
 import {
 	PriceChangeSignal,
 	SignalData,
@@ -9,23 +12,26 @@ import {
 	VolatilitySpikeSignal,
 	VolumeSpikeSignal
 } from '@/types/signal.types'
-import { useEffect, useState } from 'react'
-import { io, Socket } from 'socket.io-client'
+
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4200'
 
+// Helper type for handling different data formats
+type AnyObject = { [key: string]: any }
+
 export function useSignalSocket(): SignalData {
-	// Regular implementation for production or when mocks are disabled
+	const socketRef = useRef<Socket | null>(null)
+
 	const [volatilitySpikes, setVolatilitySpikes] = useState<VolatilitySpikeSignal[]>([])
+	console.log('volatilitySpikes', volatilitySpikes)
 	const [volatilityRanges, setVolatilityRanges] = useState<VolatilitySpikeSignal[]>([])
+	console.log('volatilityRanges', volatilityRanges)
 	const [volumeSpikes, setVolumeSpikes] = useState<VolumeSpikeSignal[]>([])
 	const [priceChanges, setPriceChanges] = useState<PriceChangeSignal[]>([])
-	const [topGainers, setTopGainers] = useState<TopCoin[]>([])
-	const [topLosers, setTopLosers] = useState<TopCoin[]>([])
-
-	// Fetch top gainers and losers directly from Redis
-
-
+	const [topGainers, setTopGainers] = useState<string[]>([])
+	console.log('topGainers', topGainers)
+	const [topLosers, setTopLosers] = useState<string[]>([])
+	console.log('topLosers', topLosers)
 	useEffect(() => {
 		console.log('🚀 Connecting to WebSocket at:', SOCKET_URL)
 
@@ -34,6 +40,8 @@ export function useSignalSocket(): SignalData {
 			reconnectionAttempts: 5,
 			path: '/socket.io'
 		})
+
+		socketRef.current = socket
 
 		socket.on('connect', () => {
 			console.log('✅ WebSocket connected:', socket.id)
@@ -49,9 +57,39 @@ export function useSignalSocket(): SignalData {
 			console.log('⚠️ Disconnected from socket:', reason)
 		})
 
+		// Handler for standard signal:volatility events
 		socket.on('signal:volatility', (signal: VolatilitySpikeSignal) => {
 			console.log('📊 Received volatility signal:', signal)
-			setVolatilitySpikes(prev => [signal, ...prev.slice(0, 99)])
+			if (signal.type === 'volatilitySpike') {
+				setVolatilitySpikes(prev => {
+					console.log('Adding volatility spike, previous count:', prev.length)
+					const newState = [signal, ...prev.slice(0, 99)]
+					console.log('New volatility spikes count:', newState.length)
+					return newState
+				})
+			}
+		})
+
+		// Handler for volatility events (without prefix)
+		socket.on('volatility', (signal: VolatilitySpikeSignal) => {
+			console.log('📊 Received volatility signal (without prefix):', signal)
+			setVolatilitySpikes(prev => {
+				console.log('Adding volatility signal, previous count:', prev.length)
+				const newState = [signal, ...prev.slice(0, 99)]
+				console.log('New volatility signals count:', newState.length)
+				return newState
+			})
+		})
+
+		// Handler for explicit volatilitySpike events
+		socket.on('volatilitySpike', (signal: VolatilitySpikeSignal) => {
+			console.log('📊 Received volatility spike signal:', signal)
+			setVolatilitySpikes(prev => {
+				console.log('Adding volatilitySpike, previous count:', prev.length)
+				const newState = [signal, ...prev.slice(0, 99)]
+				console.log('New volatilitySpike count:', newState.length)
+				return newState
+			})
 		})
 
 		socket.on('signal:volatilityRange', (signal: VolatilitySpikeSignal) => {
@@ -88,15 +126,60 @@ export function useSignalSocket(): SignalData {
 			setPriceChanges(prev => [signal, ...prev.slice(0, 99)])
 		})
 
-		// Keep these for fallback in case Redis direct connection fails
-		socket.on('top:gainers', (data: TopGainersSignal) => {
-			console.log('📊 Received top gainers from socket:', data.coins.map(c => c.symbol).join(', '))
-			setTopGainers(data.coins)
+		socket.on('top:gainers', (data: TopGainersSignal | string[] | AnyObject) => {
+			console.log('📊 Received top gainers from socket:', data)
+
+			// Handle the format from server logs: {type: 'top:gainers', payload: ['coin1', 'coin2']}
+			if (data && typeof data === 'object' && 'payload' in data && Array.isArray(data.payload)) {
+				setTopGainers(data.payload)
+				return
+			}
+
+			// Handle different data formats for backward compatibility
+			if (Array.isArray(data)) {
+				// If data is already an array of strings or objects
+				const symbols = data.map(item => {
+					return typeof item === 'string' ? item : (item as AnyObject)?.symbol || ''
+				})
+				setTopGainers(symbols)
+			} else if (data && typeof data === 'object') {
+				// If data is an object with coins property
+				if (Array.isArray((data as AnyObject).coins)) {
+					const coins = (data as AnyObject).coins
+					const symbols = coins.map((coin: string | TopCoin | AnyObject) => {
+						return typeof coin === 'string' ? coin : (coin as AnyObject).symbol
+					})
+					setTopGainers(symbols)
+				}
+			}
 		})
 
-		socket.on('top:losers', (data: TopLosersSignal) => {
-			console.log('📊 Received top losers from socket:', data.coins.map(c => c.symbol).join(', '))
-			setTopLosers(data.coins)
+		socket.on('top:losers', (data: TopLosersSignal | string[] | AnyObject) => {
+			console.log('📊 Received top losers from socket:', data)
+
+			// Handle the format from server logs: {type: 'top:losers', payload: ['coin1', 'coin2']}
+			if (data && typeof data === 'object' && 'payload' in data && Array.isArray(data.payload)) {
+				setTopLosers(data.payload)
+				return
+			}
+
+			// Handle different data formats for backward compatibility
+			if (Array.isArray(data)) {
+				// If data is already an array of strings or objects
+				const symbols = data.map(item => {
+					return typeof item === 'string' ? item : (item as AnyObject)?.symbol || ''
+				})
+				setTopLosers(symbols)
+			} else if (data && typeof data === 'object') {
+				// If data is an object with coins property
+				if (Array.isArray((data as AnyObject).coins)) {
+					const coins = (data as AnyObject).coins
+					const symbols = coins.map((coin: string | TopCoin | AnyObject) => {
+						return typeof coin === 'string' ? coin : (coin as AnyObject).symbol
+					})
+					setTopLosers(symbols)
+				}
+			}
 		})
 
 		// Legacy handlers for backward compatibility
@@ -129,10 +212,10 @@ export function useSignalSocket(): SignalData {
 
 	return {
 		volatilitySpikes,
+		volatilityRanges,
 		volumeSpikes,
 		priceChanges,
 		topGainers,
 		topLosers,
-		volatilityRanges
 	}
 }

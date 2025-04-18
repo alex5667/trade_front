@@ -54,13 +54,13 @@ export type TopCoin = {
 
 export interface TopGainersSignal {
 	type: string
-	coins: TopCoin[]
+	coins: string[] | TopCoin[]  // Allow both string[] and TopCoin[] for backward compatibility
 	timestamp: number
 }
 
 export interface TopLosersSignal {
 	type: string
-	coins: TopCoin[]
+	coins: string[] | TopCoin[]  // Allow both string[] and TopCoin[] for backward compatibility
 	timestamp: number
 }
 
@@ -68,8 +68,8 @@ export type SignalData = {
 	volatilitySpikes: VolatilitySpikeSignal[]
 	volumeSpikes: VolumeSpikeSignal[]
 	priceChanges: PriceChangeSignal[]
-	topGainers: TopCoin[]
-	topLosers: TopCoin[]
+	topGainers: string[] // ← только символы монет
+	topLosers: string[]
 	volatilityRanges: VolatilitySpikeSignal[]
 }
 

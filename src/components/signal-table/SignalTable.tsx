@@ -5,24 +5,14 @@ import { useEffect, useState } from 'react'
 import { useSignalSocket } from '@/hooks/useSignalSocket'
 
 import { PriceChangeTable } from './PriceChangeTable'
-import { TabSelector } from './TabSelector'
 import { TopCoinsTable } from './TopCoinsTable'
 import { VolatilityTable } from './VolatilityTable'
 import { VolumeSpikeTable } from './VolumeSpikeTable'
-
-type TabType =
-	| 'volatility'
-	| 'volume'
-	| 'priceChange'
-	| 'topGainers'
-	| 'topLosers'
-	| 'volatilityRanges'
 
 export function SignalTable() {
 	const [connectionStatus, setConnectionStatus] = useState<
 		'connecting' | 'connected' | 'error'
 	>('connecting')
-	const [activeTab, setActiveTab] = useState<TabType>('volatility')
 
 	const signalData = useSignalSocket()
 
@@ -58,47 +48,6 @@ export function SignalTable() {
 		}
 	}, [signalData])
 
-	const renderActiveTab = () => {
-		switch (activeTab) {
-			case 'volatility':
-				return (
-					<VolatilityTable
-						signals={signalData?.volatilitySpikes || []}
-						title='Волатильность'
-					/>
-				)
-			case 'volatilityRanges':
-				return (
-					<VolatilityTable
-						signals={signalData?.volatilityRanges || []}
-						title='Волатильность в диапазоне'
-					/>
-				)
-			case 'volume':
-				return <VolumeSpikeTable signals={signalData?.volumeSpikes || []} />
-			case 'priceChange':
-				return <PriceChangeTable signals={signalData?.priceChanges || []} />
-			case 'topGainers':
-				return (
-					<TopCoinsTable
-						coins={signalData?.topGainers || []}
-						title='растущих монетах'
-						isGainer={true}
-					/>
-				)
-			case 'topLosers':
-				return (
-					<TopCoinsTable
-						coins={signalData?.topLosers || []}
-						title='падающих монетах'
-						isGainer={false}
-					/>
-				)
-			default:
-				return <VolatilityTable signals={signalData?.volatilitySpikes || []} />
-		}
-	}
-
 	return (
 		<div className='p-4'>
 			<h2 className='text-xl font-bold mb-2'>🔥 Сигналы в реальном времени</h2>
@@ -115,12 +64,33 @@ export function SignalTable() {
 				</p>
 			)}
 
-			<TabSelector
-				activeTab={activeTab}
-				onChange={setActiveTab}
-			/>
+			<div className='space-y-6'>
+				<VolatilityTable
+					signals={signalData?.volatilitySpikes || []}
+					title='Волатильность'
+				/>
 
-			{renderActiveTab()}
+				<VolatilityTable
+					signals={signalData?.volatilityRanges || []}
+					title='Волатильность в диапазоне'
+				/>
+
+				<VolumeSpikeTable signals={signalData?.volumeSpikes || []} />
+
+				<PriceChangeTable signals={signalData?.priceChanges || []} />
+
+				<TopCoinsTable
+					coins={signalData?.topGainers || []}
+					title='растущих монетах'
+					isGainer={true}
+				/>
+
+				<TopCoinsTable
+					coins={signalData?.topLosers || []}
+					title='падающих монетах'
+					isGainer={false}
+				/>
+			</div>
 		</div>
 	)
 }
