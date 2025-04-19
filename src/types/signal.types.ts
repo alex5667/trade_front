@@ -7,6 +7,12 @@ export type SignalType =
 	| 'top:gainers'
 	| 'top:losers'
 	| 'volatilityRange'
+	| 'trigger:gainers-1h'
+	| 'trigger:losers-1h'
+	| 'trigger:gainers-4h'
+	| 'trigger:losers-4h'
+	| 'trigger:gainers-24h'
+	| 'trigger:losers-24h'
 
 export interface BaseSignal {
 	symbol: string
@@ -71,5 +77,11 @@ export type SignalData = {
 	topGainers: string[] // ← только символы монет
 	topLosers: string[]
 	volatilityRanges: VolatilitySpikeSignal[]
+	triggerGainers1h: string[]
+	triggerLosers1h: string[]
+	triggerGainers4h: string[]
+	triggerLosers4h: string[]
+	triggerGainers24h: string[]
+	triggerLosers24h: string[]
 }
 

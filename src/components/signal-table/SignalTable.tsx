@@ -6,6 +6,7 @@ import { useSignalSocket } from '@/hooks/useSignalSocket'
 
 import { PriceChangeTable } from './PriceChangeTable'
 import { TopCoinsTable } from './TopCoinsTable'
+import { TriggerCoinsTable } from './TriggerCoinsTable'
 import { VolatilityTable } from './VolatilityTable'
 import { VolumeSpikeTable } from './VolumeSpikeTable'
 
@@ -24,7 +25,13 @@ export function SignalTable() {
 				signalData?.topLosers?.length > 0 ||
 				signalData?.volumeSpikes?.length > 0 ||
 				signalData?.priceChanges?.length > 0 ||
-				signalData?.volatilityRanges?.length > 0
+				signalData?.volatilityRanges?.length > 0 ||
+				signalData?.triggerGainers1h?.length > 0 ||
+				signalData?.triggerLosers1h?.length > 0 ||
+				signalData?.triggerGainers4h?.length > 0 ||
+				signalData?.triggerLosers4h?.length > 0 ||
+				signalData?.triggerGainers24h?.length > 0 ||
+				signalData?.triggerLosers24h?.length > 0
 			) {
 				setConnectionStatus('connected')
 			} else {
@@ -90,6 +97,55 @@ export function SignalTable() {
 					title='падающих монетах'
 					isGainer={false}
 				/>
+
+				{/* Trigger coins tables */}
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<TriggerCoinsTable
+						coins={signalData?.triggerGainers1h || []}
+						title='триггера для растущих монет (1ч)'
+						timeframe='1ч'
+						isGainer={true}
+					/>
+
+					<TriggerCoinsTable
+						coins={signalData?.triggerLosers1h || []}
+						title='триггера для падающих монет (1ч)'
+						timeframe='1ч'
+						isGainer={false}
+					/>
+				</div>
+
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<TriggerCoinsTable
+						coins={signalData?.triggerGainers4h || []}
+						title='триггера для растущих монет (4ч)'
+						timeframe='4ч'
+						isGainer={true}
+					/>
+
+					<TriggerCoinsTable
+						coins={signalData?.triggerLosers4h || []}
+						title='триггера для падающих монет (4ч)'
+						timeframe='4ч'
+						isGainer={false}
+					/>
+				</div>
+
+				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<TriggerCoinsTable
+						coins={signalData?.triggerGainers24h || []}
+						title='триггера для растущих монет (24ч)'
+						timeframe='24ч'
+						isGainer={true}
+					/>
+
+					<TriggerCoinsTable
+						coins={signalData?.triggerLosers24h || []}
+						title='триггера для падающих монет (24ч)'
+						timeframe='24ч'
+						isGainer={false}
+					/>
+				</div>
 			</div>
 		</div>
 	)
