@@ -2,20 +2,22 @@
 
 import { VolumeSpikeSignal } from '@/types/signal.types'
 
+import styles from './VolumeSpikeTable.module.scss'
+
 interface VolumeSpikeTableProps {
 	signals: VolumeSpikeSignal[]
 }
 
 export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 	return (
-		<div className='overflow-x-auto'>
-			<table className='w-full text-sm border'>
+		<div className={styles.tableWrapper}>
+			<table className={styles.table}>
 				<thead>
-					<tr className='bg-gray-100 dark:bg-gray-800'>
-						<th className='p-2 border'>Монета</th>
-						<th className='p-2 border'>Интервал</th>
-						<th className='p-2 border'>Объем</th>
-						<th className='p-2 border'>Время</th>
+					<tr className={styles.headRow}>
+						<th className={styles.cell}>Монета</th>
+						<th className={styles.cell}>Интервал</th>
+						<th className={styles.cell}>Объем</th>
+						<th className={styles.cell}>Время</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -23,14 +25,14 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 						signals.map((signal, idx) => (
 							<tr
 								key={idx}
-								className='hover:bg-gray-50 dark:hover:bg-gray-700'
+								className={styles.row}
 							>
-								<td className='p-2 border'>{signal.symbol}</td>
-								<td className='p-2 border'>{signal.interval}</td>
-								<td className='p-2 border text-purple-600 font-bold'>
+								<td className={styles.cell}>{signal.symbol}</td>
+								<td className={styles.cell}>{signal.interval}</td>
+								<td className={`${styles.cell} ${styles.volumeCell}`}>
 									{signal.volume}
 								</td>
-								<td className='p-2 border'>
+								<td className={styles.cell}>
 									{new Date(signal.timestamp).toLocaleTimeString()}
 								</td>
 							</tr>
@@ -39,7 +41,7 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 						<tr>
 							<td
 								colSpan={4}
-								className='p-4 text-center'
+								className={styles.emptyCell}
 							>
 								Ожидание сигналов объема...
 							</td>

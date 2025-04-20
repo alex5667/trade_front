@@ -1,29 +1,3 @@
-// export const COLORS = {
-// 	primary: '#dfccc2',
-// 	secondary: '#afbfc0cc',
-// 	third: '#3333331a',
-// 	border: '#0a1b27',
-// 	'border-light': '#f6f6f6',
-// 	sidebar: '#5b7679',
-// 	'sidebar-light': '#4f3dace6',
-// 	'bg-primary': '#dfccc2',
-// 	'bg-dark': '#0a1b27',
-// 	'bg-light': '#f6f6f6',
-// 	'text-primary': '#794f45',
-// 	'text-secondary': '#ffffffcc',
-// 	'text-white': '#ffffff',
-// 	'primary-hover': '#333333',
-// 	'text-gray': '#5b7679',
-// 	'bg-btn-hover': '#e4e4e7',
-// 	'row-black': '#0f0f0f',
-// 	'hover-light': '#1D7AFC',
-// 	'hover-dark': '#1D7AFC',
-
-// 	'button-red': '#f95454',
-// 	'button-brown': '#794f45',
-
-// }
-
 export const COLORS = {
 	primary: '#FCD535',           // Основной акцентный цвет (жёлтый)
 	secondary: '#1E2329',         // Тёмный фон
@@ -59,6 +33,14 @@ export const COLORS = {
 	'row-dark': '#0B0E11',
 	'row-light': '#2B3139',
 
+	// НОВЫЕ: цвета при наведении на строки
+	'hover-row-dark': '#1A1E24',    // Hover фон для тёмной строки
+	'hover-row-light': '#3C4553',   // Hover фон для светлой строки
+
 	'button-red': '#F6465D',
-	'button-brown': '#F0B90B'
+	'button-brown': '#F0B90B',
+
+	// Цвета для заголовков
+	'title-dark': '#2B3139',        // Тёмный цвет для заголовка на светлом фоне
+	'title-light': '#EAECEF'        // Светлый цвет для заголовка на тёмном фоне
 }

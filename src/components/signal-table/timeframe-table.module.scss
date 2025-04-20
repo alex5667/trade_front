@@ -1,0 +1,58 @@
+@use "@/styles/variables.scss" as *;
+@use "@/styles/mixins.scss";
+
+.tableContainer {
+	@apply overflow-x-auto mb-6;
+}
+
+.tableHeader {
+	@apply text-lg font-semibold mb-2;
+}
+
+.table {
+	@apply w-full text-sm border;
+}
+
+.tableHeaderRow {
+	@apply bg-title-dark dark:bg-gray-800;
+}
+
+.headerCell {
+	@apply p-2 border;
+}
+
+.tableRow {
+	@apply hover:bg-gray-50 dark:hover:bg-gray-700;
+
+	&.highlighted {
+		@apply bg-yellow-100 dark:bg-yellow-800/30 transition-colors duration-1000;
+	}
+}
+
+.symbolCell {
+	@apply p-2 border font-medium;
+}
+
+.dataCell {
+	@apply p-2 border font-medium;
+}
+
+.volumeCell {
+	@apply p-2 border font-medium;
+}
+
+.changeCell {
+	@apply p-2 border font-medium;
+
+	&.positive {
+		@apply text-green-600;
+	}
+
+	&.negative {
+		@apply text-red-600;
+	}
+}
+
+.emptyMessage {
+	@apply p-4 text-center;
+}

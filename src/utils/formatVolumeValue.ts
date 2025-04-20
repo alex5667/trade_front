@@ -1,4 +1,7 @@
-export const formatVolumeValue = (value?: number) => {
+/**
+ * Helper function to format volume with B/M suffix
+ */
+export const formatVolumeValue = (value?: number): string => {
 	if (value === undefined) return '0'
 
 	if (value >= 1_000_000_000) {

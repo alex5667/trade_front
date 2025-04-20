@@ -1,8 +1,9 @@
-'use client'
-
-import { useEffect, useRef, useState } from 'react'
+// 'use client'
+import { memo, useEffect, useRef, useState } from 'react'
 
 import { VolatilitySpikeSignal } from '@/types/signal.types'
+
+import styles from './VolatilityTable.module.scss'
 
 interface VolatilityTableProps {
 	signals: VolatilitySpikeSignal[]
@@ -13,139 +14,126 @@ interface EnhancedVolatilitySpikeSignal extends VolatilitySpikeSignal {
 	highlight?: boolean
 }
 
-export function VolatilityTable({
+/**
+ * VolatilityTable - Displays a table of volatility signals with optimized rendering
+ */
+export const VolatilityTable = memo(function VolatilityTable({
 	signals,
 	title = 'Волатильность'
 }: VolatilityTableProps) {
 	const [uniqueSignals, setUniqueSignals] = useState<
 		EnhancedVolatilitySpikeSignal[]
 	>([])
-	const prevSignalsRef = useRef<{
-		[key: string]: EnhancedVolatilitySpikeSignal
-	}>({})
+	const prevSignalsRef = useRef<Record<string, EnhancedVolatilitySpikeSignal>>(
+		{}
+	)
 
+	// Process signals only when the array changes
 	useEffect(() => {
 		const updatedSignals: EnhancedVolatilitySpikeSignal[] = []
-		const signalsBySymbol: { [key: string]: EnhancedVolatilitySpikeSignal } = {}
+		const signalsByKey: Record<string, EnhancedVolatilitySpikeSignal> = {}
 
-		// First pass: organize signals by symbol to create a unique set
 		signals.forEach(signal => {
 			const key = `${signal.symbol}_${signal.interval}`
-
-			// Compare with previous signal to detect changes
-			const prevSignal = prevSignalsRef.current[key]
-			const enhancedSignal: EnhancedVolatilitySpikeSignal = {
+			const prev = prevSignalsRef.current[key]
+			const enhanced: EnhancedVolatilitySpikeSignal = {
 				...signal,
 				highlight:
-					prevSignal &&
-					(prevSignal.volatility !== signal.volatility ||
-						prevSignal.open !== signal.open ||
-						prevSignal.high !== signal.high ||
-						prevSignal.low !== signal.low ||
-						prevSignal.close !== signal.close ||
-						prevSignal.range !== signal.range ||
-						prevSignal.avgRange !== signal.avgRange)
+					!!prev &&
+					(prev.volatility !== signal.volatility ||
+						prev.open !== signal.open ||
+						prev.high !== signal.high ||
+						prev.low !== signal.low ||
+						prev.close !== signal.close ||
+						prev.range !== signal.range ||
+						prev.avgRange !== signal.avgRange)
 			}
-
-			// Only keep the most recent signal for each symbol
 			if (
-				!signalsBySymbol[key] ||
-				signal.timestamp > signalsBySymbol[key].timestamp
+				!signalsByKey[key] ||
+				signal.timestamp > signalsByKey[key].timestamp
 			) {
-				signalsBySymbol[key] = enhancedSignal
+				signalsByKey[key] = enhanced
 			}
 		})
 
-		// Convert map to array and sort by timestamp (most recent first)
-		Object.values(signalsBySymbol).forEach(signal => {
-			updatedSignals.push(signal)
-		})
-
-		// Sort by timestamp (most recent first)
+		Object.values(signalsByKey).forEach(sig => updatedSignals.push(sig))
 		updatedSignals.sort((a, b) => b.timestamp - a.timestamp)
-
 		setUniqueSignals(updatedSignals)
+		prevSignalsRef.current = signalsByKey
 
-		// Store current signals for next comparison
-		prevSignalsRef.current = signalsBySymbol
-
-		// Reset highlight after 1 second
 		const timer = setTimeout(() => {
-			setUniqueSignals(prev =>
-				prev.map(signal => ({
-					...signal,
-					highlight: false
-				}))
-			)
+			setUniqueSignals(prev => prev.map(s => ({ ...s, highlight: false })))
 		}, 1000)
-
 		return () => clearTimeout(timer)
 	}, [signals])
 
+	// Format timestamp to locale time string
+	const formatTimestamp = (timestamp: number): string => {
+		return new Date(timestamp).toLocaleTimeString()
+	}
+
+	// Determine if we have range or avgRange columns
+	const hasRange = uniqueSignals[0]?.range !== undefined
+	const hasAvgRange = uniqueSignals[0]?.avgRange !== undefined
+
+	// Calculate total columns for empty state colspan
+	const baseCols = 8 + (hasRange ? 1 : 0) + (hasAvgRange ? 1 : 0)
+
 	return (
-		<div className='overflow-x-auto'>
+		<div className={styles.tableWrapper}>
 			<h3 className='text-lg font-semibold mb-2'>{title}</h3>
-			<table className='w-full text-sm border'>
+			<table className={styles.table}>
 				<thead>
-					<tr className='bg-gray-100 dark:bg-gray-800'>
-						<th className='p-2 border'>Монета</th>
-						<th className='p-2 border'>Интервал</th>
-						<th className='p-2 border'>Открытие</th>
-						<th className='p-2 border'>Макс</th>
-						<th className='p-2 border'>Мин</th>
-						<th className='p-2 border'>Закрытие</th>
-						<th className='p-2 border'>Волатильность</th>
-						{uniqueSignals.length > 0 &&
-							uniqueSignals[0].range !== undefined && (
-								<th className='p-2 border'>Диапазон</th>
-							)}
-						{uniqueSignals.length > 0 &&
-							uniqueSignals[0].avgRange !== undefined && (
-								<th className='p-2 border'>Ср. диапазон</th>
-							)}
-						<th className='p-2 border'>Время</th>
+					<tr className={styles.headRow}>
+						<th className={styles.cell}>Монета</th>
+						<th className={styles.cell}>Интервал</th>
+						<th className={styles.cell}>Открытие</th>
+						<th className={styles.cell}>Макс</th>
+						<th className={styles.cell}>Мин</th>
+						<th className={styles.cell}>Закрытие</th>
+						<th className={styles.cell}>Волатильность</th>
+						{hasRange && <th className={styles.cell}>Диапазон</th>}
+						{hasAvgRange && <th className={styles.cell}>Ср. диапазон</th>}
+						<th className={styles.cell}>Время</th>
 					</tr>
 				</thead>
 				<tbody>
 					{uniqueSignals.length > 0 ? (
-						uniqueSignals.map((signal, idx) => {
-							// Extract timestamp
-							const date = new Date(signal.timestamp)
-							const timeString = date.toLocaleTimeString()
-
-							const highlightClass = signal.highlight
-								? 'bg-yellow-100 dark:bg-yellow-800/30 transition-colors duration-1000'
-								: ''
-
+						uniqueSignals.map(signal => {
+							const rowClass = signal.highlight
+								? `${styles.row} ${styles.highlight}`
+								: styles.row
 							return (
 								<tr
 									key={`${signal.symbol}_${signal.interval}`}
-									className={`hover:bg-gray-50 dark:hover:bg-gray-700 ${highlightClass}`}
+									className={rowClass}
 								>
-									<td className='p-2 border'>{signal.symbol}</td>
-									<td className='p-2 border'>{signal.interval}</td>
-									<td className='p-2 border'>{signal.open}</td>
-									<td className='p-2 border'>{signal.high}</td>
-									<td className='p-2 border'>{signal.low}</td>
-									<td className='p-2 border'>{signal.close}</td>
-									<td className='p-2 border text-red-600 font-bold'>
+									<td className={styles.cell}>{signal.symbol}</td>
+									<td className={styles.cell}>{signal.interval}</td>
+									<td className={styles.cell}>{signal.open}</td>
+									<td className={styles.cell}>{signal.high}</td>
+									<td className={styles.cell}>{signal.low}</td>
+									<td className={styles.cell}>{signal.close}</td>
+									<td className={`${styles.cell} ${styles.volatilityCell}`}>
 										{signal.volatility}%
 									</td>
 									{signal.range !== undefined && (
-										<td className='p-2 border'>{signal.range}</td>
+										<td className={styles.cell}>{signal.range}</td>
 									)}
 									{signal.avgRange !== undefined && (
-										<td className='p-2 border'>{signal.avgRange}</td>
+										<td className={styles.cell}>{signal.avgRange}</td>
 									)}
-									<td className='p-2 border'>{timeString}</td>
+									<td className={styles.cell}>
+										{formatTimestamp(signal.timestamp)}
+									</td>
 								</tr>
 							)
 						})
 					) : (
 						<tr>
 							<td
-								colSpan={9}
-								className='p-4 text-center'
+								colSpan={baseCols}
+								className={styles.emptyCell}
 							>
 								Ожидание сигналов {title.toLowerCase()}...
 							</td>
@@ -155,4 +143,4 @@ export function VolatilityTable({
 			</table>
 		</div>
 	)
-}
+})

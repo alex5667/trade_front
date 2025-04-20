@@ -1,0 +1,90 @@
+@use "@/styles/variables.scss" as *;
+@use "@/styles/mixins.scss";
+
+.signalTableContainer {
+	@apply p-4 w-full h-full overflow-y-auto max-h-screen;
+}
+
+.sectionTitle {
+	@apply text-xl font-bold mb-2 sticky top-0 bg-title-dark dark:bg-gray-900 py-2 z-10;
+}
+
+.subSectionTitle {
+	@apply text-lg font-bold mt-8 mb-4;
+}
+
+.statusMessage {
+	@apply mb-4 px-2 py-1 rounded border;
+
+	&.connecting {
+		@apply text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800;
+	}
+
+	&.reconnecting {
+		@apply text-blue-500 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800;
+	}
+
+	&.error {
+		@apply text-red-500 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800;
+	}
+
+	&.waiting {
+		@apply text-gray-500 bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700;
+	}
+}
+
+.statusDot {
+	@apply inline-block w-2 h-2 mr-2 rounded-full;
+
+	&.connecting {
+		@apply bg-yellow-500 animate-pulse;
+	}
+
+	&.reconnecting {
+		@apply bg-blue-500 animate-pulse;
+	}
+
+	&.error {
+		@apply bg-red-500;
+	}
+
+	&.waiting {
+		@apply bg-gray-400 animate-pulse;
+	}
+}
+
+.errorContainer {
+	@apply mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700;
+}
+
+.errorTitle {
+	@apply font-medium mb-1;
+}
+
+.errorList {
+	@apply text-sm list-disc pl-5 space-y-1;
+}
+
+.errorHelpText {
+	@apply text-sm mb-2;
+}
+
+.errorButtonContainer {
+	@apply flex flex-wrap gap-2;
+}
+
+.pollingButton {
+	@apply px-3 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 rounded hover:bg-blue-200 dark:hover:bg-blue-700;
+}
+
+.reconnectButton {
+	@apply px-3 py-1 text-xs bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-200 rounded hover:bg-green-200 dark:hover:bg-green-700;
+}
+
+.gridContainer {
+	@apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.contentSection {
+	@apply space-y-6 pb-8;
+}
