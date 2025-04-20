@@ -13,6 +13,12 @@ export type SignalType =
 	| 'trigger:losers-4h'
 	| 'trigger:gainers-24h'
 	| 'trigger:losers-24h'
+	| 'top:gainers:1h'
+	| 'top:losers:1h'
+	| 'top:gainers:4h'
+	| 'top:losers:4h'
+	| 'top:gainers:24h'
+	| 'top:losers:24h'
 
 export interface BaseSignal {
 	symbol: string
@@ -58,6 +64,12 @@ export type TopCoin = {
 	priceChangePercent: number
 }
 
+export type TimeframeCoin = {
+	symbol: string
+	change: string
+	value?: number  // Add optional value field for volume/funding data
+}
+
 export interface TopGainersSignal {
 	type: string
 	coins: string[] | TopCoin[]  // Allow both string[] and TopCoin[] for backward compatibility
@@ -68,6 +80,12 @@ export interface TopLosersSignal {
 	type: string
 	coins: string[] | TopCoin[]  // Allow both string[] and TopCoin[] for backward compatibility
 	timestamp: number
+}
+
+export interface TimeframeSignal {
+	type: string
+	payload: TimeframeCoin[]
+	timeframe: string
 }
 
 export type SignalData = {
@@ -83,5 +101,15 @@ export type SignalData = {
 	triggerLosers4h: string[]
 	triggerGainers24h: string[]
 	triggerLosers24h: string[]
+	topGainers1h: TimeframeCoin[]
+	topLosers1h: TimeframeCoin[]
+	topGainers4h: TimeframeCoin[]
+	topLosers4h: TimeframeCoin[]
+	topGainers24h: TimeframeCoin[]
+	topLosers24h: TimeframeCoin[]
+	topGainers5min: TimeframeCoin[]
+	topLosers5min: TimeframeCoin[]
+	topVolume5min: TimeframeCoin[]
+	topFunding5min: TimeframeCoin[]
 }
 
