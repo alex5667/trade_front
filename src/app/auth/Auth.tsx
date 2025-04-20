@@ -98,7 +98,7 @@ const Auth = () => {
 				</div>
 				<div className='mt-4'>
 					<Button
-						className='w-full py-2 bg-white text-gray-800 hover:bg-gray-100'
+						className='w-full py-2 bg-white text-gray-800 hover:bg-title-dark'
 						onClick={handleGoogleLogin}
 					>
 						Continue with Google

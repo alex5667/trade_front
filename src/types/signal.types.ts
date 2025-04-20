@@ -68,6 +68,11 @@ export type TimeframeCoin = {
 	symbol: string
 	change: string
 	value?: number  // Add optional value field for volume/funding data
+	volume?: string  // Volume value as string
+	volumePercent?: string  // Volume percentage change
+	volume2Percent?: string  // 2-hour volume percentage
+	volume5Percent?: string  // 5-hour volume percentage
+	volume10Percent?: string  // 10-hour volume percentage
 }
 
 export interface TopGainersSignal {

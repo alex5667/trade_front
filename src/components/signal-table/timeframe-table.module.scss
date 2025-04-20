@@ -14,7 +14,7 @@
 }
 
 .tableHeaderRow {
-	@apply bg-title-dark dark:bg-gray-800;
+	@apply bg-title-dark dark:bg-bg-dark;
 }
 
 .headerCell {
@@ -22,7 +22,7 @@
 }
 
 .tableRow {
-	@apply hover:bg-gray-50 dark:hover:bg-gray-700;
+	@apply hover:bg-hover-row-dark dark:hover:bg-hover-row-light;
 
 	&.highlighted {
 		@apply bg-yellow-100 dark:bg-yellow-800/30 transition-colors duration-1000;
@@ -38,6 +38,10 @@
 }
 
 .volumeCell {
+	@apply p-2 border font-medium;
+}
+
+.percentCell {
 	@apply p-2 border font-medium;
 }
 

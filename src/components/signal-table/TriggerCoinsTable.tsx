@@ -61,7 +61,7 @@ export function TriggerCoinsTable({
 			</h3>
 			<table className='w-full text-sm border'>
 				<thead>
-					<tr className='bg-gray-100 dark:bg-gray-800'>
+					<tr className='bg-title-dark dark:bg-bg-dark'>
 						<th className='p-2 border'>Монета</th>
 					</tr>
 				</thead>
@@ -75,7 +75,7 @@ export function TriggerCoinsTable({
 							return (
 								<tr
 									key={coin.symbol}
-									className={`hover:bg-gray-50 dark:hover:bg-gray-700 ${highlightClass}`}
+									className={`hover:bg-hover-row-dark dark:hover:bg-hover-row-light ${highlightClass}`}
 								>
 									<td className={`p-2 border font-medium ${valueColor}`}>
 										{coin.symbol}

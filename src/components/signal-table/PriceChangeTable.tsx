@@ -11,7 +11,7 @@ export function PriceChangeTable({ signals }: PriceChangeTableProps) {
 		<div className='overflow-x-auto'>
 			<table className='w-full text-sm border'>
 				<thead>
-					<tr className='bg-gray-100 dark:bg-gray-800'>
+					<tr className='bg-title-dark dark:bg-bg-dark'>
 						<th className='p-2 border'>Монета</th>
 						<th className='p-2 border'>Интервал</th>
 						<th className='p-2 border'>Изменение цены</th>
@@ -24,7 +24,7 @@ export function PriceChangeTable({ signals }: PriceChangeTableProps) {
 						signals.map((signal, idx) => (
 							<tr
 								key={idx}
-								className='hover:bg-gray-50 dark:hover:bg-gray-700'
+								className='hover:bg-hover-row-dark dark:hover:bg-hover-row-light'
 							>
 								<td className='p-2 border'>{signal.symbol}</td>
 								<td className='p-2 border'>{signal.interval}</td>

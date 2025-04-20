@@ -1,6 +1,7 @@
 @use "@/styles/variables.scss" as *;
 @use "@/styles/mixins.scss";
-// VolumeSpikeTable.module.scss
+
+// TopCoinsTable.module.scss
 
 // Обёртка таблицы с горизонтальным скроллом
 .tableWrapper {
@@ -25,11 +26,6 @@
 // Строка данных
 .row {
 	@apply hover:bg-hover-row-dark dark:hover:bg-hover-row-light;
-}
-
-// Ячейка с объёмом
-.volumeCell {
-	@apply text-purple-600 font-bold;
 }
 
 // Пустое состояние

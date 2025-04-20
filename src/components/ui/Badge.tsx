@@ -22,8 +22,8 @@ export function Badge({
 					'bg-[#79affd]': variant === 'low',
 					'bg-[#777ae5]': variant === 'medium',
 					'bg-[#6645a9]': variant === 'high',
-					'bg-gray-500/20 ': variant === 'gray',
-					'bg-gray-500/30 ': variant === 'select'
+					'bg-hover-row-dark0/20 ': variant === 'gray',
+					'bg-hover-row-dark0/30 ': variant === 'select'
 				},
 				className
 			)}

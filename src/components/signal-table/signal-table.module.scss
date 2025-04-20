@@ -29,7 +29,7 @@
 	}
 
 	&.waiting {
-		@apply text-gray-500 bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700;
+		@apply text-gray-500 bg-hover-row-dark dark:bg-bg-dark/50 border-gray-200 dark:border-gray-700;
 	}
 }
 
@@ -54,7 +54,7 @@
 }
 
 .errorContainer {
-	@apply mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700;
+	@apply mt-2 p-3 bg-hover-row-dark dark:bg-bg-dark rounded border border-gray-200 dark:border-gray-700;
 }
 
 .errorTitle {

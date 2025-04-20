@@ -388,11 +388,34 @@ export function useSignalSocket(): SignalData & { connectionStatus: string } {
 				}
 
 				// Handle volume data (new format)
-				if (data.type === 'top:volume:5min' && item.symbol && item.volume && item.change) {
+				if (data.type === 'top:volume:5min' && item.symbol && item.volume) {
 					return {
 						symbol: item.symbol,
-						change: item.change,
-						value: parseFloat(item.volume)
+						change: item.change || '0',
+						value: parseFloat(item.volume),
+						volume: typeof item.volume === 'number'
+							? item.volume.toString()
+							: item.volume || '0',
+						volumePercent: typeof item.volumePercent === 'number'
+							? item.volumePercent.toFixed(2)
+							: typeof item.volumePercent === 'string'
+								? item.volumePercent
+								: '0.00',
+						volume2Percent: typeof item.volume2Level === 'number'
+							? item.volume2Level.toString()
+							: typeof item.volume2Level === 'string'
+								? item.volume2Level
+								: '0',
+						volume5Percent: typeof item.volume5Level === 'number'
+							? item.volume5Level.toString()
+							: typeof item.volume5Level === 'string'
+								? item.volume5Level
+								: '0',
+						volume10Percent: typeof item.volume10Level === 'number'
+							? item.volume10Level.toString()
+							: typeof item.volume10Level === 'string'
+								? item.volume10Level
+								: '0'
 					}
 				}
 

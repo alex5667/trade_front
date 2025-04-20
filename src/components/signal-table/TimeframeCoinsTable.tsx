@@ -4,6 +4,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { TimeframeCoin } from '@/types/signal.types'
 
+import { formatNumber } from '@/utils/formatNumber'
 import { formatVolumeValue } from '@/utils/formatVolumeValue'
 
 import styles from './timeframe-table.module.scss'
@@ -126,19 +127,36 @@ export const TimeframeCoinsTable = memo(function TimeframeCoinsTable({
 		return change.startsWith('-') ? styles.negative : styles.positive
 	}, [])
 
+	// Format percentage values for display
+	const formatPercentValue = useCallback(
+		(value: string | undefined): string => {
+			if (!value) return '0%'
+			const numValue = parseFloat(value)
+			return isNaN(numValue) ? '0%' : `${numValue}%`
+		},
+		[]
+	)
+
+	// Calculate column count based on table type
+	const columnCount = useMemo(() => {
+		if (isVolume) return 7 // Symbol, Volume, Change, 1h%, 2h%, 5h%, 10h%
+		if (isFunding) return 3 // Symbol, Rate, Change
+		return 2 // Symbol, Change
+	}, [isVolume, isFunding])
+
 	// Render empty state message
 	const renderEmptyState = useCallback(
 		() => (
 			<tr>
 				<td
-					colSpan={3}
+					colSpan={columnCount}
 					className={styles.emptyMessage}
 				>
 					Ожидание сигналов {title}...
 				</td>
 			</tr>
 		),
-		[title]
+		[title, columnCount]
 	)
 
 	return (
@@ -148,10 +166,21 @@ export const TimeframeCoinsTable = memo(function TimeframeCoinsTable({
 				<thead>
 					<tr className={styles.tableHeaderRow}>
 						<th className={styles.headerCell}>Монета</th>
-						<th className={styles.headerCell}>
-							{isVolume ? 'Объем' : isFunding ? 'Ставка' : 'Изменение'}
-						</th>
-						{(isVolume || isFunding) && (
+						{isVolume ? (
+							<>
+								<th className={styles.headerCell}>Объем</th>
+								<th className={styles.headerCell}>Изм. %</th>
+								<th className={styles.headerCell}>%</th>
+								<th className={styles.headerCell}>2%</th>
+								<th className={styles.headerCell}>5%</th>
+								<th className={styles.headerCell}>10%</th>
+							</>
+						) : isFunding ? (
+							<>
+								<th className={styles.headerCell}>Ставка</th>
+								<th className={styles.headerCell}>Изменение</th>
+							</>
+						) : (
 							<th className={styles.headerCell}>Изменение</th>
 						)}
 					</tr>
@@ -180,6 +209,18 @@ export const TimeframeCoinsTable = memo(function TimeframeCoinsTable({
 													{formatVolumeValue(coin.value)}
 												</td>
 												{renderChangeValue(coin.change)}
+												<td className={styles.percentCell}>
+													{formatPercentValue(coin.volumePercent)}
+												</td>
+												<td className={styles.percentCell}>
+													{formatNumber(coin.volume2Percent)}
+												</td>
+												<td className={styles.percentCell}>
+													{formatNumber(coin.volume5Percent)}
+												</td>
+												<td className={styles.percentCell}>
+													{formatNumber(coin.volume10Percent)}
+												</td>
 											</>
 										) : isFunding ? (
 											<>

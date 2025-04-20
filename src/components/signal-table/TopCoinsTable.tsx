@@ -1,5 +1,7 @@
 'use client'
 
+import styles from './TopCoinsTable.module.scss'
+
 interface TopCoinsTableProps {
 	coins: string[]
 	title: string
@@ -12,11 +14,11 @@ export function TopCoinsTable({
 	isGainer = true
 }: TopCoinsTableProps) {
 	return (
-		<div className='overflow-x-auto'>
-			<table className='w-full text-sm border'>
+		<div className={styles.tableWrapper}>
+			<table className={styles.table}>
 				<thead>
-					<tr className='bg-gray-100 dark:bg-gray-800'>
-						<th className='p-2 border'>Монета</th>
+					<tr className={styles.headRow}>
+						<th className={styles.cell}>Монета</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -24,16 +26,16 @@ export function TopCoinsTable({
 						coins.map((symbol, idx) => (
 							<tr
 								key={idx}
-								className='hover:bg-gray-50 dark:hover:bg-gray-700'
+								className={styles.row}
 							>
-								<td className='p-2 border'>{symbol}</td>
+								<td className={styles.cell}>{symbol}</td>
 							</tr>
 						))
 					) : (
 						<tr>
 							<td
 								colSpan={1}
-								className='p-4 text-center'
+								className={styles.emptyCell}
 							>
 								Ожидание данных о {title}...
 							</td>
