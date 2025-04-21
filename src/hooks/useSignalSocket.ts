@@ -3,9 +3,9 @@
 
 /*******************************************************
  * useSignalSocket – React hook for subscribing to the
- * Socket.IO server on the `/signals` namespace.
+ * WebSocket server on the `/ws` endpoint.
  * ----------------------------------------------------
- * ▸ Подключается к BACKEND‑у по WebSocket (Socket.IO).
+ * ▸ Подключается к BACKEND‑у по WebSocket.
  * ▸ Принимает множество типов событий (volatility,
  *   volumeSpike, priceChange, топ‑гейнеры/лузеры,
  *   а также кастомные «trigger»‑каналы для 1h/4h/24h).
@@ -17,7 +17,6 @@
  ******************************************************/
 
 import { useEffect, useRef, useState } from 'react'
-import { io, Socket } from 'socket.io-client'
 
 import {
 	PriceChangeSignal,
@@ -31,11 +30,206 @@ import {
 } from '@/types/signal.types'
 
 /**
+ * Клиент для работы с WebSocket сигналами
+ * Использует нативный WebSocket API браузера
+ */
+class TradeSignalClient {
+	baseUrl: string
+	socket: WebSocket | null
+	isConnected: boolean
+	reconnectAttempts: number
+	maxReconnectAttempts: number
+	reconnectDelay: number
+	callbacks: Record<string, Function[]>
+
+	constructor(baseUrl = 'ws://localhost:4200') {
+		this.baseUrl = baseUrl
+		this.socket = null
+		this.isConnected = false
+		this.reconnectAttempts = 0
+		this.maxReconnectAttempts = 5
+		this.reconnectDelay = 3000
+		this.callbacks = {
+			'top:gainers:5min': [],
+			'top:losers:5min': [],
+			'top:volume:5min': [],
+			'top:funding:5min': [],
+			'top:gainers:1h': [],
+			'top:losers:1h': [],
+			'top:gainers:4h': [],
+			'top:losers:4h': [],
+			'top:gainers:24h': [],
+			'top:losers:24h': [],
+			'signal:volatility': [],
+			'signal:volatilityRange': [],
+			'volatilitySpike': [],
+			'volatilityRange': [],
+			'volumeSpike': [],
+			'priceChange': [],
+			'top:gainers': [],
+			'top:losers': [],
+			'trigger:gainers-1h': [],
+			'trigger:losers-1h': [],
+			'trigger:gainers-4h': [],
+			'trigger:losers-4h': [],
+			'trigger:gainers-24h': [],
+			'trigger:losers-24h': [],
+			'trigger:gainers-5min': [],
+			'trigger:losers-5min': [],
+			'trigger:volume-5min': [],
+			'trigger:funding-5min': [],
+			'connect': [],
+			'disconnect': [],
+			'error': []
+		}
+	}
+
+	/**
+	 * Подключиться к WebSocket серверу
+	 */
+	connect() {
+		if (this.socket) {
+			console.log('Socket already exists, closing previous connection')
+			this.socket.close()
+		}
+
+		try {
+			// Подключение к WebSocket серверу
+			this.socket = new WebSocket(`${this.baseUrl}`)
+
+			this.socket.onopen = () => {
+				console.log('✅ WebSocket connected successfully')
+				this.isConnected = true
+				this.reconnectAttempts = 0
+				this._emitEvent('connect')
+			}
+
+			this.socket.onmessage = (event) => {
+				try {
+					const message = JSON.parse(event.data)
+					const { event: eventType, data } = message
+
+					console.log(`Received ${eventType} event`, data)
+					this._emitEvent(eventType, data)
+				} catch (err) {
+					console.error('Error parsing message:', err)
+				}
+			}
+
+			this.socket.onclose = (event) => {
+				console.log('⚠️ WebSocket connection closed', event)
+				this.isConnected = false
+				this._emitEvent('disconnect')
+				this._tryReconnect()
+			}
+
+			this.socket.onerror = (error) => {
+				console.error('❌ WebSocket error:', error)
+				this._emitEvent('error', error)
+			}
+		} catch (error) {
+			console.error('❌ Error establishing WebSocket connection:', error)
+			this._emitEvent('error', error)
+			this._tryReconnect()
+		}
+	}
+
+	/**
+	 * Отключиться от WebSocket сервера
+	 */
+	disconnect() {
+		if (this.socket) {
+			this.socket.close()
+			this.socket = null
+			this.isConnected = false
+		}
+	}
+
+	/**
+	 * Попытка переподключения при обрыве соединения
+	 * @private
+	 */
+	_tryReconnect() {
+		if (this.reconnectAttempts < this.maxReconnectAttempts) {
+			this.reconnectAttempts++
+			console.log(
+				`🔄 Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
+			)
+
+			setTimeout(() => {
+				this.connect()
+			}, this.reconnectDelay * this.reconnectAttempts) // Увеличиваем задержку с каждой попыткой
+		} else {
+			console.error(
+				'⛔ Max reconnect attempts reached. Please check your connection.'
+			)
+		}
+	}
+
+	/**
+	 * Подписаться на сигнал
+	 * @param {string} eventName - Название события
+	 * @param {Function} callback - Функция обратного вызова
+	 */
+	on(eventName: string, callback: Function) {
+		if (!this.callbacks[eventName]) {
+			this.callbacks[eventName] = []
+		}
+		this.callbacks[eventName].push(callback)
+		return this
+	}
+
+	/**
+	 * Отписаться от сигнала
+	 * @param {string} eventName - Название события
+	 * @param {Function} callback - Функция обратного вызова
+	 */
+	off(eventName: string, callback: Function) {
+		if (this.callbacks[eventName]) {
+			this.callbacks[eventName] = this.callbacks[eventName].filter(
+				(cb) => cb !== callback
+			)
+		}
+		return this
+	}
+
+	/**
+	 * Проверить состояние соединения
+	 * @returns {boolean} - true если соединение установлено
+	 */
+	isActive(): boolean {
+		return (
+			this.isConnected &&
+			this.socket !== null &&
+			this.socket.readyState === WebSocket.OPEN
+		)
+	}
+
+	/**
+	 * Вызвать обработчики события
+	 * @param {string} eventName - Название события
+	 * @param {*} data - Данные события
+	 * @private
+	 */
+	_emitEvent(eventName: string, data?: any) {
+		if (this.callbacks[eventName]) {
+			this.callbacks[eventName].forEach((callback) => {
+				try {
+					callback(data)
+				} catch (err) {
+					console.error(`Error in callback for event ${eventName}:`, err)
+				}
+			})
+		}
+	}
+}
+
+/**
  * URL WebSocket‑сервера берём из env‑переменной, чтобы
  * можно было легко переключать dev / prod окружения.
  */
 const SOCKET_URL =
-	process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4200'
+	process.env.NEXT_PUBLIC_SOCKET_URL || 'ws://localhost:4200'
 
 /**
  * Вспомогательный тип, чтобы TypeScript не ругался, когда
@@ -47,9 +241,8 @@ export function useSignalSocket(): SignalData & { connectionStatus: string } {
 	/*********************************
 	 * refs & state
 	 *********************************/
-	const socketRef = useRef<Socket | null>(null)
+	const clientRef = useRef<TradeSignalClient | null>(null)
 	const reconnectAttemptsRef = useRef(0)
-	const maxReconnectAttempts = 10
 
 	// Connection status for UI feedback
 	const [connectionStatus, setConnectionStatus] = useState<string>('connecting')
@@ -94,255 +287,149 @@ export function useSignalSocket(): SignalData & { connectionStatus: string } {
 	}
 
 	/**
-	 * setupSocket - create and configure socket connection
+	 * setupClient - create and configure WebSocket connection
 	 */
-	const setupSocket = () => {
-		if (socketRef.current) {
-			console.log('🔄 Cleaning up existing socket connection')
-			socketRef.current.disconnect()
-			socketRef.current = null
+	const setupClient = () => {
+		if (clientRef.current) {
+			console.log('🔄 Cleaning up existing WebSocket connection')
+			clientRef.current.disconnect()
+			clientRef.current = null
 		}
 
 		setConnectionStatus('connecting')
 		console.log('🚀 Connecting to WebSocket at:', SOCKET_URL)
 
 		try {
-			// Check URL for transport preference
-			let transports = ['polling', 'websocket'] // Default to polling first
+			const client = new TradeSignalClient(SOCKET_URL)
+			clientRef.current = client
 
-			// In browser environment, check for URL parameters
-			if (typeof window !== 'undefined') {
-				const urlParams = new URLSearchParams(window.location.search)
-				const transportParam = urlParams.get('transport')
-
-				if (transportParam === 'polling') {
-					transports = ['polling'] // Force polling only
-					console.log('🔧 Using polling transport only (from URL parameter)')
-				} else if (transportParam === 'websocket') {
-					transports = ['websocket', 'polling'] // Try websocket first
-					console.log('🔧 Using websocket transport with polling fallback (from URL parameter)')
-				}
-			}
-
-			// Force polling first, then try WebSocket
-			// This is more reliable in environments where WebSockets might be blocked
-			const socket: Socket = io(`${SOCKET_URL}/signals`, {
-				transports,
-				reconnectionAttempts: maxReconnectAttempts,
-				reconnectionDelay: 1000,
-				reconnectionDelayMax: 5000,
-				timeout: 30000, // Longer timeout for initial connection
-				path: '/socket.io',
-				forceNew: true,
-				upgrade: true, // Allow transport upgrade
-				rejectUnauthorized: false, // Allow self-signed certificates
-			})
-
-			socketRef.current = socket
-
-			/* === Events for connection state === */
-			socket.on('connect', () => {
-				console.log('✅ WebSocket connected:', socket.id, 'Transport:', socket.io.engine.transport.name)
+			// Connection events
+			client.on('connect', () => {
+				console.log('✅ WebSocket connected')
 				setConnectionStatus('connected')
 				reconnectAttemptsRef.current = 0
-
-				// Log when transport changes (e.g., from polling to websocket)
-				socket.io.engine.on('upgrade', () => {
-					console.log('🔄 Transport upgraded to:', socket.io.engine.transport.name)
-				})
 			})
 
-			socket.on('connect_error', err => {
-				console.error('❌ Socket connection error:', err.name, err.message)
-				setConnectionStatus(`error: ${err.message}`)
-
-				// Try alternate connection approach if specific errors
-				if (err.message.includes('websocket error') || err.message.includes('xhr poll error')) {
-					console.log('⚠️ WebSocket connection failed, trying different transport options')
-
-					// If current socket fails with websocket error, try reconnecting with polling only
-					if (socketRef.current) {
-						socketRef.current.io.opts.transports = ['polling']
-						console.log('🔄 Forcing polling transport only')
-					}
-				}
-
-				// Increment reconnect attempts
-				reconnectAttemptsRef.current += 1
-
-				if (reconnectAttemptsRef.current >= maxReconnectAttempts) {
-					console.error(`⛔ Maximum reconnection attempts (${maxReconnectAttempts}) reached. Please check your connection.`)
-					setConnectionStatus('max_retries_reached')
-				}
+			client.on('disconnect', () => {
+				console.log('⚠️ WebSocket disconnected')
+				setConnectionStatus('disconnected')
 			})
 
-			socket.on('disconnect', reason => {
-				console.log('⚠️ Socket disconnected:', reason)
-				setConnectionStatus(`disconnected: ${reason}`)
-
-				// If not closed by client code, attempt manual reconnect
-				if (reason === 'io server disconnect' || reason === 'transport close') {
-					console.log('🔁 Attempting manual reconnect...')
-					setTimeout(() => {
-						if (socketRef.current) {
-							socketRef.current.connect()
-						}
-					}, 2000)
-				}
+			client.on('error', (err: Error) => {
+				console.error('❌ WebSocket error:', err)
+				setConnectionStatus(`error: ${err?.message || 'unknown error'}`)
 			})
-
-			socket.io.on('reconnect', attempt => {
-				console.log(`✅ Socket reconnected after ${attempt} attempts`)
-				setConnectionStatus('connected')
-			})
-
-			socket.io.on('reconnect_attempt', attempt => {
-				console.log(`🔄 Socket reconnection attempt ${attempt}/${maxReconnectAttempts}`)
-				setConnectionStatus(`reconnecting: attempt ${attempt}/${maxReconnectAttempts}`)
-			})
-
-			socket.io.on('reconnect_error', error => {
-				console.error('❌ Socket reconnection error:', error)
-				setConnectionStatus(`reconnect_error: ${error.message}`)
-			})
-
-			socket.io.on('reconnect_failed', () => {
-				console.error('⛔ Socket reconnection failed after all attempts')
-				setConnectionStatus('reconnect_failed')
-			})
-
-			/* === Market‑signal handlers === */
 
 			// 1. Волатильность (спайки)
-			socket.on('signal:volatility', (s: VolatilitySpikeSignal) => {
+			client.on('signal:volatility', (s: VolatilitySpikeSignal) => {
 				if (s.type === 'volatilitySpike') push(setVolatilitySpikes, s)
 			})
-			socket.on('volatility', (s: VolatilitySpikeSignal) => push(setVolatilitySpikes, s))
-			socket.on('volatilitySpike', (s: VolatilitySpikeSignal) => push(setVolatilitySpikes, s))
+			client.on('volatility', (s: VolatilitySpikeSignal) => push(setVolatilitySpikes, s))
+			client.on('volatilitySpike', (s: VolatilitySpikeSignal) => push(setVolatilitySpikes, s))
 
 			// 2. Диапазон‑волатильность (high‑low range)
-			socket.on('signal:volatilityRange', (s: VolatilitySpikeSignal) => push(setVolatilityRanges, s))
-			socket.on('volatilityRange', (s: VolatilitySpikeSignal) => push(setVolatilityRanges, s))
+			client.on('signal:volatilityRange', (s: VolatilitySpikeSignal) => push(setVolatilityRanges, s))
+			client.on('volatilityRange', (s: VolatilitySpikeSignal) => push(setVolatilityRanges, s))
 
 			// 3. Объёмные всплески & изменения цены
-			socket.on('volumeSpike', (s: VolumeSpikeSignal) => push(setVolumeSpikes, s))
-			socket.on('priceChange', (s: PriceChangeSignal) => push(setPriceChanges, s))
+			client.on('volumeSpike', (s: VolumeSpikeSignal) => push(setVolumeSpikes, s))
+			client.on('priceChange', (s: PriceChangeSignal) => push(setPriceChanges, s))
 
 			// 4. Топ‑гейнеры / лузеры (потенциально в разных форматах)
-			socket.on('top:gainers', (d: TopGainersSignal | string[] | AnyObject) => {
+			client.on('top:gainers', (d: TopGainersSignal | string[] | AnyObject) => {
 				setTopGainers(parseSymbols(d))
 			})
-			socket.on('top:losers', (d: TopLosersSignal | string[] | AnyObject) => {
+			client.on('top:losers', (d: TopLosersSignal | string[] | AnyObject) => {
 				setTopLosers(parseSymbols(d))
 			})
 
 			// 5. Таймфрейм-специфичные данные для 5-минутного таймфрейма
-			socket.on('top:gainers:5min', (d: AnyObject) => {
+			client.on('top:gainers:5min', (d: AnyObject) => {
 				setTopGainers5min(parseTimeframeCoins(d))
 			})
-			socket.on('top:losers:5min', (d: AnyObject) => {
+			client.on('top:losers:5min', (d: AnyObject) => {
 				setTopLosers5min(parseTimeframeCoins(d))
 			})
-			socket.on('top:volume:5min', (d: AnyObject) => {
+			client.on('top:volume:5min', (d: AnyObject) => {
 				setTopVolume5min(parseTimeframeCoins(d))
 			})
-			socket.on('top:funding:5min', (d: AnyObject) => {
+			client.on('top:funding:5min', (d: AnyObject) => {
 				setTopFunding5min(parseTimeframeCoins(d))
 			})
 
 			// Legacy event handlers - keep them for backwards compatibility
-			socket.on('trigger:gainers-5min', (d: TopGainersSignal | string[] | AnyObject) => {
+			client.on('trigger:gainers-5min', (d: TopGainersSignal | string[] | AnyObject) => {
 				setTopGainers5min(parseTimeframeCoins(d))
 			})
-			socket.on('trigger:losers-5min', (d: TopLosersSignal | string[] | AnyObject) => {
+			client.on('trigger:losers-5min', (d: TopLosersSignal | string[] | AnyObject) => {
 				setTopLosers5min(parseTimeframeCoins(d))
 			})
-			socket.on('trigger:volume-5min', (d: TopGainersSignal | string[] | AnyObject) => {
+			client.on('trigger:volume-5min', (d: TopGainersSignal | string[] | AnyObject) => {
 				setTopVolume5min(parseTimeframeCoins(d))
 			})
-			socket.on('trigger:funding-5min', (d: TopGainersSignal | string[] | AnyObject) => {
+			client.on('trigger:funding-5min', (d: TopGainersSignal | string[] | AnyObject) => {
 				setTopFunding5min(parseTimeframeCoins(d))
 			})
 
 			// 6. Триггер‑каналы для 1h / 4h / 24h (символы‑кандидаты)
-			socket.on('trigger:gainers-1h', d => setTriggerGainers1h(parseSymbols(d)))
-			socket.on('trigger:losers-1h', d => setTriggerLosers1h(parseSymbols(d)))
+			client.on('trigger:gainers-1h', (d: TopGainersSignal | string[] | AnyObject) => setTriggerGainers1h(parseSymbols(d)))
+			client.on('trigger:losers-1h', (d: TopLosersSignal | string[] | AnyObject) => setTriggerLosers1h(parseSymbols(d)))
 
-			socket.on('trigger:gainers-4h', d => setTriggerGainers4h(parseSymbols(d)))
-			socket.on('trigger:losers-4h', d => setTriggerLosers4h(parseSymbols(d)))
+			client.on('trigger:gainers-4h', (d: TopGainersSignal | string[] | AnyObject) => setTriggerGainers4h(parseSymbols(d)))
+			client.on('trigger:losers-4h', (d: TopLosersSignal | string[] | AnyObject) => setTriggerLosers4h(parseSymbols(d)))
 
-			socket.on('trigger:gainers-24h', d => setTriggerGainers24h(parseSymbols(d)))
-			socket.on('trigger:losers-24h', d => setTriggerLosers24h(parseSymbols(d)))
+			client.on('trigger:gainers-24h', (d: TopGainersSignal | string[] | AnyObject) => setTriggerGainers24h(parseSymbols(d)))
+			client.on('trigger:losers-24h', (d: TopLosersSignal | string[] | AnyObject) => setTriggerLosers24h(parseSymbols(d)))
 
-			// 6. Топ монеты по таймфреймам с изменениями
-			socket.on('top:gainers:1h', (data: TimeframeSignal | AnyObject) => {
+			// 7. Топ монеты по таймфреймам с изменениями
+			client.on('top:gainers:1h', (data: TimeframeSignal | AnyObject) => {
 				console.log('📈 Received top:gainers:1h:', data)
 				setTopGainers1h(parseTimeframeCoins(data))
 			})
 
-			socket.on('top:losers:1h', (data: TimeframeSignal | AnyObject) => {
+			client.on('top:losers:1h', (data: TimeframeSignal | AnyObject) => {
 				console.log('📉 Received top:losers:1h:', data)
 				setTopLosers1h(parseTimeframeCoins(data))
 			})
 
-			socket.on('top:gainers:4h', (data: TimeframeSignal | AnyObject) => {
+			client.on('top:gainers:4h', (data: TimeframeSignal | AnyObject) => {
 				console.log('📈 Received top:gainers:4h:', data)
 				setTopGainers4h(parseTimeframeCoins(data))
 			})
 
-			socket.on('top:losers:4h', (data: TimeframeSignal | AnyObject) => {
+			client.on('top:losers:4h', (data: TimeframeSignal | AnyObject) => {
 				console.log('📉 Received top:losers:4h:', data)
 				setTopLosers4h(parseTimeframeCoins(data))
 			})
 
-			socket.on('top:gainers:24h', (data: TimeframeSignal | AnyObject) => {
+			client.on('top:gainers:24h', (data: TimeframeSignal | AnyObject) => {
 				console.log('📈 Received top:gainers:24h:', data)
 				setTopGainers24h(parseTimeframeCoins(data))
 			})
 
-			socket.on('top:losers:24h', (data: TimeframeSignal | AnyObject) => {
+			client.on('top:losers:24h', (data: TimeframeSignal | AnyObject) => {
 				console.log('📉 Received top:losers:24h:', data)
 				setTopLosers24h(parseTimeframeCoins(data))
 			})
 
-			/**
-			 * Legacy handler: если прилетает «сырой» kline‑объект
-			 * от Binance, преобразуем в VolatilitySpikeSignal.
-			 */
-			socket.on('binance:kline', raw => {
-				if (!raw?.k) return
-				const k = raw.k
-				const volatility = ((parseFloat(k.h) - parseFloat(k.l)) / parseFloat(k.o)) * 100
-
-				const sig: VolatilitySpikeSignal = {
-					type: 'volatilityRange',
-					symbol: k.s,
-					interval: k.i,
-					open: parseFloat(k.o),
-					high: parseFloat(k.h),
-					low: parseFloat(k.l),
-					close: parseFloat(k.c),
-					volatility: +volatility.toFixed(2),
-					timestamp: k.t,
-				}
-				push(setVolatilityRanges, sig)
-			})
+			// Connect to the WebSocket server
+			client.connect()
 		} catch (e: any) {
-			console.error('❌ Socket initialization error:', e)
+			console.error('❌ WebSocket initialization error:', e)
 			setConnectionStatus(`init_error: ${e.message}`)
 		}
 	}
 
-	// Initialize the socket connection when the component mounts
+	// Initialize the WebSocket connection when the component mounts
 	useEffect(() => {
-		setupSocket()
+		setupClient()
 
 		// Cleanup when component unmounts
 		return () => {
-			if (socketRef.current) {
-				console.log('🧹 Cleaning up socket connection on unmount')
-				socketRef.current.disconnect()
-				socketRef.current = null
+			if (clientRef.current) {
+				console.log('🧹 Cleaning up WebSocket connection on unmount')
+				clientRef.current.disconnect()
+				clientRef.current = null
 			}
 		}
 	}, []) // Empty dependency array to run only once on mount
@@ -486,4 +573,4 @@ export function useSignalSocket(): SignalData & { connectionStatus: string } {
 		topLosers5min,
 		connectionStatus
 	}
-}
+} 
