@@ -14,6 +14,8 @@ import { getSiteUrl } from '@/config/pages-url.config'
 
 import '../styles/globals.scss'
 
+import InitColors from '@/styles/init-colors'
+
 const zen = Noto_Sans({
 	subsets: ['cyrillic', 'latin'],
 
@@ -47,6 +49,7 @@ export default function RootLayout({
 				suppressHydrationWarning
 			>
 				<Providers>
+					<InitColors />
 					<Suspense fallback={<Loader />}>
 						<Background />
 					</Suspense>

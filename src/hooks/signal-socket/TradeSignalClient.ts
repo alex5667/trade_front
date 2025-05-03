@@ -30,21 +30,37 @@ export class TradeSignalClient {
 	 */
 	private initEvents(): void {
 		const eventTypes = [
-			'connect', 'disconnect', 'error',
+			'connect', 'disconnect', 'error', 'reconnecting',
+			// Volatility signals
 			'signal:volatility', 'signal:volatilityRange',
 			'volatilitySpike', 'volatilityRange',
+			// Volume and price signals
 			'volumeSpike', 'priceChange',
+			// Top gainers/losers
 			'top:gainers', 'top:losers',
+			// Top gainers/losers without specific timeframe
+			'top:gainers:', 'top:losers:',
+			// 5min timeframe data
 			'top:gainers:5min', 'top:losers:5min',
 			'top:volume:5min', 'top:funding:5min',
+			// 1h timeframe data
 			'top:gainers:1h', 'top:losers:1h',
+			// 4h timeframe data
 			'top:gainers:4h', 'top:losers:4h',
+			// 24h timeframe data
 			'top:gainers:24h', 'top:losers:24h',
+			// Trigger events
 			'trigger:gainers-1h', 'trigger:losers-1h',
 			'trigger:gainers-4h', 'trigger:losers-4h',
 			'trigger:gainers-24h', 'trigger:losers-24h',
 			'trigger:gainers-5min', 'trigger:losers-5min',
 			'trigger:volume-5min', 'trigger:funding-5min',
+			// Special events from new API
+			'timeframe5min',
+			'timeframe1h',
+			'timeframe4h',
+			'timeframe24h',
+			// Generic event types
 			SignalType.Volatility,
 			SignalType.Volume,
 			SignalType.PriceChange,
@@ -61,6 +77,7 @@ export class TradeSignalClient {
 	 */
 	public connect(): void {
 		if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
+			console.log('WebSocket already connected or connecting')
 			return
 		}
 
@@ -68,7 +85,15 @@ export class TradeSignalClient {
 		this.active = true
 
 		try {
-			this.socket = new WebSocket(this.config.baseUrl)
+			// Ensure baseUrl starts with ws:// or wss://
+			let wsUrl = this.config.baseUrl
+			if (!wsUrl.startsWith('ws://') && !wsUrl.startsWith('wss://')) {
+				wsUrl = `ws://${wsUrl.replace(/^http(s)?:\/\//, '')}`
+				console.log(`Converted URL to WebSocket protocol: ${wsUrl}`)
+			}
+
+			console.log(`Connecting to WebSocket server at: ${wsUrl}`)
+			this.socket = new WebSocket(wsUrl)
 
 			this.socket.onopen = () => {
 				console.log('✅ WebSocket connected successfully')
@@ -78,13 +103,20 @@ export class TradeSignalClient {
 
 			this.socket.onmessage = (event) => {
 				try {
+					console.log('Raw WebSocket message received:', event.data)
 					const message = JSON.parse(event.data)
 					const { event: eventType, data } = message
 
-					console.log(`Received ${eventType} event`, data)
+					console.log(`Received WebSocket event: ${eventType}`, data)
+
+					// Emit the specific event
 					this.emitEvent(eventType, data)
-				} catch (err) {
-					console.error('Error parsing message:', err)
+
+					// Also map to the new enum types if applicable
+					this.mapToGenericSignalType(eventType, data)
+				} catch (parseError) {
+					console.error('Error parsing message:', parseError)
+					console.error('Raw message content:', event.data)
 					this.emitEvent('error', new Error('Failed to parse WebSocket message'))
 				}
 			}
@@ -95,6 +127,7 @@ export class TradeSignalClient {
 				this.emitEvent('disconnect', { code: event.code, reason: event.reason })
 
 				if (this.active && !event.wasClean) {
+					this.emitEvent('reconnecting')
 					this.tryReconnect()
 				}
 			}
@@ -107,8 +140,56 @@ export class TradeSignalClient {
 			console.error('❌ Error establishing WebSocket connection:', error)
 			this.emitEvent('error', error)
 			if (this.active) {
+				this.emitEvent('reconnecting')
 				this.tryReconnect()
 			}
+		}
+	}
+
+	/**
+	 * Maps specific event types to generic signal types
+	 */
+	private mapToGenericSignalType(eventType: string, data: any): void {
+		// Log all signal types for debugging
+		console.log(`Mapping signal type: ${eventType}`, data)
+
+		// Map volatility-related events
+		if (eventType === 'volatilitySpike' ||
+			eventType === 'volatilityRange' ||
+			eventType === 'signal:volatility' ||
+			eventType === 'signal:volatilityRange') {
+			// Ensure the data has the correct type
+			if (!data.type) {
+				data.type = eventType
+			}
+
+			// Log before emitting volatility event
+			console.log(`Emitting volatility signal with type: ${data.type}`, data)
+
+			this.emitEvent(SignalType.Volatility, data)
+		}
+
+		// Map volume-related events
+		if (eventType === 'volumeSpike') {
+			this.emitEvent(SignalType.Volume, data)
+		}
+
+		// Map price change events
+		if (eventType === 'priceChange') {
+			this.emitEvent(SignalType.PriceChange, data)
+		}
+
+		// Map timeframe-related events
+		if (eventType.includes('top:gainers') || eventType.includes('top:losers')) {
+			this.emitEvent(SignalType.Timeframe, data)
+		}
+
+		// Map specific timeframe events to generic timeframe type
+		if (eventType === 'timeframe5min' ||
+			eventType === 'timeframe1h' ||
+			eventType === 'timeframe4h' ||
+			eventType === 'timeframe24h') {
+			this.emitEvent(SignalType.Timeframe, data)
 		}
 	}
 

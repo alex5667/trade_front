@@ -1,0 +1,33 @@
+
+@use "@/styles/colors.scss" as colors;
+// TabSelector.module.scss
+
+// Контейнер для переключателя вкладок
+.container {
+	@apply mb-4 border-b border-gray-200 dark:border-gray-700;
+}
+
+// Список вкладок
+.list {
+	@apply flex flex-wrap -mb-px text-sm font-medium text-center;
+}
+
+// Элемент списка
+.item {
+	@apply mr-2;
+}
+
+// Кнопка вкладки
+.tabButton {
+	@apply inline-block p-4 border-b-2 rounded-t-lg;
+}
+
+// Активное состояние вкладки
+.active {
+	@apply border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500;
+}
+
+// Неактивное состояние вкладки
+.inactive {
+	@apply border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300;
+}

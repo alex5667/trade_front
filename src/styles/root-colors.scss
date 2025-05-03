@@ -1,0 +1,84 @@
+@use "sass:map";
+@use "colors.scss" as colors;
+
+// Глобальные переменные цветов для :root селектора
+// Этот файл не является CSS-модулем, поэтому может содержать глобальные селекторы
+:root {
+	--color-primary: #{map.get(colors.$colors, "primary")};
+	--color-secondary: #{map.get(colors.$colors, "secondary")};
+	--color-third: #{map.get(colors.$colors, "third")};
+
+	--color-border: #{map.get(colors.$colors, "border")};
+	--color-border-light: #{map.get(colors.$colors, "border-light")};
+	--color-border-dark: #{map.get(colors.$colors, "border-dark")};
+
+	--color-sidebar: #{map.get(colors.$colors, "sidebar")};
+	--color-sidebar-light: #{map.get(colors.$colors, "sidebar-light")};
+	--color-sidebar-dark: #{map.get(colors.$colors, "sidebar-dark")};
+
+	--color-bg-primary: #{map.get(colors.$colors, "bg-primary")};
+	--color-bg-light: #{map.get(colors.$colors, "bg-light")};
+	--color-bg-dark: #{map.get(colors.$colors, "bg-dark")};
+	--color-bg-light-dark: #{map.get(colors.$colors, "bg-light-dark")};
+
+	--color-text-primary: #{map.get(colors.$colors, "text-primary")};
+	--color-text-secondary: #{map.get(colors.$colors, "text-secondary")};
+	--color-text-white: #{map.get(colors.$colors, "text-white")};
+	--color-text-gray: #{map.get(colors.$colors, "text-gray")};
+	--color-text-light: #{map.get(colors.$colors, "text-light")};
+	--color-text-dark: #{map.get(colors.$colors, "text-dark")};
+
+	--color-primary-hover: #{map.get(colors.$colors, "primary-hover")};
+	--color-hover-light: #{map.get(colors.$colors, "hover-light")};
+	--color-hover-dark: #{map.get(colors.$colors, "hover-dark")};
+
+	--color-bg-btn-hover: #{map.get(colors.$colors, "bg-btn-hover")};
+	--color-bg-btn-hover-dark: #{map.get(colors.$colors, "bg-btn-hover-dark")};
+
+	--color-row-dark: #{map.get(colors.$colors, "row-dark")};
+	--color-row-light: #{map.get(colors.$colors, "row-light")};
+
+	--color-hover-row-dark: #{map.get(colors.$colors, "hover-row-dark")};
+	--color-hover-row-light: #{map.get(colors.$colors, "hover-row-light")};
+
+	--color-button-red: #{map.get(colors.$colors, "button-red")};
+	--color-button-brown: #{map.get(colors.$colors, "button-brown")};
+
+	--color-title-dark: #{map.get(colors.$colors, "title-dark")};
+	--color-title-light: #{map.get(colors.$colors, "title-light")};
+
+	--color-green-100: #{map.get(colors.$colors, "green-100")};
+	--color-green-200: #{map.get(colors.$colors, "green-200")};
+	--color-green-600: #{map.get(colors.$colors, "green-600")};
+	--color-green-700: #{map.get(colors.$colors, "green-700")};
+	--color-green-800: #{map.get(colors.$colors, "green-800")};
+
+	--color-red-50: #{map.get(colors.$colors, "red-50")};
+	--color-red-100: #{map.get(colors.$colors, "red-100")};
+	--color-red-200: #{map.get(colors.$colors, "red-200")};
+	--color-red-500: #{map.get(colors.$colors, "red-500")};
+	--color-red-600: #{map.get(colors.$colors, "red-600")};
+	--color-red-800: #{map.get(colors.$colors, "red-800")};
+	--color-red-900: #{map.get(colors.$colors, "red-900")};
+
+	--color-yellow-50: #{map.get(colors.$colors, "yellow-50")};
+	--color-yellow-100: #{map.get(colors.$colors, "yellow-100")};
+	--color-yellow-200: #{map.get(colors.$colors, "yellow-200")};
+	--color-yellow-500: #{map.get(colors.$colors, "yellow-500")};
+	--color-yellow-800: #{map.get(colors.$colors, "yellow-800")};
+	--color-yellow-900: #{map.get(colors.$colors, "yellow-900")};
+
+	--color-blue-50: #{map.get(colors.$colors, "blue-50")};
+	--color-blue-100: #{map.get(colors.$colors, "blue-100")};
+	--color-blue-200: #{map.get(colors.$colors, "blue-200")};
+	--color-blue-500: #{map.get(colors.$colors, "blue-500")};
+	--color-blue-700: #{map.get(colors.$colors, "blue-700")};
+	--color-blue-800: #{map.get(colors.$colors, "blue-800")};
+	--color-blue-900: #{map.get(colors.$colors, "blue-900")};
+
+	--color-gray-200: #{map.get(colors.$colors, "gray-200")};
+	--color-gray-400: #{map.get(colors.$colors, "gray-400")};
+	--color-gray-500: #{map.get(colors.$colors, "gray-500")};
+	--color-gray-700: #{map.get(colors.$colors, "gray-700")};
+	--color-gray-900: #{map.get(colors.$colors, "gray-900")};
+}

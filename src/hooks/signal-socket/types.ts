@@ -106,4 +106,26 @@ export type SignalData =
 	| VolumeChangeData
 	| PriceChangeData
 	| TimeframeTopData
-	| Timeframe5MinData 
+	| Timeframe5MinData
+
+// Interface for the hook result including all timeframe data
+export interface UseSignalSocketResult {
+	connectionStatus: ConnectionStatus
+	connect: () => void
+	disconnect: () => void
+	subscribe: (signalType: SignalType, callback: (data: SignalData) => void) => void
+	unsubscribe: (signalType: SignalType, callback: (data: SignalData) => void) => void
+	volatilitySignals: VolatilitySignal[]
+	volumeSignals: VolumeChangeData[]
+	priceChangeSignals: PriceChangeData[]
+	timeframeData: TimeframeTopData | null
+	timeframe5MinData: Timeframe5MinData | null
+	timeframe1hData: TimeframeTopData | null
+	timeframe4hData: TimeframeTopData | null
+	timeframe24hData: TimeframeTopData | null
+	topGainers5min?: TimeframeCoin[]
+	topLosers5min?: TimeframeCoin[]
+	topVolume5min?: TimeframeCoin[]
+	topFunding5min?: TimeframeCoin[]
+	error: Error | null
+} 

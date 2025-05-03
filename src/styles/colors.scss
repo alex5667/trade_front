@@ -1,0 +1,268 @@
+// This file imports colors from color.constants.ts
+@use "sass:map";
+
+// Define SCSS variables for backward compatibility
+$colors: (
+	"primary": #fcd535,
+	"secondary": #1e2329,
+	"third": #2b3139,
+
+	"border": #2b3139,
+	"border-light": #3c4553,
+	"border-dark": #131722,
+
+	"sidebar": #1e2329,
+	"sidebar-light": #2b3139,
+	"sidebar-dark": #131722,
+
+	"bg-primary": #1e2329,
+	"bg-light": #2b3139,
+	"bg-dark": #0b0e11,
+	"bg-light-dark": #131722,
+
+	"text-primary": #eaecef,
+	"text-secondary": #848e9c,
+	"text-white": #ffffff,
+	"text-gray": #848e9c,
+	"text-light": #a2b1c3,
+	"text-dark": #f0f1f2,
+
+	"primary-hover": #f0b90b,
+	"hover-light": #f0b90b,
+	"hover-dark": #f0b90b,
+
+	"bg-btn-hover": #3c4553,
+	"bg-btn-hover-dark": #1a1e24,
+
+	"row-dark": #0b0e11,
+	"row-light": #2b3139,
+
+	"hover-row-dark": #1a1e24,
+	"hover-row-light": #3c4553,
+
+	"button-red": #f6465d,
+	"button-brown": #f0b90b,
+
+	"title-dark": #2b3139,
+	"title-light": #eaecef,
+
+	// Status colors
+	"green-100": #ecfdf5,
+	"green-600": #059669,
+	"green-800": #065f46,
+	"green-200": #a7f3d0,
+	"green-700": #047857,
+
+	"red-50": #fef2f2,
+	"red-100": #fee2e2,
+	"red-200": #fecaca,
+	"red-500": #ef4444,
+	"red-600": #dc2626,
+	"red-800": #991b1b,
+	"red-900": #7f1d1d,
+
+	"yellow-50": #fffbeb,
+	"yellow-100": #fef3c7,
+	"yellow-200": #fde68a,
+	"yellow-500": #f59e0b,
+	"yellow-800": #92400e,
+	"yellow-900": #78350f,
+
+	"blue-50": #eff6ff,
+	"blue-100": #dbeafe,
+	"blue-200": #bfdbfe,
+	"blue-500": #3b82f6,
+	"blue-700": #1d4ed8,
+	"blue-800": #1e40af,
+	"blue-900": #1e3a8a,
+
+	"gray-200": #e5e7eb,
+	"gray-400": #9ca3af,
+	"gray-500": #6b7280,
+	"gray-700": #374151,
+	"gray-900": #111827
+);
+
+// Import the colors as CSS variables - using class to avoid :root issues in CSS modules
+.colors-css-variables {
+	--color-primary: #{map.get($colors, "primary")};
+	--color-secondary: #{map.get($colors, "secondary")};
+	--color-third: #{map.get($colors, "third")};
+
+	--color-border: #{map.get($colors, "border")};
+	--color-border-light: #{map.get($colors, "border-light")};
+	--color-border-dark: #{map.get($colors, "border-dark")};
+
+	--color-sidebar: #{map.get($colors, "sidebar")};
+	--color-sidebar-light: #{map.get($colors, "sidebar-light")};
+	--color-sidebar-dark: #{map.get($colors, "sidebar-dark")};
+
+	--color-bg-primary: #{map.get($colors, "bg-primary")};
+	--color-bg-light: #{map.get($colors, "bg-light")};
+	--color-bg-dark: #{map.get($colors, "bg-dark")};
+	--color-bg-light-dark: #{map.get($colors, "bg-light-dark")};
+
+	--color-text-primary: #{map.get($colors, "text-primary")};
+	--color-text-secondary: #{map.get($colors, "text-secondary")};
+	--color-text-white: #{map.get($colors, "text-white")};
+	--color-text-gray: #{map.get($colors, "text-gray")};
+	--color-text-light: #{map.get($colors, "text-light")};
+	--color-text-dark: #{map.get($colors, "text-dark")};
+
+	--color-primary-hover: #{map.get($colors, "primary-hover")};
+	--color-hover-light: #{map.get($colors, "hover-light")};
+	--color-hover-dark: #{map.get($colors, "hover-dark")};
+
+	--color-bg-btn-hover: #{map.get($colors, "bg-btn-hover")};
+	--color-bg-btn-hover-dark: #{map.get($colors, "bg-btn-hover-dark")};
+
+	--color-row-dark: #{map.get($colors, "row-dark")};
+	--color-row-light: #{map.get($colors, "row-light")};
+
+	--color-hover-row-dark: #{map.get($colors, "hover-row-dark")};
+	--color-hover-row-light: #{map.get($colors, "hover-row-light")};
+
+	--color-button-red: #{map.get($colors, "button-red")};
+	--color-button-brown: #{map.get($colors, "button-brown")};
+
+	--color-title-dark: #{map.get($colors, "title-dark")};
+	--color-title-light: #{map.get($colors, "title-light")};
+
+	--color-blue-900: #{map.get($colors, "blue-900")};
+	--color-red-900: #{map.get($colors, "red-900")};
+}
+
+// SCSS color variables
+$primary: var(--color-primary, #fcd535);
+$secondary: var(--color-secondary, #1e2329);
+$third: var(--color-third, #2b3139);
+
+$border: var(--color-border, #2b3139);
+$border-light: var(--color-border-light, #3c4553);
+$border-dark: var(--color-border-dark, #131722);
+
+$sidebar: var(--color-sidebar, #1e2329);
+$sidebar-light: var(--color-sidebar-light, #2b3139);
+$sidebar-dark: var(--color-sidebar-dark, #131722);
+
+$bg-primary: var(--color-bg-primary, #1e2329);
+$bg-light: var(--color-bg-light, #2b3139);
+$bg-dark: var(--color-bg-dark, #0b0e11);
+$bg-light-dark: var(--color-bg-light-dark, #131722);
+
+$text-primary: var(--color-text-primary, #eaecef);
+$text-secondary: var(--color-text-secondary, #848e9c);
+$text-white: var(--color-text-white, #ffffff);
+$text-gray: var(--color-text-gray, #848e9c);
+$text-light: var(--color-text-light, #a2b1c3);
+$text-dark: var(--color-text-dark, #f0f1f2);
+
+$primary-hover: var(--color-primary-hover, #f0b90b);
+$hover-light: var(--color-hover-light, #f0b90b);
+$hover-dark: var(--color-hover-dark, #f0b90b);
+
+$bg-btn-hover: var(--color-bg-btn-hover, #3c4553);
+$bg-btn-hover-dark: var(--color-bg-btn-hover-dark, #1a1e24);
+
+$row-dark: var(--color-row-dark, #0b0e11);
+$row-light: var(--color-row-light, #2b3139);
+
+$hover-row-dark: var(--color-hover-row-dark, #1a1e24);
+$hover-row-light: var(--color-hover-row-light, #3c4553);
+
+$button-red: var(--color-button-red, #f6465d);
+$button-brown: var(--color-button-brown, #f0b90b);
+
+$title-dark: var(--color-title-dark, #2b3139);
+$title-light: var(--color-title-light, #eaecef);
+
+// Status colors
+$green-100: var(--color-green-100, #ecfdf5);
+$green-200: var(--color-green-200, #a7f3d0);
+$green-600: var(--color-green-600, #059669);
+$green-700: var(--color-green-700, #047857);
+$green-800: var(--color-green-800, #065f46);
+
+$red-50: var(--color-red-50, #fef2f2);
+$red-100: var(--color-red-100, #fee2e2);
+$red-200: var(--color-red-200, #fecaca);
+$red-500: var(--color-red-500, #ef4444);
+$red-600: var(--color-red-600, #dc2626);
+$red-800: var(--color-red-800, #991b1b);
+$red-900: var(--color-red-900, #7f1d1d);
+
+$yellow-50: var(--color-yellow-50, #fffbeb);
+$yellow-100: var(--color-yellow-100, #fef3c7);
+$yellow-200: var(--color-yellow-200, #fde68a);
+$yellow-500: var(--color-yellow-500, #f59e0b);
+$yellow-800: var(--color-yellow-800, #92400e);
+$yellow-900: var(--color-yellow-900, #78350f);
+
+$blue-50: var(--color-blue-50, #eff6ff);
+$blue-100: var(--color-blue-100, #dbeafe);
+$blue-200: var(--color-blue-200, #bfdbfe);
+$blue-500: var(--color-blue-500, #3b82f6);
+$blue-700: var(--color-blue-700, #1d4ed8);
+$blue-800: var(--color-blue-800, #1e40af);
+$blue-900: var(--color-blue-900, #1e3a8a);
+
+$gray-200: var(--color-gray-200, #e5e7eb);
+$gray-400: var(--color-gray-400, #9ca3af);
+$gray-500: var(--color-gray-500, #6b7280);
+$gray-700: var(--color-gray-700, #374151);
+$gray-900: var(--color-gray-900, #111827);
+
+// Signal table specific color variables
+$table-header-bg: $title-dark;
+$table-header-bg-dark: $bg-dark;
+$table-row-hover-light: $hover-row-dark;
+$table-row-hover-dark: $hover-row-light;
+$table-border: $border;
+
+// Status colors
+$positive-text: $green-600;
+$negative-text: $red-600;
+
+// Status message colors
+$connecting-bg: $yellow-50;
+$connecting-bg-dark: rgba($yellow-900, 0.2);
+$connecting-text: $yellow-500;
+$connecting-border: $yellow-200;
+$connecting-border-dark: $yellow-800;
+$connecting-dot: $yellow-500;
+
+$reconnecting-bg: $blue-50;
+$reconnecting-bg-dark: rgba($blue-900, 0.2);
+$reconnecting-text: $blue-500;
+$reconnecting-border: $blue-200;
+$reconnecting-border-dark: $blue-800;
+$reconnecting-dot: $blue-500;
+
+$error-bg: $red-50;
+$error-bg-dark: rgba($red-900, 0.2);
+$error-text: $red-500;
+$error-border: $red-200;
+$error-border-dark: $red-800;
+$error-dot: $red-500;
+
+$waiting-bg: $hover-row-dark;
+$waiting-bg-dark: rgba($bg-dark, 0.5);
+$waiting-text: $gray-500;
+$waiting-border: $gray-200;
+$waiting-border-dark: $gray-700;
+$waiting-dot: $gray-400;
+
+// Button colors
+$polling-button-bg: $blue-100;
+$polling-button-bg-dark: $blue-800;
+$polling-button-text: $blue-700;
+$polling-button-text-dark: $blue-200;
+$polling-button-hover-bg: $blue-200;
+$polling-button-hover-bg-dark: $blue-700;
+
+$reconnect-button-bg: $green-100;
+$reconnect-button-bg-dark: $green-800;
+$reconnect-button-text: $green-700;
+$reconnect-button-text-dark: $green-200;
+$reconnect-button-hover-bg: $green-200;
+$reconnect-button-hover-bg-dark: $green-700;

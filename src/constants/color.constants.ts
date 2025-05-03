@@ -42,5 +42,41 @@ export const COLORS = {
 
 	// Цвета для заголовков
 	'title-dark': '#2B3139',        // Тёмный цвет для заголовка на светлом фоне
-	'title-light': '#EAECEF'        // Светлый цвет для заголовка на тёмном фоне
+	'title-light': '#EAECEF',       // Светлый цвет для заголовка на тёмном фоне
+
+	// Status colors
+	'green-100': '#ECFDF5',
+	'green-200': '#A7F3D0',
+	'green-600': '#059669',
+	'green-700': '#047857',
+	'green-800': '#065F46',
+
+	'red-50': '#FEF2F2',
+	'red-100': '#FEE2E2',
+	'red-200': '#FECACA',
+	'red-500': '#EF4444',
+	'red-600': '#DC2626',
+	'red-800': '#991B1B',
+	'red-900': '#7F1D1D',
+
+	'yellow-50': '#FFFBEB',
+	'yellow-100': '#FEF3C7',
+	'yellow-200': '#FDE68A',
+	'yellow-500': '#F59E0B',
+	'yellow-800': '#92400E',
+	'yellow-900': '#78350F',
+
+	'blue-50': '#EFF6FF',
+	'blue-100': '#DBEAFE',
+	'blue-200': '#BFDBFE',
+	'blue-500': '#3B82F6',
+	'blue-700': '#1D4ED8',
+	'blue-800': '#1E40AF',
+	'blue-900': '#1E3A8A',
+
+	'gray-200': '#E5E7EB',
+	'gray-400': '#9CA3AF',
+	'gray-500': '#6B7280',
+	'gray-700': '#374151',
+	'gray-900': '#111827'
 }

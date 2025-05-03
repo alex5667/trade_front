@@ -1,6 +1,8 @@
 @use "sass:math";
 @use "mixins";
 @use "variables" as *;
+@use "colors";
+@use "root-colors";
 
 @tailwind base;
 @tailwind components;
@@ -32,9 +34,10 @@ $pc: em($containerWidth); // ПК, ноутбуки, деякі планшети
 $responsiveType: 1;
 
 body {
-	@apply text-base  text-text-primary;
+	@apply text-base text-text-primary;
 	position: relative;
-
+	/* Применяем переменные цветов через класс */
+	@extend .colors-css-variables;
 	font-family: var(--font-zen), sans-serif;
 	font-weight: 400;
 }
