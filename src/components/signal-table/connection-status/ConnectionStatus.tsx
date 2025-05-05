@@ -1,90 +1,70 @@
 'use client'
 
-import { memo } from 'react'
-
-import styles from './Connection-status.module.scss'
-
-type ConnectionStatusProps = {
-	status: 'connecting' | 'connected' | 'error' | 'reconnecting'
-	message: string
-	isPersistentError: boolean
-}
-
 /**
- * ConnectionStatus - Shows the current WebSocket connection status
- * and provides options for reconnecting if errors occur
+ * ConnectionStatus Component
+ * ------------------------------
+ * Displays the current WebSocket connection status
  */
-export const ConnectionStatus = memo(function ConnectionStatus({
-	status,
-	message,
-	isPersistentError
-}: ConnectionStatusProps) {
-	if (status === 'connected') return null
+import { useEffect, useRef } from 'react'
+import { useSelector } from 'react-redux'
+
+import { selectConnectionStatus } from '@/store/signals/selectors/signals.selectors'
+
+export const ConnectionStatus = () => {
+	const componentId = useRef(`connection-status-${Date.now()}`)
+	console.log(`🚦 [${componentId.current}] ConnectionStatus компонент создан`)
+
+	const status = useSelector(selectConnectionStatus)
+	const prevStatusRef = useRef(status)
+
+	// Логирование изменения статуса соединения
+	useEffect(() => {
+		if (prevStatusRef.current !== status) {
+			console.log(
+				`📡 [${componentId.current}] Изменение статуса соединения: ${prevStatusRef.current} -> ${status}`
+			)
+			prevStatusRef.current = status
+		}
+	}, [status])
+
+	// Эффект для отслеживания жизненного цикла компонента
+	useEffect(() => {
+		console.log(`🔄 [${componentId.current}] ConnectionStatus эффект запущен`)
+
+		return () => {
+			console.log(`🛑 [${componentId.current}] ConnectionStatus размонтирован`)
+		}
+	}, [])
+
+	// Map status to display text and CSS class
+	const getStatusInfo = () => {
+		switch (status) {
+			case 'connected':
+				return { text: 'Connected', className: 'text-green-500' }
+			case 'connecting':
+				return { text: 'Connecting...', className: 'text-yellow-500' }
+			case 'disconnected':
+				return { text: 'Disconnected', className: 'text-red-500' }
+			case 'error':
+				return { text: 'Connection Error', className: 'text-red-500' }
+			default:
+				return { text: 'Unknown', className: 'text-gray-500' }
+		}
+	}
+
+	const { text, className } = getStatusInfo()
+
+	// Логируем текущее отображаемое состояние
+	console.log(
+		`🔄 [${componentId.current}] Текущий статус: ${text} (${className})`
+	)
 
 	return (
-		<>
-			{status === 'connecting' && (
-				<p className={`${styles.statusMessage} ${styles.connecting}`}>
-					<span className={`${styles.statusDot} ${styles.connecting}`}></span>
-					{message}
-				</p>
-			)}
-
-			{status === 'reconnecting' && (
-				<p className={`${styles.statusMessage} ${styles.reconnecting}`}>
-					<span className={`${styles.statusDot} ${styles.reconnecting}`}></span>
-					{message}
-				</p>
-			)}
-
-			{status === 'error' && (
-				<div className='mb-4'>
-					<p className={`${styles.statusMessage} ${styles.error}`}>
-						<span className={`${styles.statusDot} ${styles.error}`}></span>
-						{message}
-						<button
-							onClick={() => window.location.reload()}
-							className='ml-2 px-2 py-0.5 text-xs bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-700'
-						>
-							Обновить
-						</button>
-					</p>
-
-					{isPersistentError && (
-						<div className={styles.errorContainer}>
-							<h3 className={styles.errorTitle}>Возможные причины ошибки:</h3>
-							<ul className={styles.errorList}>
-								<li>Блокировка WebSocket соединений на вашей сети</li>
-								<li>Прокси-сервер или брандмауэр блокирует соединение</li>
-								<li>Временные проблемы с сервером</li>
-							</ul>
-							<div className='mt-2'>
-								<p className={styles.errorHelpText}>
-									Попробуйте следующие решения:
-								</p>
-								<div className={styles.errorButtonContainer}>
-									<button
-										onClick={() => {
-											// Try connecting with HTTP polling only
-											window.location.search = '?transport=polling'
-											window.location.reload()
-										}}
-										className={styles.pollingButton}
-									>
-										Использовать HTTP-соединение
-									</button>
-									<button
-										onClick={() => window.location.reload()}
-										className={styles.reconnectButton}
-									>
-										Переподключиться
-									</button>
-								</div>
-							</div>
-						</div>
-					)}
-				</div>
-			)}
-		</>
+		<div className='flex items-center'>
+			<div
+				className={`w-3 h-3 rounded-full mr-2 ${className.includes('green') ? 'bg-green-500' : className.includes('yellow') ? 'bg-yellow-500' : 'bg-red-500'}`}
+			></div>
+			<span className={className}>{text}</span>
+		</div>
 	)
-})
+}

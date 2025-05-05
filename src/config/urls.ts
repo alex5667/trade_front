@@ -45,5 +45,6 @@ export const URLS = {
 	WAREHOUSES_BY_NAME_CONTAINS: '/warehouses/findByNameContains',
 	STOCK_TRANSFERS: '/stock-transfers',
 	STOCK_TRANSFERS_BY_RANGE: '/browser/stockTransferByDateRange',
+	MARKET_ALL: '/market/all',
 }
 

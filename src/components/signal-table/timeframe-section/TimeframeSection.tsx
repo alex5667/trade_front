@@ -1,85 +1,90 @@
 'use client'
 
-import { memo } from 'react'
-
-import { TimeframeCoin } from '@/types/signal.types'
+import {
+	FundingCoin,
+	TimeframeCoin,
+	VolumeCoin
+} from '@/store/signals/signal.types'
 
 import { TimeframeCoinsTable } from '../timeframe-coins-table/TimeframeCoinsTable'
 
 import styles from './Timeframe-section.module.scss'
 
-type TimeframeSectionProps = {
+interface Timeframe5minData {
 	gainers: TimeframeCoin[]
 	losers: TimeframeCoin[]
-	volume: TimeframeCoin[]
-	funding: TimeframeCoin[]
-	timeframe: string
+	volume: VolumeCoin[]
+	funding: FundingCoin[]
+}
+
+interface Timeframe24hData {
+	gainers: TimeframeCoin[]
+	losers: TimeframeCoin[]
+}
+
+interface TriggerData {
+	gainers: string[]
+	losers: string[]
+	volume?: string[]
+	funding?: string[]
+}
+
+interface TimeframeSectionProps {
+	timeframe5min: Timeframe5minData
+	timeframe24h: Timeframe24hData
+	trigger5min: TriggerData
+	trigger24h: TriggerData
 }
 
 /**
  * TimeframeSection - Displays all timeframe-related tables
- * (gainers, losers, volume, funding) for a specific timeframe
+ * (gainers, losers, volume, funding) for 5min and 24h timeframes
  */
-export const TimeframeSection = memo(function TimeframeSection({
-	gainers,
-	losers,
-	volume,
-	funding,
-	timeframe
-}: TimeframeSectionProps) {
-	// Only include title if explicitly needed, it's set on the parent level
-	const displayTimeframe = timeframe === '5мин' ? '5мин' : timeframe
-
-	// Debug logging
-	console.log(`🔄 TimeframeSection (${displayTimeframe}) received:`, {
-		gainers: gainers?.length || 0,
-		losers: losers?.length || 0,
-		volume: volume?.length || 0,
-		funding: funding?.length || 0
-	})
-
-	if (gainers?.length > 0) {
-		console.log(`✅ Gainers sample for ${displayTimeframe}:`, gainers[0])
-	}
-
-	if (losers?.length > 0) {
-		console.log(`✅ Losers sample for ${displayTimeframe}:`, losers[0])
-	}
-
+export const TimeframeSection = ({
+	timeframe5min,
+	timeframe24h,
+	trigger5min,
+	trigger24h
+}: TimeframeSectionProps) => {
 	return (
-		<section className={styles.timeframeSection}>
-			<div className={styles.gridContainer}>
-				<TimeframeCoinsTable
-					coins={Array.isArray(gainers) ? gainers : []}
-					title={`растущих монет (${displayTimeframe})`}
-					timeframe={displayTimeframe}
-					isGainer={true}
-				/>
+		<div>
+			<h2 className={styles.sectionTitle}>5-Minute Timeframe</h2>
+			<section className={styles.timeframeSection}>
+				<div className={styles.gridContainer}>
+					<TimeframeCoinsTable
+						type='gainers'
+						timeframe='5min'
+						title='Top Gainers (5min)'
+					/>
 
-				<TimeframeCoinsTable
-					coins={Array.isArray(losers) ? losers : []}
-					title={`падающих монет (${displayTimeframe})`}
-					timeframe={displayTimeframe}
-					isGainer={false}
-				/>
-			</div>
-			<div className={styles.gridContainer}>
-				<TimeframeCoinsTable
-					coins={Array.isArray(volume) ? volume : []}
-					title={`объемных монет (${displayTimeframe})`}
-					timeframe={displayTimeframe}
-					isGainer={true}
-					isVolume={true}
-				/>
+					<TimeframeCoinsTable
+						type='losers'
+						timeframe='5min'
+						title='Top Losers (5min)'
+					/>
+				</div>
+			</section>
 
-				<TimeframeCoinsTable
-					coins={Array.isArray(funding) ? funding : []}
-					title={`фандинг (${displayTimeframe})`}
-					timeframe={displayTimeframe}
-					isGainer={true}
-					isFunding={true}
-				/>
-			</div>
-		</section>
+			{timeframe24h.gainers.length > 0 || timeframe24h.losers.length > 0 ? (
+				<>
+					<h2 className={styles.sectionTitle}>24-Hour Timeframe</h2>
+					<section className={styles.timeframeSection}>
+						<div className={styles.gridContainer}>
+							<TimeframeCoinsTable
+								type='gainers'
+								timeframe='24h'
+								title='Top Gainers (24h)'
+							/>
+
+							<TimeframeCoinsTable
+								type='losers'
+								timeframe='24h'
+								title='Top Losers (24h)'
+							/>
+						</div>
+					</section>
+				</>
+			) : null}
+		</div>
 	)
-})
+}

@@ -1,52 +1,63 @@
 'use client'
 
-import { memo, useEffect } from 'react'
+import { AllTradingData } from '@/types/all-traiding.types'
 
-import { VolatilitySpikeSignal } from '@/types/signal.types'
+import {
+	PriceChangeSignal,
+	VolatilitySignal,
+	VolumeSignal
+} from '@/store/signals/signal.types'
 
 import { VolatilityTable } from '../volatility-table/VolatilityTable'
 
 import styles from './Volatility-section.module.scss'
 
-type VolatilitySectionProps = {
-	volatilitySpikes: VolatilitySpikeSignal[]
-	volatilityRanges: VolatilitySpikeSignal[]
+interface VolatilitySectionProps {
+	volatilitySignals: VolatilitySignal[]
+	volumeSignals: VolumeSignal[]
+	priceChangeSignals: PriceChangeSignal[]
+	marketsData?: AllTradingData
 }
 
 /**
- * VolatilitySection - Displays volatility-related tables
+ * VolatilitySection - Displays volatility, volume and price change tables
  */
-export const VolatilitySection = memo(function VolatilitySection({
-	volatilitySpikes,
-	volatilityRanges
-}: VolatilitySectionProps) {
-	// Мониторим наличие данных по volatility
-	useEffect(() => {
-		if (volatilitySpikes.length > 0) {
-			console.log(
-				`VolatilitySection - Received ${volatilitySpikes.length} volatilitySpikes`
-			)
-		}
-		if (volatilityRanges.length > 0) {
-			console.log(
-				`VolatilitySection - Received ${volatilityRanges.length} volatilityRanges`
-			)
-		}
-	}, [volatilitySpikes, volatilityRanges])
+export const VolatilitySection = ({
+	volatilitySignals,
+	volumeSignals,
+	priceChangeSignals,
+	marketsData
+}: VolatilitySectionProps) => {
+	// Filter volatility signals by type if needed
+	const volatilitySpikes = volatilitySignals.filter(
+		signal => !signal.range && !signal.avgRange
+	)
+
+	const volatilityRanges = volatilitySignals.filter(
+		signal => signal.range !== undefined && signal.avgRange !== undefined
+	)
 
 	return (
 		<section className={styles.volatilitySection}>
-			{/* Таблица сигналов волатильности свечей */}
-			<VolatilityTable
-				signals={volatilitySpikes}
-				title='Волатильность по свече 1м (фильтр 0.8)'
-			/>
+			<h2 className={styles.sectionTitle}>Volatility Signals</h2>
 
-			{/* Таблица сигналов диапазона волатильности  */}
-			<VolatilityTable
-				signals={volatilityRanges}
-				title='Волатильность в диапазоне 30мин'
-			/>
+			{/* Volatility spike signals */}
+			{volatilitySpikes.length > 0 && (
+				<VolatilityTable
+					signals={volatilitySpikes}
+					title='Volatility Spikes'
+				/>
+			)}
+
+			{/* Volatility range signals */}
+			{volatilityRanges.length > 0 && (
+				<VolatilityTable
+					signals={volatilityRanges}
+					title='Volatility Ranges'
+				/>
+			)}
+
+			{/* Volume and price change signals would go here */}
 		</section>
 	)
-})
+}
