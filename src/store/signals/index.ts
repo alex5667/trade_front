@@ -1,56 +1,51 @@
 /**
- * Signal Module Index
+ * Signals Module Index
  * ------------------------------
- * Exports all signal-related Redux slices, selectors and types
+ * Exports all signal-related redux functionality
  */
 
-// Export all signal-related slices
+// Export signal types
+export * from './signal.types'
+
+// Export slice reducers
 export { default as connectionReducer } from './slices/connection.slice'
 export { default as priceChangeReducer } from './slices/price-change.slice'
 export { default as timeframeReducer } from './slices/timeframe.slice'
 export { default as triggerReducer } from './slices/trigger.slice'
+export { default as volatilityRangeReducer } from './slices/volatility-range.slice'
+export { default as volatilitySpikeReducer } from './slices/volatility-spike.slice'
 export { default as volatilityReducer } from './slices/volatility.slice'
 export { default as volumeReducer } from './slices/volume.slice'
 
-// Export actions from connection slice
+// Export specialized slice actions for volatility
 export {
-	connected, connecting, connectionError, disconnected
-} from './slices/connection.slice'
-
-// Export actions from volatility slice
-export {
-	addVolatilitySignal,
-	clearVolatilitySignals
+	addVolatilitySignal as addVolatilityGenericSignal,
+	clearVolatilitySignals as clearVolatilityGenericSignals
 } from './slices/volatility.slice'
 
-// Export actions from volume slice
+export {
+	addVolatilitySpikeSignal,
+	clearVolatilitySpikeSignals
+} from './slices/volatility-spike.slice'
+
+export {
+	addVolatilityRangeSignal,
+	clearVolatilityRangeSignals
+} from './slices/volatility-range.slice'
+
+// Export specialized slice actions for volume and price change
 export {
 	addVolumeSignal,
 	clearVolumeSignals
 } from './slices/volume.slice'
 
-// Export actions from price change slice
 export {
 	addPriceChangeSignal,
 	clearPriceChangeSignals
 } from './slices/price-change.slice'
 
-// Export actions from timeframe slice
-export {
-	setTopFunding5min,
-	setTopGainers24h, setTopGainers5min, setTopLosers24h, setTopLosers5min,
-	setTopVolume5min
-} from './slices/timeframe.slice'
-
-// Export actions from trigger slice
-export {
-	setTriggerFunding5min,
-	setTriggerGainers24h, setTriggerGainers5min, setTriggerLosers24h, setTriggerLosers5min,
-	setTriggerVolume5min
-} from './slices/trigger.slice'
+// Export middleware
+export { default as signalsRoutingMiddleware } from './signals.middleware'
 
 // Export selectors
 export * from './selectors/signals.selectors'
-
-// Export types
-export * from './signal.types'

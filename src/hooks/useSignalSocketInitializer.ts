@@ -19,18 +19,35 @@ import {
 	VolatilitySignal,
 	VolumeSignal
 } from '@/store/signals/signal.types'
+
+// Import actions from specialized slices
 import {
-	addFundingData,
-	addPriceChangeSignal,
-	addTimeframeGainer,
-	addTimeframeLoser,
-	addTimeframeVolume,
-	addTriggerEvent,
-	addVolatilitySignal,
-	addVolumeSignal,
 	setConnectionError,
 	setConnectionStatus
-} from '@/store/signals/signals.slice'
+} from '@/store/signals/slices/connection.slice'
+import {
+	addFundingData
+} from '@/store/signals/slices/funding.slice'
+import {
+	addPriceChangeSignal
+} from '@/store/signals/slices/price-change.slice'
+import {
+	addTimeframeGainer,
+	addTimeframeLoser,
+	addTimeframeVolume
+} from '@/store/signals/slices/timeframe.slice'
+import {
+	addTriggerEvent
+} from '@/store/signals/slices/trigger.slice'
+import {
+	addVolatilityRangeSignal
+} from '@/store/signals/slices/volatility-range.slice'
+import {
+	addVolatilitySpikeSignal
+} from '@/store/signals/slices/volatility-spike.slice'
+import {
+	addVolumeSignal
+} from '@/store/signals/slices/volume.slice'
 
 /**
  * Хук для инициализации WebSocket соединения и настройки обработчиков сигналов
@@ -47,13 +64,6 @@ export const useSignalSocketInitializer = () => {
 		(isConnected: boolean) => {
 			console.log(`WebSocket connection status changed: ${isConnected ? 'connected' : 'disconnected'}`)
 			dispatch(setConnectionStatus(isConnected))
-
-			if (isConnected) {
-				// Reset connection attempts on successful connection
-				connectionAttempts.current = 0
-				// Clear any previous errors
-				dispatch(setConnectionError(null))
-			}
 		},
 		[dispatch]
 	)
@@ -92,63 +102,86 @@ export const useSignalSocketInitializer = () => {
 				handleConnectionChange(false)
 			})
 
-			// Сигналы волатильности
+			// Volatility signals by type
 			.on('signal:volatility', (data: VolatilitySignal) => {
-				console.log('Received volatility signal:', data)
-				dispatch(addVolatilitySignal(data))
+				console.log('Received signal:volatility:', data)
+				// Route based on signal type or structure
+				if (data.signalType === 'volatilitySpike') {
+					dispatch(addVolatilitySpikeSignal(data))
+				} else if (data.signalType === 'volatilityRange') {
+					dispatch(addVolatilityRangeSignal(data))
+				} else if (data.range !== undefined && data.avgRange !== undefined) {
+					// Looks like a range signal
+					dispatch(addVolatilityRangeSignal({
+						...data,
+						signalType: 'volatilityRange'
+					}))
+				} else {
+					// Default to spike
+					dispatch(addVolatilitySpikeSignal({
+						...data,
+						signalType: 'volatilitySpike'
+					}))
+				}
 			})
 			.on('volatilitySpike', (data: VolatilitySignal) => {
-				console.log('Received volatility spike:', data)
-				dispatch(addVolatilitySignal(data))
+				console.log('Received volatilitySpike:', data)
+				dispatch(addVolatilitySpikeSignal({
+					...data,
+					signalType: 'volatilitySpike'
+				}))
 			})
 			.on('volatilityRange', (data: VolatilitySignal) => {
-				// console.log('Received volatility range:', data)
-				dispatch(addVolatilitySignal(data))
+				console.log('Received volatilityRange:', data)
+				dispatch(addVolatilityRangeSignal({
+					...data,
+					signalType: 'volatilityRange'
+				}))
 			})
 
-			// Сигналы объема
+			// Volume signals
 			.on('volumeSpike', (data: VolumeSignal) => {
-				// console.log('Received volume spike:', data)
+				console.log('Received volume spike:', data)
 				dispatch(addVolumeSignal(data))
 			})
 
-			// Сигналы изменения цены
+			// Price change signals
 			.on('priceChange', (data: PriceChangeSignal) => {
-				// console.log('Received price change:', data)
+				console.log('Received price change:', data)
 				dispatch(addPriceChangeSignal(data))
 			})
 
-			// Топ гейнеры/лузеры за 5 минут
+			// Top gainers/losers for 5min timeframe
 			.on('top:gainers:5min', (data: TimeframeCoin) => {
-				// console.log('Received top gainers 5min:', data)
+				console.log('Received top gainers 5min:', data)
 				dispatch(addTimeframeGainer({ timeframe: '5min', data }))
 			})
 			.on('top:losers:5min', (data: TimeframeCoin) => {
-				// // console.log('Received top losers 5min:', data)
+				console.log('Received top losers 5min:', data)
 				dispatch(addTimeframeLoser({ timeframe: '5min', data }))
 			})
 			.on('top:volume:5min', (data: VolumeSignal) => {
-				// / console.log('Received top volume 5min:', data)
+				console.log('Received top volume 5min:', data)
 				dispatch(addTimeframeVolume({ timeframe: '5min', data }))
 			})
 			.on('top:funding:5min', (data: FundingCoin) => {
-				// console.log('Received top funding 5min:', data)
+				console.log('Received top funding 5min:', data)
 				dispatch(addFundingData({ data }))
 			})
 
-			// Топ гейнеры/лузеры за 24 часа
+			// Top gainers/losers for 24h timeframe
 			.on('top:gainers:24h', (data: TimeframeCoin) => {
-				// console.log('Received top gainers 24h:', data)
+				console.log('Received top gainers 24h:', data)
 				dispatch(addTimeframeGainer({ timeframe: '24h', data }))
 			})
 			.on('top:losers:24h', (data: TimeframeCoin) => {
-				// console.log('Received top losers 24h:', data)
+				console.log('Received top losers 24h:', data)
 				dispatch(addTimeframeLoser({ timeframe: '24h', data }))
 			})
 
-			// Триггер-события (особые события для UI)
+			// Trigger events (special events for UI updates)
 			.on('trigger:gainers-5min', (data: string[]) => {
-				// console.log('Received trigger gainers 5min:', data)
+				console.log('Received trigger gainers 5min:', data)
 				dispatch(
 					addTriggerEvent({
 						timeframe: '5min',
@@ -158,7 +191,7 @@ export const useSignalSocketInitializer = () => {
 				)
 			})
 			.on('trigger:losers-5min', (data: string[]) => {
-				// console.log('Received trigger losers 5min:', data)
+				console.log('Received trigger losers 5min:', data)
 				dispatch(
 					addTriggerEvent({
 						timeframe: '5min',
@@ -168,7 +201,7 @@ export const useSignalSocketInitializer = () => {
 				)
 			})
 			.on('trigger:volume-5min', (data: string[]) => {
-				// console.log('Received trigger volume 5min:', data)
+				console.log('Received trigger volume 5min:', data)
 				dispatch(
 					addTriggerEvent({
 						timeframe: '5min',
@@ -178,7 +211,7 @@ export const useSignalSocketInitializer = () => {
 				)
 			})
 			.on('trigger:funding-5min', (data: string[]) => {
-				// console.log('Received trigger funding 5min:', data)
+				console.log('Received trigger funding 5min:', data)
 				dispatch(
 					addTriggerEvent({
 						timeframe: '5min',
@@ -188,7 +221,7 @@ export const useSignalSocketInitializer = () => {
 				)
 			})
 			.on('trigger:gainers-24h', (data: string[]) => {
-				// console.log('Received trigger gainers 24h:', data)
+				console.log('Received trigger gainers 24h:', data)
 				dispatch(
 					addTriggerEvent({
 						timeframe: '24h',
@@ -198,7 +231,7 @@ export const useSignalSocketInitializer = () => {
 				)
 			})
 			.on('trigger:losers-24h', (data: string[]) => {
-				// console.log('Received trigger losers 24h:', data)
+				console.log('Received trigger losers 24h:', data)
 				dispatch(
 					addTriggerEvent({
 						timeframe: '24h',
@@ -208,7 +241,7 @@ export const useSignalSocketInitializer = () => {
 				)
 			})
 
-		// Подключаемся к серверу
+		// Connect to the server
 		try {
 			wsClient.connect()
 		} catch (error: unknown) {
@@ -217,20 +250,20 @@ export const useSignalSocketInitializer = () => {
 			dispatch(setConnectionError(errorMessage))
 		}
 
-		// Отмечаем, что инициализация завершена
+		// Mark initialization as complete
 		initialized.current = true
 
 		return wsClient
 	}, [dispatch, handleConnectionChange])
 
-	// Инициализация WebSocket соединения
+	// Initialize WebSocket connection
 	useEffect(() => {
-		// Не инициализируем дважды
+		// Don't initialize twice
 		if (initialized.current) return
 
 		const wsClient = initializeSocketConnection()
 
-		// Очистка при размонтировании
+		// Cleanup on unmount
 		return () => {
 			console.log('Cleaning up WebSocket connection')
 			try {

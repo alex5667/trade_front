@@ -8,63 +8,101 @@
 import { TypeRootState } from '@/store/store'
 import { createSelector } from '@reduxjs/toolkit'
 
-// Селекторы состояния соединения
-export const selectConnectionStatus = (state: TypeRootState) =>
-	state.connection.status
-
-export const selectConnectionError = (state: TypeRootState) =>
-	state.connection.error
+// Базовые селекторы для доступа к состоянию каждого слайса
+export const selectVolatilityState = (state: TypeRootState) => state.volatility
+export const selectVolatilitySpikeState = (state: TypeRootState) => state.volatilitySpike
+export const selectVolatilityRangeState = (state: TypeRootState) => state.volatilityRange
+export const selectVolumeState = (state: TypeRootState) => state.volume
+export const selectPriceChangeState = (state: TypeRootState) => state.priceChange
+export const selectConnectionState = (state: TypeRootState) => state.connection
+export const selectTimeframeState = (state: TypeRootState) => state.timeframe
+export const selectTriggerState = (state: TypeRootState) => state.trigger
+export const selectFundingState = (state: TypeRootState) => state.funding || []
 
 // Селекторы сигналов волатильности
 export const selectVolatilitySignals = (state: TypeRootState) =>
-	state.volatility.signals
+	state.volatility?.signals || []
+
+// Специализированные селекторы для разных типов волатильности
+export const selectVolatilitySpikeSignals = (state: TypeRootState) =>
+	state.volatilitySpike?.signals || []
+
+export const selectVolatilityRangeSignals = (state: TypeRootState) =>
+	state.volatilityRange?.signals || []
+
+// Селекторы для получения последнего обновления
+export const selectVolatilityLastUpdated = (state: TypeRootState) =>
+	state.volatility?.lastUpdated || 0
+
+export const selectVolatilitySpikeLastUpdated = (state: TypeRootState) =>
+	state.volatilitySpike?.lastUpdated || 0
+
+export const selectVolatilityRangeLastUpdated = (state: TypeRootState) =>
+	state.volatilityRange?.lastUpdated || 0
+
+// Селектор статуса подключения
+export const selectConnectionStatus = (state: TypeRootState) =>
+	state.connection?.isConnected || false
+
+export const selectConnectionError = (state: TypeRootState) =>
+	state.connection?.lastError || null
 
 // Селекторы сигналов объема
 export const selectVolumeSignals = (state: TypeRootState) =>
-	state.volume.signals
+	state.volume?.signals || []
 
 // Селекторы сигналов изменения цены
 export const selectPriceChangeSignals = (state: TypeRootState) =>
-	state.priceChange.signals
+	state.priceChange?.signals || []
+
+// Комбинированный селектор для всех типов волатильности
+export const selectCombinedVolatilitySignals = createSelector(
+	[selectVolatilitySpikeSignals, selectVolatilityRangeSignals],
+	(spikeSignals, rangeSignals) => {
+		// Combine and sort by timestamp (newest first)
+		return [...spikeSignals, ...rangeSignals]
+			.sort((a, b) => b.timestamp - a.timestamp)
+	}
+)
 
 // Селекторы таймфреймов - 5 минут
 export const selectTopGainers5min = (state: TypeRootState) =>
-	state.timeframe.topGainers5min
+	state.timeframe?.['5min']?.gainers || []
 
 export const selectTopLosers5min = (state: TypeRootState) =>
-	state.timeframe.topLosers5min
+	state.timeframe?.['5min']?.losers || []
 
 export const selectTopVolume5min = (state: TypeRootState) =>
-	state.timeframe.topVolume5min
+	state.timeframe?.['5min']?.volume || []
 
 export const selectTopFunding5min = (state: TypeRootState) =>
-	state.timeframe.topFunding5min
+	state.funding?.coins || []
 
 // Селекторы таймфреймов - 24 часа
 export const selectTopGainers24h = (state: TypeRootState) =>
-	state.timeframe.topGainers24h
+	state.timeframe?.['24h']?.gainers || []
 
 export const selectTopLosers24h = (state: TypeRootState) =>
-	state.timeframe.topLosers24h
+	state.timeframe?.['24h']?.losers || []
 
 // Селекторы триггеров
 export const selectTriggerGainers5min = (state: TypeRootState) =>
-	state.trigger.triggerGainers5min
+	state.trigger?.['5min']?.gainers || []
 
 export const selectTriggerLosers5min = (state: TypeRootState) =>
-	state.trigger.triggerLosers5min
+	state.trigger?.['5min']?.losers || []
 
 export const selectTriggerVolume5min = (state: TypeRootState) =>
-	state.trigger.triggerVolume5min
+	state.trigger?.['5min']?.volume || []
 
 export const selectTriggerFunding5min = (state: TypeRootState) =>
-	state.trigger.triggerFunding5min
+	state.trigger?.['5min']?.funding || []
 
 export const selectTriggerGainers24h = (state: TypeRootState) =>
-	state.trigger.triggerGainers24h
+	state.trigger?.['24h']?.gainers || []
 
 export const selectTriggerLosers24h = (state: TypeRootState) =>
-	state.trigger.triggerLosers24h
+	state.trigger?.['24h']?.losers || []
 
 // Мемоизированные селекторы для часто используемых комбинаций данных
 /**

@@ -13,13 +13,17 @@ import { collapsedSlice } from './collapsed/collapsed.slice'
 import { userSlice } from './user/user.slice'
 
 // Import signal slices
-import signalsReducer from './signals/signals.slice'
 import connectionReducer from './signals/slices/connection.slice'
 import priceChangeReducer from './signals/slices/price-change.slice'
 import timeframeReducer from './signals/slices/timeframe.slice'
 import triggerReducer from './signals/slices/trigger.slice'
+import volatilityRangeReducer from './signals/slices/volatility-range.slice'
+import volatilitySpikeReducer from './signals/slices/volatility-spike.slice'
 import volatilityReducer from './signals/slices/volatility.slice'
 import volumeReducer from './signals/slices/volume.slice'
+
+// Import middlewares
+import signalsRoutingMiddleware from './signals/signals.middleware'
 
 // Корневой редьюсер, объединяющий все редьюсеры в приложении
 const rootReducer = combineReducers({
@@ -32,11 +36,12 @@ const rootReducer = combineReducers({
 	// Signal slices
 	connection: connectionReducer,
 	volatility: volatilityReducer,
+	volatilitySpike: volatilitySpikeReducer,
+	volatilityRange: volatilityRangeReducer,
 	volume: volumeReducer,
 	priceChange: priceChangeReducer,
 	timeframe: timeframeReducer,
 	trigger: triggerReducer,
-	signals: signalsReducer
 })
 
 // Конфигурация и создание хранилища
@@ -57,6 +62,10 @@ export const store = configureStore({
 				ignoredPaths: [
 					'volatility.signals',
 					'volatility.lastUpdated',
+					'volatilitySpike.signals',
+					'volatilitySpike.lastUpdated',
+					'volatilityRange.signals',
+					'volatilityRange.lastUpdated',
 					'volume.signals',
 					'volume.lastUpdated',
 					'priceChange.signals',
@@ -71,7 +80,8 @@ export const store = configureStore({
 		}).concat([
 			userApi.middleware,
 			authApi.middleware,
-			marketApi.middleware
+			marketApi.middleware,
+			signalsRoutingMiddleware
 		]),
 
 	// В production режиме отключаем DevTools для оптимизации

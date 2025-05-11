@@ -1,80 +1,62 @@
 /**
- * Connection Status Slice
+ * Connection Slice
  * ------------------------------
- * Redux slice for WebSocket connection status
+ * Redux slice for WebSocket connection state
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ConnectionStatus } from '../signal.types'
-
-interface ConnectionState {
-	status: ConnectionStatus
-	error: string | null
-	reconnecting: boolean
-	reconnectAttempts: number
-}
+import { ConnectionState } from '../signal.types'
 
 const initialState: ConnectionState = {
-	status: 'disconnected',
-	error: null,
-	reconnecting: false,
-	reconnectAttempts: 0
+	isConnected: false,
+	lastError: null
 }
 
 export const connectionSlice = createSlice({
 	name: 'connection',
 	initialState,
 	reducers: {
-		connecting: (state) => {
-			state.status = 'connecting'
-			state.error = null
-			state.reconnecting = false
+		setConnectionStatus: (state, action: PayloadAction<boolean>) => {
+			console.log(`🔌 Setting connection status to ${action.payload ? 'connected' : 'disconnected'}`)
+			state.isConnected = action.payload
+
+			// Clear error when connected
+			if (action.payload) {
+				state.lastError = null
+			}
+		},
+		setConnectionError: (state, action: PayloadAction<string | null>) => {
+			console.log(`❌ Connection error: ${action.payload || 'cleared'}`)
+			state.lastError = action.payload
+
+			// Set disconnected when error occurs
+			if (action.payload) {
+				state.isConnected = false
+			}
 		},
 		connected: (state) => {
-			state.status = 'connected'
-			state.error = null
-			state.reconnecting = false
-			state.reconnectAttempts = 0
+			console.log('🔌 Connection status set to connected')
+			state.isConnected = true
+			state.lastError = null
+		},
+		connecting: (state) => {
+			console.log('🔄 Connection status set to connecting')
+			state.isConnected = false
+			state.lastError = null
 		},
 		disconnected: (state) => {
-			state.status = 'disconnected'
-			state.reconnecting = false
-		},
-		reconnecting: (state, action: PayloadAction<number>) => {
-			state.status = 'disconnected'
-			state.reconnecting = true
-			state.reconnectAttempts = action.payload
-		},
-		connectionError: (state, action: PayloadAction<string>) => {
-			state.status = 'error'
-			state.error = action.payload
-			state.reconnecting = false
-		},
-		// Special action to handle direct boolean values from ws.isConnected
-		setConnectionStatus: (state, action: PayloadAction<boolean>) => {
-			if (action.payload === true) {
-				state.status = 'connected'
-				state.error = null
-				state.reconnecting = false
-				state.reconnectAttempts = 0
-			} else {
-				// Only set to disconnected if not currently in error state
-				// This prevents overwriting error information
-				if (state.status !== 'error') {
-					state.status = 'disconnected'
-				}
-			}
+			console.log('❌ Connection status set to disconnected')
+			state.isConnected = false
 		}
 	}
 })
 
 export const {
-	connecting,
+	setConnectionStatus,
+	setConnectionError,
 	connected,
-	disconnected,
-	reconnecting,
-	connectionError,
-	setConnectionStatus
+	connecting,
+	disconnected
 } = connectionSlice.actions
 
 export default connectionSlice.reducer 

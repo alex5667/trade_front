@@ -18,6 +18,7 @@ export interface BaseSignal {
 	exchange?: string
 	timestamp: number
 	price?: number
+	createdAt?: number // Timestamp when the signal was added to the store
 }
 
 /**
@@ -34,8 +35,6 @@ export interface VolatilitySignal extends BaseSignal {
 	range?: number
 	avgRange?: number
 	rangeRatio?: number
-	// Timestamp when signal was added to the store
-	createdAt?: number
 	// Данные о свечах
 	open?: number
 	high?: number

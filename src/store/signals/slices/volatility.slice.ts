@@ -1,7 +1,9 @@
 /**
  * Volatility Signals Slice
  * ------------------------------
- * Redux slice for volatility signals
+ * Redux slice for all volatility signals (combined)
+ * This slice is kept for backwards compatibility and
+ * forwards signals to the appropriate specialized slices
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -25,21 +27,22 @@ export const volatilitySlice = createSlice({
 	initialState,
 	reducers: {
 		addVolatilitySignal: (state, action: PayloadAction<VolatilitySignal>) => {
-			console.log(`💾 Adding volatility signal to store: ${action.payload.symbol}, type: ${action.payload.signalType || 'volatility'}`)
+			const signal = action.payload
+			console.log(`💾 Adding volatility signal to store: ${signal.symbol}, type: ${signal.signalType || 'volatility'}`)
 
 			// Check if signal with same symbol and timestamp already exists
 			const existingIndex = state.signals.findIndex(
-				signal =>
-					signal.symbol === action.payload.symbol &&
-					signal.timestamp === action.payload.timestamp &&
-					signal.signalType === action.payload.signalType
+				existingSignal =>
+					existingSignal.symbol === signal.symbol &&
+					existingSignal.timestamp === signal.timestamp &&
+					existingSignal.signalType === signal.signalType
 			)
 
 			if (existingIndex !== -1) {
 				// Update existing signal instead of adding new one
 				console.log(`🔄 Updating existing signal at index ${existingIndex}`)
 				state.signals[existingIndex] = {
-					...action.payload,
+					...signal,
 					// Preserve the creation time from the original signal
 					createdAt: state.signals[existingIndex].createdAt || Date.now()
 				}
@@ -47,7 +50,7 @@ export const volatilitySlice = createSlice({
 				// Add new signal at the beginning of the array with creation timestamp
 				console.log(`➕ Adding new signal, current count: ${state.signals.length}`)
 				state.signals.unshift({
-					...action.payload,
+					...signal,
 					createdAt: Date.now()
 				})
 

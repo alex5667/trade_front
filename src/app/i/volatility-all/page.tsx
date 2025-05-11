@@ -3,27 +3,29 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { VolatilityRangeComponent } from '@/components/Signals/VolatilitySignal/VolatilityRangeComponent'
+import { VolatilitySignalComponent } from '@/components/Signals/VolatilitySignal/VolatilitySignalComponent'
 import { ConnectionStatus } from '@/components/signal-table/connection-status/ConnectionStatus'
 
 import {
+	selectCombinedVolatilitySignals,
 	selectConnectionStatus,
 	selectVolatilityRangeLastUpdated,
-	selectVolatilityRangeSignals
+	selectVolatilitySpikeLastUpdated
 } from '@/store/signals'
 
-export default function VolatilityPage() {
+export default function VolatilityAllSignalsPage() {
 	const [isInitialized, setIsInitialized] = useState(false)
-	const volatilityRangeSignals = useSelector(selectVolatilityRangeSignals)
-	const lastUpdated = useSelector(selectVolatilityRangeLastUpdated)
+	const volatilitySignals = useSelector(selectCombinedVolatilitySignals)
+	const spikeLastUpdated = useSelector(selectVolatilitySpikeLastUpdated)
+	const rangeLastUpdated = useSelector(selectVolatilityRangeLastUpdated)
 	const connectionStatus = useSelector(selectConnectionStatus)
-	console.log('volatilityRangeSignals', volatilityRangeSignals)
+	console.log('All volatility signals', volatilitySignals)
 	console.log('connectionStatus', connectionStatus)
 
 	// Use memoization to avoid recalculating the same data on each render
 	const signalCount = useMemo(
-		() => volatilityRangeSignals?.length || 0,
-		[volatilityRangeSignals]
+		() => volatilitySignals?.length || 0,
+		[volatilitySignals]
 	)
 
 	const isConnected = useMemo(
@@ -34,9 +36,9 @@ export default function VolatilityPage() {
 	// Safely log signals without potentially causing message channel issues
 	useEffect(() => {
 		if (signalCount > 0 && isInitialized) {
-			console.log(`Volatility range signals loaded: ${signalCount}`)
+			console.log(`All volatility signals loaded: ${signalCount}`)
 		}
-	}, [signalCount, isInitialized, lastUpdated])
+	}, [signalCount, isInitialized, spikeLastUpdated, rangeLastUpdated])
 
 	// Mark component as initialized after mounting
 	useEffect(() => {
@@ -78,7 +80,7 @@ export default function VolatilityPage() {
 		<>
 			{/* Render the table with signals */}
 			<div className='p-4'>
-				<h1 className='text-2xl font-bold mb-4'>Volatility Range Signals</h1>
+				<h1 className='text-2xl font-bold mb-4'>All Volatility Signals</h1>
 				<ConnectionStatus />
 				{connectionStatus !== 'connected' && (
 					<div className={`mb-4 p-3 rounded ${getStatusBgColor()}`}>
@@ -87,12 +89,13 @@ export default function VolatilityPage() {
 				)}
 				{isConnected && signalCount === 0 ? (
 					<div className='p-4 bg-gray-100 text-gray-700 rounded'>
-						No volatility range signals available. Waiting for data...
+						No volatility signals available. Waiting for data...
 					</div>
 				) : (
-					<VolatilityRangeComponent
-						maxSignals={20}
-						title='Volatility Range Signals'
+					<VolatilitySignalComponent
+						maxSignals={30}
+						title='All Volatility Signals'
+						showType={true}
 					/>
 				)}
 			</div>
