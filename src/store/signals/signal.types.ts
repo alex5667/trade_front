@@ -34,6 +34,13 @@ export interface VolatilitySignal extends BaseSignal {
 	range?: number
 	avgRange?: number
 	rangeRatio?: number
+	// Timestamp when signal was added to the store
+	createdAt?: number
+	// Данные о свечах
+	open?: number
+	high?: number
+	low?: number
+	close?: number
 }
 
 /**

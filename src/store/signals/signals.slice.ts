@@ -53,7 +53,7 @@ const initialState: SignalsState = {
 
 // Функция для логирования действий Redux
 const logAction = (actionType: string, payload: any) => {
-	console.log(`🔄 [Redux] ${actionType}:`, payload)
+	// console.log(`🔄 [Redux] ${actionType}:`, payload)
 }
 
 /**
@@ -102,6 +102,7 @@ export const signalsSlice = createSlice({
 			if (state.volatilitySignals.length > 100) {
 				state.volatilitySignals = state.volatilitySignals.slice(0, 100)
 			}
+
 		},
 
 		// Добавление сигнала объема

@@ -13,6 +13,7 @@ import {
 	selectConnectionStatus,
 	selectFundingData,
 	selectPriceChangeSignals,
+	selectTimeframeData,
 	selectTimeframeTriggers,
 	selectVolatilitySignals,
 	selectVolumeSignals
@@ -23,8 +24,6 @@ import { SignalSocketInitializer } from './SignalSocketInitializer'
 import { ConnectionStatus } from './connection-status/ConnectionStatus'
 import { TimeframeSection } from './timeframe-section/TimeframeSection'
 import { VolatilitySection } from './volatility-section/VolatilitySection'
-// Импортируем хук для получения рыночных данных
-import { useGetMarketsQuery } from '@/services/api/market.api'
 
 /**
  * SignalTable - основной компонент для отображения всех торговых сигналов
@@ -33,7 +32,6 @@ import { useGetMarketsQuery } from '@/services/api/market.api'
  * 1. Инициализирует WebSocket-соединение для получения сигналов
  * 2. Отображает сигналы по таймфреймам (5 минут и 24 часа)
  * 3. Показывает сигналы волатильности и другие специальные сигналы
- * 4. Загружает дополнительные рыночные данные через API
  */
 export const SignalTable = () => {
 	const componentId = useRef(`signal-table-${Date.now()}`)
@@ -46,16 +44,10 @@ export const SignalTable = () => {
 	const priceChangeSignals = useSelector(selectPriceChangeSignals)
 	const fundingData = useSelector(selectFundingData)
 	const triggers = useSelector(selectTimeframeTriggers)
+	const timeframeData = useSelector(selectTimeframeData)
 
 	// Отслеживание предыдущего состояния соединения для логирования изменений
 	const prevConnectedRef = useRef(isConnected)
-
-	// Запрос рыночных данных по API
-	const {
-		data: marketsData,
-		isLoading,
-		error
-	} = useGetMarketsQuery({ limit: 100 })
 
 	// Состояние для отслеживания, какие секции загрузились
 	const [loadedSections, setLoadedSections] = useState({
@@ -98,15 +90,6 @@ export const SignalTable = () => {
 		fundingData,
 		triggers
 	])
-
-	// Логирование получения рыночных данных
-	useEffect(() => {
-		if (marketsData) {
-			console.log(
-				`🏪 [${componentId.current}] Получены рыночные данные: ${marketsData.length} элементов`
-			)
-		}
-	}, [marketsData])
 
 	// Callback при загрузке секции таймфреймов
 	const handleTimeframeSectionLoad = useCallback(() => {
@@ -174,14 +157,14 @@ export const SignalTable = () => {
 			<div className={styles.section}>
 				<TimeframeSection
 					timeframe5min={{
-						gainers: [],
-						losers: [],
-						volume: [],
+						gainers: timeframeData['5min'].gainers,
+						losers: timeframeData['5min'].losers,
+						volume: timeframeData['5min'].volume,
 						funding: fundingData
 					}}
 					timeframe24h={{
-						gainers: [],
-						losers: []
+						gainers: timeframeData['24h'].gainers,
+						losers: timeframeData['24h'].losers
 					}}
 					trigger5min={{
 						gainers: triggers['5min'].gainers,
@@ -202,7 +185,6 @@ export const SignalTable = () => {
 					volatilitySignals={volatilitySignals}
 					volumeSignals={volumeSignals}
 					priceChangeSignals={priceChangeSignals}
-					marketsData={marketsData}
 				/>
 			</div>
 		</div>

@@ -1,7 +1,5 @@
 'use client'
 
-import { AllTradingData } from '@/types/all-traiding.types'
-
 import {
 	PriceChangeSignal,
 	VolatilitySignal,
@@ -16,7 +14,6 @@ interface VolatilitySectionProps {
 	volatilitySignals: VolatilitySignal[]
 	volumeSignals: VolumeSignal[]
 	priceChangeSignals: PriceChangeSignal[]
-	marketsData?: AllTradingData
 }
 
 /**
@@ -25,39 +22,30 @@ interface VolatilitySectionProps {
 export const VolatilitySection = ({
 	volatilitySignals,
 	volumeSignals,
-	priceChangeSignals,
-	marketsData
+	priceChangeSignals
 }: VolatilitySectionProps) => {
-	// Filter volatility signals by type if needed
-	const volatilitySpikes = volatilitySignals.filter(
-		signal => !signal.range && !signal.avgRange
-	)
+	// Debug: Log the structure of the first signal if available
+	if (volatilitySignals.length > 0) {
+		console.log(
+			'First volatility signal structure:',
+			JSON.stringify(volatilitySignals[0], null, 2)
+		)
+	}
 
-	const volatilityRanges = volatilitySignals.filter(
-		signal => signal.range !== undefined && signal.avgRange !== undefined
-	)
+	// Just display all volatility signals for now
+	console.log('Volatility signals count:', volatilitySignals.length)
 
 	return (
 		<section className={styles.volatilitySection}>
 			<h2 className={styles.sectionTitle}>Volatility Signals</h2>
 
-			{/* Volatility spike signals */}
-			{volatilitySpikes.length > 0 && (
+			{/* Display all signals */}
+			{volatilitySignals.length > 0 && (
 				<VolatilityTable
-					signals={volatilitySpikes}
-					title='Volatility Spikes'
+					signals={volatilitySignals}
+					title='All Volatility Signals'
 				/>
 			)}
-
-			{/* Volatility range signals */}
-			{volatilityRanges.length > 0 && (
-				<VolatilityTable
-					signals={volatilityRanges}
-					title='Volatility Ranges'
-				/>
-			)}
-
-			{/* Volume and price change signals would go here */}
 		</section>
 	)
 }

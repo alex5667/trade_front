@@ -43,13 +43,39 @@ const rootReducer = combineReducers({
 export const store = configureStore({
 	reducer: rootReducer,
 
-	// Добавляем middleware для RTK Query
+	// Добавляем middleware для RTK Query с оптимизированными настройками
 	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat([
+		getDefaultMiddleware({
+			// Оптимизация для больших состояний
+			immutableCheck: {
+				warnAfter: 300, // Increased from 128 to reduce warnings with large signal arrays
+				ignoreFields: ['createdAt', 'lastUpdated'] // Ignore timestamp fields that change frequently
+			},
+			serializableCheck: {
+				warnAfter: 300, // Increased from 128 to reduce warnings
+				// Игнорируем определенные пути в состоянии, которые могут содержать большие объекты
+				ignoredPaths: [
+					'volatility.signals',
+					'volatility.lastUpdated',
+					'volume.signals',
+					'volume.lastUpdated',
+					'priceChange.signals',
+					'priceChange.lastUpdated',
+					'timeframe',
+					'trigger',
+					'signals.volatilitySignals',
+					'signals.volumeSignals',
+					'signals.priceChangeSignals'
+				]
+			},
+		}).concat([
 			userApi.middleware,
 			authApi.middleware,
 			marketApi.middleware
-		])
+		]),
+
+	// В production режиме отключаем DevTools для оптимизации
+	devTools: process.env.NODE_ENV !== 'production'
 })
 
 // Настройка слушателей для RTK Query

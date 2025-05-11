@@ -5,6 +5,7 @@
  * ------------------------------
  * Displays volatility signals from the Redux store
  */
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { selectVolatilitySignals } from '@/store/signals/selectors/signals.selectors'
@@ -35,80 +36,76 @@ export const VolatilityTable = ({
 	const reduxSignals = useSelector(selectVolatilitySignals)
 	const volatilitySignals = signals || reduxSignals
 
+	// Log signals when they change
+	useEffect(() => {
+		console.log(
+			`🔍 VolatilityTable - Signals count: ${volatilitySignals.length}`
+		)
+
+		if (volatilitySignals.length > 0) {
+			console.log(
+				'First signal:',
+				JSON.stringify(volatilitySignals[0], null, 2)
+			)
+		}
+	}, [volatilitySignals])
+
 	if (!volatilitySignals || volatilitySignals.length === 0) {
 		return <NoDataIndicator message='Ожидание сигналов волатильности...' />
 	}
 
-	// Определяем тип сигналов для выбора правильных заголовков таблицы
-	const firstSignal = volatilitySignals[0]
-	const isRangeType =
-		firstSignal.range !== undefined && firstSignal.avgRange !== undefined
+	// Debug check on signal structure
+	if (volatilitySignals.length > 0) {
+		console.log(
+			'Signal count in VolatilityTable:',
+			volatilitySignals.length,
+			'First signal:',
+			JSON.stringify(volatilitySignals[0], null, 2)
+		)
+	}
 
 	return (
 		<div className={styles.volatilityTableContainer}>
-			<h3 className={styles.volatilityTableTitle}>{title}</h3>
+			<h3 className={styles.volatilityTableTitle}>
+				{title} ({volatilitySignals.length})
+			</h3>
 			<table className={styles.volatilityTable}>
 				<thead>
 					<tr>
 						<th>Монета</th>
-						<th>Цена</th>
-						{isRangeType ? (
-							<>
-								<th>Диапазон</th>
-								<th>Ср. диапазон</th>
-								<th>Соотношение</th>
-							</>
-						) : (
-							<>
-								<th>Волатильность</th>
-								<th>Изменение</th>
-							</>
-						)}
+						<th>Открытие</th>
+						<th>Макс</th>
+						<th>Мин</th>
+						<th>Закрытие</th>
+						<th>Волат.</th>
+						<th>Время</th>
 					</tr>
 				</thead>
 				<tbody>
-					{volatilitySignals.map(signal => {
-						const {
-							symbol,
-							price,
-							volatility,
-							volatilityChange,
-							range,
-							avgRange,
-							rangeRatio
-						} = signal
+					{volatilitySignals.map((signal, index) => {
+						// Extract symbol and timestamp safely
+						const symbol = signal.symbol || 'Unknown'
+						const timestamp = signal.timestamp || Date.now()
 
-						// Формируем класс для подсветки положительных/отрицательных значений
-						const volatilityChangeClass =
-							volatilityChange > 0 ? styles.positive : styles.negative
+						// Extract other data (using values that may come from WebSocket format)
+						const open = signal.open || 0
+						const high = signal.high || 0
+						const low = signal.low || 0
+						const close = signal.close || signal.price || 0
+						const volatility = signal.volatility || 0
 
-						const rangeRatioClass =
-							rangeRatio && rangeRatio > 1 ? styles.positive : styles.neutral
+						// Format timestamp
+						const time = new Date(timestamp).toLocaleTimeString()
 
 						return (
-							<tr key={`${symbol}-${signal.timestamp}`}>
+							<tr key={`${symbol}-${index}`}>
 								<td className={styles.symbolCell}>{symbol}</td>
-								<td>{price && `$${price.toFixed(2)}`}</td>
-
-								{isRangeType ? (
-									<>
-										<td>{range && range.toFixed(2)}%</td>
-										<td>{avgRange && avgRange.toFixed(2)}%</td>
-										<td className={rangeRatioClass}>
-											{rangeRatio && rangeRatio.toFixed(2)}x
-										</td>
-									</>
-								) : (
-									<>
-										<td>{volatility && volatility.toFixed(2)}%</td>
-										<td className={volatilityChangeClass}>
-											{volatilityChange &&
-												(volatilityChange > 0 ? '+' : '') +
-													volatilityChange.toFixed(2)}
-											%
-										</td>
-									</>
-								)}
+								<td>${Number(open).toFixed(4)}</td>
+								<td>${Number(high).toFixed(4)}</td>
+								<td>${Number(low).toFixed(4)}</td>
+								<td>${Number(close).toFixed(4)}</td>
+								<td>{Number(volatility).toFixed(2)}%</td>
+								<td>{time}</td>
 							</tr>
 						)
 					})}

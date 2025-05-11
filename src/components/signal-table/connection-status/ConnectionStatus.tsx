@@ -5,34 +5,111 @@
  * ------------------------------
  * Displays the current WebSocket connection status
  */
-import { useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useCallback, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { selectConnectionStatus } from '@/store/signals/selectors/signals.selectors'
+import {
+	selectConnectionError,
+	selectConnectionStatus
+} from '@/store/signals/selectors/signals.selectors'
+import {
+	connected,
+	connecting,
+	disconnected
+} from '@/store/signals/slices/connection.slice'
+
+import { getWebSocketClient } from '@/services/websocket.service'
 
 export const ConnectionStatus = () => {
 	const componentId = useRef(`connection-status-${Date.now()}`)
-	console.log(`🚦 [${componentId.current}] ConnectionStatus компонент создан`)
+	const dispatch = useDispatch()
 
+	// Get connection status and error from Redux
 	const status = useSelector(selectConnectionStatus)
+	const error = useSelector(selectConnectionError)
 	const prevStatusRef = useRef(status)
+	const checkIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
-	// Логирование изменения статуса соединения
+	// Manual reconnect function - only used when user clicks button
+	const handleReconnect = useCallback(() => {
+		console.log(`🔄 [${componentId.current}] Manual reconnection attempt`)
+
+		// First update UI state to show we're connecting
+		dispatch(connecting())
+
+		const wsClient = getWebSocketClient()
+
+		// Check if already connected
+		if (wsClient.isActive()) {
+			console.log(
+				`✅ [${componentId.current}] Already connected, updating status`
+			)
+			dispatch(connected())
+			return
+		}
+
+		// Otherwise try to connect
+		wsClient.connect()
+	}, [dispatch, componentId])
+
+	// Periodically check the actual connection status to keep Redux in sync
+	// This helps handle cases where the WS connection drops without firing events
+	useEffect(() => {
+		// Set up periodic check for actual WebSocket status
+		const checkActualStatus = () => {
+			const wsClient = getWebSocketClient()
+			const isActive = wsClient.isActive()
+
+			// If WebSocket status doesn't match Redux state, update Redux
+			if (isActive && status !== 'connected') {
+				console.log(
+					`⚠️ [${componentId.current}] State mismatch, actual: connected, redux: ${status}`
+				)
+				dispatch(connected())
+			} else if (!isActive && status === 'connected') {
+				console.log(
+					`⚠️ [${componentId.current}] State mismatch, actual: disconnected, redux: ${status}`
+				)
+				dispatch(disconnected())
+			}
+		}
+
+		// Check immediately and then set interval
+		checkActualStatus()
+		checkIntervalRef.current = setInterval(checkActualStatus, 5000)
+
+		return () => {
+			if (checkIntervalRef.current) {
+				clearInterval(checkIntervalRef.current)
+			}
+		}
+	}, [status, dispatch, componentId])
+
+	// Log status changes
 	useEffect(() => {
 		if (prevStatusRef.current !== status) {
 			console.log(
-				`📡 [${componentId.current}] Изменение статуса соединения: ${prevStatusRef.current} -> ${status}`
+				`📡 [${componentId.current}] Connection status changed: ${prevStatusRef.current} -> ${status}`
 			)
 			prevStatusRef.current = status
+
+			// If the socket reports it's connected but Redux state doesn't reflect that,
+			// update the Redux state
+			const wsClient = getWebSocketClient()
+			if (wsClient.isActive() && status !== 'connected') {
+				console.log(
+					`⚠️ [${componentId.current}] State mismatch, correcting to connected`
+				)
+				dispatch(connected())
+			}
 		}
-	}, [status])
+	}, [status, dispatch, componentId])
 
-	// Эффект для отслеживания жизненного цикла компонента
+	// Component lifecycle logging
 	useEffect(() => {
-		console.log(`🔄 [${componentId.current}] ConnectionStatus эффект запущен`)
-
+		console.log(`🔄 [${componentId.current}] ConnectionStatus effect started`)
 		return () => {
-			console.log(`🛑 [${componentId.current}] ConnectionStatus размонтирован`)
+			console.log(`🛑 [${componentId.current}] ConnectionStatus unmounted`)
 		}
 	}, [])
 
@@ -54,17 +131,31 @@ export const ConnectionStatus = () => {
 
 	const { text, className } = getStatusInfo()
 
-	// Логируем текущее отображаемое состояние
-	console.log(
-		`🔄 [${componentId.current}] Текущий статус: ${text} (${className})`
-	)
-
 	return (
-		<div className='flex items-center'>
+		<div className='flex items-center space-x-2 bg-gray-800 p-2 mb-3 rounded-md'>
 			<div
-				className={`w-3 h-3 rounded-full mr-2 ${className.includes('green') ? 'bg-green-500' : className.includes('yellow') ? 'bg-yellow-500' : 'bg-red-500'}`}
-			></div>
+				className={`w-3 h-3 rounded-full ${
+					className.includes('green')
+						? 'bg-green-500'
+						: className.includes('yellow')
+							? 'bg-yellow-500'
+							: 'bg-red-500'
+				}`}
+			/>
 			<span className={className}>{text}</span>
+
+			{/* Show error message if any */}
+			{error && <span className='text-xs text-red-400 ml-2'>{error}</span>}
+
+			{/* Manual reconnect button if not connected */}
+			{status !== 'connected' && (
+				<button
+					onClick={handleReconnect}
+					className='ml-auto text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded'
+				>
+					Reconnect
+				</button>
+			)}
 		</div>
 	)
 }

@@ -7,9 +7,10 @@
 'use client'
 
 // Конфигурация
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'ws://localhost:4200'
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'ws://127.0.0.1:4200'
 const MAX_RECONNECT_ATTEMPTS = 15
 const RECONNECT_DELAY = 5000
+const PING_INTERVAL = 30000 // 30 seconds
 
 /**
  * WebSocket клиент для обработки торговых сигналов
@@ -22,8 +23,13 @@ export class TradeSignalClient {
 	private maxReconnectAttempts: number
 	private reconnectDelay: number
 	private callbacks: Record<string, Function[]>
+	private connectTimer: NodeJS.Timeout | null = null
+	private pingTimer: NodeJS.Timeout | null = null
+	private lastPingTime: number = 0
+	private isConnecting: boolean = false
 
 	constructor(baseUrl = SOCKET_URL) {
+		console.log(`Initializing WebSocket client with URL: ${baseUrl}`)
 		this.baseUrl = baseUrl
 		this.socket = null
 		this.isConnected = false
@@ -53,7 +59,8 @@ export class TradeSignalClient {
 			'trigger:funding-5min': [], // Триггер для финансирования за 5 минут
 			'connect': [], // Событие подключения
 			'disconnect': [], // Событие отключения
-			'error': [] // Событие ошибки
+			'error': [], // Событие ошибки
+			'pong': [] // Событие ответа на пинг
 		}
 	}
 
@@ -61,56 +68,151 @@ export class TradeSignalClient {
 	 * Подключиться к WebSocket серверу
 	 */
 	connect() {
-		if (this.socket) {
-			console.log('Socket already exists, closing previous connection')
-			this.socket.close()
+		// Prevent multiple simultaneous connection attempts
+		if (this.isConnecting) {
+			console.log('Already attempting to connect, ignoring duplicate request')
+			return
+		}
+
+		// If already connected and socket is open, do nothing
+		if (this.isConnected && this.socket && this.socket.readyState === WebSocket.OPEN) {
+			console.log('WebSocket already connected, ignoring duplicate connect call')
+			return
+		}
+
+		this.isConnecting = true
+
+		if (this.connectTimer) {
+			clearTimeout(this.connectTimer)
+			this.connectTimer = null
+		}
+
+		if (this.pingTimer) {
+			clearInterval(this.pingTimer)
+			this.pingTimer = null
+		}
+
+		if (this.socket && this.socket.readyState !== WebSocket.CLOSED) {
+			console.log('Closing existing socket before connecting')
+			try {
+				this.socket.close()
+			} catch (err) {
+				console.error('Error closing socket:', err)
+			}
+			this.socket = null
 		}
 
 		try {
+			console.log(`Connecting to WebSocket server at ${this.baseUrl}...`)
 			this.socket = new WebSocket(`${this.baseUrl}`)
 
 			this.socket.onopen = () => {
 				console.log('✅ WebSocket connected successfully')
 				this.isConnected = true
+				this.isConnecting = false
 				this.reconnectAttempts = 0
+				this.lastPingTime = Date.now()
+				this._startPingInterval()
 				this._emitEvent('connect')
 			}
 
 			this.socket.onmessage = (event) => {
 				try {
 					const message = JSON.parse(event.data)
-					const { event: eventType, data } = message
 
-					console.log(`Received ${eventType} event`, data)
+					// Handle pong messages
+					if (message.type === 'pong') {
+						this.lastPingTime = Date.now()
+						this._emitEvent('pong', message)
+						return
+					}
+
+					const { event: eventType, data } = message
+					if (!eventType) {
+						console.warn('Received message without event type:', message)
+						return
+					}
+
+					// console.log(`Received ${eventType} event`, data)
 					this._emitEvent(eventType, data)
 				} catch (err) {
 					console.error('Error parsing message:', err)
+					console.log('Raw message data:', event.data)
 				}
 			}
 
 			this.socket.onclose = (event) => {
-				console.log('⚠️ WebSocket connection closed', event)
+				console.log('⚠️ WebSocket connection closed', {
+					code: event.code,
+					reason: event.reason,
+					wasClean: event.wasClean
+				})
 				this.isConnected = false
+				this.isConnecting = false
 				this._emitEvent('disconnect')
 				this._tryReconnect()
 			}
 
 			this.socket.onerror = (error) => {
-				console.error('❌ WebSocket error:', error)
+				console.error('❌ WebSocket error:', {
+					error,
+					readyState: this.socket?.readyState,
+					url: this.baseUrl
+				})
+				this.isConnecting = false
 				this._emitEvent('error', error)
 			}
 		} catch (error) {
-			console.error('❌ Error establishing WebSocket connection:', error)
+			console.error('❌ Error establishing WebSocket connection:', {
+				error,
+				url: this.baseUrl
+			})
+			this.isConnecting = false
 			this._emitEvent('error', error)
 			this._tryReconnect()
 		}
+	}
+
+	private _startPingInterval() {
+		if (this.pingTimer) {
+			clearInterval(this.pingTimer)
+		}
+
+		this.pingTimer = setInterval(() => {
+			if (this.isActive()) {
+				const timeSinceLastPing = Date.now() - this.lastPingTime
+				if (timeSinceLastPing > PING_INTERVAL * 2) {
+					console.warn('No pong received for too long, reconnecting...')
+					this.disconnect()
+					this.connect()
+					return
+				}
+
+				try {
+					this.socket?.send(JSON.stringify({ type: 'ping' }))
+				} catch (error) {
+					console.error('Error sending ping:', error)
+				}
+			}
+		}, PING_INTERVAL)
 	}
 
 	/**
 	 * Отключиться от WebSocket сервера
 	 */
 	disconnect() {
+		if (this.connectTimer) {
+			clearTimeout(this.connectTimer)
+			this.connectTimer = null
+		}
+
+		if (this.pingTimer) {
+			clearInterval(this.pingTimer)
+			this.pingTimer = null
+		}
+
 		if (this.socket) {
+			console.log('Disconnecting WebSocket...')
 			this.socket.close()
 			this.socket = null
 			this.isConnected = false
@@ -127,12 +229,19 @@ export class TradeSignalClient {
 				`🔄 Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
 			)
 
+			// Очищаем существующий таймер, если есть
+			if (this.connectTimer) {
+				clearTimeout(this.connectTimer)
+			}
+
 			// Используем фиксированную задержку вместо увеличивающейся
-			setTimeout(() => {
+			this.connectTimer = setTimeout(() => {
 				this.connect()
+				this.connectTimer = null
 			}, this.reconnectDelay)
 		} else {
 			console.error('⛔ Max reconnect attempts reached. Please check your connection.')
+			this._emitEvent('error', { message: 'Max reconnect attempts reached' })
 		}
 	}
 
@@ -200,8 +309,14 @@ let wsClientInstance: TradeSignalClient | null = null
  * Получить экземпляр WebSocket клиента (синглтон)
  */
 export const getWebSocketClient = (): TradeSignalClient => {
-	if (!wsClientInstance) {
-		wsClientInstance = new TradeSignalClient()
+	if (typeof window !== 'undefined') {
+		// Only create the instance on the client side
+		if (!wsClientInstance) {
+			wsClientInstance = new TradeSignalClient()
+		}
+		return wsClientInstance
 	}
-	return wsClientInstance
+
+	// Return a dummy client for SSR
+	return new TradeSignalClient()
 } 
