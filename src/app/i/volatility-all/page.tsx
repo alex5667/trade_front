@@ -29,7 +29,7 @@ export default function VolatilityAllSignalsPage() {
 	)
 
 	const isConnected = useMemo(
-		() => connectionStatus === 'connected',
+		() => connectionStatus === true,
 		[connectionStatus]
 	)
 
@@ -50,30 +50,18 @@ export default function VolatilityAllSignalsPage() {
 
 	// Connection status message based on the actual status value
 	const getConnectionMessage = () => {
-		switch (connectionStatus) {
-			case 'connecting':
-				return 'Connecting to WebSocket server...'
-			case 'disconnected':
-				return 'WebSocket disconnected. Waiting for reconnection...'
-			case 'error':
-				return 'Error connecting to WebSocket server. Please try again later.'
-			default:
-				return ''
+		if (connectionStatus === false) {
+			return 'WebSocket disconnected. Waiting for reconnection...'
 		}
+		return ''
 	}
 
 	// Background colors for different status messages
 	const getStatusBgColor = () => {
-		switch (connectionStatus) {
-			case 'connecting':
-				return 'bg-blue-100 text-blue-800'
-			case 'disconnected':
-				return 'bg-yellow-100 text-yellow-800'
-			case 'error':
-				return 'bg-red-100 text-red-800'
-			default:
-				return ''
+		if (connectionStatus === false) {
+			return 'bg-yellow-100 text-yellow-800'
 		}
+		return ''
 	}
 
 	return (
@@ -82,7 +70,7 @@ export default function VolatilityAllSignalsPage() {
 			<div className='p-4'>
 				<h1 className='text-2xl font-bold mb-4'>All Volatility Signals</h1>
 				<ConnectionStatus />
-				{connectionStatus !== 'connected' && (
+				{connectionStatus === false && (
 					<div className={`mb-4 p-3 rounded ${getStatusBgColor()}`}>
 						{getConnectionMessage()}
 					</div>

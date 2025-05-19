@@ -7,6 +7,7 @@ import { VolatilitySpikeComponent } from '@/components/Signals/VolatilitySignal/
 import { ConnectionStatus } from '@/components/signal-table/connection-status/ConnectionStatus'
 
 import {
+	selectConnectionError,
 	selectConnectionStatus,
 	selectVolatilitySpikeLastUpdated,
 	selectVolatilitySpikeSignals
@@ -17,6 +18,7 @@ export default function VolatilitySpikeSignalsPage() {
 	const volatilitySpikeSignals = useSelector(selectVolatilitySpikeSignals)
 	const lastUpdated = useSelector(selectVolatilitySpikeLastUpdated)
 	const connectionStatus = useSelector(selectConnectionStatus)
+	const connectionError = useSelector(selectConnectionError)
 	console.log('volatilitySpikeSignals', volatilitySpikeSignals)
 	console.log('connectionStatus', connectionStatus)
 
@@ -26,10 +28,7 @@ export default function VolatilitySpikeSignalsPage() {
 		[volatilitySpikeSignals]
 	)
 
-	const isConnected = useMemo(
-		() => connectionStatus === 'connected',
-		[connectionStatus]
-	)
+	const isConnected = connectionStatus
 
 	// Safely log signals without potentially causing message channel issues
 	useEffect(() => {
@@ -46,32 +45,20 @@ export default function VolatilitySpikeSignalsPage() {
 		}
 	}, [])
 
-	// Connection status message based on the actual status value
+	// Connection status message based on the connection state
 	const getConnectionMessage = () => {
-		switch (connectionStatus) {
-			case 'connecting':
-				return 'Connecting to WebSocket server...'
-			case 'disconnected':
-				return 'WebSocket disconnected. Waiting for reconnection...'
-			case 'error':
-				return 'Error connecting to WebSocket server. Please try again later.'
-			default:
-				return ''
+		if (connectionError) {
+			return `Error connecting to WebSocket server: ${connectionError}`
 		}
+		return 'WebSocket disconnected. Waiting for reconnection...'
 	}
 
-	// Background colors for different status messages
+	// Background color for status message
 	const getStatusBgColor = () => {
-		switch (connectionStatus) {
-			case 'connecting':
-				return 'bg-blue-100 text-blue-800'
-			case 'disconnected':
-				return 'bg-yellow-100 text-yellow-800'
-			case 'error':
-				return 'bg-red-100 text-red-800'
-			default:
-				return ''
+		if (connectionError) {
+			return 'bg-red-100 text-red-800'
 		}
+		return 'bg-yellow-100 text-yellow-800'
 	}
 
 	return (
@@ -80,7 +67,7 @@ export default function VolatilitySpikeSignalsPage() {
 			<div className='p-4'>
 				<h1 className='text-2xl font-bold mb-4'>Volatility Spike Signals</h1>
 				<ConnectionStatus />
-				{connectionStatus !== 'connected' && (
+				{!isConnected && (
 					<div className={`mb-4 p-3 rounded ${getStatusBgColor()}`}>
 						{getConnectionMessage()}
 					</div>

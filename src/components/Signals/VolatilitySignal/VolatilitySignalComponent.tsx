@@ -29,6 +29,12 @@ import { VolatilitySignal } from '@/store/signals/signal.types'
  * Base component for volatility signals
  */
 
+/**
+ * VolatilitySignalComponent
+ * ------------------------------
+ * Base component for volatility signals
+ */
+
 interface VolatilitySignalComponentProps {
 	maxSignals?: number
 	title?: string
@@ -115,13 +121,21 @@ export const VolatilitySignalComponent: React.FC<
 									{signal.symbol}
 								</td>
 								<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
-									{signal.volatility.toFixed(4)}
+									{signal.volatility !== undefined
+										? signal.volatility.toFixed(4)
+										: '0.0000'}
 								</td>
 								<td
-									className={`px-2 py-2 whitespace-nowrap text-sm ${signal.volatilityChange > 0 ? 'text-green-500' : 'text-red-500'}`}
+									className={`px-2 py-2 whitespace-nowrap text-sm ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? 'text-green-500' : 'text-red-500'}`}
 								>
-									{signal.volatilityChange > 0 ? '+' : ''}
-									{signal.volatilityChange.toFixed(2)}%
+									{signal.volatilityChange !== undefined &&
+									signal.volatilityChange > 0
+										? '+'
+										: ''}
+									{signal.volatilityChange !== undefined
+										? signal.volatilityChange.toFixed(2)
+										: '0.00'}
+									%
 								</td>
 								{showType && (
 									<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>

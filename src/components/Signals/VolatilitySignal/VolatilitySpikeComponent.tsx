@@ -32,6 +32,18 @@ import { VolatilitySignal } from '@/store/signals/signal.types'
  * Компонент для отображения сигналов скачков волатильности
  */
 
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
 interface VolatilitySpikeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -141,9 +153,6 @@ export const VolatilitySpikeComponent: React.FC<
 								Volatility
 							</th>
 							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Change
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
 								Time
 							</th>
 						</tr>
@@ -157,13 +166,9 @@ export const VolatilitySpikeComponent: React.FC<
 								<td
 									className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 ${signal.highlightVolatility ? 'bg-yellow-100 transition-colors duration-500' : ''}`}
 								>
-									{signal.volatility.toFixed(4)}
-								</td>
-								<td
-									className={`px-2 py-2 whitespace-nowrap text-sm ${signal.volatilityChange > 0 ? 'text-green-500' : 'text-red-500'} ${signal.highlightChange ? 'bg-yellow-100 transition-colors duration-500' : ''}`}
-								>
-									{signal.volatilityChange > 0 ? '+' : ''}
-									{signal.volatilityChange.toFixed(2)}%
+									{signal.volatility !== undefined
+										? signal.volatility.toFixed(4)
+										: '0.0000'}
 								</td>
 								<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
 									{new Date(
