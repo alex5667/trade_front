@@ -1,11 +1,17 @@
-'use client'
-
 /**
- * Signal Service
+ * Сервис обработки сигналов
  * ------------------------------
- * Service that manages WebSocket connection and dispatches
- * received signals to Redux store
+ * Сервис, который управляет WebSocket соединением и отправляет
+ * полученные сигналы в Redux хранилище
+ * 
+ * Основные функции:
+ * - Инициализация WebSocket соединения
+ * - Обработка различных типов торговых сигналов
+ * - Нормализация данных перед отправкой в Redux
+ * - Предотвращение дублирования сигналов
+ * - Управление состоянием соединения
  */
+'use client'
 
 import {
 	AnyObject,
@@ -16,25 +22,17 @@ import {
 import {
 	connected,
 	connecting,
-	connectionError,
-	disconnected
+	disconnected,
+	setConnectionError
 } from '@/store/signals/slices/connection.slice'
 import { addPriceChangeSignal } from '@/store/signals/slices/price-change.slice'
 import {
-	setTopFunding5min,
-	setTopGainers24h,
-	setTopGainers5min,
-	setTopLosers24h,
-	setTopLosers5min,
-	setTopVolume5min
+	addTimeframeGainer,
+	addTimeframeLoser,
+	addTimeframeVolume
 } from '@/store/signals/slices/timeframe.slice'
 import {
-	setTriggerFunding5min,
-	setTriggerGainers24h,
-	setTriggerGainers5min,
-	setTriggerLosers24h,
-	setTriggerLosers5min,
-	setTriggerVolume5min
+	addTriggerEvent
 } from '@/store/signals/slices/trigger.slice'
 import { addVolatilitySignal } from '@/store/signals/slices/volatility.slice'
 import { addVolumeSignal } from '@/store/signals/slices/volume.slice'
@@ -48,20 +46,24 @@ import { AppDispatch } from '@/store/store'
 import { getWebSocketClient } from './websocket.service'
 
 /**
- * Normalize volatility signal to ensure consistent structure
- * @param signal The original signal to normalize
- * @returns Normalized volatility signal
+ * Нормализация сигнала волатильности для обеспечения согласованной структуры
+ * 
+ * Приводит различные типы сигналов волатильности к единому формату
+ * для корректного сохранения в Redux хранилище.
+ * 
+ * @param signal - Исходный сигнал для нормализации
+ * @returns Нормализованный сигнал волатильности
  */
 const normalizeVolatilitySignal = (signal: any): VolatilitySignal => {
 	const normalizedSignal = { ...signal }
 
-	// Ensure type is set to 'volatility' for store consistency
+	// Устанавливаем тип 'volatility' для согласованности в хранилище
 	if (signal.type === 'volatilitySpike' || signal.type === 'volatilityRange') {
 		normalizedSignal.type = 'volatility'
 		normalizedSignal.signalType = signal.type
 	}
 
-	// Ensure required fields are present
+	// Обеспечиваем наличие обязательных полей
 	if (!normalizedSignal.volatilityChange && normalizedSignal.volatility) {
 		normalizedSignal.volatilityChange = 0
 	}
@@ -69,163 +71,222 @@ const normalizeVolatilitySignal = (signal: any): VolatilitySignal => {
 	return normalizedSignal as VolatilitySignal
 }
 
-// Track processed signals to prevent duplicates
+/** Множество для отслеживания обработанных сигналов и предотвращения дублирования */
 const processedSignals = new Set<string>()
 
 /**
- * Initialize the WebSocket connection and set up event handlers
- * to dispatch actions to the Redux store
+ * Инициализация сервиса сигналов
+ * 
+ * Устанавливает WebSocket соединение и настраивает обработчики событий
+ * для отправки действий в Redux хранилище. Обрабатывает все типы
+ * торговых сигналов и управляет состоянием соединения.
+ * 
+ * @param dispatch - Функция dispatch из Redux для отправки действий
+ * @returns Функция очистки для корректного закрытия соединения
  */
 export const initializeSignalService = (dispatch: AppDispatch) => {
 	const client = getWebSocketClient()
 
-	// Dispatch connection status actions
+	// Отправляем действие о начале подключения
 	dispatch(connecting())
 
-	// Connection status handlers
+	// Обработчики состояния соединения
 	client.on('connect', () => {
-		console.log('Signal service: WebSocket connected, updating Redux store')
+		console.log('Сервис сигналов: WebSocket подключен, обновляем Redux хранилище')
 		dispatch(connected())
-		// Clear the processed signals set when reconnecting
+		// Очищаем множество обработанных сигналов при переподключении
 		processedSignals.clear()
 	})
 
 	client.on('disconnect', () => {
-		console.log('Signal service: WebSocket disconnected, updating Redux store')
+		console.log('Сервис сигналов: WebSocket отключен, обновляем Redux хранилище')
 		dispatch(disconnected())
 	})
 
-	client.on('error', (err: Error) => {
-		console.error('Signal service: WebSocket error', err)
-		dispatch(connectionError(err.message || 'Unknown error'))
+	client.on('error', (errorData: any) => {
+		// Обрабатываем как старый, так и новый формат ошибок
+		let errorMessage = 'Неизвестная ошибка WebSocket'
+
+		if (typeof errorData === 'string') {
+			errorMessage = errorData
+		} else if (errorData?.message) {
+			errorMessage = errorData.message
+			// Логируем дополнительные детали если доступны
+			if (errorData.details) {
+				console.error('Сервис сигналов: Детали ошибки WebSocket:', errorData.details)
+			}
+		} else if (errorData instanceof Error) {
+			errorMessage = errorData.message
+		}
+
+		console.error('Сервис сигналов: Ошибка WebSocket -', errorMessage)
+		dispatch(setConnectionError(errorMessage))
 	})
 
-	// Generic handler for all volatility signals
+	/**
+	 * Универсальный обработчик для всех сигналов волатильности
+	 * 
+	 * Обрабатывает входящие сигналы волатильности, предотвращает
+	 * дублирование и отправляет нормализованные данные в Redux.
+	 * 
+	 * @param signal - Сигнал волатильности для обработки
+	 */
 	const handleVolatilitySignal = (signal: any) => {
-		// Create a unique key for this signal to detect duplicates
+		// Создаем уникальный ключ для этого сигнала для обнаружения дубликатов
 		const signalKey = `${signal.type}:${signal.symbol}:${signal.timestamp}`
 
-		// Log the raw incoming signal
-		console.log(`📥 Received signal: ${signalKey}`, signal)
+		// Логируем входящий сигнал
+		console.log(`📥 Получен сигнал: ${signalKey}`, signal)
 
-		// Skip if we've already processed this exact signal
+		// Пропускаем если уже обработали этот сигнал
 		if (processedSignals.has(signalKey)) {
-			console.log(`🔄 Skipping duplicate signal: ${signalKey}`)
+			console.log(`🔄 Пропускаем дублирующий сигнал: ${signalKey}`)
 			return
 		}
 
-		// Normalize and dispatch the signal
+		// Нормализуем и отправляем сигнал
 		const normalizedSignal = normalizeVolatilitySignal(signal)
-		console.log(`📦 Normalized signal for Redux:`, normalizedSignal)
+		console.log(`📦 Нормализованный сигнал для Redux:`, normalizedSignal)
 
-		// Dispatch to Redux store
-		console.log(`📤 Dispatching to Redux store: ${normalizedSignal.symbol}, type: ${normalizedSignal.signalType || 'volatility'}`)
+		// Отправляем в Redux хранилище
+		console.log(`📤 Отправляем в Redux хранилище: ${normalizedSignal.symbol}, тип: ${normalizedSignal.signalType || 'volatility'}`)
 		dispatch(addVolatilitySignal(normalizedSignal))
 
-		// Remember we processed this signal
+		// Запоминаем что обработали этот сигнал
 		processedSignals.add(signalKey)
-		console.log(`✅ Added ${signalKey} to processed signals set (size: ${processedSignals.size})`)
+		console.log(`✅ Добавлен ${signalKey} в множество обработанных сигналов (размер: ${processedSignals.size})`)
 
-		// Limit the size of the processedSignals set
+		// Ограничиваем размер множества обработанных сигналов
 		if (processedSignals.size > 1000) {
-			// Clear the oldest entries (first 500)
+			// Удаляем самые старые записи (первые 500)
 			const toRemove = Array.from(processedSignals).slice(0, 500)
 			toRemove.forEach(key => processedSignals.delete(key))
-			console.log(`🧹 Cleaned up processed signals set, removed ${toRemove.length} items`)
+			console.log(`🧹 Очищено множество обработанных сигналов, удалено ${toRemove.length} элементов`)
 		}
 	}
 
-	// Volatility signals handlers
+	// Обработчики сигналов волатильности
 	client.on('signal:volatility', handleVolatilitySignal)
 	client.on('volatilitySpike', handleVolatilitySignal)
 	client.on('volatility', handleVolatilitySignal)
 	client.on('signal:volatilityRange', handleVolatilitySignal)
 	client.on('volatilityRange', handleVolatilitySignal)
 
-	// Volume signal handlers
+	// Обработчики сигналов объема
 	client.on('volumeSpike', (signal: VolumeSignal) => {
 		dispatch(addVolumeSignal(signal))
 	})
 
-	// Price change signal handlers
+	// Обработчики сигналов изменения цены
 	client.on('priceChange', (signal: PriceChangeSignal) => {
 		dispatch(addPriceChangeSignal(signal))
 	})
 
-	// 5min timeframe handlers
+	// Обработчики данных за 5 минут
 	client.on('top:gainers:5min', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		dispatch(setTopGainers5min(coins))
+		dispatch(addTimeframeGainer({ timeframe: '5min', data: coins }))
 	})
 
 	client.on('top:losers:5min', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		dispatch(setTopLosers5min(coins))
+		dispatch(addTimeframeLoser({ timeframe: '5min', data: coins }))
 	})
 
 	client.on('top:volume:5min', (data: AnyObject) => {
 		const coins = parseVolumeCoins(data)
-		dispatch(setTopVolume5min(coins))
+		dispatch(addTimeframeVolume({ timeframe: '5min', data: coins }))
 	})
 
 	client.on('top:funding:5min', (data: AnyObject) => {
 		const coins = parseFundingCoins(data)
-		dispatch(setTopFunding5min(coins))
+		// Пока нет специального слайса для funding, логируем данные
+		// TODO: Создать отдельный слайс для funding данных
+		console.log('Получены данные финансирования:', coins)
 	})
 
-	// 24h timeframe handlers
+	// Обработчики данных за 24 часа
 	client.on('top:gainers:24h', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		dispatch(setTopGainers24h(coins))
+		dispatch(addTimeframeGainer({ timeframe: '24h', data: coins }))
 	})
 
 	client.on('top:losers:24h', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		dispatch(setTopLosers24h(coins))
+		dispatch(addTimeframeLoser({ timeframe: '24h', data: coins }))
 	})
 
-	// Trigger handlers
+	// Обработчики триггерных событий
 	client.on('trigger:gainers-5min', (data: AnyObject) => {
 		const symbols = parseSymbols(data)
-		dispatch(setTriggerGainers5min(symbols))
+		dispatch(addTriggerEvent({
+			timeframe: '5min',
+			type: 'gainers',
+			data: symbols
+		}))
 	})
 
 	client.on('trigger:losers-5min', (data: AnyObject) => {
 		const symbols = parseSymbols(data)
-		dispatch(setTriggerLosers5min(symbols))
+		dispatch(addTriggerEvent({
+			timeframe: '5min',
+			type: 'losers',
+			data: symbols
+		}))
 	})
 
 	client.on('trigger:volume-5min', (data: AnyObject) => {
 		const symbols = parseSymbols(data)
-		dispatch(setTriggerVolume5min(symbols))
+		dispatch(addTriggerEvent({
+			timeframe: '5min',
+			type: 'volume',
+			data: symbols
+		}))
 	})
 
 	client.on('trigger:funding-5min', (data: AnyObject) => {
 		const symbols = parseSymbols(data)
-		dispatch(setTriggerFunding5min(symbols))
+		dispatch(addTriggerEvent({
+			timeframe: '5min',
+			type: 'funding',
+			data: symbols
+		}))
 	})
 
 	client.on('trigger:gainers-24h', (data: AnyObject) => {
 		const symbols = parseSymbols(data)
-		dispatch(setTriggerGainers24h(symbols))
+		dispatch(addTriggerEvent({
+			timeframe: '24h',
+			type: 'gainers',
+			data: symbols
+		}))
 	})
 
 	client.on('trigger:losers-24h', (data: AnyObject) => {
 		const symbols = parseSymbols(data)
-		dispatch(setTriggerLosers24h(symbols))
+		dispatch(addTriggerEvent({
+			timeframe: '24h',
+			type: 'losers',
+			data: symbols
+		}))
 	})
 
-	// Connect to the WebSocket server
+	// Подключаемся к WebSocket серверу
 	client.connect()
 
-	// Return cleanup function
+	// Возвращаем функцию очистки
 	return () => {
 		client.disconnect()
 	}
 }
 
 /**
- * Get the current WebSocket connection status
+ * Получить текущий статус WebSocket соединения
+ * 
+ * Проверяет активность WebSocket соединения и возвращает
+ * строковое представление состояния.
+ * 
+ * @returns 'connected' если соединение активно, 'disconnected' в противном случае
  */
 export const getConnectionStatus = () => {
 	const client = getWebSocketClient()

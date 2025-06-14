@@ -1,41 +1,85 @@
 /**
- * WebSocket Service
+ * Сервис WebSocket
  * ------------------------------
  * Сервис, управляющий WebSocket-соединением с бэкендом
  * и отправляющий события в Redux-хранилище.
+ * 
+ * Основные функции:
+ * - Установка и поддержание WebSocket соединения
+ * - Автоматическое переподключение при обрыве связи
+ * - Система пинг-понг для проверки активности соединения
+ * - Обработка различных типов торговых сигналов
+ * - Управление подписками на события
  */
 'use client'
 
-// Конфигурация
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'ws://127.0.0.1:4200'
-const MAX_RECONNECT_ATTEMPTS = 15
-const RECONNECT_DELAY = 5000
-const PING_INTERVAL = 30000 // 30 seconds
+import { WEBSOCKET_CONFIG, logWebSocketConfig } from '@/config/websocket.config'
+
+// Конфигурация WebSocket соединения
+const SOCKET_URL = WEBSOCKET_CONFIG.url
+const MAX_RECONNECT_ATTEMPTS = WEBSOCKET_CONFIG.maxReconnectAttempts
+const RECONNECT_DELAY = WEBSOCKET_CONFIG.reconnectDelay
+const PING_INTERVAL = WEBSOCKET_CONFIG.pingInterval
 
 /**
- * WebSocket клиент для обработки торговых сигналов
+ * Класс WebSocket клиента для обработки торговых сигналов
+ * 
+ * Реализует паттерн синглтон для обеспечения единого соединения
+ * с сервером во всем приложении. Поддерживает автоматическое
+ * переподключение и систему событий для подписки на различные
+ * типы торговых данных.
  */
 export class TradeSignalClient {
+	/** Базовый URL WebSocket сервера */
 	private baseUrl: string
+
+	/** Экземпляр WebSocket соединения */
 	private socket: WebSocket | null
+
+	/** Флаг состояния соединения */
 	private isConnected: boolean
+
+	/** Счетчик попыток переподключения */
 	private reconnectAttempts: number
+
+	/** Максимальное количество попыток переподключения */
 	private maxReconnectAttempts: number
+
+	/** Задержка между попытками переподключения (мс) */
 	private reconnectDelay: number
+
+	/** Объект с коллбэками для различных событий */
 	private callbacks: Record<string, Function[]>
+
+	/** Таймер для переподключения */
 	private connectTimer: NodeJS.Timeout | null = null
+
+	/** Таймер для отправки ping сообщений */
 	private pingTimer: NodeJS.Timeout | null = null
+
+	/** Время последнего полученного pong сообщения */
 	private lastPingTime: number = 0
+
+	/** Флаг процесса подключения */
 	private isConnecting: boolean = false
 
+	/**
+	 * Конструктор WebSocket клиента
+	 * 
+	 * @param baseUrl - URL WebSocket сервера (по умолчанию из конфигурации)
+	 */
 	constructor(baseUrl = SOCKET_URL) {
-		console.log(`Initializing WebSocket client with URL: ${baseUrl}`)
+		console.log(`Инициализация WebSocket клиента с URL: ${baseUrl}`)
+		logWebSocketConfig()
+
 		this.baseUrl = baseUrl
 		this.socket = null
 		this.isConnected = false
 		this.reconnectAttempts = 0
 		this.maxReconnectAttempts = MAX_RECONNECT_ATTEMPTS
 		this.reconnectDelay = RECONNECT_DELAY
+
+		// Инициализация коллбэков для различных типов событий
 		this.callbacks = {
 			'top:gainers:5min': [], // Лучшие растущие за 5 минут
 			'top:losers:5min': [], // Худшие падающие за 5 минут
@@ -66,22 +110,33 @@ export class TradeSignalClient {
 
 	/**
 	 * Подключиться к WebSocket серверу
+	 * 
+	 * Устанавливает соединение с WebSocket сервером и настраивает
+	 * обработчики событий. Включает защиту от множественных попыток
+	 * подключения и автоматическую очистку предыдущих соединений.
+	 * 
+	 * Особенности:
+	 * - Предотвращает дублирование попыток подключения
+	 * - Закрывает существующие соединения перед новым подключением
+	 * - Настраивает систему ping-pong для контроля активности
+	 * - Обрабатывает все типы WebSocket событий
 	 */
 	connect() {
-		// Prevent multiple simultaneous connection attempts
+		// Предотвращение множественных одновременных попыток подключения
 		if (this.isConnecting) {
-			console.log('Already attempting to connect, ignoring duplicate request')
+			console.log('Уже выполняется попытка подключения, игнорируем дублирующий запрос')
 			return
 		}
 
-		// If already connected and socket is open, do nothing
+		// Если уже подключены и сокет открыт, ничего не делаем
 		if (this.isConnected && this.socket && this.socket.readyState === WebSocket.OPEN) {
-			console.log('WebSocket already connected, ignoring duplicate connect call')
+			console.log('WebSocket уже подключен, игнорируем дублирующий вызов connect')
 			return
 		}
 
 		this.isConnecting = true
 
+		// Очистка существующих таймеров
 		if (this.connectTimer) {
 			clearTimeout(this.connectTimer)
 			this.connectTimer = null
@@ -92,22 +147,24 @@ export class TradeSignalClient {
 			this.pingTimer = null
 		}
 
+		// Закрытие существующего соединения если оно есть
 		if (this.socket && this.socket.readyState !== WebSocket.CLOSED) {
-			console.log('Closing existing socket before connecting')
+			console.log('Закрываем существующий сокет перед подключением')
 			try {
 				this.socket.close()
 			} catch (err) {
-				console.error('Error closing socket:', err)
+				console.error('Ошибка при закрытии сокета:', err)
 			}
 			this.socket = null
 		}
 
 		try {
-			console.log(`Connecting to WebSocket server at ${this.baseUrl}...`)
+			console.log(`Подключение к WebSocket серверу по адресу ${this.baseUrl}...`)
 			this.socket = new WebSocket(`${this.baseUrl}`)
 
+			// Обработчик успешного подключения
 			this.socket.onopen = () => {
-				console.log('✅ WebSocket connected successfully')
+				console.log('✅ WebSocket успешно подключен')
 				this.isConnected = true
 				this.isConnecting = false
 				this.reconnectAttempts = 0
@@ -116,11 +173,12 @@ export class TradeSignalClient {
 				this._emitEvent('connect')
 			}
 
+			// Обработчик входящих сообщений
 			this.socket.onmessage = (event) => {
 				try {
 					const message = JSON.parse(event.data)
 
-					// Handle pong messages
+					// Обработка pong сообщений для контроля активности
 					if (message.type === 'pong') {
 						this.lastPingTime = Date.now()
 						this._emitEvent('pong', message)
@@ -129,20 +187,21 @@ export class TradeSignalClient {
 
 					const { event: eventType, data } = message
 					if (!eventType) {
-						console.warn('Received message without event type:', message)
+						console.warn('Получено сообщение без типа события:', message)
 						return
 					}
 
-					// console.log(`Received ${eventType} event`, data)
+					// Передача события подписчикам
 					this._emitEvent(eventType, data)
 				} catch (err) {
-					console.error('Error parsing message:', err)
-					console.log('Raw message data:', event.data)
+					console.error('Ошибка при разборе сообщения:', err)
+					console.log('Сырые данные сообщения:', event.data)
 				}
 			}
 
+			// Обработчик закрытия соединения
 			this.socket.onclose = (event) => {
-				console.log('⚠️ WebSocket connection closed', {
+				console.log('⚠️ WebSocket соединение закрыто', {
 					code: event.code,
 					reason: event.reason,
 					wasClean: event.wasClean
@@ -153,26 +212,72 @@ export class TradeSignalClient {
 				this._tryReconnect()
 			}
 
+			// Обработчик ошибок WebSocket
 			this.socket.onerror = (error) => {
-				console.error('❌ WebSocket error:', {
-					error,
+				// WebSocket события ошибок не предоставляют детальную информацию
+				// Вместо этого логируем полезный контекст о состоянии соединения
+				const errorInfo = {
+					timestamp: new Date().toISOString(),
 					readyState: this.socket?.readyState,
-					url: this.baseUrl
-				})
+					readyStateText: this.socket?.readyState !== undefined ?
+						['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'][this.socket.readyState] : 'UNKNOWN',
+					url: this.baseUrl,
+					isConnecting: this.isConnecting,
+					reconnectAttempts: this.reconnectAttempts,
+					errorType: error?.type || 'unknown',
+					errorTarget: error?.target?.constructor?.name || 'unknown'
+				}
+
+				console.error('❌ Произошла ошибка WebSocket:', errorInfo)
+
+				// Логируем дополнительный контекст если доступен
+				if (error instanceof Event) {
+					console.error('❌ Детали события ошибки:', {
+						type: error.type,
+						timeStamp: error.timeStamp,
+						isTrusted: error.isTrusted
+					})
+				}
+
 				this.isConnecting = false
-				this._emitEvent('error', error)
+				this._emitEvent('error', {
+					message: 'Ошибка WebSocket соединения',
+					details: errorInfo
+				})
 			}
 		} catch (error) {
-			console.error('❌ Error establishing WebSocket connection:', {
-				error,
-				url: this.baseUrl
-			})
+			// Обработка ошибок при создании WebSocket соединения
+			const errorInfo = {
+				timestamp: new Date().toISOString(),
+				url: this.baseUrl,
+				isConnecting: this.isConnecting,
+				reconnectAttempts: this.reconnectAttempts,
+				errorMessage: error instanceof Error ? error.message : String(error),
+				errorName: error instanceof Error ? error.name : 'Unknown',
+				errorStack: error instanceof Error ? error.stack : undefined
+			}
+
+			console.error('❌ Ошибка при установке WebSocket соединения:', errorInfo)
+
 			this.isConnecting = false
-			this._emitEvent('error', error)
+			this._emitEvent('error', {
+				message: 'Не удалось установить WebSocket соединение',
+				details: errorInfo
+			})
 			this._tryReconnect()
 		}
 	}
 
+	/**
+	 * Запуск интервала ping сообщений
+	 * 
+	 * Устанавливает периодическую отправку ping сообщений для
+	 * контроля активности соединения. Если сервер не отвечает
+	 * pong сообщениями в течение заданного времени, инициирует
+	 * переподключение.
+	 * 
+	 * @private
+	 */
 	private _startPingInterval() {
 		if (this.pingTimer) {
 			clearInterval(this.pingTimer)
@@ -182,7 +287,7 @@ export class TradeSignalClient {
 			if (this.isActive()) {
 				const timeSinceLastPing = Date.now() - this.lastPingTime
 				if (timeSinceLastPing > PING_INTERVAL * 2) {
-					console.warn('No pong received for too long, reconnecting...')
+					console.warn('Слишком долго нет ответа pong, переподключаемся...')
 					this.disconnect()
 					this.connect()
 					return
@@ -191,7 +296,7 @@ export class TradeSignalClient {
 				try {
 					this.socket?.send(JSON.stringify({ type: 'ping' }))
 				} catch (error) {
-					console.error('Error sending ping:', error)
+					console.error('Ошибка при отправке ping:', error)
 				}
 			}
 		}, PING_INTERVAL)
@@ -199,8 +304,13 @@ export class TradeSignalClient {
 
 	/**
 	 * Отключиться от WebSocket сервера
+	 * 
+	 * Корректно закрывает WebSocket соединение и очищает все
+	 * связанные таймеры. Устанавливает флаги состояния в
+	 * соответствующие значения.
 	 */
 	disconnect() {
+		// Очистка таймеров
 		if (this.connectTimer) {
 			clearTimeout(this.connectTimer)
 			this.connectTimer = null
@@ -211,8 +321,9 @@ export class TradeSignalClient {
 			this.pingTimer = null
 		}
 
+		// Закрытие WebSocket соединения
 		if (this.socket) {
-			console.log('Disconnecting WebSocket...')
+			console.log('Отключение WebSocket...')
 			this.socket.close()
 			this.socket = null
 			this.isConnected = false
@@ -221,12 +332,18 @@ export class TradeSignalClient {
 
 	/**
 	 * Попытаться переподключиться при потере соединения
+	 * 
+	 * Реализует логику автоматического переподключения с
+	 * ограничением количества попыток. Использует фиксированную
+	 * задержку между попытками для предотвращения перегрузки сервера.
+	 * 
+	 * @private
 	 */
 	private _tryReconnect() {
 		if (this.reconnectAttempts < this.maxReconnectAttempts) {
 			this.reconnectAttempts++
 			console.log(
-				`🔄 Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
+				`🔄 Попытка переподключения (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`
 			)
 
 			// Очищаем существующий таймер, если есть
@@ -240,15 +357,20 @@ export class TradeSignalClient {
 				this.connectTimer = null
 			}, this.reconnectDelay)
 		} else {
-			console.error('⛔ Max reconnect attempts reached. Please check your connection.')
-			this._emitEvent('error', { message: 'Max reconnect attempts reached' })
+			console.error('⛔ Достигнуто максимальное количество попыток переподключения. Проверьте соединение.')
+			this._emitEvent('error', { message: 'Достигнуто максимальное количество попыток переподключения' })
 		}
 	}
 
 	/**
-	 * Подписаться на сигналы
-	 * @param {string} eventName - Имя события
-	 * @param {Function} callback - Функция обратного вызова
+	 * Подписаться на события WebSocket
+	 * 
+	 * Добавляет функцию обратного вызова для указанного типа события.
+	 * Поддерживает множественные подписки на одно событие.
+	 * 
+	 * @param eventName - Имя события для подписки
+	 * @param callback - Функция обратного вызова
+	 * @returns Экземпляр клиента для цепочки вызовов
 	 */
 	on(eventName: string, callback: Function) {
 		if (!this.callbacks[eventName]) {
@@ -259,9 +381,14 @@ export class TradeSignalClient {
 	}
 
 	/**
-	 * Отписаться от сигналов
-	 * @param {string} eventName - Имя события
-	 * @param {Function} callback - Функция обратного вызова
+	 * Отписаться от событий WebSocket
+	 * 
+	 * Удаляет указанную функцию обратного вызова из списка
+	 * подписчиков на событие.
+	 * 
+	 * @param eventName - Имя события
+	 * @param callback - Функция обратного вызова для удаления
+	 * @returns Экземпляр клиента для цепочки вызовов
 	 */
 	off(eventName: string, callback: Function) {
 		if (this.callbacks[eventName]) {
@@ -274,7 +401,11 @@ export class TradeSignalClient {
 
 	/**
 	 * Проверить статус соединения
-	 * @returns {boolean} - true, если соединение активно
+	 * 
+	 * Возвращает true если WebSocket соединение активно и готово
+	 * для отправки/получения данных.
+	 * 
+	 * @returns true если соединение активно, false в противном случае
 	 */
 	isActive(): boolean {
 		return (
@@ -286,8 +417,14 @@ export class TradeSignalClient {
 
 	/**
 	 * Вызвать обработчики события
-	 * @param {string} eventName - Имя события
-	 * @param {any} data - Данные события
+	 * 
+	 * Безопасно вызывает все зарегистрированные обработчики
+	 * для указанного события. Обрабатывает ошибки в коллбэках
+	 * чтобы предотвратить падение всего приложения.
+	 * 
+	 * @param eventName - Имя события
+	 * @param data - Данные события (опционально)
+	 * @private
 	 */
 	private _emitEvent(eventName: string, data?: any) {
 		if (this.callbacks[eventName]) {
@@ -295,28 +432,34 @@ export class TradeSignalClient {
 				try {
 					callback(data)
 				} catch (err) {
-					console.error(`Error in callback for event ${eventName}:`, err)
+					console.error(`Ошибка в коллбэке для события ${eventName}:`, err)
 				}
 			})
 		}
 	}
 }
 
-// Экземпляр синглтона
+/** Экземпляр синглтона WebSocket клиента */
 let wsClientInstance: TradeSignalClient | null = null
 
 /**
  * Получить экземпляр WebSocket клиента (синглтон)
+ * 
+ * Реализует паттерн синглтон для обеспечения единого
+ * WebSocket соединения во всем приложении. На стороне
+ * сервера (SSR) возвращает фиктивный клиент.
+ * 
+ * @returns Экземпляр WebSocket клиента
  */
 export const getWebSocketClient = (): TradeSignalClient => {
 	if (typeof window !== 'undefined') {
-		// Only create the instance on the client side
+		// Создаем экземпляр только на стороне клиента
 		if (!wsClientInstance) {
 			wsClientInstance = new TradeSignalClient()
 		}
 		return wsClientInstance
 	}
 
-	// Return a dummy client for SSR
+	// Возвращаем фиктивный клиент для SSR
 	return new TradeSignalClient()
 } 

@@ -12,33 +12,40 @@ import {
 	selectVolatilityRangeSignals
 } from '@/store/signals'
 
+/**
+ * Страница сигналов диапазона волатильности
+ *
+ * Отображает таблицу с сигналами диапазона волатильности,
+ * статус подключения и обрабатывает различные состояния соединения.
+ */
 export default function VolatilityPage() {
+	/** Флаг инициализации компонента */
 	const [isInitialized, setIsInitialized] = useState(false)
-	const volatilityRangeSignals = useSelector(selectVolatilityRangeSignals)
-	const lastUpdated = useSelector(selectVolatilityRangeLastUpdated)
-	const connectionStatus = useSelector(selectConnectionStatus)
-	console.log('volatilityRangeSignals', volatilityRangeSignals)
-	console.log('connectionStatus', connectionStatus)
 
-	// Use memoization to avoid recalculating the same data on each render
+	/** Сигналы диапазона волатильности из Redux */
+	const volatilityRangeSignals = useSelector(selectVolatilityRangeSignals)
+	/** Время последнего обновления */
+	const lastUpdated = useSelector(selectVolatilityRangeLastUpdated)
+	/** Статус подключения (boolean) */
+	const isConnected = useSelector(selectConnectionStatus)
+
+	console.log('volatilityRangeSignals', volatilityRangeSignals)
+	console.log('isConnected', isConnected)
+
+	/** Мемоизированное количество сигналов для избежания пересчета */
 	const signalCount = useMemo(
 		() => volatilityRangeSignals?.length || 0,
 		[volatilityRangeSignals]
 	)
 
-	const isConnected = useMemo(
-		() => connectionStatus === 'connected',
-		[connectionStatus]
-	)
-
-	// Safely log signals without potentially causing message channel issues
+	// Безопасное логирование сигналов без потенциальных проблем с каналом сообщений
 	useEffect(() => {
 		if (signalCount > 0 && isInitialized) {
-			console.log(`Volatility range signals loaded: ${signalCount}`)
+			console.log(`Загружено сигналов диапазона волатильности: ${signalCount}`)
 		}
 	}, [signalCount, isInitialized, lastUpdated])
 
-	// Mark component as initialized after mounting
+	// Отмечаем компонент как инициализированный после монтирования
 	useEffect(() => {
 		setIsInitialized(true)
 		return () => {
@@ -46,53 +53,27 @@ export default function VolatilityPage() {
 		}
 	}, [])
 
-	// Connection status message based on the actual status value
-	const getConnectionMessage = () => {
-		switch (connectionStatus) {
-			case 'connecting':
-				return 'Connecting to WebSocket server...'
-			case 'disconnected':
-				return 'WebSocket disconnected. Waiting for reconnection...'
-			case 'error':
-				return 'Error connecting to WebSocket server. Please try again later.'
-			default:
-				return ''
-		}
-	}
-
-	// Background colors for different status messages
-	const getStatusBgColor = () => {
-		switch (connectionStatus) {
-			case 'connecting':
-				return 'bg-blue-100 text-blue-800'
-			case 'disconnected':
-				return 'bg-yellow-100 text-yellow-800'
-			case 'error':
-				return 'bg-red-100 text-red-800'
-			default:
-				return ''
-		}
-	}
-
 	return (
 		<>
-			{/* Render the table with signals */}
+			{/* Отображаем таблицу с сигналами */}
 			<div className='p-4'>
-				<h1 className='text-2xl font-bold mb-4'>Volatility Range Signals</h1>
+				<h1 className='text-2xl font-bold mb-4'>
+					Сигналы диапазона волатильности
+				</h1>
 				<ConnectionStatus />
-				{connectionStatus !== 'connected' && (
-					<div className={`mb-4 p-3 rounded ${getStatusBgColor()}`}>
-						{getConnectionMessage()}
+				{!isConnected && (
+					<div className='mb-4 p-3 rounded bg-yellow-100 text-yellow-800'>
+						WebSocket отключен. Ожидание переподключения...
 					</div>
 				)}
 				{isConnected && signalCount === 0 ? (
 					<div className='p-4 bg-gray-100 text-gray-700 rounded'>
-						No volatility range signals available. Waiting for data...
+						Нет доступных сигналов диапазона волатильности. Ожидание данных...
 					</div>
 				) : (
 					<VolatilityRangeComponent
 						maxSignals={20}
-						title='Volatility Range Signals'
+						title='Сигналы диапазона волатильности'
 					/>
 				)}
 			</div>

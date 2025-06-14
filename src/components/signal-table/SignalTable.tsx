@@ -22,7 +22,6 @@ import {
 import styles from './Signal-table.module.scss'
 import { SignalSocketInitializer } from './SignalSocketInitializer'
 import { ConnectionStatus } from './connection-status/ConnectionStatus'
-import { TimeframeSection } from './timeframe-section/TimeframeSection'
 import { VolatilitySection } from './volatility-section/VolatilitySection'
 
 /**
@@ -154,7 +153,7 @@ export const SignalTable = () => {
 			<ConnectionStatus />
 
 			{/* Timeframe sections */}
-			<div className={styles.section}>
+			{/* <div className={styles.section}>
 				<TimeframeSection
 					timeframe5min={{
 						gainers: timeframeData['5min'].gainers,
@@ -177,15 +176,11 @@ export const SignalTable = () => {
 						losers: triggers['24h'].losers
 					}}
 				/>
-			</div>
+			</div> */}
 
 			{/* Volatility section */}
 			<div className={styles.section}>
-				<VolatilitySection
-					volatilitySignals={volatilitySignals}
-					volumeSignals={volumeSignals}
-					priceChangeSignals={priceChangeSignals}
-				/>
+				<VolatilitySection />
 			</div>
 		</div>
 	)
