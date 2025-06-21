@@ -1,23 +1,28 @@
 /**
- * Volume Signals Slice
+ * Слайс сигналов объема
  * ------------------------------
- * Redux slice for volume signals
+ * Redux слайс для управления сигналами всплесков объема торгов
+ * Отслеживает резкие изменения объема торговых операций
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { VolumeSignal } from '../signal.types'
 
+/** Интерфейс состояния сигналов объема */
 interface VolumeState {
+	/** Массив сигналов объема */
 	signals: VolumeSignal[]
+	/** Время последнего обновления */
 	lastUpdated: number
 }
 
+/** Начальное состояние сигналов объема */
 const initialState: VolumeState = {
 	signals: [],
 	lastUpdated: 0
 }
 
-// Reduce the maximum number of signals to improve performance
+/** Максимальное количество сигналов для улучшения производительности */
 const MAX_SIGNALS = 50
 
 export const volumeSlice = createSlice({
@@ -29,7 +34,7 @@ export const volumeSlice = createSlice({
 
 			console.log(`💾 Adding volume signal to store: ${signal.symbol}`)
 
-			// Check if signal with same symbol and timestamp already exists
+			// Проверяем, существует ли уже сигнал с тем же символом и временной меткой
 			const existingIndex = state.signals.findIndex(
 				existingSignal =>
 					existingSignal.symbol === signal.symbol &&
@@ -37,32 +42,32 @@ export const volumeSlice = createSlice({
 			)
 
 			if (existingIndex !== -1) {
-				// Update existing signal instead of adding new one
+				// Обновляем существующий сигнал вместо добавления нового
 				console.log(`🔄 Updating existing volume signal at index ${existingIndex}`)
 				state.signals[existingIndex] = {
 					...signal,
-					// Preserve the creation time from the original signal
+					// Сохраняем время создания из оригинального сигнала
 					createdAt: state.signals[existingIndex].createdAt || Date.now()
 				}
 			} else {
-				// Add new signal at the beginning of the array with creation timestamp
+				// Добавляем новый сигнал в начало массива с временной меткой создания
 				console.log(`➕ Adding new volume signal, current count: ${state.signals.length}`)
 				state.signals.unshift({
 					...signal,
 					createdAt: Date.now()
 				})
 
-				// Keep only the most recent signals to prevent state from growing too large
+				// Сохраняем только самые свежие сигналы для предотвращения роста состояния
 				if (state.signals.length > MAX_SIGNALS) {
 					console.log(`✂️ Trimming volume signals array to ${MAX_SIGNALS} items`)
 					state.signals.length = MAX_SIGNALS
 				}
 			}
 
-			// Log current signals count
+			// Логируем текущее количество сигналов
 			console.log(`📊 Current volume signals count: ${state.signals.length}`)
 
-			// Update the lastUpdated timestamp
+			// Обновляем время последнего обновления
 			state.lastUpdated = Date.now()
 		},
 		clearVolumeSignals: (state) => {

@@ -13,7 +13,7 @@ import styles from './Time-table.module.scss'
 interface TimeframeCoinsTableProps {
 	title: string
 	type: 'gainers' | 'losers'
-	timeframe: '5min' | '24h'
+	timeframe: '24h'
 }
 
 /**
@@ -43,7 +43,7 @@ const TimeframeCoinsRow = ({
  * монет с изменением цены за определенный временной период
  *
  * Отображает либо растущие (gainers), либо падающие (losers) монеты
- * за указанный таймфрейм (5min или 24h)
+ * за указанный таймфрейм (24h)
  */
 export const TimeframeCoinsTable = ({
 	title,

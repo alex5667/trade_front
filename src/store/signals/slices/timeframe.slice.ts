@@ -1,25 +1,22 @@
 /**
- * Timeframe Slice
+ * Слайс таймфреймов
  * ------------------------------
- * Redux slice for timeframe-related data
+ * Redux слайс для данных по 24-часовому временному интервалу
+ * Управляет топами растущих/падающих активов
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TimeframeCoin, TimeframeData, VolumeSignal } from '../signal.types'
+import { TimeframeCoin, TimeframeData } from '../signal.types'
 
+/** Начальное состояние данных таймфреймов */
 const initialState: TimeframeData = {
-	'5min': {
-		gainers: [],
-		losers: [],
-		volume: []
-	},
 	'24h': {
 		gainers: [],
 		losers: []
 	}
 }
 
-// Maximum number of items to keep in each timeframe category
+/** Максимальное количество элементов в каждой категории таймфрейма */
 const MAX_ITEMS = 20
 
 export const timeframeSlice = createSlice({
@@ -29,32 +26,32 @@ export const timeframeSlice = createSlice({
 		addTimeframeGainer: (
 			state,
 			action: PayloadAction<{
-				timeframe: '5min' | '24h'
+				timeframe: '24h'
 				data: TimeframeCoin
 			}>
 		) => {
 			const { timeframe, data } = action.payload
 			console.log(`💰 Adding timeframe gainer: ${data.symbol} (${data.percentChange.toFixed(2)}%) to ${timeframe}`)
 
-			// Check if the coin already exists
+			// Проверяем, существует ли уже монета с таким символом
 			const existingIndex = state[timeframe].gainers.findIndex(
 				(coin) => coin.symbol === data.symbol
 			)
 
 			if (existingIndex >= 0) {
-				// Update existing coin
+				// Обновляем существующую монету
 				state[timeframe].gainers[existingIndex] = data
 			} else {
-				// Add new coin
+				// Добавляем новую монету
 				state[timeframe].gainers.push(data)
 			}
 
-			// Sort by descending percent change (highest first)
+			// Сортируем по убыванию процентного изменения (наибольший рост сначала)
 			state[timeframe].gainers.sort(
 				(a, b) => b.percentChange - a.percentChange
 			)
 
-			// Limit the number of items
+			// Ограничиваем количество элементов
 			if (state[timeframe].gainers.length > MAX_ITEMS) {
 				state[timeframe].gainers = state[timeframe].gainers.slice(0, MAX_ITEMS)
 			}
@@ -63,74 +60,40 @@ export const timeframeSlice = createSlice({
 		addTimeframeLoser: (
 			state,
 			action: PayloadAction<{
-				timeframe: '5min' | '24h'
+				timeframe: '24h'
 				data: TimeframeCoin
 			}>
 		) => {
 			const { timeframe, data } = action.payload
 			console.log(`📉 Adding timeframe loser: ${data.symbol} (${data.percentChange.toFixed(2)}%) to ${timeframe}`)
 
-			// Check if the coin already exists
+			// Проверяем, существует ли уже монета с таким символом
 			const existingIndex = state[timeframe].losers.findIndex(
 				(coin) => coin.symbol === data.symbol
 			)
 
 			if (existingIndex >= 0) {
-				// Update existing coin
+				// Обновляем существующую монету
 				state[timeframe].losers[existingIndex] = data
 			} else {
-				// Add new coin
+				// Добавляем новую монету
 				state[timeframe].losers.push(data)
 			}
 
-			// Sort by ascending percent change (lowest first)
+			// Сортируем по возрастанию процентного изменения (наибольшее падение сначала)
 			state[timeframe].losers.sort(
 				(a, b) => a.percentChange - b.percentChange
 			)
 
-			// Limit the number of items
+			// Ограничиваем количество элементов
 			if (state[timeframe].losers.length > MAX_ITEMS) {
 				state[timeframe].losers = state[timeframe].losers.slice(0, MAX_ITEMS)
 			}
 		},
 
-		addTimeframeVolume: (
-			state,
-			action: PayloadAction<{
-				timeframe: '5min'
-				data: VolumeSignal
-			}>
-		) => {
-			const { data } = action.payload
-			console.log(`📊 Adding timeframe volume: ${data.symbol} (${data.volumeChange.toFixed(2)}) to 5min`)
-
-			// Check if the coin already exists
-			const existingIndex = state['5min'].volume.findIndex(
-				(coin) => coin.symbol === data.symbol
-			)
-
-			if (existingIndex >= 0) {
-				// Update existing coin
-				state['5min'].volume[existingIndex] = data
-			} else {
-				// Add new coin
-				state['5min'].volume.push(data)
-			}
-
-			// Sort by descending volume change (highest first)
-			state['5min'].volume.sort(
-				(a, b) => b.volumeChange - a.volumeChange
-			)
-
-			// Limit the number of items
-			if (state['5min'].volume.length > MAX_ITEMS) {
-				state['5min'].volume = state['5min'].volume.slice(0, MAX_ITEMS)
-			}
-		},
-
 		clearTimeframeData: (state) => {
 			console.log('🧹 Clearing all timeframe data')
-			// Reset to initial state
+			// Сброс к начальному состоянию
 			return initialState
 		}
 	}
@@ -139,7 +102,6 @@ export const timeframeSlice = createSlice({
 export const {
 	addTimeframeGainer,
 	addTimeframeLoser,
-	addTimeframeVolume,
 	clearTimeframeData
 } = timeframeSlice.actions
 

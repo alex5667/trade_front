@@ -37,11 +37,11 @@ export default function SignalTest() {
 	const priceChangeSignals = useSelector(
 		(state: TypeRootState) => state.priceChange?.signals || []
 	)
-	const topGainers5min = useSelector(
-		(state: TypeRootState) => state.timeframe?.['5min']?.gainers || []
+	const topGainers24h = useSelector(
+		(state: TypeRootState) => state.timeframe?.['24h']?.gainers || []
 	)
-	const topLosers5min = useSelector(
-		(state: TypeRootState) => state.timeframe?.['5min']?.losers || []
+	const topLosers24h = useSelector(
+		(state: TypeRootState) => state.timeframe?.['24h']?.losers || []
 	)
 
 	// Check connection manually
@@ -376,12 +376,12 @@ export default function SignalTest() {
 					</div>
 				</div>
 
-				{/* Top gainers 5min */}
+				{/* Top gainers 24h */}
 				<div className='border p-4 rounded'>
-					<h2 className='text-lg font-semibold mb-2'>Top Gainers (5min)</h2>
-					<p>Count: {topGainers5min.length}</p>
+					<h2 className='text-lg font-semibold mb-2'>Top Gainers (24h)</h2>
+					<p>Count: {topGainers24h.length}</p>
 					<div className='mt-2 max-h-40 overflow-y-auto'>
-						{topGainers5min.slice(0, 5).map((coin, index) => (
+						{topGainers24h.slice(0, 5).map((coin, index) => (
 							<div
 								key={index}
 								className='text-xs p-2 bg-gray-50 mb-1'
@@ -411,12 +411,12 @@ export default function SignalTest() {
 						{priceChangeSignals.length > 0 ? '✅ Data present' : '❌ No data'}
 					</li>
 					<li>
-						Top Gainers 5min:{' '}
-						{topGainers5min.length > 0 ? '✅ Data present' : '❌ No data'}
+						Top Gainers 24h:{' '}
+						{topGainers24h.length > 0 ? '✅ Data present' : '❌ No data'}
 					</li>
 					<li>
-						Top Losers 5min:{' '}
-						{topLosers5min.length > 0 ? '✅ Data present' : '❌ No data'}
+						Top Losers 24h:{' '}
+						{topLosers24h.length > 0 ? '✅ Data present' : '❌ No data'}
 					</li>
 				</ul>
 			</div>

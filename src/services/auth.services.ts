@@ -1,3 +1,10 @@
+/**
+ * Сервис авторизации
+ * --------------------------------
+ * RTK Query API для управления аутентификацией пользователей
+ * Включает операции входа, регистрации, выхода и OAuth через Google
+ */
+
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { AuthForm, AuthResponse } from '@/types/auth.types'
@@ -12,6 +19,7 @@ export const authApi = createApi({
 	baseQuery: baseQueryWIthReAuth,
 	tagTypes: ['auth'],
 	endpoints: builder => ({
+		/** Авторизация пользователя по email и паролю */
 		login: builder.mutation<AuthResponse, AuthForm>({
 			query: data => ({
 				url: URLS.AUTH_LOGIN,
@@ -35,6 +43,7 @@ export const authApi = createApi({
 				}
 			}
 		}),
+		/** Регистрация нового пользователя */
 		register: builder.mutation<AuthResponse, AuthForm>({
 			query: data => ({
 				url: URLS.AUTH_REGISTER,
@@ -57,6 +66,7 @@ export const authApi = createApi({
 				}
 			}
 		}),
+		/** Выход пользователя из системы */
 		logout: builder.mutation<void, void>({
 			query: () => ({
 				url: URLS.AUTH_LOGOUT,
@@ -73,6 +83,7 @@ export const authApi = createApi({
 				}
 			}
 		}),
+		/** Авторизация через Google OAuth */
 		loginGoogle: builder.mutation<AuthResponse, void>({
 			query: () => ({
 				url: URLS.AUTH_GOOGLE,
@@ -98,6 +109,7 @@ export const authApi = createApi({
 				}
 			}
 		}),
+		/** Обработка callback после авторизации через Google */
 		handleGoogleCallback: builder.mutation<AuthResponse, void>({
 			query: () => ({
 				url: URLS.USER_PROFILE,

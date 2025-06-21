@@ -83,16 +83,6 @@ export interface BinanceFundingRate {
 }
 
 /**
- * Интерфейс для структуры данных за 5 минут
- */
-export interface Timeframe5MinData {
-	gainers: GainerLoserSymbol[] // Данные о росте цены
-	losers: GainerLoserSymbol[] // Данные о падении цены
-	volume: VolumeSymbol[] // Данные об объеме
-	funding: FundingSymbol[] // Данные о финансировании
-}
-
-/**
  * Интерфейс для структуры данных за 24 часа
  */
 export interface Timeframe24hData {
@@ -113,7 +103,6 @@ export interface BinanceData {
  * Соответствует возвращаемому типу метода getAllTradingData
  */
 export interface AllTradingData {
-	timeframe5min: Timeframe5MinData // Данные за 5 минут
 	timeframe24h: Timeframe24hData // Данные за 24 часа
 	binanceData: BinanceData // Данные с Binance
 } 

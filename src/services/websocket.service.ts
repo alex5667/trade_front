@@ -81,10 +81,6 @@ export class TradeSignalClient {
 
 		// Инициализация коллбэков для различных типов событий
 		this.callbacks = {
-			'top:gainers:5min': [], // Лучшие растущие за 5 минут
-			'top:losers:5min': [], // Худшие падающие за 5 минут
-			'top:volume:5min': [], // Топ по объему за 5 минут
-			'top:funding:5min': [], // Топ по финансированию за 5 минут
 			'top:gainers:24h': [], // Лучшие растущие за 24 часа
 			'top:losers:24h': [], // Худшие падающие за 24 часа
 			'signal:volatility': [], // Сигналы волатильности
@@ -97,10 +93,6 @@ export class TradeSignalClient {
 			'top:losers': [], // Худшие падающие (общие)
 			'trigger:gainers-24h': [], // Триггер для растущих за 24 часа
 			'trigger:losers-24h': [], // Триггер для падающих за 24 часа
-			'trigger:gainers-5min': [], // Триггер для растущих за 5 минут
-			'trigger:losers-5min': [], // Триггер для падающих за 5 минут
-			'trigger:volume-5min': [], // Триггер для объема за 5 минут
-			'trigger:funding-5min': [], // Триггер для финансирования за 5 минут
 			'connect': [], // Событие подключения
 			'disconnect': [], // Событие отключения
 			'error': [], // Событие ошибки

@@ -112,9 +112,6 @@ export type SignalData = {
 	topLosers4h: TimeframeCoin[]
 	topGainers24h: TimeframeCoin[]
 	topLosers24h: TimeframeCoin[]
-	topGainers5min: TimeframeCoin[]
-	topLosers5min: TimeframeCoin[]
-	topVolume5min: TimeframeCoin[]
-	topFunding5min: TimeframeCoin[]
+
 }
 

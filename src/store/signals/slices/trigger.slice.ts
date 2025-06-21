@@ -1,26 +1,22 @@
 /**
- * Trigger Slice
+ * Слайс триггерных событий
  * ------------------------------
- * Redux slice for UI trigger events
+ * Redux слайс для управления триггерными событиями пользовательского интерфейса
+ * Обрабатывает уведомления о необходимости обновления данных в UI компонентах
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TriggerEvent, TriggersData } from '../signal.types'
 
+/** Начальное состояние триггерных событий */
 const initialState: TriggersData = {
-	'5min': {
-		gainers: [],
-		losers: [],
-		volume: [],
-		funding: []
-	},
 	'24h': {
 		gainers: [],
 		losers: []
 	}
 }
 
-// Maximum number of triggers to keep for each category
+/** Максимальное количество триггеров для каждой категории */
 const MAX_TRIGGERS = 10
 
 export const triggerSlice = createSlice({
@@ -33,28 +29,25 @@ export const triggerSlice = createSlice({
 		) => {
 			const { timeframe, type, data } = action.payload
 
-			// Ensure valid timeframe and type combination
-			if (
-				(timeframe === '5min' && ['gainers', 'losers', 'volume', 'funding'].includes(type)) ||
-				(timeframe === '24h' && ['gainers', 'losers'].includes(type))
-			) {
+			// Проверяем валидность комбинации таймфрейма и типа
+			if (timeframe === '24h' && ['gainers', 'losers'].includes(type)) {
 				if (Array.isArray(data)) {
-					// If data is an array, replace the current triggers
+					// Если данные - массив, заменяем текущие триггеры
 					console.log(`🔔 Setting ${timeframe} ${type} triggers: ${data.length} items`)
-					// @ts-ignore - Type checked above
+					// @ts-ignore - Тип проверен выше
 					state[timeframe][type] = data.slice(0, MAX_TRIGGERS)
 				} else if (typeof data === 'string') {
-					// If data is a string and not already in the array, add it
-					// @ts-ignore - Type checked above
+					// Если данные - строка и её нет в массиве, добавляем
+					// @ts-ignore - Тип проверен выше
 					if (!state[timeframe][type].includes(data)) {
 						console.log(`🔔 Adding single ${timeframe} ${type} trigger: ${data}`)
-						// @ts-ignore - Type checked above
+						// @ts-ignore - Тип проверен выше
 						state[timeframe][type].unshift(data)
 
-						// Limit array size
-						// @ts-ignore - Type checked above
+						// Ограничиваем размер массива
+						// @ts-ignore - Тип проверен выше
 						if (state[timeframe][type].length > MAX_TRIGGERS) {
-							// @ts-ignore - Type checked above
+							// @ts-ignore - Тип проверен выше
 							state[timeframe][type].pop()
 						}
 					}
@@ -69,23 +62,14 @@ export const triggerSlice = createSlice({
 			return initialState
 		},
 
-		clearTimeframeTriggers: (state, action: PayloadAction<'5min' | '24h'>) => {
+		clearTimeframeTriggers: (state, action: PayloadAction<'24h'>) => {
 			const timeframe = action.payload
 			console.log(`🧹 Clearing triggers for timeframe: ${timeframe}`)
 
-			// Create a new object with empty arrays
-			if (timeframe === '5min') {
-				state['5min'] = {
-					gainers: [],
-					losers: [],
-					volume: [],
-					funding: []
-				}
-			} else {
-				state['24h'] = {
-					gainers: [],
-					losers: []
-				}
+			// Создаем новый объект с пустыми массивами
+			state['24h'] = {
+				gainers: [],
+				losers: []
 			}
 		}
 	}

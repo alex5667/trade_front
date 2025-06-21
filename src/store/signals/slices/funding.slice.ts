@@ -1,23 +1,28 @@
 /**
- * Funding Slice
+ * Слайс данных финансирования
  * ------------------------------
- * Redux slice for funding rate data
+ * Redux слайс для управления данными ставок финансирования фьючерсных контрактов
+ * Отслеживает ставки финансирования различных торговых пар
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { FundingCoin } from '../signal.types'
 
+/** Интерфейс состояния данных финансирования */
 interface FundingState {
+	/** Массив монет с данными финансирования */
 	coins: FundingCoin[]
+	/** Время последнего обновления */
 	lastUpdated: number
 }
 
+/** Начальное состояние данных финансирования */
 const initialState: FundingState = {
 	coins: [],
 	lastUpdated: 0
 }
 
-// Maximum number of funding coins to keep
+/** Максимальное количество монет для отслеживания финансирования */
 const MAX_COINS = 20
 
 export const fundingSlice = createSlice({
@@ -28,28 +33,28 @@ export const fundingSlice = createSlice({
 			const { data } = action.payload
 			console.log(`💱 Adding funding data: ${data.symbol} (rate: ${data.rate.toFixed(4)}%)`)
 
-			// Check if the coin already exists
+			// Проверяем, существует ли уже монета с таким символом
 			const existingIndex = state.coins.findIndex(
 				(coin) => coin.symbol === data.symbol
 			)
 
 			if (existingIndex >= 0) {
-				// Update existing coin
+				// Обновляем существующую монету
 				state.coins[existingIndex] = data
 			} else {
-				// Add new coin
+				// Добавляем новую монету
 				state.coins.push(data)
 			}
 
-			// Sort by absolute rate value (highest first)
+			// Сортируем по абсолютному значению ставки (наибольшие ставки сначала)
 			state.coins.sort((a, b) => Math.abs(b.rate) - Math.abs(a.rate))
 
-			// Limit the number of coins
+			// Ограничиваем количество монет
 			if (state.coins.length > MAX_COINS) {
 				state.coins = state.coins.slice(0, MAX_COINS)
 			}
 
-			// Update lastUpdated timestamp
+			// Обновляем время последнего обновления
 			state.lastUpdated = Date.now()
 		},
 

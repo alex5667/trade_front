@@ -28,8 +28,7 @@ import {
 import { addPriceChangeSignal } from '@/store/signals/slices/price-change.slice'
 import {
 	addTimeframeGainer,
-	addTimeframeLoser,
-	addTimeframeVolume
+	addTimeframeLoser
 } from '@/store/signals/slices/timeframe.slice'
 import {
 	addTriggerEvent
@@ -37,10 +36,8 @@ import {
 import { addVolatilitySignal } from '@/store/signals/slices/volatility.slice'
 import { addVolumeSignal } from '@/store/signals/slices/volume.slice'
 import {
-	parseFundingCoins,
 	parseSymbols,
-	parseTimeframeCoins,
-	parseVolumeCoins
+	parseTimeframeCoins
 } from '@/store/signals/utils/signal-parsers'
 import { AppDispatch } from '@/store/store'
 import { getWebSocketClient } from './websocket.service'
@@ -182,77 +179,22 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 		dispatch(addPriceChangeSignal(signal))
 	})
 
-	// Обработчики данных за 5 минут
-	client.on('top:gainers:5min', (data: AnyObject) => {
-		const coins = parseTimeframeCoins(data)
-		dispatch(addTimeframeGainer({ timeframe: '5min', data: coins }))
-	})
-
-	client.on('top:losers:5min', (data: AnyObject) => {
-		const coins = parseTimeframeCoins(data)
-		dispatch(addTimeframeLoser({ timeframe: '5min', data: coins }))
-	})
-
-	client.on('top:volume:5min', (data: AnyObject) => {
-		const coins = parseVolumeCoins(data)
-		dispatch(addTimeframeVolume({ timeframe: '5min', data: coins }))
-	})
-
-	client.on('top:funding:5min', (data: AnyObject) => {
-		const coins = parseFundingCoins(data)
-		// Пока нет специального слайса для funding, логируем данные
-		// TODO: Создать отдельный слайс для funding данных
-		console.log('Получены данные финансирования:', coins)
-	})
-
 	// Обработчики данных за 24 часа
 	client.on('top:gainers:24h', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		dispatch(addTimeframeGainer({ timeframe: '24h', data: coins }))
+		coins.forEach(coin => {
+			dispatch(addTimeframeGainer({ timeframe: '24h', data: coin }))
+		})
 	})
 
 	client.on('top:losers:24h', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		dispatch(addTimeframeLoser({ timeframe: '24h', data: coins }))
+		coins.forEach(coin => {
+			dispatch(addTimeframeLoser({ timeframe: '24h', data: coin }))
+		})
 	})
 
 	// Обработчики триггерных событий
-	client.on('trigger:gainers-5min', (data: AnyObject) => {
-		const symbols = parseSymbols(data)
-		dispatch(addTriggerEvent({
-			timeframe: '5min',
-			type: 'gainers',
-			data: symbols
-		}))
-	})
-
-	client.on('trigger:losers-5min', (data: AnyObject) => {
-		const symbols = parseSymbols(data)
-		dispatch(addTriggerEvent({
-			timeframe: '5min',
-			type: 'losers',
-			data: symbols
-		}))
-	})
-
-	client.on('trigger:volume-5min', (data: AnyObject) => {
-		const symbols = parseSymbols(data)
-		dispatch(addTriggerEvent({
-			timeframe: '5min',
-			type: 'volume',
-			data: symbols
-		}))
-	})
-
-	client.on('trigger:funding-5min', (data: AnyObject) => {
-		const symbols = parseSymbols(data)
-		dispatch(addTriggerEvent({
-			timeframe: '5min',
-			type: 'funding',
-			data: symbols
-		}))
-	})
-
 	client.on('trigger:gainers-24h', (data: AnyObject) => {
 		const symbols = parseSymbols(data)
 		dispatch(addTriggerEvent({

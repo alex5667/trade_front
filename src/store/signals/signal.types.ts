@@ -50,7 +50,7 @@ export interface VolatilitySignal extends BaseSignal {
 	volatility: number
 	/** Изменение волатильности */
 	volatilityChange: number
-	/** Временной интервал (например, '5m', '1h') */
+	/** Временной интервал (например, '1h', '4h') */
 	interval?: string
 
 	// Поля для сигналов типа "диапазон волатильности"
@@ -159,10 +159,10 @@ export interface FundingCoin extends BaseSignal {
  * связанных с ним данных.
  */
 export interface TriggerEvent {
-	/** Временной период события */
-	timeframe: '5min' | '24h'
+	/** Временной период события (только 24 часа) */
+	timeframe: '24h'
 	/** Тип триггерного события */
-	type: 'gainers' | 'losers' | 'volume' | 'funding'
+	type: 'gainers' | 'losers'
 	/** Данные события (обычно массив символов торговых пар) */
 	data: string[] | string
 }
@@ -171,18 +171,9 @@ export interface TriggerEvent {
  * Данные по таймфреймам
  * 
  * Организует торговые данные по временным периодам.
- * Содержит топы растущих/падающих активов и данные по объемам.
+ * Содержит топы растущих/падающих активов.
  */
 export interface TimeframeData {
-	/** Данные за 5 минут */
-	'5min': {
-		/** Топ растущих активов за 5 минут */
-		gainers: TimeframeCoin[]
-		/** Топ падающих активов за 5 минут */
-		losers: TimeframeCoin[]
-		/** Топ по объему торгов за 5 минут */
-		volume: VolumeSignal[]
-	}
 	/** Данные за 24 часа */
 	'24h': {
 		/** Топ растущих активов за 24 часа */
@@ -199,17 +190,6 @@ export interface TimeframeData {
  * Используется для уведомления UI о необходимости обновления.
  */
 export interface TriggersData {
-	/** Триггеры за 5 минут */
-	'5min': {
-		/** Триггеры для растущих активов */
-		gainers: string[]
-		/** Триггеры для падающих активов */
-		losers: string[]
-		/** Триггеры для объема торгов */
-		volume: string[]
-		/** Триггеры для ставок финансирования */
-		funding: string[]
-	}
 	/** Триггеры за 24 часа */
 	'24h': {
 		/** Триггеры для растущих активов */
@@ -220,11 +200,11 @@ export interface TriggersData {
 }
 
 /**
- * Основное состояние сигналов в Redux
+ * Основное состояние всех сигналов в Redux хранилище
  * 
- * Центральная структура данных для хранения всех типов
- * торговых сигналов и состояния WebSocket соединения.
- * Используется как корневое состояние для модуля сигналов.
+ * Содержит данные о соединении, всех типах сигналов,
+ * данные по таймфреймам и триггерные события для UI.
+ * Используется как корневое состояние в store.
  */
 export interface SignalsState {
 	/** Состояние WebSocket соединения */
@@ -244,13 +224,11 @@ export interface SignalsState {
 }
 
 /**
- * Типы данных для обратной совместимости
+ * Интерфейс для всплеска волатильности
  * 
- * @deprecated Используйте новые типы выше
- * Оставлены для поддержки старых компонентов
+ * Упрощенная версия сигнала волатильности для
+ * специфических случаев использования.
  */
-
-/** @deprecated Используйте VolatilitySignal */
 export interface VolatilitySpike {
 	symbol: string
 	timestamp: number
@@ -259,7 +237,12 @@ export interface VolatilitySpike {
 	price: number
 }
 
-/** @deprecated Используйте VolumeSignal с дополнительными полями */
+/**
+ * Расширенный интерфейс монеты с данными объема
+ * 
+ * Добавляет к базовой монете различные уровни объема
+ * для более детального анализа торговой активности.
+ */
 export interface VolumeCoin extends TimeframeCoin {
 	volume: string | number
 	volumePercent: string | number
@@ -271,25 +254,17 @@ export interface VolumeCoin extends TimeframeCoin {
 /** Тип статуса соединения */
 export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'error'
 
-/** @deprecated Используйте SignalsState */
+/** Упрощенное состояние сигналов для совместимости */
 export interface SignalState {
 	connectionStatus: ConnectionStatus
 	volatilitySignals: VolatilitySignal[]
 	volumeSignals: VolumeSignal[]
 	priceChangeSignals: PriceChangeSignal[]
-	topGainers5min: TimeframeCoin[]
-	topLosers5min: TimeframeCoin[]
-	topVolume5min: VolumeCoin[]
-	topFunding5min: FundingCoin[]
 	topGainers24h: TimeframeCoin[]
 	topLosers24h: TimeframeCoin[]
-	triggerGainers5min: string[]
-	triggerLosers5min: string[]
-	triggerVolume5min: string[]
-	triggerFunding5min: string[]
 	triggerGainers24h: string[]
 	triggerLosers24h: string[]
 }
 
-/** Вспомогательный тип для разбора объектов произвольной структуры */
+/** Тип для любого объекта */
 export type AnyObject = { [key: string]: any } 

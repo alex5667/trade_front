@@ -17,8 +17,6 @@ export const selectPriceChangeState = (state: TypeRootState) => state.priceChang
 export const selectConnectionState = (state: TypeRootState) => state.connection
 export const selectTimeframeState = (state: TypeRootState) => state.timeframe
 export const selectTriggerState = (state: TypeRootState) => state.trigger
-export const selectFundingState = (state: TypeRootState) => state.funding || []
-
 // Селекторы сигналов волатильности
 export const selectVolatilitySignals = (state: TypeRootState) =>
 	state.volatility?.signals || []
@@ -65,19 +63,6 @@ export const selectCombinedVolatilitySignals = createSelector(
 	}
 )
 
-// Селекторы таймфреймов - 5 минут
-export const selectTopGainers5min = (state: TypeRootState) =>
-	state.timeframe?.['5min']?.gainers || []
-
-export const selectTopLosers5min = (state: TypeRootState) =>
-	state.timeframe?.['5min']?.losers || []
-
-export const selectTopVolume5min = (state: TypeRootState) =>
-	state.timeframe?.['5min']?.volume || []
-
-export const selectTopFunding5min = (state: TypeRootState) =>
-	state.funding?.coins || []
-
 // Селекторы таймфреймов - 24 часа
 export const selectTopGainers24h = (state: TypeRootState) =>
 	state.timeframe?.['24h']?.gainers || []
@@ -86,18 +71,6 @@ export const selectTopLosers24h = (state: TypeRootState) =>
 	state.timeframe?.['24h']?.losers || []
 
 // Селекторы триггеров
-export const selectTriggerGainers5min = (state: TypeRootState) =>
-	state.trigger?.['5min']?.gainers || []
-
-export const selectTriggerLosers5min = (state: TypeRootState) =>
-	state.trigger?.['5min']?.losers || []
-
-export const selectTriggerVolume5min = (state: TypeRootState) =>
-	state.trigger?.['5min']?.volume || []
-
-export const selectTriggerFunding5min = (state: TypeRootState) =>
-	state.trigger?.['5min']?.funding || []
-
 export const selectTriggerGainers24h = (state: TypeRootState) =>
 	state.trigger?.['24h']?.gainers || []
 
@@ -105,25 +78,6 @@ export const selectTriggerLosers24h = (state: TypeRootState) =>
 	state.trigger?.['24h']?.losers || []
 
 // Мемоизированные селекторы для часто используемых комбинаций данных
-/**
- * Сгруппированные данные для таймфрейма 5 минут
- * Включает растущие, падающие, объём и финансирование
- */
-export const selectTimeframe5minData = createSelector(
-	[
-		selectTopGainers5min,
-		selectTopLosers5min,
-		selectTopVolume5min,
-		selectTopFunding5min
-	],
-	(gainers, losers, volume, funding) => ({
-		gainers,
-		losers,
-		volume,
-		funding
-	})
-)
-
 /**
  * Сгруппированные данные для таймфрейма 24 часа
  * Включает только растущие и падающие монеты
@@ -136,25 +90,6 @@ export const selectTimeframe24hData = createSelector(
 	(gainers, losers) => ({
 		gainers,
 		losers
-	})
-)
-
-/**
- * Сгруппированные данные триггеров для таймфрейма 5 минут
- * Используются для обновления UI при получении новых сигналов
- */
-export const selectTrigger5minData = createSelector(
-	[
-		selectTriggerGainers5min,
-		selectTriggerLosers5min,
-		selectTriggerVolume5min,
-		selectTriggerFunding5min
-	],
-	(gainers, losers, volume, funding) => ({
-		gainers,
-		losers,
-		volume,
-		funding
 	})
 )
 
@@ -174,13 +109,12 @@ export const selectTrigger24hData = createSelector(
 )
 
 /**
- * Селектор для получения всех данных о таймфреймах и триггерах
- * Используется для централизованного доступа ко всем данным
+ * Селектор для получения всех данных о таймфреймах
+ * Используется для централизованного доступа к данным 24h
  */
 export const selectTimeframeData = createSelector(
-	[selectTimeframe5minData, selectTimeframe24hData],
-	(data5min, data24h) => ({
-		'5min': data5min,
+	[selectTimeframe24hData],
+	(data24h) => ({
 		'24h': data24h
 	})
 )
@@ -189,9 +123,8 @@ export const selectTimeframeData = createSelector(
  * Селектор для получения всех триггеров
  */
 export const selectTimeframeTriggers = createSelector(
-	[selectTrigger5minData, selectTrigger24hData],
-	(triggers5min, triggers24h) => ({
-		'5min': triggers5min,
+	[selectTrigger24hData],
+	(triggers24h) => ({
 		'24h': triggers24h
 	})
 )
@@ -199,7 +132,4 @@ export const selectTimeframeTriggers = createSelector(
 /**
  * Селектор для получения данных о финансировании
  */
-export const selectFundingData = createSelector(
-	[selectTopFunding5min],
-	(funding) => funding
-) 
+export const selectFundingData = () => [] 

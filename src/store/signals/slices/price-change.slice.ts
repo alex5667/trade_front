@@ -1,23 +1,28 @@
 /**
- * Price Change Signals Slice
+ * Слайс сигналов изменения цены
  * ------------------------------
- * Redux slice for price change signals
+ * Redux слайс для управления сигналами резких изменений цены
+ * Отслеживает значительные ценовые движения торговых инструментов
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PriceChangeSignal } from '../signal.types'
 
+/** Интерфейс состояния сигналов изменения цены */
 interface PriceChangeState {
+	/** Массив сигналов изменения цены */
 	signals: PriceChangeSignal[]
+	/** Время последнего обновления */
 	lastUpdated: number
 }
 
+/** Начальное состояние сигналов изменения цены */
 const initialState: PriceChangeState = {
 	signals: [],
 	lastUpdated: 0
 }
 
-// Reduce the maximum number of signals to improve performance
+/** Максимальное количество сигналов для улучшения производительности */
 const MAX_SIGNALS = 50
 
 export const priceChangeSlice = createSlice({
@@ -29,7 +34,7 @@ export const priceChangeSlice = createSlice({
 
 			console.log(`💾 Adding price change signal to store: ${signal.symbol}, direction: ${signal.direction}`)
 
-			// Check if signal with same symbol and timestamp already exists
+			// Проверяем, существует ли уже сигнал с тем же символом и временной меткой
 			const existingIndex = state.signals.findIndex(
 				existingSignal =>
 					existingSignal.symbol === signal.symbol &&
@@ -37,32 +42,32 @@ export const priceChangeSlice = createSlice({
 			)
 
 			if (existingIndex !== -1) {
-				// Update existing signal instead of adding new one
+				// Обновляем существующий сигнал вместо добавления нового
 				console.log(`🔄 Updating existing price change signal at index ${existingIndex}`)
 				state.signals[existingIndex] = {
 					...signal,
-					// Preserve the creation time from the original signal
+					// Сохраняем время создания из оригинального сигнала
 					createdAt: state.signals[existingIndex].createdAt || Date.now()
 				}
 			} else {
-				// Add new signal at the beginning of the array with creation timestamp
+				// Добавляем новый сигнал в начало массива с временной меткой создания
 				console.log(`➕ Adding new price change signal, current count: ${state.signals.length}`)
 				state.signals.unshift({
 					...signal,
 					createdAt: Date.now()
 				})
 
-				// Keep only the most recent signals to prevent state from growing too large
+				// Сохраняем только самые свежие сигналы для предотвращения роста состояния
 				if (state.signals.length > MAX_SIGNALS) {
 					console.log(`✂️ Trimming price change signals array to ${MAX_SIGNALS} items`)
 					state.signals.length = MAX_SIGNALS
 				}
 			}
 
-			// Log current signals count
+			// Логируем текущее количество сигналов
 			console.log(`📊 Current price change signals count: ${state.signals.length}`)
 
-			// Update the lastUpdated timestamp
+			// Обновляем время последнего обновления
 			state.lastUpdated = Date.now()
 		},
 		clearPriceChangeSignals: (state) => {

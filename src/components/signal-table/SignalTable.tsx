@@ -1,10 +1,10 @@
 'use client'
 
 /**
- * SignalTable Component
+ * Компонент SignalTable
  * ------------------------------
- * Main component for displaying trading signals
- * Uses Redux store for signal data
+ * Основной компонент для отображения торговых сигналов
+ * Использует Redux store для получения данных сигналов
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -22,6 +22,7 @@ import {
 import styles from './Signal-table.module.scss'
 import { SignalSocketInitializer } from './SignalSocketInitializer'
 import { ConnectionStatus } from './connection-status/ConnectionStatus'
+import { TimeframeSection } from './timeframe-section/TimeframeSection'
 import { VolatilitySection } from './volatility-section/VolatilitySection'
 
 /**
@@ -29,7 +30,7 @@ import { VolatilitySection } from './volatility-section/VolatilitySection'
  *
  * Этот компонент:
  * 1. Инициализирует WebSocket-соединение для получения сигналов
- * 2. Отображает сигналы по таймфреймам (5 минут и 24 часа)
+ * 2. Отображает сигналы по таймфрейму 24 часа
  * 3. Показывает сигналы волатильности и другие специальные сигналы
  */
 export const SignalTable = () => {
@@ -71,12 +72,6 @@ export const SignalTable = () => {
 			volumeCount: volumeSignals.length,
 			priceChangeCount: priceChangeSignals.length,
 			fundingDataCount: fundingData.length,
-			trigerrs5min: {
-				gainers: triggers['5min'].gainers.length,
-				losers: triggers['5min'].losers.length,
-				volume: triggers['5min'].volume.length,
-				funding: triggers['5min'].funding.length
-			},
 			triggers24h: {
 				gainers: triggers['24h'].gainers.length,
 				losers: triggers['24h'].losers.length
@@ -97,7 +92,7 @@ export const SignalTable = () => {
 			...prev,
 			timeframe: true
 		}))
-	}, [componentId])
+	}, [])
 
 	// Callback при загрузке секции волатильности
 	const handleVolatilitySectionLoad = useCallback(() => {
@@ -106,7 +101,7 @@ export const SignalTable = () => {
 			...prev,
 			volatility: true
 		}))
-	}, [componentId])
+	}, [])
 
 	// Эффект для отметки секций как загруженных, когда данные доступны
 	useEffect(() => {
@@ -114,9 +109,7 @@ export const SignalTable = () => {
 			// Проверяем данные таймфреймов и триггеров
 			if (
 				triggers &&
-				(triggers['5min'].gainers.length > 0 ||
-					triggers['5min'].losers.length > 0 ||
-					triggers['24h'].gainers.length > 0 ||
+				(triggers['24h'].gainers.length > 0 ||
 					triggers['24h'].losers.length > 0)
 			) {
 				handleTimeframeSectionLoad()
@@ -137,48 +130,38 @@ export const SignalTable = () => {
 
 	// Эффект для отслеживания жизненного цикла компонента
 	useEffect(() => {
-		console.log(`🔄 [${componentId.current}] SignalTable эффект запущен`)
+		// Копируем значение ref в переменную для безопасного использования в cleanup функции
+		const currentComponentId = componentId.current
+		console.log(`🔄 [${currentComponentId}] SignalTable эффект запущен`)
 
 		return () => {
-			console.log(`🛑 [${componentId.current}] SignalTable размонтирован`)
+			console.log(`🛑 [${currentComponentId}] SignalTable размонтирован`)
 		}
-	}, [componentId])
+	}, [])
 
 	return (
 		<div className={styles.container}>
-			{/* Initialize WebSocket connection */}
+			{/* Инициализация WebSocket соединения */}
 			<SignalSocketInitializer />
 
-			{/* Connection status indicator */}
+			{/* Индикатор статуса соединения */}
 			<ConnectionStatus />
 
-			{/* Timeframe sections */}
-			{/* <div className={styles.section}>
+			{/* Секции таймфреймов */}
+			<div className={styles.section}>
 				<TimeframeSection
-					timeframe5min={{
-						gainers: timeframeData['5min'].gainers,
-						losers: timeframeData['5min'].losers,
-						volume: timeframeData['5min'].volume,
-						funding: fundingData
-					}}
 					timeframe24h={{
 						gainers: timeframeData['24h'].gainers,
 						losers: timeframeData['24h'].losers
-					}}
-					trigger5min={{
-						gainers: triggers['5min'].gainers,
-						losers: triggers['5min'].losers,
-						volume: triggers['5min'].volume,
-						funding: triggers['5min'].funding
 					}}
 					trigger24h={{
 						gainers: triggers['24h'].gainers,
 						losers: triggers['24h'].losers
 					}}
 				/>
-			</div> */}
+			</div>
 
-			{/* Volatility section */}
+			{/* Секция волатильности */}
 			<div className={styles.section}>
 				<VolatilitySection />
 			</div>

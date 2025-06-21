@@ -139,18 +139,18 @@ export const startMockSignalGenerator = () => {
 		console.log('Generated price change signal:', signal)
 	}, 6000)
 
-	// Generate top gainers 5min
-	const gainers5minInterval = setInterval(() => {
+	// Generate top gainers 24h
+	const gainers24hInterval = setInterval(() => {
 		const coin = generateTimeframeCoin('up')
-		store.dispatch(addTimeframeGainer({ timeframe: '5min', data: coin }))
-		console.log('Generated 5min gainer:', coin)
+		store.dispatch(addTimeframeGainer({ timeframe: '24h', data: coin }))
+		console.log('Generated 24h gainer:', coin)
 	}, 5000)
 
-	// Generate top losers 5min
-	const losers5minInterval = setInterval(() => {
+	// Generate top losers 24h
+	const losers24hInterval = setInterval(() => {
 		const coin = generateTimeframeCoin('down')
-		store.dispatch(addTimeframeLoser({ timeframe: '5min', data: coin }))
-		console.log('Generated 5min loser:', coin)
+		store.dispatch(addTimeframeLoser({ timeframe: '24h', data: coin }))
+		console.log('Generated 24h loser:', coin)
 	}, 5500)
 
 	// Return cleanup function
@@ -158,8 +158,8 @@ export const startMockSignalGenerator = () => {
 		clearInterval(volatilityInterval)
 		clearInterval(volumeInterval)
 		clearInterval(priceInterval)
-		clearInterval(gainers5minInterval)
-		clearInterval(losers5minInterval)
+		clearInterval(gainers24hInterval)
+		clearInterval(losers24hInterval)
 		store.dispatch(setConnectionStatus(false))
 		console.log('Mock signal generator stopped')
 	}

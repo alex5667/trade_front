@@ -3,6 +3,168 @@
 import { getWebSocketClient } from '@/services/websocket.service'
 
 /**
+ * WebSocket тестовый клиент
+ * ------------------------------
+ * Простой клиент для тестирования WebSocket соединения
+ * и получения торговых сигналов только для 24h таймфрейма
+ */
+
+const WEBSOCKET_URL = 'ws://localhost:3001'
+
+// События для подписки (только 24h)
+const EVENTS_TO_MONITOR = [
+	'top:gainers:24h', 'top:losers:24h',
+	'trigger:gainers-24h', 'trigger:losers-24h'
+]
+
+/**
+ * Простой WebSocket клиент для тестирования
+ */
+class WebSocketTestClient {
+	private ws: WebSocket | null = null
+	private isConnected = false
+	private reconnectAttempts = 0
+	private maxReconnectAttempts = 5
+
+	/**
+	 * Подключение к WebSocket серверу
+	 */
+	connect() {
+		try {
+			console.log(`Подключение к ${WEBSOCKET_URL}...`)
+			this.ws = new WebSocket(WEBSOCKET_URL)
+
+			this.ws.onopen = () => {
+				console.log('✅ WebSocket подключен')
+				this.isConnected = true
+				this.reconnectAttempts = 0
+			}
+
+			this.ws.onmessage = (event) => {
+				try {
+					const data = JSON.parse(event.data)
+					const eventType = data.event || data.type
+
+					if (EVENTS_TO_MONITOR.includes(eventType)) {
+						console.log(`📦 Получено событие: ${eventType}`, data.data)
+					} else {
+						console.log(`📬 Событие: ${eventType}`, data)
+					}
+				} catch (error) {
+					console.error('Ошибка разбора сообщения:', error)
+					console.log('Сырые данные:', event.data)
+				}
+			}
+
+			this.ws.onclose = (event) => {
+				console.log(`❌ WebSocket отключен: ${event.code} ${event.reason}`)
+				this.isConnected = false
+				this.reconnect()
+			}
+
+			this.ws.onerror = (error) => {
+				console.error('❌ Ошибка WebSocket:', error)
+			}
+		} catch (error) {
+			console.error('Ошибка при создании WebSocket:', error)
+		}
+	}
+
+	/**
+	 * Попытка переподключения
+	 */
+	private reconnect() {
+		if (this.reconnectAttempts < this.maxReconnectAttempts) {
+			this.reconnectAttempts++
+			console.log(`🔄 Попытка переподключения ${this.reconnectAttempts}/${this.maxReconnectAttempts}`)
+			setTimeout(() => this.connect(), 3000)
+		} else {
+			console.error('⛔ Превышено максимальное количество попыток переподключения')
+		}
+	}
+
+	/**
+	 * Отключение от сервера
+	 */
+	disconnect() {
+		if (this.ws) {
+			console.log('🔌 Отключение от WebSocket сервера')
+			this.ws.close()
+			this.ws = null
+		}
+	}
+
+	/**
+	 * Отправка тестового сообщения
+	 */
+	sendTest() {
+		if (this.isConnected && this.ws) {
+			const testMessage = {
+				event: 'test',
+				data: { message: 'Тестовое сообщение', timestamp: Date.now() }
+			}
+			this.ws.send(JSON.stringify(testMessage))
+			console.log('📤 Отправлено тестовое сообщение')
+		} else {
+			console.warn('⚠️ WebSocket не подключен')
+		}
+	}
+
+	/**
+	 * Подписка на определенное событие
+	 */
+	subscribe(eventName: string) {
+		if (this.isConnected && this.ws) {
+			const subscribeMessage = {
+				event: 'subscribe',
+				data: { eventName }
+			}
+			this.ws.send(JSON.stringify(subscribeMessage))
+			console.log(`📡 Подписка на событие: ${eventName}`)
+		} else {
+			console.warn('⚠️ WebSocket не подключен')
+		}
+	}
+
+	/**
+	 * Получение статуса соединения
+	 */
+	getStatus() {
+		return {
+			connected: this.isConnected,
+			reconnectAttempts: this.reconnectAttempts,
+			readyState: this.ws?.readyState
+		}
+	}
+}
+
+// Создание экземпляра клиента
+const testClient = new WebSocketTestClient()
+
+	// Функции для тестирования в консоли браузера
+	; (window as any).wsTest = {
+		connect: () => testClient.connect(),
+		disconnect: () => testClient.disconnect(),
+		status: () => console.log(testClient.getStatus()),
+		sendTest: () => testClient.sendTest(),
+		subscribe: (eventName: string) => testClient.subscribe(eventName),
+		subscribeAll: () => {
+			EVENTS_TO_MONITOR.forEach(event => testClient.subscribe(event))
+		}
+	}
+
+console.log('WebSocket тестовый клиент готов. Используйте wsTest в консоли:')
+console.log('- wsTest.connect() - подключиться')
+console.log('- wsTest.disconnect() - отключиться')
+console.log('- wsTest.status() - статус соединения')
+console.log('- wsTest.sendTest() - отправить тест')
+console.log('- wsTest.subscribe(eventName) - подписаться на событие')
+console.log('- wsTest.subscribeAll() - подписаться на все события')
+
+// Автоматическое подключение
+testClient.connect()
+
+/**
  * This function tests the WebSocket client functionality
  * by setting up event listeners and monitoring messages.
  */
@@ -25,10 +187,8 @@ export const testWebSocketClient = () => {
 		'connect', 'disconnect', 'error', 'pong',
 		'signal:volatility', 'volatilitySpike', 'volatilityRange',
 		'volumeSpike', 'priceChange',
-		'top:gainers:5min', 'top:losers:5min', 'top:volume:5min', 'top:funding:5min',
 		'top:gainers:24h', 'top:losers:24h',
-		'trigger:gainers-5min', 'trigger:losers-5min', 'trigger:volume-5min',
-		'trigger:funding-5min', 'trigger:gainers-24h', 'trigger:losers-24h'
+		'trigger:gainers-24h', 'trigger:losers-24h'
 	]
 
 	// Generic event handler for logging and stats
@@ -116,7 +276,6 @@ export const testWebSocketWithHandler = (
 	const eventTypes = [
 		'signal:volatility', 'volatilitySpike', 'volatilityRange',
 		'volumeSpike', 'priceChange',
-		'top:gainers:5min', 'top:losers:5min', 'top:volume:5min', 'top:funding:5min',
 		'top:gainers:24h', 'top:losers:24h'
 	]
 

@@ -69,10 +69,6 @@ export const checkHasAnyData = (signalData: any): boolean => {
 		signalData?.topGainers4h?.length > 0 ||
 		signalData?.topLosers4h?.length > 0 ||
 		signalData?.topGainers24h?.length > 0 ||
-		signalData?.topLosers24h?.length > 0 ||
-		signalData?.topGainers5min?.length > 0 ||
-		signalData?.topLosers5min?.length > 0 ||
-		signalData?.topVolume5min?.length > 0 ||
-		signalData?.topFunding5min?.length > 0
+		signalData?.topLosers24h?.length > 0
 	)
 } 
