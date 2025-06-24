@@ -17,6 +17,7 @@ export const selectPriceChangeState = (state: TypeRootState) => state.priceChang
 export const selectConnectionState = (state: TypeRootState) => state.connection
 export const selectTimeframeState = (state: TypeRootState) => state.timeframe
 export const selectTriggerState = (state: TypeRootState) => state.trigger
+export const selectFundingState = (state: TypeRootState) => state.funding
 // Селекторы сигналов волатильности
 export const selectVolatilitySignals = (state: TypeRootState) =>
 	state.volatility?.signals || []
@@ -132,4 +133,5 @@ export const selectTimeframeTriggers = createSelector(
 /**
  * Селектор для получения данных о финансировании
  */
-export const selectFundingData = () => [] 
+export const selectFundingData = (state: TypeRootState) =>
+	state.funding?.coins || [] 

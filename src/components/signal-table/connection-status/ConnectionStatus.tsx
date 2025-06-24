@@ -3,7 +3,7 @@
 /**
  * ConnectionStatus Component
  * ------------------------------
- * Displays the current WebSocket connection status
+ * Displays the current Socket.IO connection status
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,7 +18,7 @@ import {
 	disconnected
 } from '@/store/signals/slices/connection.slice'
 
-import { getWebSocketClient } from '@/services/websocket.service'
+import { getSocketIOClient } from '@/services/socket-io.service'
 
 export const ConnectionStatus = () => {
 	const componentId = useRef(`connection-status-${Date.now()}`)
@@ -42,7 +42,7 @@ export const ConnectionStatus = () => {
 		setIsConnecting(true)
 		dispatch(connecting())
 
-		const wsClient = getWebSocketClient()
+		const wsClient = getSocketIOClient()
 
 		// Check if already connected
 		if (wsClient.isActive()) {
@@ -64,14 +64,14 @@ export const ConnectionStatus = () => {
 	}, [dispatch, componentId])
 
 	// Periodically check the actual connection status to keep Redux in sync
-	// This helps handle cases where the WS connection drops without firing events
+	// This helps handle cases where the Socket.IO connection drops without firing events
 	useEffect(() => {
-		// Set up periodic check for actual WebSocket status
+		// Set up periodic check for actual Socket.IO status
 		const checkActualStatus = () => {
-			const wsClient = getWebSocketClient()
+			const wsClient = getSocketIOClient()
 			const isActive = wsClient.isActive()
 
-			// If WebSocket status doesn't match Redux state, update Redux
+			// If Socket.IO status doesn't match Redux state, update Redux
 			if (isActive && !isConnected) {
 				console.log(
 					`⚠️ [${componentId.current}] State mismatch, actual: connected, redux: ${isConnected}`
@@ -108,7 +108,7 @@ export const ConnectionStatus = () => {
 
 			// If the socket reports it's connected but Redux state doesn't reflect that,
 			// update the Redux state
-			const wsClient = getWebSocketClient()
+			const wsClient = getSocketIOClient()
 			if (wsClient.isActive() && !isConnected) {
 				console.log(
 					`⚠️ [${componentId.current}] State mismatch, correcting to connected`

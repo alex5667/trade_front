@@ -9,8 +9,8 @@ import { TypeRootState } from '@/store/store'
 
 import { runApiTestSuite, testApiHealth } from './api-test'
 import { startMockSignalGenerator } from './mock-signal-generator'
-import { testDataConsistency, testWebSocketClient } from './websocket-test'
-import { getWebSocketClient } from '@/services/websocket.service'
+import { testWebSocketClient } from './websocket-test'
+import { getSocketIOClient } from '@/services/socket-io.service'
 
 // Test component to verify signal processing
 export default function SignalTest() {
@@ -46,7 +46,7 @@ export default function SignalTest() {
 
 	// Check connection manually
 	useEffect(() => {
-		const client = getWebSocketClient()
+		const client = getSocketIOClient()
 		const isConnected = client.isActive()
 		setConnectionStatus(isConnected ? 'connected' : 'disconnected')
 
@@ -118,8 +118,8 @@ export default function SignalTest() {
 			setConsistencyTestCleanup(null)
 			setConsistencyTestActive(false)
 		} else {
-			// Start consistency test
-			const cleanup = testDataConsistency()
+			// Start consistency test - use WebSocket client test instead
+			const cleanup = testWebSocketClient()
 			setConsistencyTestCleanup(() => cleanup)
 			setConsistencyTestActive(true)
 		}

@@ -14,6 +14,7 @@ import { userSlice } from './user/user.slice'
 
 // Import signal slices
 import connectionReducer from './signals/slices/connection.slice'
+import fundingReducer from './signals/slices/funding.slice'
 import priceChangeReducer from './signals/slices/price-change.slice'
 import timeframeReducer from './signals/slices/timeframe.slice'
 import triggerReducer from './signals/slices/trigger.slice'
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
 
 	// Signal slices
 	connection: connectionReducer,
+	funding: fundingReducer,
 	volatility: volatilityReducer,
 	volatilitySpike: volatilitySpikeReducer,
 	volatilityRange: volatilityRangeReducer,
@@ -70,6 +72,8 @@ export const store = configureStore({
 					'volume.lastUpdated',
 					'priceChange.signals',
 					'priceChange.lastUpdated',
+					'funding.coins',
+					'funding.lastUpdated',
 					'timeframe',
 					'trigger',
 					'signals.volatilitySignals',

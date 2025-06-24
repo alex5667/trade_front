@@ -40,64 +40,48 @@ export const volatilityRangeSlice = createSlice({
 				- volatilityChange: ${signal.volatilityChange !== undefined ? signal.volatilityChange : 'missing'}
 			`)
 
-			// Добавляем вычисление недостающих полей для сигналов volatilityRange
+			// Вычисляем range если он отсутствует
 			if (signal.range === undefined && signal.high !== undefined && signal.low !== undefined) {
-				// Вычисляем диапазон как разницу между максимумом и минимумом
 				signal.range = signal.high - signal.low
 				console.log(`🔧 Calculated range for ${signal.symbol}: ${signal.range.toFixed(6)}`)
 			}
 
-			if (signal.avgRange === undefined && signal.range !== undefined) {
-				// Если нет средних значений, используем некоторые значения по умолчанию или расчетные
-				signal.avgRange = signal.range * 0.8 // Просто для примера, обычно должно приходить с сервера
-				console.log(`🔧 Added default avgRange for ${signal.symbol}: ${signal.avgRange.toFixed(6)}`)
+			// Если range все еще undefined, используем 0
+			if (signal.range === undefined) {
+				signal.range = 0
 			}
 
-			if (signal.rangeRatio === undefined && signal.range !== undefined && signal.avgRange !== undefined) {
-				signal.rangeRatio = signal.range / signal.avgRange
+			// Обрабатываем avgRange
+			if (signal.avgRange === undefined) {
+				// Если avgRange не задан, но есть range, используем простую эвристику
+				signal.avgRange = signal.range > 0 ? signal.range * 0.5 : 0
+				console.log(`🔧 Set default avgRange for ${signal.symbol}: ${signal.avgRange.toFixed(6)}`)
+			}
+
+			// Вычисляем rangeRatio
+			if (signal.rangeRatio === undefined) {
+				if (signal.avgRange > 0) {
+					signal.rangeRatio = signal.range / signal.avgRange
+				} else {
+					signal.rangeRatio = signal.range > 0 ? 2.0 : 1.0 // Если среднее = 0, но есть текущий range
+				}
 				console.log(`🔧 Calculated rangeRatio for ${signal.symbol}: ${signal.rangeRatio.toFixed(2)}`)
 			}
 
-			// Добавляем volatilityChange если он отсутствует
+			// Вычисляем volatilityChange (процентное изменение)
 			if (signal.volatilityChange === undefined) {
-				if (signal.rangeRatio !== undefined) {
-					// Используем rangeRatio для вычисления volatilityChange (процентное отклонение от среднего)
-					signal.volatilityChange = (signal.rangeRatio - 1) * 100
-					console.log(`🔧 Calculated volatilityChange from rangeRatio for ${signal.symbol}: ${signal.volatilityChange.toFixed(2)}%`)
-				} else if (signal.range !== undefined && signal.avgRange !== undefined) {
-					// Вычисляем через range и avgRange
-					signal.volatilityChange = ((signal.range / signal.avgRange) - 1) * 100
+				if (signal.avgRange > 0) {
+					// Стандартная формула: ((current - average) / average) * 100
+					signal.volatilityChange = ((signal.range - signal.avgRange) / signal.avgRange) * 100
 					console.log(`🔧 Calculated volatilityChange from range/avgRange for ${signal.symbol}: ${signal.volatilityChange.toFixed(2)}%`)
 				} else {
-					// Значение по умолчанию
+					// Если avgRange = 0, то нет базы для сравнения, поэтому 0%
 					signal.volatilityChange = 0
-					console.log(`⚠️ Using default volatilityChange=0 for ${signal.symbol}`)
+					console.log(`🔧 Set volatilityChange=0% for ${signal.symbol} (avgRange=0, no base for comparison)`)
 				}
 			}
 
-			// Теперь проверяем, есть ли поля и если нет - добавляем значения по умолчанию
-			const hasMissingFields =
-				signal.range === undefined ||
-				signal.avgRange === undefined ||
-				signal.rangeRatio === undefined ||
-				signal.volatilityChange === undefined
-
-			if (hasMissingFields) {
-				// Установим значения по умолчанию для отсутствующих полей
-				signal.range = signal.range ?? (signal.volatility ? signal.volatility / 100 : 0)
-				signal.avgRange = signal.avgRange ?? (signal.range * 0.8)
-				signal.rangeRatio = signal.rangeRatio ?? 1.0
-				signal.volatilityChange = signal.volatilityChange ?? 0
-
-				console.log(`🔄 Set default values for missing fields on ${signal.symbol}:
-					- range: ${signal.range.toFixed(6)}
-					- avgRange: ${signal.avgRange.toFixed(6)}
-					- rangeRatio: ${signal.rangeRatio.toFixed(2)}
-					- volatilityChange: ${signal.volatilityChange.toFixed(2)}%
-				`)
-			}
-
-			console.log(`💾 Adding volatility range signal to store: ${signal.symbol}`)
+			console.log(`💾 Adding volatility range signal to store: ${signal.symbol} (range: ${signal.range.toFixed(4)}, avgRange: ${signal.avgRange.toFixed(4)}, change: ${signal.volatilityChange.toFixed(2)}%)`)
 
 			// Check if signal with same symbol and timestamp already exists
 			const existingIndex = state.signals.findIndex(
@@ -148,4 +132,4 @@ export const {
 	clearVolatilityRangeSignals
 } = volatilityRangeSlice.actions
 
-export default volatilityRangeSlice.reducer 
+export default volatilityRangeSlice.reducer

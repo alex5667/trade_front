@@ -32,6 +32,18 @@ import { VolatilitySignal } from '@/store/signals/signal.types'
  * Компонент для отображения сигналов диапазона волатильности
  */
 
+/**
+ * VolatilityRangeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов диапазона волатильности
+ */
+
+/**
+ * VolatilityRangeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов диапазона волатильности
+ */
+
 interface VolatilityRangeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -132,21 +144,40 @@ export const VolatilityRangeComponent: React.FC<
 
 	// Помощник для безопасного отображения процентного изменения
 	const renderPercentChange = (signal: DisplaySignal) => {
-		// Если volatilityChange отсутствует, используем вычисленное значение или 0
-		const change =
-			signal.volatilityChange ??
-			(signal.rangeRatio ? (signal.rangeRatio - 1) * 100 : 0)
+		let change = 0
+
+		// Вычисляем процентное изменение на основе range и avgRange
+		if (
+			signal.range !== undefined &&
+			signal.avgRange !== undefined &&
+			signal.avgRange > 0
+		) {
+			// Формула: ((current_range - avg_range) / avg_range) * 100
+			change = ((signal.range - signal.avgRange) / signal.avgRange) * 100
+		} else if (signal.volatilityChange !== undefined) {
+			// Если range/avgRange недоступны, используем volatilityChange
+			change = signal.volatilityChange
+		} else if (signal.rangeRatio !== undefined) {
+			// Или используем rangeRatio для вычисления
+			change = (signal.rangeRatio - 1) * 100
+		} else {
+			// По умолчанию 0, если нет данных для вычисления или avgRange = 0
+			change = 0
+		}
 
 		// Определяем знак и цвет
 		const isPositive = change > 0
-		const changeClass = isPositive ? 'text-green-500' : 'text-red-500'
+		const changeClass = isPositive
+			? 'text-green-500'
+			: change < 0
+				? 'text-red-500'
+				: 'text-gray-500'
 		const highlightClass = signal.highlightPercentDiff
 			? 'bg-yellow-100 transition-colors duration-500'
 			: ''
 
 		// Форматируем значение для отображения
-		const formattedChange =
-			typeof change === 'number' ? change.toFixed(2) : '0.00'
+		const formattedChange = change.toFixed(2)
 
 		return (
 			<td

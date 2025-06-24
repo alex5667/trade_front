@@ -47,7 +47,9 @@ export const parseTimeframeCoins = (data: any): TimeframeCoin[] => {
 	if (data && data.type && data.payload && Array.isArray(data.payload)) {
 		return data.payload.map((item: any) => ({
 			symbol: item.symbol || '',
-			change: item.change || '0'
+			change: item.change || '0',
+			percentChange: item.percentChange || parseFloat(item.change || '0'),
+			timestamp: item.timestamp || Date.now()
 		}))
 	}
 
@@ -55,7 +57,9 @@ export const parseTimeframeCoins = (data: any): TimeframeCoin[] => {
 	if (Array.isArray(data)) {
 		return data.map((item: any) => ({
 			symbol: item.symbol || item.Symbol || '',
-			change: item.change || item.Value?.toString() || '0'
+			change: item.change || item.Value?.toString() || '0',
+			percentChange: item.percentChange || parseFloat(item.change || item.Value?.toString() || '0'),
+			timestamp: item.timestamp || Date.now()
 		}))
 	}
 

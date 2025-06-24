@@ -1,11 +1,11 @@
 /**
  * Сервис обработки сигналов
  * ------------------------------
- * Сервис, который управляет WebSocket соединением и отправляет
+ * Сервис, который управляет Socket.IO соединением и отправляет
  * полученные сигналы в Redux хранилище
  * 
  * Основные функции:
- * - Инициализация WebSocket соединения
+ * - Инициализация Socket.IO соединения
  * - Обработка различных типов торговых сигналов
  * - Нормализация данных перед отправкой в Redux
  * - Предотвращение дублирования сигналов
@@ -33,6 +33,8 @@ import {
 import {
 	addTriggerEvent
 } from '@/store/signals/slices/trigger.slice'
+import { addVolatilityRangeSignal } from '@/store/signals/slices/volatility-range.slice'
+import { addVolatilitySpikeSignal } from '@/store/signals/slices/volatility-spike.slice'
 import { addVolatilitySignal } from '@/store/signals/slices/volatility.slice'
 import { addVolumeSignal } from '@/store/signals/slices/volume.slice'
 import {
@@ -40,7 +42,7 @@ import {
 	parseTimeframeCoins
 } from '@/store/signals/utils/signal-parsers'
 import { AppDispatch } from '@/store/store'
-import { getWebSocketClient } from './websocket.service'
+import { getSocketIOClient } from './socket-io.service'
 
 /**
  * Нормализация сигнала волатильности для обеспечения согласованной структуры
@@ -68,13 +70,67 @@ const normalizeVolatilitySignal = (signal: any): VolatilitySignal => {
 	return normalizedSignal as VolatilitySignal
 }
 
+/**
+ * Вспомогательная функция для создания уникального ID сигнала
+ * Используется для предотвращения дублирования одинаковых сигналов
+ */
+const createSignalId = (signal: VolatilitySignal): string => {
+	if (!signal || !signal.symbol || !signal.timestamp) {
+		return `${Date.now()}-${Math.random()}`
+	}
+
+	// Создаем ID на основе ключевых свойств сигнала
+	return `${signal.type}-${signal.symbol}-${signal.interval}-${signal.timestamp}`
+}
+
+/**
+ * Обработчик сигналов волатильности с предотвращением дублирования
+ * Проверяет, был ли уже обработан сигнал с таким же ID и отправляет
+ * в соответствующий slice в зависимости от типа сигнала
+ */
+const handleVolatilitySignal = (dispatch: AppDispatch) => (signal: any) => {
+	if (!signal) return
+
+	// Нормализуем сигнал перед обработкой
+	const normalizedSignal = normalizeVolatilitySignal(signal)
+	const signalId = createSignalId(normalizedSignal)
+
+	// Проверяем, был ли уже обработан этот сигнал
+	if (processedSignals.has(signalId)) {
+		console.log(`Сигнал ${signalId} уже был обработан, пропускаем`)
+		return
+	}
+
+	// Добавляем ID в множество обработанных сигналов
+	processedSignals.add(signalId)
+
+	console.log(`📊 Обрабатываем сигнал волатильности: ${normalizedSignal.symbol} (${normalizedSignal.signalType || normalizedSignal.type})`)
+
+	// Отправляем в соответствующий slice в зависимости от типа сигнала
+	switch (normalizedSignal.signalType) {
+		case 'volatilitySpike':
+			console.log(`🔥 Отправляем volatilitySpike сигнал для ${normalizedSignal.symbol}`)
+			dispatch(addVolatilitySpikeSignal(normalizedSignal))
+			break
+		case 'volatilityRange':
+			console.log(`📊 Отправляем volatilityRange сигнал для ${normalizedSignal.symbol}`)
+			dispatch(addVolatilityRangeSignal(normalizedSignal))
+			break
+		default:
+			// Для общих сигналов волатильности отправляем в основной slice
+			console.log(`⚡ Отправляем общий volatility сигнал для ${normalizedSignal.symbol}`)
+			dispatch(addVolatilitySignal(normalizedSignal))
+			break
+	}
+}
+
 /** Множество для отслеживания обработанных сигналов и предотвращения дублирования */
 const processedSignals = new Set<string>()
 
 /**
  * Инициализация сервиса сигналов
  * 
- * Устанавливает WebSocket соединение и настраивает обработчики событий
+ * Устанавливает Socket.IO соединение и настраивает обработчики событий
  * для отправки действий в Redux хранилище. Обрабатывает все типы
  * торговых сигналов и управляет состоянием соединения.
  * 
@@ -82,27 +138,27 @@ const processedSignals = new Set<string>()
  * @returns Функция очистки для корректного закрытия соединения
  */
 export const initializeSignalService = (dispatch: AppDispatch) => {
-	const client = getWebSocketClient()
+	const client = getSocketIOClient()
 
 	// Отправляем действие о начале подключения
 	dispatch(connecting())
 
 	// Обработчики состояния соединения
 	client.on('connect', () => {
-		console.log('Сервис сигналов: WebSocket подключен, обновляем Redux хранилище')
+		console.log('Сервис сигналов: Socket.IO подключен, обновляем Redux хранилище')
 		dispatch(connected())
 		// Очищаем множество обработанных сигналов при переподключении
 		processedSignals.clear()
 	})
 
 	client.on('disconnect', () => {
-		console.log('Сервис сигналов: WebSocket отключен, обновляем Redux хранилище')
+		console.log('Сервис сигналов: Socket.IO отключен, обновляем Redux хранилище')
 		dispatch(disconnected())
 	})
 
 	client.on('error', (errorData: any) => {
 		// Обрабатываем как старый, так и новый формат ошибок
-		let errorMessage = 'Неизвестная ошибка WebSocket'
+		let errorMessage = 'Неизвестная ошибка Socket.IO'
 
 		if (typeof errorData === 'string') {
 			errorMessage = errorData
@@ -110,64 +166,22 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 			errorMessage = errorData.message
 			// Логируем дополнительные детали если доступны
 			if (errorData.details) {
-				console.error('Сервис сигналов: Детали ошибки WebSocket:', errorData.details)
+				console.error('Сервис сигналов: Детали ошибки Socket.IO:', errorData.details)
 			}
 		} else if (errorData instanceof Error) {
 			errorMessage = errorData.message
 		}
 
-		console.error('Сервис сигналов: Ошибка WebSocket -', errorMessage)
+		console.error('Сервис сигналов: Ошибка Socket.IO -', errorMessage)
 		dispatch(setConnectionError(errorMessage))
 	})
 
-	/**
-	 * Универсальный обработчик для всех сигналов волатильности
-	 * 
-	 * Обрабатывает входящие сигналы волатильности, предотвращает
-	 * дублирование и отправляет нормализованные данные в Redux.
-	 * 
-	 * @param signal - Сигнал волатильности для обработки
-	 */
-	const handleVolatilitySignal = (signal: any) => {
-		// Создаем уникальный ключ для этого сигнала для обнаружения дубликатов
-		const signalKey = `${signal.type}:${signal.symbol}:${signal.timestamp}`
-
-		// Логируем входящий сигнал
-		console.log(`📥 Получен сигнал: ${signalKey}`, signal)
-
-		// Пропускаем если уже обработали этот сигнал
-		if (processedSignals.has(signalKey)) {
-			console.log(`🔄 Пропускаем дублирующий сигнал: ${signalKey}`)
-			return
-		}
-
-		// Нормализуем и отправляем сигнал
-		const normalizedSignal = normalizeVolatilitySignal(signal)
-		console.log(`📦 Нормализованный сигнал для Redux:`, normalizedSignal)
-
-		// Отправляем в Redux хранилище
-		console.log(`📤 Отправляем в Redux хранилище: ${normalizedSignal.symbol}, тип: ${normalizedSignal.signalType || 'volatility'}`)
-		dispatch(addVolatilitySignal(normalizedSignal))
-
-		// Запоминаем что обработали этот сигнал
-		processedSignals.add(signalKey)
-		console.log(`✅ Добавлен ${signalKey} в множество обработанных сигналов (размер: ${processedSignals.size})`)
-
-		// Ограничиваем размер множества обработанных сигналов
-		if (processedSignals.size > 1000) {
-			// Удаляем самые старые записи (первые 500)
-			const toRemove = Array.from(processedSignals).slice(0, 500)
-			toRemove.forEach(key => processedSignals.delete(key))
-			console.log(`🧹 Очищено множество обработанных сигналов, удалено ${toRemove.length} элементов`)
-		}
-	}
-
 	// Обработчики сигналов волатильности
-	client.on('signal:volatility', handleVolatilitySignal)
-	client.on('volatilitySpike', handleVolatilitySignal)
-	client.on('volatility', handleVolatilitySignal)
-	client.on('signal:volatilityRange', handleVolatilitySignal)
-	client.on('volatilityRange', handleVolatilitySignal)
+	client.on('signal:volatility', handleVolatilitySignal(dispatch))
+	client.on('volatilitySpike', handleVolatilitySignal(dispatch))
+	client.on('volatility', handleVolatilitySignal(dispatch))
+	client.on('signal:volatilityRange', handleVolatilitySignal(dispatch))
+	client.on('volatilityRange', handleVolatilitySignal(dispatch))
 
 	// Обработчики сигналов объема
 	client.on('volumeSpike', (signal: VolumeSignal) => {
@@ -213,7 +227,7 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 		}))
 	})
 
-	// Подключаемся к WebSocket серверу
+	// Подключаемся к Socket.IO серверу
 	client.connect()
 
 	// Возвращаем функцию очистки
@@ -223,14 +237,14 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 }
 
 /**
- * Получить текущий статус WebSocket соединения
+ * Получить текущий статус Socket.IO соединения
  * 
- * Проверяет активность WebSocket соединения и возвращает
+ * Проверяет активность Socket.IO соединения и возвращает
  * строковое представление состояния.
  * 
  * @returns 'connected' если соединение активно, 'disconnected' в противном случае
  */
 export const getConnectionStatus = () => {
-	const client = getWebSocketClient()
+	const client = getSocketIOClient()
 	return client.isActive() ? 'connected' : 'disconnected'
 } 
