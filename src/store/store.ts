@@ -23,9 +23,6 @@ import volatilitySpikeReducer from './signals/slices/volatility-spike.slice'
 import volatilityReducer from './signals/slices/volatility.slice'
 import volumeReducer from './signals/slices/volume.slice'
 
-// Import middlewares
-import signalsRoutingMiddleware from './signals/signals.middleware'
-
 // Корневой редьюсер, объединяющий все редьюсеры в приложении
 const rootReducer = combineReducers({
 	[userSlice.reducerPath]: userSlice.reducer,
@@ -85,7 +82,6 @@ export const store = configureStore({
 			userApi.middleware,
 			authApi.middleware,
 			marketApi.middleware,
-			signalsRoutingMiddleware
 		]),
 
 	// В production режиме отключаем DevTools для оптимизации

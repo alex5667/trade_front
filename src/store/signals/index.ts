@@ -44,8 +44,5 @@ export {
 	clearPriceChangeSignals
 } from './slices/price-change.slice'
 
-// Export middleware
-export { default as signalsRoutingMiddleware } from './signals.middleware'
-
 // Export selectors
 export * from './selectors/signals.selectors'
