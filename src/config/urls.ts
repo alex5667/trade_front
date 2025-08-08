@@ -46,5 +46,15 @@ export const URLS = {
 	STOCK_TRANSFERS: '/stock-transfers',
 	STOCK_TRANSFERS_BY_RANGE: '/browser/stockTransferByDateRange',
 	MARKET_ALL: '/market/all',
+
+	// Signal endpoints
+	SIGNALS: '/signals',
+	VOLATILITY_SIGNALS: '/volatility-spike-signals',
+	VOLUME_SIGNALS: '/volume-signals',
+	FUNDING_SIGNALS: '/funding-signals',
+	GAINER_SIGNALS: '/gainer-signals',
+	LOSER_SIGNALS: '/loser-signals',
+	TOP_GAINERS: '/top-gainers',
+	TOP_LOSERS: '/top-losers',
 }
 

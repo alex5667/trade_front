@@ -86,7 +86,14 @@ export const baseQueryWIthReAuth: typeof baseQuery = async (
 			removeFromStorage()
 		}
 	} else if (result.error) {
-		console.error('Base query error:', result.error)
+		// Improved error logging with more details
+		const errorMessage = errorCatch(result.error)
+		const errorDetails = {
+			message: errorMessage,
+			status: result.error.status || 'unknown',
+			originalError: result.error
+		}
+		console.error('Base query error:', errorDetails)
 	}
 	return result
 }

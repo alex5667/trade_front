@@ -68,8 +68,9 @@ export const volatilityRangeSlice = createSlice({
 				console.log(`🔧 Calculated rangeRatio for ${signal.symbol}: ${signal.rangeRatio.toFixed(2)}`)
 			}
 
-			// Вычисляем volatilityChange (процентное изменение)
+			// Убеждаемся, что volatilityChange присутствует
 			if (signal.volatilityChange === undefined) {
+				// Если volatilityChange не задан, вычисляем его на основе range и avgRange
 				if (signal.avgRange > 0) {
 					// Стандартная формула: ((current - average) / average) * 100
 					signal.volatilityChange = ((signal.range - signal.avgRange) / signal.avgRange) * 100
@@ -81,7 +82,19 @@ export const volatilityRangeSlice = createSlice({
 				}
 			}
 
-			console.log(`💾 Adding volatility range signal to store: ${signal.symbol} (range: ${signal.range.toFixed(4)}, avgRange: ${signal.avgRange.toFixed(4)}, change: ${signal.volatilityChange.toFixed(2)}%)`)
+			// Убеждаемся, что volatility присутствует
+			if (signal.volatility === undefined) {
+				// Вычисляем volatility на основе range и open price
+				if (signal.open && signal.open > 0) {
+					signal.volatility = (signal.range / signal.open) * 100
+					console.log(`🔧 Calculated volatility for ${signal.symbol}: ${signal.volatility.toFixed(2)}%`)
+				} else {
+					signal.volatility = 0
+					console.log(`🔧 Set volatility=0% for ${signal.symbol} (no open price)`)
+				}
+			}
+
+			console.log(`💾 Adding volatility range signal to store: ${signal.symbol} (range: ${signal.range.toFixed(4)}, avgRange: ${signal.avgRange.toFixed(4)}, volatility: ${signal.volatility.toFixed(2)}%, change: ${signal.volatilityChange.toFixed(2)}%)`)
 
 			// Check if signal with same symbol and timestamp already exists
 			const existingIndex = state.signals.findIndex(

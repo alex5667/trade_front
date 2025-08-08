@@ -44,6 +44,12 @@ import { VolatilitySignal } from '@/store/signals/signal.types'
  * Компонент для отображения сигналов диапазона волатильности
  */
 
+/**
+ * VolatilityRangeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов диапазона волатильности
+ */
+
 interface VolatilityRangeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -146,23 +152,25 @@ export const VolatilityRangeComponent: React.FC<
 	const renderPercentChange = (signal: DisplaySignal) => {
 		let change = 0
 
-		// Вычисляем процентное изменение на основе range и avgRange
-		if (
-			signal.range !== undefined &&
-			signal.avgRange !== undefined &&
-			signal.avgRange > 0
-		) {
-			// Формула: ((current_range - avg_range) / avg_range) * 100
-			change = ((signal.range - signal.avgRange) / signal.avgRange) * 100
-		} else if (signal.volatilityChange !== undefined) {
-			// Если range/avgRange недоступны, используем volatilityChange
+		// Используем volatilityChange если он доступен
+		if (signal.volatilityChange !== undefined) {
 			change = signal.volatilityChange
-		} else if (signal.rangeRatio !== undefined) {
-			// Или используем rangeRatio для вычисления
-			change = (signal.rangeRatio - 1) * 100
 		} else {
-			// По умолчанию 0, если нет данных для вычисления или avgRange = 0
-			change = 0
+			// Вычисляем процентное изменение на основе range и avgRange
+			if (
+				signal.range !== undefined &&
+				signal.avgRange !== undefined &&
+				signal.avgRange > 0
+			) {
+				// Формула: ((current_range - avg_range) / avg_range) * 100
+				change = ((signal.range - signal.avgRange) / signal.avgRange) * 100
+			} else if (signal.rangeRatio !== undefined) {
+				// Или используем rangeRatio для вычисления
+				change = (signal.rangeRatio - 1) * 100
+			} else {
+				// По умолчанию 0, если нет данных для вычисления или avgRange = 0
+				change = 0
+			}
 		}
 
 		// Определяем знак и цвет
@@ -200,6 +208,9 @@ export const VolatilityRangeComponent: React.FC<
 								Symbol
 							</th>
 							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+								Volatility
+							</th>
+							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
 								Range
 							</th>
 							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
@@ -219,20 +230,21 @@ export const VolatilityRangeComponent: React.FC<
 								<td className='px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900'>
 									{signal.symbol}
 								</td>
+								<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
+									{signal.volatility !== undefined
+										? `${signal.volatility.toFixed(2)}%`
+										: '-'}
+								</td>
 								<td
 									className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 ${signal.highlightRange ? 'bg-yellow-100 transition-colors duration-500' : ''}`}
 								>
-									{signal.range !== undefined
-										? signal.range.toFixed(4)
-										: signal.volatility !== undefined
-											? signal.volatility.toFixed(4)
-											: '-'}
+									{signal.range !== undefined ? signal.range.toFixed(6) : '-'}
 								</td>
 								<td
 									className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 ${signal.highlightAvgRange ? 'bg-yellow-100 transition-colors duration-500' : ''}`}
 								>
 									{signal.avgRange !== undefined
-										? signal.avgRange.toFixed(4)
+										? signal.avgRange.toFixed(6)
 										: '-'}
 								</td>
 								{renderPercentChange(signal)}

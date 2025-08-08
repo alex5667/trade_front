@@ -15,6 +15,26 @@
 import { logWebSocketConfig, WEBSOCKET_CONFIG } from '@/config/websocket.config'
 import { io, Socket } from 'socket.io-client'
 
+// Безопасный stringify для объектов ошибок с возможными циклическими ссылками
+const getCircularReplacer = () => {
+	const seen = new WeakSet()
+	return (_key: string, value: any) => {
+		if (typeof value === 'object' && value !== null) {
+			if (seen.has(value)) return '[Circular]'
+			seen.add(value)
+		}
+		return value
+	}
+}
+
+const safeStringify = (value: unknown, space: number = 2) => {
+	try {
+		return JSON.stringify(value, getCircularReplacer(), space)
+	} catch (_err) {
+		return '[Unserializable]'
+	}
+}
+
 // Конфигурация Socket.IO соединения
 const SOCKET_URL = WEBSOCKET_CONFIG.url.replace('ws://', 'http://').replace('wss://', 'https://')
 const MAX_RECONNECT_ATTEMPTS = WEBSOCKET_CONFIG.maxReconnectAttempts
@@ -134,7 +154,9 @@ export class TradeSignalSocketIOClient {
 				reconnectionDelayMax: this.reconnectDelay * 2,
 				reconnectionAttempts: this.maxReconnectAttempts,
 				timeout: 20000,
-				transports: ['websocket', 'polling']
+				transports: ['websocket', 'polling'],
+				path: '/socket.io',
+				withCredentials: true
 			})
 
 			// Обработчик успешного подключения
@@ -155,17 +177,25 @@ export class TradeSignalSocketIOClient {
 			})
 
 			// Обработчик ошибок подключения
-			this.socket.on('connect_error', (error) => {
+			this.socket.on('connect_error', (error: any) => {
+				// Собираем диагностическую информацию без риска ошибок stringify
 				const errorInfo = {
 					timestamp: new Date().toISOString(),
 					url: this.baseUrl,
 					isConnecting: this.isConnecting,
 					reconnectAttempts: this.reconnectAttempts,
-					errorMessage: error.message,
-					errorName: error.name
+					navigatorOnline: typeof navigator !== 'undefined' ? navigator.onLine : undefined,
+					errorMessage: error?.message || String(error) || 'Unknown Socket.IO connection error',
+					errorName: error?.name || error?.type || 'SocketError',
+					errorCode: error?.code || (error?.data && error?.data.code) || 'UNKNOWN',
+					errorDescription: error?.description || (error?.data && error?.data.description) || undefined,
+					errorStack: error?.stack,
+					errorRawType: Object.prototype.toString.call(error),
+					errorStringified: safeStringify(error)
 				}
 
 				console.error('❌ Ошибка подключения Socket.IO:', errorInfo)
+				console.error('❌ Socket.IO connect_error JSON:', safeStringify(errorInfo))
 
 				this.isConnecting = false
 				this._emitEvent('error', {
