@@ -1,35 +1,18 @@
 import cn from 'clsx'
-import { CSSProperties, PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
+
+import s from './Badge.module.scss'
 
 export type BadgeVariant = 'low' | 'high' | 'medium' | 'gray' | 'select'
 interface Badge {
 	className?: string
 	variant?: BadgeVariant
-	style?: CSSProperties
 }
 
 export function Badge({
 	children,
 	className,
-	variant = 'gray',
-	style
+	variant = 'gray'
 }: PropsWithChildren<Badge>) {
-	return (
-		<div
-			className={cn(
-				'rounded-lg  min-w-full py-1 px-2 text-sm  text-white transition',
-				{
-					'bg-[#79affd]': variant === 'low',
-					'bg-[#777ae5]': variant === 'medium',
-					'bg-[#6645a9]': variant === 'high',
-					'bg-hover-row-dark0/20 ': variant === 'gray',
-					'bg-hover-row-dark0/30 ': variant === 'select'
-				},
-				className
-			)}
-			style={style}
-		>
-			{children}
-		</div>
-	)
+	return <div className={cn(s.badge, s[variant], className)}>{children}</div>
 }

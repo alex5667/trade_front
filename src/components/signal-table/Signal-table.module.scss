@@ -1,6 +1,10 @@
 @use "@/styles/colors.scss" as colors;
 @use "@/styles/mixins.scss";
 
+.container {
+	@apply p-4 w-full h-full overflow-y-auto max-h-screen;
+}
+
 .signalTableContainer {
 	@apply p-4 w-full h-full overflow-y-auto max-h-screen;
 }
@@ -139,4 +143,8 @@
 
 .contentSection {
 	@apply space-y-6 pb-8;
+}
+
+.section {
+	@apply mb-6;
 }

@@ -29,7 +29,7 @@ export function SingleSelect({
 
 	return (
 		<div
-			className={cn(styles.container, 'min-w-full ')}
+			className={styles.container}
 			ref={ref}
 		>
 			<button
@@ -37,22 +37,21 @@ export function SingleSelect({
 					e.preventDefault()
 					setIsShow(!isShow)
 				}}
-				className='block min-w-full'
+				className={styles.fullWidth}
 			>
 				{getValue() ? (
 					<Badge
 						variant={value as BadgeVariant}
-						className='capitalize hover:animate-shadow-inset-center'
-						style={
-							isColorSelect
-								? { backgroundColor: value, opacity: '90', color: '#fff' }
-								: {}
-						}
+						className={cn(
+							styles.capitalize,
+							styles.hoverShadow,
+							isColorSelect && styles.colorBadge
+						)}
 					>
 						{getValue()}
 					</Badge>
 				) : (
-					<Badge className='text-text-color-on-primary hover:animate-shadow-inset-center'>
+					<Badge className={cn(styles.onPrimary, styles.hoverShadow)}>
 						Click for select
 					</Badge>
 				)}
@@ -78,17 +77,18 @@ export function SingleSelect({
 								onChange(item.value)
 								setIsShow(false)
 							}}
-							className={styles.listButton}
+							className={cn(
+								styles.listButton,
+								isColorSelect && styles.colorItem
+							)}
 							style={
 								isColorSelect
-									? {
-											backgroundColor: item.value
-										}
-									: {}
+									? ({ ['--color-item-bg' as any]: item.value } as any)
+									: undefined
 							}
 						>
 							<Badge
-								className='hover:animate-shadow-inset-center'
+								className={styles.hoverShadow}
 								variant={item.value as BadgeVariant}
 							>
 								{item.label}

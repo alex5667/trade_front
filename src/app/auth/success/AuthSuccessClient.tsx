@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/buttons/Button'
 
 import { useAuth } from '@/hooks/useAuth'
 
+import styles from '@/app/auth/AuthCommon.module.scss'
 import { getAccessToken, saveTokenStorage } from '@/services/auth-token.service'
 import { useGetProfileQuery } from '@/services/user.services'
 
@@ -122,11 +123,16 @@ export default function AuthSuccessClient() {
 
 	if (error) {
 		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-center'>
-					<h1 className='text-2xl font-bold mb-4 text-red-500'>{error}</h1>
+			<div className={styles.centerScreen}>
+				<div className={styles.textCenter}>
+					<h1
+						className={styles.title}
+						style={{ color: '#ef4444' }}
+					>
+						{error}
+					</h1>
 					<Button
-						className='mt-4'
+						className={styles.googleWrap}
 						onClick={() => router.push('/auth')}
 					>
 						Back to Login
@@ -137,12 +143,12 @@ export default function AuthSuccessClient() {
 	}
 
 	return (
-		<div className='flex items-center justify-center min-h-screen'>
-			<div className='text-center'>
-				<h1 className='text-2xl font-bold mb-4'>
+		<div className={styles.centerScreen}>
+			<div className={styles.textCenter}>
+				<h1 className={styles.title}>
 					{user ? 'Login successful! Redirecting...' : 'Processing login...'}
 				</h1>
-				<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto'></div>
+				<div className={styles.spinner}></div>
 			</div>
 		</div>
 	)

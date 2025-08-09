@@ -97,3 +97,11 @@
 		@apply text-white/70 transition-colors hover:text-primary;
 	}
 }
+
+.mobileHeight {
+	height: 60px;
+}
+
+.fullMinHeight {
+	min-height: 100%;
+}

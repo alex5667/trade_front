@@ -8,6 +8,7 @@ import { Field } from '@/components/ui/fields/Field'
 
 import { TypeUserForm } from '@/types/auth.types'
 
+import styles from './Settings.module.scss'
 import { useInitialData } from './useInitialData'
 import { useUpdateUserMutation } from '@/services/user.services'
 
@@ -29,12 +30,12 @@ export function Settings() {
 		}
 	}
 	return (
-		<div className='w-full'>
+		<div className={styles.root}>
 			<form
-				className='w-2/4 m-auto'
+				className={styles.form}
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				<div className='flex flex-col w-2/3 '>
+				<div className={styles.column}>
 					<div>
 						<Field
 							id='email'
@@ -66,7 +67,7 @@ export function Settings() {
 				<Button
 					type='submit'
 					disabled={isLoading}
-					className='text-text-white py-2 px-8'
+					className={styles.submit}
 				>
 					Save
 				</Button>

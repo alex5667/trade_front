@@ -17,7 +17,7 @@ interface InputFieldsProps {
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void // Обработчик изменения
 	onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void // Обработчик фокуса
 	onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void // Обработчик фокуса
-	style?: React.CSSProperties // Inline-стили для input
+	inputClassName?: string
 }
 
 export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
@@ -36,7 +36,7 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 			onChange,
 			onFocus,
 			onBlur,
-			style, // Передаем inline-стили
+			inputClassName,
 			...rest // Остальные пропсы для передачи в input
 		},
 		ref
@@ -67,33 +67,33 @@ export const FieldInput = forwardRef<HTMLInputElement, InputFieldsProps>(
 								}
 							)
 					}}
-					onFocus={onFocus} // Обработчик фокуса
+					onFocus={onFocus}
 					className={cn(
-						styles.fieldContainer, // Базовые стили из SCSS
-						disabled && styles.fieldDisabled, // Стили для отключенного состояния
-						state === 'error' && styles.fieldError, // Стили для ошибки
-						state === 'success' && styles.fieldSuccess, // Стили для успеха
-						!disabled && !state && styles.fieldFocus // Стили для фокуса
+						styles.fieldContainer,
+						disabled && styles.fieldDisabled,
+						state === 'error' && styles.fieldError,
+						state === 'success' && styles.fieldSuccess,
+						!disabled && !state && styles.fieldFocus,
+						inputClassName
 					)}
-					style={style} // Inline-стили с приоритетом
 					onKeyDown={event => {
 						if (
 							isNumber &&
-							!/^\d$/.test(event.key) && // Только цифры
-							!['.', '-'].includes(event.key) && // Поддержка точки и минуса
+							!/^\d$/.test(event.key) &&
+							!['.', '-'].includes(event.key) &&
 							![
 								'Backspace',
 								'Tab',
 								'Enter',
 								'ArrowLeft',
 								'ArrowRight'
-							].includes(event.key) // Разрешенные служебные клавиши
+							].includes(event.key)
 						) {
 							event.preventDefault()
 						}
 					}}
 					onBlur={onBlur}
-					{...rest} // Передаем остальные пропсы (например, name, maxLength и т.д.)
+					{...rest}
 				/>
 			</div>
 		)

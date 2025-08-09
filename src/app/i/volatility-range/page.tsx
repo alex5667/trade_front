@@ -12,6 +12,8 @@ import {
 	selectVolatilityRangeSignals
 } from '@/store/signals'
 
+import styles from './VolatilityRange.module.scss'
+
 /**
  * Страница сигналов диапазона волатильности
  *
@@ -56,18 +58,16 @@ export default function VolatilityPage() {
 	return (
 		<>
 			{/* Отображаем таблицу с сигналами */}
-			<div className='p-4'>
-				<h1 className='text-2xl font-bold mb-4'>
-					Сигналы диапазона волатильности
-				</h1>
+			<div className={styles.pageWrap}>
+				<h1 className={styles.title}>Сигналы диапазона волатильности</h1>
 				<ConnectionStatus />
 				{!isConnected && (
-					<div className='mb-4 p-3 rounded bg-yellow-100 text-yellow-800'>
+					<div className={styles.statusWarning}>
 						WebSocket отключен. Ожидание переподключения...
 					</div>
 				)}
 				{isConnected && signalCount === 0 ? (
-					<div className='p-4 bg-gray-100 text-gray-700 rounded'>
+					<div className={styles.emptyBox}>
 						Нет доступных сигналов диапазона волатильности. Ожидание данных...
 					</div>
 				) : (

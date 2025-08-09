@@ -7,6 +7,7 @@ import { SignalTable } from '@/components/signal-table/SignalTable'
 import { useAuth } from '@/hooks/useAuth'
 
 import AdminBoardPage from './(admin-board)/AdminBoardPage'
+import styles from './IPage.module.scss'
 import UserBoardPage from './UserBoardPage'
 
 export default function IPage() {
@@ -20,19 +21,16 @@ export default function IPage() {
 		)
 	}, [isAdmin])
 
-	// Always display the SignalTable alongside the appropriate board
 	return (
-		<div className='flex flex-col h-screen'>
-			{/* SignalTable at the top */}
-			<div className='mb-4'>
+		<div className={styles.contentWrapper}>
+			<div className={styles.signalTableBlock}>
 				<SignalTable />
 			</div>
 
-			{/* Main content below - either AdminBoard or UserBoard */}
-			<div className='flex-1 border-t border-gray-200 dark:border-gray-700 pt-4'>
+			<div className={styles.mainContent}>
 				{isAdmin === undefined ? (
-					<div className='w-full h-full flex items-center justify-center'>
-						<p className='text-xl'>Загрузка...</p>
+					<div className={styles.loadingWrap}>
+						<p className={styles.loadingText}>Загрузка...</p>
 					</div>
 				) : isAdmin ? (
 					<AdminBoardPage />

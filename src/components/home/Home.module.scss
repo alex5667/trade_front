@@ -15,6 +15,9 @@
 .logoImage {
 	position: relative;
 	margin-right: 20px;
+	.logoImg {
+		object-fit: cover;
+	}
 }
 .dayWeekCOlumn {
 	@apply py-2  flex flex-col items-center justify-start;
@@ -22,7 +25,7 @@
 	// animation: slideIn 0.5s ease-out forwards;
 
 	&:not(:last-child) {
-		border-right: 1px solid #ccc;
+		border-right: 1px solid var(--color-gray-300, #d1d5db);
 		@media (max-width: 1050px) {
 			border: none;
 		}
@@ -52,7 +55,7 @@
 	width: 100%;
 	position: relative;
 	&:not(:last-child) {
-		border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-text-white, #ffffff) 80%, transparent);
 	}
 	@media (max-width: 1050px) {
 		width: 100%;
@@ -92,7 +95,7 @@
 		width: 100%;
 		height: 2px;
 		border-radius: 4px;
-		background-color: rgba(121, 79, 69, 0.2);
+		background-color: color-mix(in oklab, var(--color-brand-brown, #794f45) 20%, transparent);
 		z-index: 2;
 		transition:
 			height 0.3s ease,
@@ -105,7 +108,7 @@
 		}
 		&:hover {
 			// > span {
-			color: #ffff;
+			color: var(--color-text-white, #ffffff);
 			// }
 		}
 	}
@@ -113,7 +116,7 @@
 
 .formattedDate {
 	&:hover {
-		color: #ffff;
+		color: var(--color-text-white, #ffffff);
 	}
 	@include mixins.adaptiveValue("font-size", 18, 16);
 }
@@ -154,7 +157,7 @@
 		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
-		background: rgba(121, 79, 69, 0.27);
+		background: color-mix(in oklab, var(--color-brand-brown, #794f45) 27%, transparent);
 		z-index: 2;
 		pointer-events: none;
 	}
@@ -167,16 +170,16 @@
 		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
-		background: rgba(0, 0, 0, 0.12);
+		background: color-mix(in srgb, var(--color-gray-900, #111827) 12%, transparent);
 		z-index: 3;
 		pointer-events: none;
 	}
 
 	&:nth-child(even)::before {
-		background: rgba(121, 79, 69, 0.37);
+		background: color-mix(in oklab, var(--color-brand-brown, #794f45) 37%, transparent);
 	}
 	&:nth-child(even)::after {
-		background: rgba(0, 0, 0, 0.15);
+		background: color-mix(in srgb, var(--color-gray-900, #111827) 15%, transparent);
 	}
 	.dishRowSpan {
 		@apply text-white relative z-10 italic;

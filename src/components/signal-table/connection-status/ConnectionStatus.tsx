@@ -18,6 +18,7 @@ import {
 	disconnected
 } from '@/store/signals/slices/connection.slice'
 
+import styles from './ConnectionStatus.module.scss'
 import { getSocketIOClient } from '@/services/socket-io.service'
 
 export const ConnectionStatus = () => {
@@ -134,43 +135,43 @@ export const ConnectionStatus = () => {
 	// Map status to display text and CSS class
 	const getStatusInfo = () => {
 		if (isConnecting) {
-			return { text: 'Connecting...', className: 'text-yellow-500' }
+			return { text: 'Connecting...', className: styles.yellow }
 		}
 
 		if (error) {
-			return { text: 'Connection Error', className: 'text-red-500' }
+			return { text: 'Connection Error', className: styles.red }
 		}
 
 		if (isConnected) {
-			return { text: 'Connected', className: 'text-green-500' }
+			return { text: 'Connected', className: styles.green }
 		}
 
-		return { text: 'Disconnected', className: 'text-red-500' }
+		return { text: 'Disconnected', className: styles.red }
 	}
 
 	const { text, className } = getStatusInfo()
 
 	return (
-		<div className='flex items-center space-x-2 bg-gray-800 p-2 mb-3 rounded-md'>
+		<div className={styles.wrap}>
 			<div
-				className={`w-3 h-3 rounded-full ${
-					className.includes('green')
-						? 'bg-green-500'
-						: className.includes('yellow')
-							? 'bg-yellow-500'
-							: 'bg-red-500'
+				className={`${styles.dot} ${
+					className === styles.green
+						? styles.green
+						: className === styles.yellow
+							? styles.yellow
+							: styles.red
 				}`}
 			/>
-			<span className={className}>{text}</span>
+			<span className={styles.text}>{text}</span>
 
 			{/* Show error message if any */}
-			{error && <span className='text-xs text-red-400 ml-2'>{error}</span>}
+			{error && <span className={styles.err}>{error}</span>}
 
 			{/* Manual reconnect button if not connected */}
 			{!isConnected && !isConnecting && (
 				<button
 					onClick={handleReconnect}
-					className='ml-auto text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded'
+					className={styles.reconnect}
 				>
 					Reconnect
 				</button>

@@ -1,7 +1,6 @@
 @use "@/styles/colors.scss" as colors;
 @use "@/styles/mixins.scss";
 
-
 .container {
 	@apply relative;
 }
@@ -23,8 +22,8 @@
 }
 
 .past {
-	background-color: #ffe0e0;
-	color: #a0a0a0;
+	background-color: color-mix(in srgb, var(--color-red-100, #fee2e2) 60%, transparent);
+	color: var(--color-gray-400, #9ca3af);
 }
 
 .dateButton {

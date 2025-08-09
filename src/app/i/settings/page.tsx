@@ -5,6 +5,7 @@ import { Heading } from '@/components/ui/Heading'
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 
 import { Settings } from './Settings'
+import styles from './SettingsPage.module.scss'
 
 export const metadata: Metadata = {
 	title: 'Settings',
@@ -16,7 +17,7 @@ export default function SettingsPage() {
 		<>
 			<Heading
 				title='Settings'
-				className='pt-10 pl-10 mb-10'
+				className={styles.heading}
 			/>
 			<Settings />
 		</>

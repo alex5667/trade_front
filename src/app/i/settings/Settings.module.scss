@@ -1,0 +1,16 @@
+.root {
+	width: 100%;
+}
+.form {
+	width: 50%;
+	margin: 0 auto;
+}
+.column {
+	display: flex;
+	flex-direction: column;
+	width: 66.6667%;
+}
+.submit {
+	color: var(--text-white, #fff);
+	padding: 0.5rem 2rem;
+}

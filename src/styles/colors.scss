@@ -80,7 +80,16 @@ $colors: (
 	"gray-400": #9ca3af,
 	"gray-500": #6b7280,
 	"gray-700": #374151,
-	"gray-900": #111827
+	"gray-900": #111827,
+	// Added extended palette
+	"gray-100": #f3f4f6,
+	"gray-300": #d1d5db,
+	"gray-800": #1f2937,
+	"green-500": #10b981,
+	"red-400": #f87171,
+	// Brand accents
+	"brand-brown": #794f45,
+	"brand-beige": #dfccc2
 );
 
 // Import the colors as CSS variables - using class to avoid :root issues in CSS modules
@@ -130,6 +139,14 @@ $colors: (
 
 	--color-blue-900: #{map.get($colors, "blue-900")};
 	--color-red-900: #{map.get($colors, "red-900")};
+	// Extended
+	--color-gray-100: #{map.get($colors, "gray-100")};
+	--color-gray-300: #{map.get($colors, "gray-300")};
+	--color-gray-800: #{map.get($colors, "gray-800")};
+	--color-green-500: #{map.get($colors, "green-500")};
+	--color-red-400: #{map.get($colors, "red-400")};
+	--color-brand-brown: #{map.get($colors, "brand-brown")};
+	--color-brand-beige: #{map.get($colors, "brand-beige")};
 }
 
 // SCSS color variables
@@ -211,6 +228,14 @@ $gray-400: var(--color-gray-400, #9ca3af);
 $gray-500: var(--color-gray-500, #6b7280);
 $gray-700: var(--color-gray-700, #374151);
 $gray-900: var(--color-gray-900, #111827);
+// Extended
+$gray-100: var(--color-gray-100, #f3f4f6);
+$gray-300: var(--color-gray-300, #d1d5db);
+$gray-800: var(--color-gray-800, #1f2937);
+$green-500: var(--color-green-500, #10b981);
+$red-400: var(--color-red-400, #f87171);
+$brand-brown: var(--color-brand-brown, #794f45);
+$brand-beige: var(--color-brand-beige, #dfccc2);
 
 // Signal table specific color variables
 $table-header-bg: $title-dark;

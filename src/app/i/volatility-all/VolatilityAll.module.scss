@@ -1,0 +1,21 @@
+.pageWrap {
+	padding: 1rem;
+}
+.title {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+.statusWarning {
+	margin-bottom: 1rem;
+	padding: 0.75rem;
+	border-radius: 0.5rem;
+	background-color: var(--color-yellow-100, #fef3c7);
+	color: var(--color-yellow-800, #92400e);
+}
+.emptyBox {
+	padding: 1rem;
+	border-radius: 0.5rem;
+	background-color: var(--color-gray-100, #f3f4f6);
+	color: var(--color-gray-700, #374151);
+}

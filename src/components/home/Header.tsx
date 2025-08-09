@@ -14,9 +14,7 @@ const Header = () => {
 						alt='Trade logo'
 						width={60}
 						height={60}
-						style={{
-							objectFit: 'cover'
-						}}
+						className={styles.logoImg}
 						placeholder='blur'
 					/>
 				</div>

@@ -13,6 +13,8 @@ import {
 	selectVolatilitySpikeLastUpdated
 } from '@/store/signals'
 
+import styles from './VolatilityAll.module.scss'
+
 export default function VolatilityAllSignalsPage() {
 	const [isInitialized, setIsInitialized] = useState(false)
 	const volatilitySignals = useSelector(selectCombinedVolatilitySignals)
@@ -56,27 +58,23 @@ export default function VolatilityAllSignalsPage() {
 		return ''
 	}
 
-	// Background colors for different status messages
-	const getStatusBgColor = () => {
-		if (connectionStatus === false) {
-			return 'bg-yellow-100 text-yellow-800'
-		}
+	// Status class
+	const getStatusClass = () => {
+		if (connectionStatus === false) return styles.statusWarning
 		return ''
 	}
 
 	return (
 		<>
 			{/* Render the table with signals */}
-			<div className='p-4'>
-				<h1 className='text-2xl font-bold mb-4'>All Volatility Signals</h1>
+			<div className={styles.pageWrap}>
+				<h1 className={styles.title}>All Volatility Signals</h1>
 				<ConnectionStatus />
 				{connectionStatus === false && (
-					<div className={`mb-4 p-3 rounded ${getStatusBgColor()}`}>
-						{getConnectionMessage()}
-					</div>
+					<div className={getStatusClass()}>{getConnectionMessage()}</div>
 				)}
 				{isConnected && signalCount === 0 ? (
-					<div className='p-4 bg-gray-100 text-gray-700 rounded'>
+					<div className={styles.emptyBox}>
 						No volatility signals available. Waiting for data...
 					</div>
 				) : (

@@ -13,6 +13,8 @@ import {
 	selectVolatilitySpikeSignals
 } from '@/store/signals'
 
+import styles from './VolatilitySpike.module.scss'
+
 export default function VolatilitySpikeSignalsPage() {
 	const [isInitialized, setIsInitialized] = useState(false)
 	const volatilitySpikeSignals = useSelector(selectVolatilitySpikeSignals)
@@ -53,27 +55,23 @@ export default function VolatilitySpikeSignalsPage() {
 		return 'WebSocket disconnected. Waiting for reconnection...'
 	}
 
-	// Background color for status message
-	const getStatusBgColor = () => {
-		if (connectionError) {
-			return 'bg-red-100 text-red-800'
-		}
-		return 'bg-yellow-100 text-yellow-800'
+	// Background class for status message
+	const getStatusClass = () => {
+		if (connectionError) return styles.statusError
+		return styles.statusWarning
 	}
 
 	return (
 		<>
 			{/* Render the table with signals */}
-			<div className='p-4'>
-				<h1 className='text-2xl font-bold mb-4'>Volatility Spike Signals</h1>
+			<div className={styles.pageWrap}>
+				<h1 className={styles.title}>Volatility Spike Signals</h1>
 				<ConnectionStatus />
 				{!isConnected && (
-					<div className={`mb-4 p-3 rounded ${getStatusBgColor()}`}>
-						{getConnectionMessage()}
-					</div>
+					<div className={getStatusClass()}>{getConnectionMessage()}</div>
 				)}
 				{isConnected && signalCount === 0 ? (
-					<div className='p-4 bg-gray-100 text-gray-700 rounded'>
+					<div className={styles.emptyBox}>
 						No volatility spike signals available. Waiting for data...
 					</div>
 				) : (

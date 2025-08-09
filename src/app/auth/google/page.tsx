@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 
 import { URLS } from '@/config/urls'
 
+import styles from '@/app/auth/AuthCommon.module.scss'
+
 export default function GoogleAuth() {
 	useEffect(() => {
 		// Открываем URL авторизации напрямую через бэкенд
@@ -15,12 +17,10 @@ export default function GoogleAuth() {
 	}, [])
 
 	return (
-		<div className='flex items-center justify-center min-h-screen'>
-			<div className='text-center'>
-				<h1 className='text-2xl font-bold mb-4'>
-					Redirecting to Google login...
-				</h1>
-				<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto'></div>
+		<div className={styles.centerScreen}>
+			<div className={styles.textCenter}>
+				<h1 className={styles.title}>Redirecting to Google login...</h1>
+				<div className={styles.spinner}></div>
 			</div>
 		</div>
 	)

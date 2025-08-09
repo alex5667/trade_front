@@ -5,7 +5,7 @@
 }
 
 .noDataMessage {
-	color: #666;
+	color: var(--color-gray-500, #6b7280);
 	font-size: 16px;
 	text-align: center;
 }

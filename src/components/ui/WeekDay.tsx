@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
 
+import styles from './WeekDay.module.scss'
+
 interface DateDayProps {
 	day: string
 	dateForDay: string
@@ -11,9 +13,9 @@ const WeekDay = ({ day, dateForDay }: DateDayProps) => {
 		: 'Нет даты'
 
 	return (
-		<div className='w-full flex justify-between align-middle mb-2 py-2 px-1 '>
-			<h3 className='text-lg'>{day}</h3>
-			<span className='text-base'>{formattedDate}</span>
+		<div className={styles.wrap}>
+			<h3 className={styles.title}>{day}</h3>
+			<span className={styles.date}>{formattedDate}</span>
 		</div>
 	)
 }

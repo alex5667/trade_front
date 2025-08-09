@@ -59,7 +59,7 @@ const Auth = () => {
 				onSubmit={handleSubmit(onSubmit)}
 			>
 				<Heading
-					className='text-center text-xl md:text-2xl'
+					className={styles.heading}
 					title='Authorization'
 				/>
 				<Field
@@ -84,21 +84,21 @@ const Auth = () => {
 				/>
 				<div className={styles.authButtons}>
 					<Button
-						className='text-white w-full py-2'
+						className={styles.actionButton}
 						onClick={() => setIsLoginForm(true)}
 					>
 						Login
 					</Button>
 					<Button
-						className='text-white w-full py-2 px-4 md:w-auto md:py-2 md:px-7'
+						className={styles.registerButton}
 						onClick={() => setIsLoginForm(false)}
 					>
 						Register
 					</Button>
 				</div>
-				<div className='mt-4'>
+				<div className={styles.googleWrap}>
 					<Button
-						className='w-full py-2 bg-white text-gray-800 hover:bg-title-dark'
+						className={styles.googleButton}
 						onClick={handleGoogleLogin}
 					>
 						Continue with Google

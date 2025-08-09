@@ -15,6 +15,27 @@
 	}
 }
 
+.heading {
+	text-align: center;
+	font-size: 1.25rem;
+}
+
+.actionButton {
+	color: var(--color-text-white, #ffffff);
+	width: 100%;
+	padding: 0.5rem 1rem;
+}
+
+.registerButton {
+	color: var(--color-text-white, #ffffff);
+	width: 100%;
+	padding: 0.5rem 1rem;
+}
+
+.googleWrap {
+	margin-top: 1rem;
+}
+
 .googleButton {
 	@apply w-full py-2 bg-white text-gray-800 hover:bg-title-dark rounded-lg transition-colors;
 }

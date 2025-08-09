@@ -26,7 +26,11 @@
 }
 
 .fieldDisabled {
-	@apply border-none bg-title-dark dark:bg-white/5 dark:placeholder:text-[rgba(255,255,255,0.15)];
+	@apply border-none bg-title-dark dark:bg-white/5;
+	&::placeholder {
+		color: var(--color-text-white, #ffffff);
+		opacity: 0.15;
+	}
 }
 
 .fieldError {
@@ -50,4 +54,8 @@
 		@apply overflow-visible h-20 z-10 absolute top-0 left-[4%] p-3 rounded-sm  bg-row-light;
 		transition: all 0.3s ease;
 	}
+}
+
+.customStyle {
+	/* placeholder for custom overrides via composition */
 }

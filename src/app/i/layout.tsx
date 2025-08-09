@@ -14,7 +14,7 @@ export default function DashboardLayout({
 			<SignalSocketInitializer />
 
 			<Sidebar />
-			<div className='w-full flex flex-col md:ml-[50px]'>
+			<div className={styles.sidebarHeaderWrap}>
 				<Header />
 				<main className={styles.main}>{children}</main>
 			</div>

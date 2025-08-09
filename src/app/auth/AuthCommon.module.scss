@@ -1,0 +1,30 @@
+.centerScreen {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.textCenter {
+	text-align: center;
+}
+.title {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+.spinner {
+	animation: spin 1s linear infinite;
+	height: 3rem;
+	width: 3rem;
+	border-bottom: 2px solid var(--color-gray-900, #111827);
+	border-radius: 9999px;
+	margin: 0 auto;
+}
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}

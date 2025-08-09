@@ -46,15 +46,15 @@ const Sidebar = () => {
 
 	return (
 		<m.aside
-			className={cn(styles.aside, isMobile ? 'h-[60px]' : 'min-h-full')}
+			className={cn(
+				styles.aside,
+				isMobile ? styles.mobileHeight : styles.fullMinHeight
+			)}
 			animate={isMobile ? { width: '100%' } : { width: isCollapsed ? 50 : 230 }}
-			style={isMobile ? { height: '60px' } : {}}
 			transition={{ type: 'spring', stiffness: 300, damping: 22 }}
 		>
 			<div
-				className={cn(styles.notebook, {
-					visible: !isCollapsed || isMobile
-				})}
+				className={cn(styles.notebook, { visible: !isCollapsed || isMobile })}
 			>
 				<Link
 					href={ADMINBOARD_PAGES.CUSTOMER}
@@ -63,10 +63,7 @@ const Sidebar = () => {
 						'p-layout': !isCollapsed && !isMobile
 					})}
 				>
-					<Infinity
-						// color={'#1D7AFC'}
-						size={isCollapsed && !isMobile ? 20 : 28}
-					/>
+					<Infinity size={isCollapsed && !isMobile ? 20 : 28} />
 					{(!isCollapsed || isMobile) && (
 						<span className={styles.spanTitle}>
 							Trade

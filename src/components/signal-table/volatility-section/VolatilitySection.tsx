@@ -45,7 +45,7 @@ export const VolatilitySection = () => {
 		<section className={styles.volatilitySection}>
 			<h2 className={styles.sectionTitle}>Volatility Signals</h2>
 
-			<div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+			<div className={styles.gridTwo}>
 				{/* Display spike signals */}
 				<div>
 					<VolatilitySpikeComponent

@@ -31,26 +31,22 @@ export const TimeframeSection = ({
 }: TimeframeSectionProps) => {
 	return (
 		<div>
-			{timeframe24h.gainers.length > 0 || timeframe24h.losers.length > 0 ? (
-				<>
-					<h2 className={styles.sectionTitle}>24-Hour Timeframe</h2>
-					<section className={styles.timeframeSection}>
-						<div className={styles.gridContainer}>
-							<TimeframeCoinsTable
-								type='gainers'
-								timeframe='24h'
-								title='Top Gainers (24h)'
-							/>
+			<h2 className={styles.sectionTitle}>24-Hour Timeframe</h2>
+			<section className={styles.timeframeSection}>
+				<div className={styles.gridContainer}>
+					<TimeframeCoinsTable
+						type='gainers'
+						timeframe='24h'
+						title='Top Gainers (24h)'
+					/>
 
-							<TimeframeCoinsTable
-								type='losers'
-								timeframe='24h'
-								title='Top Losers (24h)'
-							/>
-						</div>
-					</section>
-				</>
-			) : null}
+					<TimeframeCoinsTable
+						type='losers'
+						timeframe='24h'
+						title='Top Losers (24h)'
+					/>
+				</div>
+			</section>
 		</div>
 	)
 }
