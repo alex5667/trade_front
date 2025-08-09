@@ -1,0 +1,21 @@
+.sectionTitle {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+.section {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+.gridTwo {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+}
+@media (min-width: 1024px) {
+	.gridTwo {
+		grid-template-columns: 1fr 1fr;
+	}
+}

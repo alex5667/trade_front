@@ -24,6 +24,7 @@ import { SignalSocketInitializer } from './SignalSocketInitializer'
 import { ConnectionStatus } from './connection-status/ConnectionStatus'
 import { TimeframeSection } from './timeframe-section/TimeframeSection'
 import { VolatilitySection } from './volatility-section/VolatilitySection'
+import { VolumeSection } from './volume-section/VolumeSection'
 
 /**
  * SignalTable - основной компонент для отображения всех торговых сигналов
@@ -164,6 +165,11 @@ export const SignalTable = () => {
 			{/* Секция волатильности */}
 			<div className={styles.section}>
 				<VolatilitySection />
+			</div>
+
+			{/* Секция объема и финансирования */}
+			<div className={styles.section}>
+				<VolumeSection />
 			</div>
 		</div>
 	)
