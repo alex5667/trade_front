@@ -17,6 +17,14 @@ import {
 } from '@/store/signals/selectors/signals.selectors'
 import { VolatilitySignal } from '@/store/signals/signal.types'
 
+import s from './VolatilitySignal.module.scss'
+
+/**
+ * VolatilitySignalComponent
+ * ------------------------------
+ * Base component for volatility signals
+ */
+
 /**
  * VolatilitySignalComponent
  * ------------------------------
@@ -79,54 +87,41 @@ export const VolatilitySignalComponent: React.FC<
 
 	if (combinedSignals.length === 0) {
 		return (
-			<div className='p-4 border rounded-md bg-gray-50'>
-				<h3 className='text-lg font-semibold mb-2'>{title}</h3>
-				<p className='text-gray-500'>No volatility signals available</p>
+			<div className={s.emptyBox}>
+				<h3 className={s.title}>{title}</h3>
+				<p className={s.emptyText}>No volatility signals available</p>
 			</div>
 		)
 	}
 
 	return (
-		<div className='p-4 border rounded-md'>
-			<h3 className='text-lg font-semibold mb-2'>{title}</h3>
-			<div className='overflow-auto max-h-96'>
-				<table className='min-w-full divide-y divide-gray-200'>
-					<thead className='bg-gray-50'>
+		<div className={s.container}>
+			<h3 className={s.title}>{title}</h3>
+			<div className={s.scroll}>
+				<table className={s.table}>
+					<thead className={s.thead}>
 						<tr>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Symbol
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Value
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Change
-							</th>
-							{showType && (
-								<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-									Type
-								</th>
-							)}
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Time
-							</th>
+							<th className={s.headCell}>Symbol</th>
+							<th className={s.headCell}>Value</th>
+							<th className={s.headCell}>Change</th>
+							{showType && <th className={s.headCell}>Type</th>}
+							<th className={s.headCell}>Time</th>
 						</tr>
 					</thead>
-					<tbody className='bg-white divide-y divide-gray-200'>
+					<tbody className={s.tbody}>
 						{combinedSignals.map(signal => (
 							<tr
 								key={`${signal.symbol}-${signal.timestamp}-${signal.signalType}`}
+								className={s.row}
 							>
-								<td className='px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900'>
-									{signal.symbol}
-								</td>
-								<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
+								<td className={`${s.cell} ${s.symbol}`}>{signal.symbol}</td>
+								<td className={s.cell}>
 									{signal.volatility !== undefined
 										? signal.volatility.toFixed(4)
 										: '0.0000'}
 								</td>
 								<td
-									className={`px-2 py-2 whitespace-nowrap text-sm ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? 'text-green-500' : 'text-red-500'}`}
+									className={`${s.cell} ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? s.positive : s.negative}`}
 								>
 									{signal.volatilityChange !== undefined &&
 									signal.volatilityChange > 0
@@ -138,13 +133,13 @@ export const VolatilitySignalComponent: React.FC<
 									%
 								</td>
 								{showType && (
-									<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
+									<td className={s.cell}>
 										{signal.signalType === 'volatilitySpike'
 											? 'Spike'
 											: 'Range'}
 									</td>
 								)}
-								<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
+								<td className={s.cell}>
 									{new Date(signal.timestamp).toLocaleTimeString()}
 								</td>
 							</tr>

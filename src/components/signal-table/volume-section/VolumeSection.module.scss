@@ -19,3 +19,61 @@
 		grid-template-columns: 1fr 1fr;
 	}
 }
+
+.tableWrapper {
+	overflow-x: auto;
+	border-radius: 0.5rem;
+	box-shadow: 0 1px 2px color-mix(in srgb, var(--color-gray-900, #111827) 6%, transparent);
+}
+.table {
+	width: 100%;
+	border-collapse: collapse;
+}
+.headRow {
+	background: var(--color-gray-100, #f3f4f6);
+}
+.table thead th {
+	padding: 0.5rem 0.75rem;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	color: var(--color-gray-500, #6b7280);
+	text-align: left;
+}
+.row {
+	background: var(--color-text-white, #ffffff);
+}
+.table tbody tr {
+	border-top: 1px solid var(--color-gray-200, #e5e7eb);
+}
+.cell {
+	padding: 0.5rem 0.75rem;
+	font-size: 0.875rem;
+	color: var(--color-gray-900, #111827);
+}
+.rateCell {
+	font-variant-numeric: tabular-nums;
+}
+.positive {
+	color: var(--color-green-600, #059669);
+}
+.negative {
+	color: var(--color-red-600, #dc2626);
+}
+.emptyCell {
+	padding: 0.75rem;
+	text-align: center;
+	color: var(--color-gray-500, #6b7280);
+}
+
+.dark .headRow {
+	background: var(--color-gray-800, #1f2937);
+}
+.dark .table tbody tr {
+	border-top: 1px solid var(--color-gray-700, #374151);
+}
+.dark .row {
+	background: var(--color-gray-800, #1f2937);
+}
+.dark .cell {
+	color: var(--color-text-white, #ffffff);
+}

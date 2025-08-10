@@ -91,8 +91,7 @@ export class TradeSignalSocketIOClient {
 
 		// Инициализация коллбэков для различных типов событий
 		this.callbacks = {
-			'top:gainers:24h': [], // Лучшие растущие за 24 часа
-			'top:losers:24h': [], // Худшие падающие за 24 часа
+
 			'signal:volatility': [], // Сигналы волатильности
 			'signal:volatilityRange': [], // Сигналы диапазона волатильности
 			'volatilitySpike': [], // Всплески волатильности
@@ -101,8 +100,7 @@ export class TradeSignalSocketIOClient {
 			'priceChange': [], // Изменения цены
 			'top:gainers': [], // Лучшие растущие (общие)
 			'top:losers': [], // Худшие падающие (общие)
-			'trigger:gainers-24h': [], // Триггер для растущих за 24 часа
-			'trigger:losers-24h': [], // Триггер для падающих за 24 часа
+
 			'connect': [], // Событие подключения
 			'disconnect': [], // Событие отключения
 			'error': [], // Событие ошибки
@@ -244,8 +242,6 @@ export class TradeSignalSocketIOClient {
 
 		// Обработчики для всех типов событий сигналов
 		const signalTypes = [
-			'top:gainers:24h',
-			'top:losers:24h',
 			'signal:volatility',
 			'signal:volatilityRange',
 			'volatilitySpike',
@@ -254,14 +250,35 @@ export class TradeSignalSocketIOClient {
 			'priceChange',
 			'top:gainers',
 			'top:losers',
-			'trigger:gainers-24h',
-			'trigger:losers-24h'
+
 		]
 
 		signalTypes.forEach(signalType => {
 			this.socket?.on(signalType, (data) => {
 				console.log(`📨 Получен Socket.IO сигнал ${signalType}:`, data)
 				this._emitEvent(signalType, data)
+			})
+		})
+
+		// Дополнительно: подписываемся на имена каналов, совпадающие с Redis Streams
+		// и транслируем их в уже используемые клиентом события (алиасы)
+		const redisEventAliases: Record<string, string[]> = {
+			'stream:top-gainers': ['top:gainers'],
+			'stream:top-losers': ['top:losers'],
+			'stream:volume-signals': ['volumeSpike', 'volume-signals'],
+			'stream:funding-signals': ['funding', 'funding-signals'],
+			'stream:volatility': ['signal:volatility', 'volatility', 'volatilitySpike'],
+			'stream:volatilityRange': ['signal:volatilityRange', 'volatilityRange'],
+			'stream:volatilitySpike': ['volatilitySpike']
+		}
+
+		Object.entries(redisEventAliases).forEach(([redisEvent, aliases]) => {
+			this.socket?.on(redisEvent, (data) => {
+				console.log(`📨 Получен Redis-канал ${redisEvent}:`, data)
+				// Эмитим исходное имя события
+				this._emitEvent(redisEvent, data)
+				// И алиасы, которые уже слушает приложение
+				aliases.forEach((alias) => this._emitEvent(alias, data))
 			})
 		})
 	}

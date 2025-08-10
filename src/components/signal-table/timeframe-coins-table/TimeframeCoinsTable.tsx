@@ -13,7 +13,6 @@ import styles from './Time-table.module.scss'
 interface TimeframeCoinsTableProps {
 	title: string
 	type: 'gainers' | 'losers'
-	timeframe: '24h'
 }
 
 /**
@@ -47,8 +46,7 @@ const TimeframeCoinsRow = ({
  */
 export const TimeframeCoinsTable = ({
 	title,
-	type,
-	timeframe
+	type
 }: TimeframeCoinsTableProps) => {
 	// Получаем данные из Redux-стора с помощью селектора
 	const timeframeData = useSelector(selectTimeframeData)
@@ -56,15 +54,11 @@ export const TimeframeCoinsTable = ({
 	// Определяем, какие данные отображать в зависимости от типа таблицы
 	const coins = useMemo(() => {
 		// Проверка наличия данных для указанного типа и таймфрейма
-		if (
-			!timeframeData ||
-			!timeframeData[timeframe] ||
-			!timeframeData[timeframe][type]
-		) {
+		if (!timeframeData || !timeframeData[type]) {
 			return []
 		}
-		return timeframeData[timeframe][type]
-	}, [timeframeData, type, timeframe])
+		return timeframeData[type]
+	}, [timeframeData, type])
 
 	// Вычисляем, есть ли данные для отображения
 	const hasData = useMemo(() => coins.length > 0, [coins])

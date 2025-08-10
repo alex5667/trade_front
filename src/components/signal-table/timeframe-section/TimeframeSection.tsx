@@ -6,19 +6,19 @@ import { TimeframeCoinsTable } from '../timeframe-coins-table/TimeframeCoinsTabl
 
 import styles from './Timeframe-section.module.scss'
 
-interface Timeframe24hData {
+interface TimeframeDataProps {
 	gainers: TimeframeCoin[]
 	losers: TimeframeCoin[]
 }
 
-interface TriggerData {
+interface TriggerDataProps {
 	gainers: string[]
 	losers: string[]
 }
 
 interface TimeframeSectionProps {
-	timeframe24h: Timeframe24hData
-	trigger24h: TriggerData
+	timeframe: TimeframeDataProps
+	triggers: TriggerDataProps
 }
 
 /**
@@ -26,24 +26,22 @@ interface TimeframeSectionProps {
  * (gainers, losers) for 24h timeframe
  */
 export const TimeframeSection = ({
-	timeframe24h,
-	trigger24h
+	timeframe,
+	triggers
 }: TimeframeSectionProps) => {
 	return (
 		<div>
-			<h2 className={styles.sectionTitle}>24-Hour Timeframe</h2>
+			<h2 className={styles.sectionTitle}>Top by Timeframe</h2>
 			<section className={styles.timeframeSection}>
 				<div className={styles.gridContainer}>
 					<TimeframeCoinsTable
 						type='gainers'
-						timeframe='24h'
-						title='Top Gainers (24h)'
+						title='Top Gainers'
 					/>
 
 					<TimeframeCoinsTable
 						type='losers'
-						timeframe='24h'
-						title='Top Losers (24h)'
+						title='Top Losers'
 					/>
 				</div>
 			</section>

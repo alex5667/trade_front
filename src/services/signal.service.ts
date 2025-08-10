@@ -27,18 +27,14 @@ import {
 } from '@/store/signals/slices/connection.slice'
 import { addPriceChangeSignal } from '@/store/signals/slices/price-change.slice'
 import {
-	addTimeframeGainer,
-	addTimeframeLoser
+	replaceTimeframeGainers,
+	replaceTimeframeLosers
 } from '@/store/signals/slices/timeframe.slice'
-import {
-	addTriggerEvent
-} from '@/store/signals/slices/trigger.slice'
 import { addVolatilityRangeSignal } from '@/store/signals/slices/volatility-range.slice'
 import { addVolatilitySpikeSignal } from '@/store/signals/slices/volatility-spike.slice'
 import { addVolatilitySignal } from '@/store/signals/slices/volatility.slice'
 import { addVolumeSignal } from '@/store/signals/slices/volume.slice'
 import {
-	parseSymbols,
 	parseTimeframeCoins
 } from '@/store/signals/utils/signal-parsers'
 import { AppDispatch } from '@/store/store'
@@ -193,39 +189,17 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 		dispatch(addPriceChangeSignal(signal))
 	})
 
-	// Обработчики данных за 24 часа
-	client.on('top:gainers:24h', (data: AnyObject) => {
+	// Обработчики данных топов (без таймфрейма)
+	client.on('top:gainers', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		coins.forEach(coin => {
-			dispatch(addTimeframeGainer({ timeframe: '24h', data: coin }))
-		})
+		dispatch(replaceTimeframeGainers({ data: coins }))
 	})
 
-	client.on('top:losers:24h', (data: AnyObject) => {
+	client.on('top:losers', (data: AnyObject) => {
 		const coins = parseTimeframeCoins(data)
-		coins.forEach(coin => {
-			dispatch(addTimeframeLoser({ timeframe: '24h', data: coin }))
-		})
+		dispatch(replaceTimeframeLosers({ data: coins }))
 	})
 
-	// Обработчики триггерных событий
-	client.on('trigger:gainers-24h', (data: AnyObject) => {
-		const symbols = parseSymbols(data)
-		dispatch(addTriggerEvent({
-			timeframe: '24h',
-			type: 'gainers',
-			data: symbols
-		}))
-	})
-
-	client.on('trigger:losers-24h', (data: AnyObject) => {
-		const symbols = parseSymbols(data)
-		dispatch(addTriggerEvent({
-			timeframe: '24h',
-			type: 'losers',
-			data: symbols
-		}))
-	})
 
 	// Подключаемся к Socket.IO серверу
 	client.connect()

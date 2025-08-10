@@ -7,18 +7,6 @@ export type SignalType =
 	| 'top:gainers'
 	| 'top:losers'
 	| 'volatilityRange'
-	| 'trigger:gainers-1h'
-	| 'trigger:losers-1h'
-	| 'trigger:gainers-4h'
-	| 'trigger:losers-4h'
-	| 'trigger:gainers-24h'
-	| 'trigger:losers-24h'
-	| 'top:gainers:1h'
-	| 'top:losers:1h'
-	| 'top:gainers:4h'
-	| 'top:losers:4h'
-	| 'top:gainers:24h'
-	| 'top:losers:24h'
 
 export interface BaseSignal {
 	symbol: string
@@ -26,7 +14,6 @@ export interface BaseSignal {
 	type: SignalType
 }
 
-// Индивидуальные типы сигналов
 export interface VolatilitySpikeSignal {
 	type: string
 	symbol: string
@@ -37,8 +24,8 @@ export interface VolatilitySpikeSignal {
 	close: number
 	volatility: number
 	timestamp: number
-	range?: number       // Optional because not all volatility signals have range
-	avgRange?: number    // Optional because not all volatility signals have avgRange
+	range?: number
+	avgRange?: number
 }
 
 export interface VolumeSpikeSignal {
@@ -67,23 +54,23 @@ export type TopCoin = {
 export type TimeframeCoin = {
 	symbol: string
 	change: string
-	value?: number  // Add optional value field for volume/funding data
-	volume?: string  // Volume value as string
-	volumePercent?: string  // Volume percentage change
-	volume2Percent?: string  // 2-hour volume percentage
-	volume5Percent?: string  // 5-hour volume percentage
-	volume10Percent?: string  // 10-hour volume percentage
+	value?: number
+	volume?: string
+	volumePercent?: string
+	volume2Percent?: string
+	volume5Percent?: string
+	volume10Percent?: string
 }
 
 export interface TopGainersSignal {
 	type: string
-	coins: string[] | TopCoin[]  // Allow both string[] and TopCoin[] for backward compatibility
+	coins: string[] | TopCoin[]
 	timestamp: number
 }
 
 export interface TopLosersSignal {
 	type: string
-	coins: string[] | TopCoin[]  // Allow both string[] and TopCoin[] for backward compatibility
+	coins: string[] | TopCoin[]
 	timestamp: number
 }
 
@@ -97,21 +84,10 @@ export type SignalData = {
 	volatilitySpikes: VolatilitySpikeSignal[]
 	volumeSpikes: VolumeSpikeSignal[]
 	priceChanges: PriceChangeSignal[]
-	topGainers: string[] // ← только символы монет
+	topGainers: string[]
 	topLosers: string[]
 	volatilityRanges: VolatilitySpikeSignal[]
-	triggerGainers1h: string[]
-	triggerLosers1h: string[]
-	triggerGainers4h: string[]
-	triggerLosers4h: string[]
-	triggerGainers24h: string[]
-	triggerLosers24h: string[]
-	topGainers1h: TimeframeCoin[]
-	topLosers1h: TimeframeCoin[]
-	topGainers4h: TimeframeCoin[]
-	topLosers4h: TimeframeCoin[]
-	topGainers24h: TimeframeCoin[]
-	topLosers24h: TimeframeCoin[]
-
+	triggerGainers: string[]
+	triggerLosers: string[]
 }
 

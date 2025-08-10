@@ -43,7 +43,7 @@ export const createSignalHandlers = (setters: SignalSetters) => {
 		'volatilityRange': (data: VolatilitySpikeSignal) => push(setVolatilityRanges, data),
 		'volumeSpike': (data: VolumeSpikeSignal) => push(setVolumeSpikes, data),
 		'priceChange': (data: PriceChangeSignal) => push(setPriceChanges, data),
-		'trigger:top-gainers': (data: TopGainersSignal) => setTopGainers(data.coins),
-		'trigger:top-losers': (data: TopLosersSignal) => setTopLosers(data.coins),
+		'top:gainers': (data: any) => setTopGainers((data?.payload || (data as TopGainersSignal)?.coins) || []),
+		'top:losers': (data: any) => setTopLosers((data?.payload || (data as TopLosersSignal)?.coins) || []),
 	}
 }

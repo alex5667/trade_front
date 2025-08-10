@@ -31,7 +31,7 @@ import { VolumeSection } from './volume-section/VolumeSection'
  *
  * Этот компонент:
  * 1. Инициализирует WebSocket-соединение для получения сигналов
- * 2. Отображает сигналы по таймфрейму 24 часа
+ * 2. Отображает сигналы по таймфрейму
  * 3. Показывает сигналы волатильности и другие специальные сигналы
  */
 export const SignalTable = () => {
@@ -73,9 +73,9 @@ export const SignalTable = () => {
 			volumeCount: volumeSignals.length,
 			priceChangeCount: priceChangeSignals.length,
 			fundingDataCount: fundingData.length,
-			triggers24h: {
-				gainers: triggers['24h'].gainers.length,
-				losers: triggers['24h'].losers.length
+			triggers: {
+				gainers: triggers.gainers.length,
+				losers: triggers.losers.length
 			}
 		})
 	}, [
@@ -110,8 +110,7 @@ export const SignalTable = () => {
 			// Проверяем данные таймфреймов и триггеров
 			if (
 				triggers &&
-				(triggers['24h'].gainers.length > 0 ||
-					triggers['24h'].losers.length > 0)
+				(triggers.gainers.length > 0 || triggers.losers.length > 0)
 			) {
 				handleTimeframeSectionLoad()
 			}
@@ -151,14 +150,11 @@ export const SignalTable = () => {
 			{/* Секции таймфреймов */}
 			<div className={styles.section}>
 				<TimeframeSection
-					timeframe24h={{
-						gainers: timeframeData['24h'].gainers,
-						losers: timeframeData['24h'].losers
+					timeframe={{
+						gainers: timeframeData.gainers,
+						losers: timeframeData.losers
 					}}
-					trigger24h={{
-						gainers: triggers['24h'].gainers,
-						losers: triggers['24h'].losers
-					}}
+					triggers={{ gainers: triggers.gainers, losers: triggers.losers }}
 				/>
 			</div>
 

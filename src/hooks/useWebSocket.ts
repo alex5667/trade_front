@@ -131,8 +131,6 @@ export const useWebSocket = () => {
 			'volatilitySpike',
 			'top-gainers',
 			'top-losers',
-			'top-gainers-24h',
-			'top-losers-24h',
 			'volume-signals',
 			'funding-signals'
 		]

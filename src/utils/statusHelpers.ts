@@ -58,17 +58,7 @@ export const checkHasAnyData = (signalData: any): boolean => {
 		signalData?.volumeSpikes?.length > 0 ||
 		signalData?.priceChanges?.length > 0 ||
 		signalData?.volatilityRanges?.length > 0 ||
-		signalData?.triggerGainers1h?.length > 0 ||
-		signalData?.triggerLosers1h?.length > 0 ||
-		signalData?.triggerGainers4h?.length > 0 ||
-		signalData?.triggerLosers4h?.length > 0 ||
-		signalData?.triggerGainers24h?.length > 0 ||
-		signalData?.triggerLosers24h?.length > 0 ||
-		signalData?.topGainers1h?.length > 0 ||
-		signalData?.topLosers1h?.length > 0 ||
-		signalData?.topGainers4h?.length > 0 ||
-		signalData?.topLosers4h?.length > 0 ||
-		signalData?.topGainers24h?.length > 0 ||
-		signalData?.topLosers24h?.length > 0
+		signalData?.triggerGainers?.length > 0 ||
+		signalData?.triggerLosers?.length > 0
 	)
 } 

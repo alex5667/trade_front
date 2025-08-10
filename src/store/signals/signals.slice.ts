@@ -17,7 +17,4 @@ export { addPriceChangeSignal } from './slices/price-change.slice'
 export { addVolatilitySignal } from './slices/volatility.slice'
 
 // Export timeframe actions
-export {
-	addTimeframeGainer,
-	addTimeframeLoser
-} from './slices/timeframe.slice'
+export { replaceTimeframeGainers, replaceTimeframeLosers } from './slices/timeframe.slice'

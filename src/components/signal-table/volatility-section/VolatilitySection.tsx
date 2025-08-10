@@ -45,19 +45,19 @@ export const VolatilitySection = () => {
 		<section className={styles.volatilitySection}>
 			<h2 className={styles.sectionTitle}>Volatility Signals</h2>
 
-			<div className={styles.gridTwo}>
-				{/* Display spike signals */}
+			<div>
+				{/* Spike signals full-width */}
 				<div>
 					<VolatilitySpikeComponent
-						maxSignals={10}
+						maxSignals={50}
 						title='Volatility Spike Signals'
 					/>
 				</div>
 
-				{/* Display range signals */}
+				{/* Range signals full-width */}
 				<div>
 					<VolatilityRangeComponent
-						maxSignals={10}
+						maxSignals={50}
 						title='Volatility Range Signals'
 					/>
 				</div>

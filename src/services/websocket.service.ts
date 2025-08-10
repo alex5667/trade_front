@@ -131,14 +131,11 @@ export class WebSocketService {
 			this.notifySubscribers('top-losers', data)
 		})
 
-		this.socket.on('top:gainers:24h', (data) => {
-			console.log('🚀 Top gainers 24h:', data)
-			this.notifySubscribers('top-gainers-24h', data)
-		})
 
-		this.socket.on('top:losers:24h', (data) => {
-			console.log('📉 Top losers 24h:', data)
-			this.notifySubscribers('top-losers-24h', data)
+
+		this.socket.on('top:gainers', (data) => {
+			console.log('🚀 Top gainers:', data)
+			this.notifySubscribers('top-gainers', data)
 		})
 
 		// Объемы и сигналы финансирования

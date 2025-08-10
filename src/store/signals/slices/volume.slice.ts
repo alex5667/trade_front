@@ -70,6 +70,10 @@ export const volumeSlice = createSlice({
 			// Обновляем время последнего обновления
 			state.lastUpdated = Date.now()
 		},
+		replaceVolumeSignals: (state, action: PayloadAction<VolumeSignal[]>) => {
+			state.signals = (action.payload || []).map(s => ({ ...s, createdAt: Date.now() }))
+			state.lastUpdated = Date.now()
+		},
 		clearVolumeSignals: (state) => {
 			console.log(`🧹 Clearing all volume signals`)
 			state.signals = []
@@ -80,6 +84,7 @@ export const volumeSlice = createSlice({
 
 export const {
 	addVolumeSignal,
+	replaceVolumeSignals,
 	clearVolumeSignals
 } = volumeSlice.actions
 

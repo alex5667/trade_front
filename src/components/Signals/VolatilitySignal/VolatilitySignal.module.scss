@@ -1,0 +1,80 @@
+.container {
+	padding: 1rem;
+	border: 1px solid color-mix(in srgb, var(--color-gray-900, #111827) 12%, transparent);
+	border-radius: 0.5rem;
+	background: var(--color-surface, #ffffff);
+}
+
+.title {
+	font-size: 1.125rem;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.emptyBox {
+	padding: 1rem;
+	border: 1px solid color-mix(in srgb, var(--color-gray-900, #111827) 12%, transparent);
+	border-radius: 0.5rem;
+	background: color-mix(in srgb, var(--color-gray-900, #111827) 6%, transparent);
+}
+
+.emptyText {
+	color: var(--color-gray-500, #6b7280);
+}
+
+.scroll {
+	overflow: auto;
+	max-height: 24rem; /* ~ max-h-96 */
+}
+
+.table {
+	width: 100%;
+	min-width: 100%;
+	border-collapse: collapse;
+}
+
+.thead {
+	background: color-mix(in srgb, var(--color-gray-900, #111827) 4%, transparent);
+}
+
+.headCell {
+	padding: 0.5rem; /* 8px */
+	text-align: left;
+	font-size: 0.75rem; /* 12px */
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	color: var(--color-gray-500, #6b7280);
+	text-transform: uppercase;
+}
+
+.tbody {
+}
+
+.row {
+	border-top: 1px solid color-mix(in srgb, var(--color-gray-900, #111827) 12%, transparent);
+}
+
+.cell {
+	padding: 0.5rem; /* 8px */
+	font-size: 0.875rem; /* 14px */
+	color: var(--color-gray-500, #6b7280);
+	white-space: nowrap;
+}
+
+.symbol {
+	color: var(--color-gray-900, #111827);
+	font-weight: 500;
+}
+
+.positive {
+	color: var(--color-green-500, #10b981);
+}
+
+.negative {
+	color: var(--color-red-500, #ef4444);
+}
+
+.highlight {
+	background: color-mix(in srgb, var(--color-yellow-300, #fde047) 30%, transparent);
+	transition: background-color 0.5s ease;
+}

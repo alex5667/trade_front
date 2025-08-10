@@ -57,7 +57,13 @@ export const fundingSlice = createSlice({
 			// Обновляем время последнего обновления
 			state.lastUpdated = Date.now()
 		},
-
+		replaceFundingData: (state, action: PayloadAction<FundingCoin[]>) => {
+			state.coins = (action.payload || [])
+				.slice()
+				.sort((a, b) => Math.abs(b.rate) - Math.abs(a.rate))
+				.slice(0, MAX_COINS)
+			state.lastUpdated = Date.now()
+		},
 		clearFundingData: (state) => {
 			console.log('🧹 Clearing all funding data')
 			state.coins = []
@@ -68,6 +74,7 @@ export const fundingSlice = createSlice({
 
 export const {
 	addFundingData,
+	replaceFundingData,
 	clearFundingData
 } = fundingSlice.actions
 

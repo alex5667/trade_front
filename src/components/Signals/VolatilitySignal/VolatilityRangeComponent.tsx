@@ -14,6 +14,14 @@ import {
 } from '@/store/signals/selectors/signals.selectors'
 import { VolatilitySignal } from '@/store/signals/signal.types'
 
+import s from './VolatilitySignal.module.scss'
+
+/**
+ * VolatilityRangeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов диапазона волатильности
+ */
+
 /**
  * VolatilityRangeComponent
  * ------------------------------
@@ -141,9 +149,9 @@ export const VolatilityRangeComponent: React.FC<
 	// Если нет сигналов, показываем заглушку
 	if (displaySignals.length === 0) {
 		return (
-			<div className='p-4 border rounded-md bg-gray-50'>
-				<h3 className='text-lg font-semibold mb-2'>{title}</h3>
-				<p className='text-gray-500'>No volatility range signals available</p>
+			<div className={s.emptyBox}>
+				<h3 className={s.title}>{title}</h3>
+				<p className={s.emptyText}>No volatility range signals available</p>
 			</div>
 		)
 	}
@@ -175,22 +183,14 @@ export const VolatilityRangeComponent: React.FC<
 
 		// Определяем знак и цвет
 		const isPositive = change > 0
-		const changeClass = isPositive
-			? 'text-green-500'
-			: change < 0
-				? 'text-red-500'
-				: 'text-gray-500'
-		const highlightClass = signal.highlightPercentDiff
-			? 'bg-yellow-100 transition-colors duration-500'
-			: ''
+		const cls = isPositive ? s.positive : change < 0 ? s.negative : s.cell
+		const highlightClass = signal.highlightPercentDiff ? s.highlight : ''
 
 		// Форматируем значение для отображения
 		const formattedChange = change.toFixed(2)
 
 		return (
-			<td
-				className={`px-2 py-2 whitespace-nowrap text-sm ${changeClass} ${highlightClass}`}
-			>
+			<td className={`${s.cell} ${cls} ${highlightClass}`}>
 				{isPositive ? '+' : ''}
 				{formattedChange}%
 			</td>
@@ -198,57 +198,46 @@ export const VolatilityRangeComponent: React.FC<
 	}
 
 	return (
-		<div className='p-4 border rounded-md'>
-			<h3 className='text-lg font-semibold mb-2'>{title}</h3>
-			<div className='overflow-auto max-h-96'>
-				<table className='min-w-full divide-y divide-gray-200'>
-					<thead className='bg-gray-50'>
+		<div className={s.container}>
+			<h3 className={s.title}>{title}</h3>
+			<div className={s.scroll}>
+				<table className={s.table}>
+					<thead className={s.thead}>
 						<tr>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Symbol
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Volatility
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Range
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Avg Range
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								% Diff
-							</th>
-							<th className='px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-								Time
-							</th>
+							<th className={s.headCell}>Symbol</th>
+							<th className={s.headCell}>Volatility</th>
+							<th className={s.headCell}>Range</th>
+							<th className={s.headCell}>Avg Range</th>
+							<th className={s.headCell}>% Diff</th>
+							<th className={s.headCell}>Time</th>
 						</tr>
 					</thead>
-					<tbody className='bg-white divide-y divide-gray-200'>
+					<tbody className={s.tbody}>
 						{displaySignals.map(signal => (
-							<tr key={`${signal.symbol}-${signal.timestamp}`}>
-								<td className='px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900'>
-									{signal.symbol}
-								</td>
-								<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
+							<tr
+								key={`${signal.symbol}-${signal.timestamp}`}
+								className={s.row}
+							>
+								<td className={`${s.cell} ${s.symbol}`}>{signal.symbol}</td>
+								<td className={s.cell}>
 									{signal.volatility !== undefined
 										? `${signal.volatility.toFixed(2)}%`
 										: '-'}
 								</td>
 								<td
-									className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 ${signal.highlightRange ? 'bg-yellow-100 transition-colors duration-500' : ''}`}
+									className={`${s.cell} ${signal.highlightRange ? s.highlight : ''}`}
 								>
 									{signal.range !== undefined ? signal.range.toFixed(6) : '-'}
 								</td>
 								<td
-									className={`px-2 py-2 whitespace-nowrap text-sm text-gray-500 ${signal.highlightAvgRange ? 'bg-yellow-100 transition-colors duration-500' : ''}`}
+									className={`${s.cell} ${signal.highlightAvgRange ? s.highlight : ''}`}
 								>
 									{signal.avgRange !== undefined
 										? signal.avgRange.toFixed(6)
 										: '-'}
 								</td>
 								{renderPercentChange(signal)}
-								<td className='px-2 py-2 whitespace-nowrap text-sm text-gray-500'>
+								<td className={s.cell}>
 									{new Date(
 										signal.updatedAt || signal.timestamp
 									).toLocaleTimeString()}
