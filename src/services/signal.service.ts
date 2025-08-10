@@ -14,10 +14,8 @@
 'use client'
 
 import {
-	AnyObject,
 	PriceChangeSignal,
-	VolatilitySignal,
-	VolumeSignal
+	VolatilitySignal
 } from '@/store/signals/signal.types'
 import {
 	connected,
@@ -26,17 +24,9 @@ import {
 	setConnectionError
 } from '@/store/signals/slices/connection.slice'
 import { addPriceChangeSignal } from '@/store/signals/slices/price-change.slice'
-import {
-	replaceTimeframeGainers,
-	replaceTimeframeLosers
-} from '@/store/signals/slices/timeframe.slice'
 import { addVolatilityRangeSignal } from '@/store/signals/slices/volatility-range.slice'
 import { addVolatilitySpikeSignal } from '@/store/signals/slices/volatility-spike.slice'
 import { addVolatilitySignal } from '@/store/signals/slices/volatility.slice'
-import { addVolumeSignal } from '@/store/signals/slices/volume.slice'
-import {
-	parseTimeframeCoins
-} from '@/store/signals/utils/signal-parsers'
 import { AppDispatch } from '@/store/store'
 import { getSocketIOClient } from './socket-io.service'
 
@@ -179,27 +169,13 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 	client.on('signal:volatilityRange', handleVolatilitySignal(dispatch))
 	client.on('volatilityRange', handleVolatilitySignal(dispatch))
 
-	// Обработчики сигналов объема
-	client.on('volumeSpike', (signal: VolumeSignal) => {
-		dispatch(addVolumeSignal(signal))
-	})
+	// ВАЖНО: не подписываемся на объём и топы через WebSocket - только REST
+	// Удалено: volumeSpike, top:gainers, top:losers и их response:*
 
-	// Обработчики сигналов изменения цены
+	// Обработчики сигналов изменения цены остаются (если нужны)
 	client.on('priceChange', (signal: PriceChangeSignal) => {
 		dispatch(addPriceChangeSignal(signal))
 	})
-
-	// Обработчики данных топов (без таймфрейма)
-	client.on('top:gainers', (data: AnyObject) => {
-		const coins = parseTimeframeCoins(data)
-		dispatch(replaceTimeframeGainers({ data: coins }))
-	})
-
-	client.on('top:losers', (data: AnyObject) => {
-		const coins = parseTimeframeCoins(data)
-		dispatch(replaceTimeframeLosers({ data: coins }))
-	})
-
 
 	// Подключаемся к Socket.IO серверу
 	client.connect()

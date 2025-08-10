@@ -120,34 +120,21 @@ export class WebSocketService {
 			this.notifySubscribers('volatilitySpike', data)
 		})
 
-		// Топ-листы
-		this.socket.on('top:gainers', (data) => {
-			console.log('🚀 Top gainers:', data)
-			this.notifySubscribers('top-gainers', data)
-		})
+		// Топ-листы (отключено: REST-only)
+		// this.socket.on('top:gainers', (data) => {
+		//   this.notifySubscribers('top-gainers', data)
+		// })
+		// this.socket.on('top:losers', (data) => {
+		//   this.notifySubscribers('top-losers', data)
+		// })
 
-		this.socket.on('top:losers', (data) => {
-			console.log('📉 Top losers:', data)
-			this.notifySubscribers('top-losers', data)
-		})
-
-
-
-		this.socket.on('top:gainers', (data) => {
-			console.log('🚀 Top gainers:', data)
-			this.notifySubscribers('top-gainers', data)
-		})
-
-		// Объемы и сигналы финансирования
-		this.socket.on('trigger:volumeSignals', (data) => {
-			console.log('📊 Volume signals:', data)
-			this.notifySubscribers('volume-signals', data)
-		})
-
-		this.socket.on('trigger:fundingSignals', (data) => {
-			console.log('💰 Funding signals:', data)
-			this.notifySubscribers('funding-signals', data)
-		})
+		// Объемы и сигналы финансирования (отключено: REST-only)
+		// this.socket.on('trigger:volumeSignals', (data) => {
+		//   this.notifySubscribers('volume-signals', data)
+		// })
+		// this.socket.on('trigger:fundingSignals', (data) => {
+		//   this.notifySubscribers('funding-signals', data)
+		// })
 
 		// Системные события
 		this.socket.on('system:health-check', (data) => {

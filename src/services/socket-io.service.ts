@@ -109,6 +109,16 @@ export class TradeSignalSocketIOClient {
 	}
 
 	/**
+	 * Проверяет наличие данных и запрашивает их через HTTP API, если необходимо
+	 * Это fallback механизм для случаев, когда WebSocket не может предоставить данные
+	 */
+	async checkAndRequestDataFallback() {
+		// Отключено: REST-запросы выполняет RTK Query. Этот fallback больше не используется.
+		console.log('ℹ️ HTTP fallback отключен. Данные подтягиваются через RTK Query polling.')
+		return
+	}
+
+	/**
 	 * Подключиться к Socket.IO серверу
 	 * 
 	 * Устанавливает соединение с Socket.IO сервером и настраивает
@@ -164,6 +174,10 @@ export class TradeSignalSocketIOClient {
 				this.isConnecting = false
 				this.reconnectAttempts = 0
 				this._emitEvent('connect')
+
+				// Автоматически запрашиваем данные при подключении
+				console.log('🔄 Запрашиваем начальные данные при подключении...')
+				// Не запрашиваем топы через WS — REST-only
 			})
 
 			// Обработчик отключения
@@ -246,11 +260,7 @@ export class TradeSignalSocketIOClient {
 			'signal:volatilityRange',
 			'volatilitySpike',
 			'volatilityRange',
-			'volumeSpike',
-			'priceChange',
-			'top:gainers',
-			'top:losers',
-
+			'priceChange'
 		]
 
 		signalTypes.forEach(signalType => {
@@ -263,10 +273,7 @@ export class TradeSignalSocketIOClient {
 		// Дополнительно: подписываемся на имена каналов, совпадающие с Redis Streams
 		// и транслируем их в уже используемые клиентом события (алиасы)
 		const redisEventAliases: Record<string, string[]> = {
-			'stream:top-gainers': ['top:gainers'],
-			'stream:top-losers': ['top:losers'],
-			'stream:volume-signals': ['volumeSpike', 'volume-signals'],
-			'stream:funding-signals': ['funding', 'funding-signals'],
+			// Оставляем только волатильность
 			'stream:volatility': ['signal:volatility', 'volatility', 'volatilitySpike'],
 			'stream:volatilityRange': ['signal:volatilityRange', 'volatilityRange'],
 			'stream:volatilitySpike': ['volatilitySpike']

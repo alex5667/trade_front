@@ -58,6 +58,36 @@ import s from './VolatilitySignal.module.scss'
  * Компонент для отображения сигналов скачков волатильности
  */
 
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
 interface VolatilitySpikeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -117,10 +147,21 @@ export const VolatilitySpikeComponent: React.FC<
 			}
 		})
 
+		const toNumber = (v: unknown): number => {
+			if (typeof v === 'number') return v
+			if (typeof v === 'string') {
+				const ms = Date.parse(v)
+				return isNaN(ms) ? 0 : ms
+			}
+			return 0
+		}
+
 		// Convert map to array, sort by timestamp, and limit to maxSignals
 		const signalsArray = Object.values(updatedSignalsMap)
 			.sort(
-				(a, b) => (b.updatedAt || b.timestamp) - (a.updatedAt || a.timestamp)
+				(a, b) =>
+					toNumber(b.updatedAt ?? b.timestamp) -
+					toNumber(a.updatedAt ?? a.timestamp)
 			)
 			.slice(0, maxSignals)
 
@@ -162,10 +203,6 @@ export const VolatilitySpikeComponent: React.FC<
 						<tr>
 							<th className={s.headCell}>Symbol</th>
 							<th className={s.headCell}>Interval</th>
-							<th className={s.headCell}>Open</th>
-							<th className={s.headCell}>High</th>
-							<th className={s.headCell}>Low</th>
-							<th className={s.headCell}>Close</th>
 							<th className={s.headCell}>Volatility</th>
 							<th className={s.headCell}>Δ Volatility</th>
 							<th className={s.headCell}>Time</th>
@@ -179,10 +216,6 @@ export const VolatilitySpikeComponent: React.FC<
 							>
 								<td className={`${s.cell} ${s.symbol}`}>{signal.symbol}</td>
 								<td className={s.cell}>{signal.interval || '-'}</td>
-								<td className={s.cell}>{signal.open ?? '-'}</td>
-								<td className={s.cell}>{signal.high ?? '-'}</td>
-								<td className={s.cell}>{signal.low ?? '-'}</td>
-								<td className={s.cell}>{signal.close ?? '-'}</td>
 								<td
 									className={`${s.cell} ${signal.highlightVolatility ? s.highlight : ''}`}
 								>
@@ -194,7 +227,8 @@ export const VolatilitySpikeComponent: React.FC<
 									className={`${s.cell} ${signal.volatilityChange > 0 ? s.positive : signal.volatilityChange < 0 ? s.negative : ''} ${signal.highlightChange ? s.highlight : ''}`}
 								>
 									{signal.volatilityChange !== undefined
-										? signal.volatilityChange.toFixed(2)
+										? (signal.volatilityChange > 0 ? '+' : '') +
+											signal.volatilityChange.toFixed(2)
 										: '-'}
 								</td>
 								<td className={s.cell}>

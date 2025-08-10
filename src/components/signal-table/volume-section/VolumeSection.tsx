@@ -16,19 +16,27 @@ export const VolumeSection = () => {
 	const fundingCoins = useSelector(selectFundingData)
 
 	const volumeTableSignals: VolumeSpikeSignal[] = volumeSignals.map(sig => ({
-		type: sig.signalType || 'volumeSpike',
+		type: 'volumeSpike',
 		symbol: sig.symbol,
-		interval: sig.interval || '',
+		interval: (sig as any).timeframe || '',
 		volume: sig.volume,
-		timestamp: sig.timestamp
+		timestamp:
+			typeof sig.timestamp === 'string'
+				? Date.parse(sig.timestamp)
+				: sig.timestamp
 	}))
 
 	const sortedFunding = useMemo(() => {
 		const list = (fundingCoins || []).map((c: any) => ({
+			// Preserve all known fields from FundingCoin/BaseSignal
 			symbol: c.symbol || c.coin || '-',
-			rate: typeof c.fundingRate === 'number' ? c.fundingRate : c.rate
+			rate: typeof c.fundingRate === 'number' ? c.fundingRate : c.rate,
+			interval: c.interval || c.fundingInterval || '-',
+			nextFundingTime: c.nextFundingTime || c.nextFunding || c.nextFundingAt,
+			exchange: c.exchange || '-',
+			price: c.price,
+			timestamp: c.timestamp
 		}))
-		// sort by absolute rate desc
 		return list.sort((a, b) => Math.abs(b.rate || 0) - Math.abs(a.rate || 0))
 	}, [fundingCoins])
 
@@ -36,6 +44,15 @@ export const VolumeSection = () => {
 		if (rate === undefined || rate === null || isNaN(rate)) return '-'
 		const sign = rate > 0 ? '+' : rate < 0 ? '−' : ''
 		return `${sign}${(rate * 100).toFixed(3)}%`
+	}
+
+	const formatTime = (value?: number) => {
+		if (!value || Number.isNaN(value)) return '-'
+		try {
+			return new Date(value).toLocaleTimeString()
+		} catch (_) {
+			return '-'
+		}
 	}
 
 	return (
@@ -53,6 +70,11 @@ export const VolumeSection = () => {
 									<tr className={styles.headRow}>
 										<th className={styles.cell}>Coin</th>
 										<th className={styles.cell}>Funding Rate</th>
+										<th className={styles.cell}>Interval</th>
+										<th className={styles.cell}>Next Funding</th>
+										<th className={styles.cell}>Exchange</th>
+										<th className={styles.cell}>Price</th>
+										<th className={styles.cell}>Time</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -76,13 +98,22 @@ export const VolumeSection = () => {
 													>
 														{formatRate(rate)}
 													</td>
+													<td className={styles.cell}>{c.interval || '-'}</td>
+													<td className={styles.cell}>
+														{formatTime(c.nextFundingTime)}
+													</td>
+													<td className={styles.cell}>{c.exchange || '-'}</td>
+													<td className={styles.cell}>{c.price ?? '-'}</td>
+													<td className={styles.cell}>
+														{formatTime(c.timestamp)}
+													</td>
 												</tr>
 											)
 										})
 									) : (
 										<tr>
 											<td
-												colSpan={2}
+												colSpan={7}
 												className={styles.emptyCell}
 											>
 												Нет данных по funding...

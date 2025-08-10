@@ -27,23 +27,6 @@ const push = <T>(setter: Setter<T>, item: T) => {
 }
 
 // функция для генерации мапы обработчиков
-export const createSignalHandlers = (setters: SignalSetters) => {
-	const {
-		setVolatilitySpikes,
-		setVolatilityRanges,
-		setVolumeSpikes,
-		setPriceChanges,
-		setTopGainers,
-		setTopLosers
-	} = setters
-
-	return {
-		'signal:volatility': (data: VolatilitySpikeSignal) => push(setVolatilitySpikes, data),
-		'signal:volatilityRange': (data: VolatilitySpikeSignal) => push(setVolatilityRanges, data),
-		'volatilityRange': (data: VolatilitySpikeSignal) => push(setVolatilityRanges, data),
-		'volumeSpike': (data: VolumeSpikeSignal) => push(setVolumeSpikes, data),
-		'priceChange': (data: PriceChangeSignal) => push(setPriceChanges, data),
-		'top:gainers': (data: any) => setTopGainers((data?.payload || (data as TopGainersSignal)?.coins) || []),
-		'top:losers': (data: any) => setTopLosers((data?.payload || (data as TopLosersSignal)?.coins) || []),
-	}
-}
+export const createSignalHandlers = (_setters: SignalSetters): Record<string, (data: any) => void> => ({
+	// volumeSpike, top:gainers, top:losers отключены (REST-only)
+})

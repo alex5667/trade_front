@@ -1,41 +1,242 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss" as *;
+
 .authContainer {
-	@apply flex min-h-screen;
+	@apply min-h-screen flex items-center justify-center p-4;
+	position: relative;
+	z-index: 10;
 }
 
-.authForm {
-	@apply w-[70%] m-auto shadow bg-secondary rounded-xl p-layout md:w-[30%];
+.authCard {
+	@apply w-full max-w-md rounded-lg shadow-lg p-8;
+	background: rgba($color-text-white, 0.95);
+	border: 1px solid rgba($color-text-white, 0.3);
+	box-shadow:
+		0 8px 32px rgba(0, 0, 0, 0.15),
+		0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.authButtons {
-	@apply flex items-center justify-between;
-	@media (max-width: 767.98px) {
-		display: flex;
-		flex-direction: column;
-		min-width: 100%;
+.authHeader {
+	@apply text-center mb-8;
+}
+.authTitle {
+	@apply text-2xl font-bold mb-2;
+	color: $color-text-primary;
+}
+.authSubtitle {
+	@apply text-sm;
+	color: $color-text-gray;
+}
+
+.authMethodToggle {
+	@apply flex mb-6 rounded-lg p-1;
+	background: rgba($color-border-light, 0.9);
+}
+.authMethodButton {
+	@apply flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200;
+	@apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+.authMethodButtonActive {
+	background: rgba($color-text-white, 0.95);
+	color: $color-primary;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.authMethodButtonInactive {
+	color: $color-text-gray;
+	&:hover {
+		color: $color-text-primary;
+		background: rgba($color-text-white, 0.9);
 	}
 }
 
-.heading {
-	text-align: center;
-	font-size: 1.25rem;
+.authForm {
+	@apply space-y-4 mb-6;
+}
+.authField {
+	@apply w-full;
+}
+.label {
+	@apply text-sm font-medium mb-2 block;
+	color: $color-text-primary;
+}
+.input {
+	@apply w-full px-3 py-2 rounded-md border transition-all duration-200;
+	background: rgba($color-text-white, 0.95);
+	border-color: rgba($color-border-light, 0.9);
+	color: $color-text-primary;
+	&::placeholder {
+		color: $color-text-gray;
+	}
+	&:focus {
+		border-color: $color-primary;
+		box-shadow: 0 0 0 2px rgba($color-primary, 0.1);
+		background: rgba($color-text-white, 1);
+	}
+}
+.inputError {
+	border-color: $color-button-red;
+	&:focus {
+		border-color: $color-button-red;
+		box-shadow: 0 0 0 2px rgba($color-button-red, 0.1);
+	}
 }
 
-.actionButton {
-	color: var(--color-text-white, #ffffff);
-	width: 100%;
-	padding: 0.5rem 1rem;
+.authButtons {
+	@apply flex gap-3 mb-6;
 }
-
+.loginButton {
+	@apply flex-1 py-2 px-4 font-medium rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+	background: $color-primary;
+	color: $color-text-white;
+	box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+	&:hover {
+		background: $color-primary-hover;
+		box-shadow: 0 6px 16px rgba($color-primary, 0.4);
+		transform: translateY(-1px);
+	}
+	&:focus {
+		box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+	}
+}
 .registerButton {
-	color: var(--color-text-white, #ffffff);
-	width: 100%;
-	padding: 0.5rem 1rem;
+	@apply flex-1 py-2 px-4 font-medium rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+	background: $color-primary;
+	color: $color-text-white;
+	box-shadow: 0 4px 12px rgba($color-primary, 0.3);
+	&:hover {
+		background: $color-primary-hover;
+		box-shadow: 0 6px 16px rgba($color-primary, 0.4);
+		transform: translateY(-1px);
+	}
+	&:focus {
+		box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+	}
 }
 
-.googleWrap {
-	margin-top: 1rem;
+.divider {
+	@apply relative my-6;
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		border-top: 1px solid rgba($color-border-light, 0.9);
+	}
+	span {
+		@apply relative px-4 text-sm;
+		background: rgba($color-text-white, 0.95);
+		color: $color-text-gray;
+	}
 }
-
 .googleButton {
-	@apply w-full py-2 bg-white text-gray-800 hover:bg-title-dark rounded-lg transition-colors;
+	@apply w-full py-2 px-4 font-medium rounded-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3;
+	background: rgba($color-text-white, 0.95);
+	border: 1px solid rgba($color-border-light, 0.9);
+	color: $color-text-primary;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	&:hover {
+		background: rgba($color-border-light, 0.95);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+		transform: translateY(-1px);
+	}
+	&:focus {
+		box-shadow: 0 0 0 2px rgba($color-text-gray, 0.2);
+	}
+}
+.googleIcon {
+	@apply w-5 h-5;
+}
+
+@media (max-width: $mobile) {
+	.authCard {
+		@apply p-6;
+	}
+	.authTitle {
+		@apply text-xl;
+	}
+	.authButtons {
+		@apply flex-col;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	.authContainer {
+		background: transparent;
+	}
+	.authCard {
+		background: rgba($color-db-bg, 0.95);
+		border-color: rgba($color-db-border, 0.3);
+		backdrop-filter: blur(10px);
+	}
+	.authTitle {
+		color: $color-text-white;
+	}
+	.authSubtitle {
+		color: $color-text-secondary;
+	}
+	.authMethodToggle {
+		background: rgba($color-db-sidebar, 0.8);
+	}
+	.authMethodButtonActive {
+		background: rgba($color-db-sidebar-light, 0.9);
+		color: $color-primary;
+	}
+	.authMethodButtonInactive {
+		color: $color-text-secondary;
+		&:hover {
+			color: $color-text-white;
+			background: rgba($color-db-sidebar-light, 0.5);
+		}
+	}
+	.label {
+		color: $color-text-white;
+	}
+	.input {
+		background: rgba($color-db-bg, 0.9);
+		border-color: rgba($color-db-border, 0.8);
+		color: $color-text-white;
+		&::placeholder {
+			color: $color-text-secondary;
+		}
+		&:focus {
+			border-color: $color-primary;
+			background: rgba($color-db-bg, 1);
+		}
+	}
+	.inputError {
+		border-color: $color-button-red;
+		&:focus {
+			border-color: $color-button-red;
+		}
+	}
+	.loginButton {
+		background: $color-primary;
+		&:hover {
+			background: $color-primary-hover;
+		}
+	}
+	.registerButton {
+		background: $color-primary;
+		&:hover {
+			background: $color-primary-hover;
+		}
+	}
+	.divider {
+		&::before {
+			border-color: rgba($color-db-border, 0.8);
+		}
+		span {
+			background: rgba($color-db-bg, 0.95);
+			color: $color-text-secondary;
+		}
+	}
+	.googleButton {
+		background: rgba($color-db-bg, 0.9);
+		border-color: rgba($color-db-border, 0.8);
+		color: $color-text-white;
+		&:hover {
+			background: rgba($color-db-sidebar, 0.9);
+		}
+	}
 }

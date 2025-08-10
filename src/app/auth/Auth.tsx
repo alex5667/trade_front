@@ -1,110 +1,91 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-
 import { Heading } from '@/components/ui/Heading'
-import { Button } from '@/components/ui/buttons/Button'
-import { Field } from '@/components/ui/fields/Field'
 
-import { AuthForm } from '@/types/auth.types'
-
-import {
-	ADMINBOARD_PAGES,
-	ADMINBOARD_PAGES_KEYS
-} from '@/config/pages-url.config'
-
-import { useAuth } from '@/hooks/useAuth'
+import type { AuthForm, PhoneAuthForm } from '@/types/auth.types'
 
 import styles from './Auth.module.scss'
-import { useLoginMutation, useRegisterMutation } from '@/services/auth.services'
+// Ported subcomponents
+import { AuthButtons } from '@/app/auth/modern/AuthButtons'
+import { AuthMethodToggle } from '@/app/auth/modern/AuthMethodToggle'
+import { EmailAuthForm } from '@/app/auth/modern/EmailAuthForm'
+import { PhoneAuthFormComponent } from '@/app/auth/modern/PhoneAuthForm'
+import { useAuthActions } from '@/app/auth/modern/useAuthActions'
+import { useAuthForms } from '@/app/auth/modern/useAuthForms'
 
 const Auth = () => {
-	const { register, handleSubmit, reset } = useForm<AuthForm>({
-		mode: 'onChange'
-	})
-	const [isLoginForm, setIsLoginForm] = useState(false)
-	const { replace, push } = useRouter()
-	const [login] = useLoginMutation()
-	const [auth] = useRegisterMutation()
-	const { user } = useAuth()
+	const {
+		authMethod,
+		isLoginForm,
+		setIsLoginForm,
+		registerEmail,
+		handleSubmitEmail,
+		errorsEmail,
+		registerPhone,
+		handleSubmitPhone,
+		errorsPhone,
+		handleAuthMethodChange
+	} = useAuthForms()
 
-	const onSubmit: SubmitHandler<AuthForm> = async data => {
-		try {
-			const response = await (isLoginForm ? login : auth)(data)
-			toast.success('Successfully logged in')
-			reset()
-			if (response?.data?.user) {
-				const updatedUser = user || response?.data?.user
-				const upperCaseRole = updatedUser?.roles.join().toUpperCase()
+	const {
+		isLoading,
+		isGoogleLoading,
+		onSubmitEmail,
+		onSubmitPhone,
+		handleGoogleLogin
+	} = useAuthActions()
 
-				replace(ADMINBOARD_PAGES[upperCaseRole as ADMINBOARD_PAGES_KEYS] || '/')
-			}
-		} catch (error) {
-			toast.error(`${isLoginForm ? `Login` : `Register`} failed`)
-		}
-	}
-
-	const handleGoogleLogin = () => {
-		// Перенаправляем на страницу с Google OAuth
-		push('/auth/google')
-	}
+	const onEmailFormSubmit = handleSubmitEmail((data: AuthForm) =>
+		onSubmitEmail(data, isLoginForm)
+	)
+	const onPhoneFormSubmit = handleSubmitPhone((data: PhoneAuthForm) =>
+		onSubmitPhone(data, isLoginForm)
+	)
 
 	return (
 		<div className={styles.authContainer}>
-			<form
-				className={styles.authForm}
-				onSubmit={handleSubmit(onSubmit)}
-			>
-				<Heading
-					className={styles.heading}
-					title='Authorization'
-				/>
-				<Field
-					id='email'
-					label='Email'
-					placeholder='Enter email:'
-					type='email'
-					extra='mb-4'
-					{...register('email', {
-						required: 'Email is required!'
-					})}
-				/>
-				<Field
-					id='password'
-					label='Password'
-					placeholder='Enter password:'
-					type='password'
-					extra='mb-6'
-					{...register('password', {
-						required: 'Password is required!'
-					})}
-				/>
-				<div className={styles.authButtons}>
-					<Button
-						className={styles.actionButton}
-						onClick={() => setIsLoginForm(true)}
-					>
-						Login
-					</Button>
-					<Button
-						className={styles.registerButton}
-						onClick={() => setIsLoginForm(false)}
-					>
-						Register
-					</Button>
+			<div className={styles.authCard}>
+				<div className={styles.authHeader}>
+					<Heading
+						className={styles.authTitle}
+						title='Welcome Back'
+					/>
+					<p className={styles.authSubtitle}>
+						Sign in to your account to continue
+					</p>
 				</div>
-				<div className={styles.googleWrap}>
-					<Button
-						className={styles.googleButton}
-						onClick={handleGoogleLogin}
-					>
-						Continue with Google
-					</Button>
-				</div>
-			</form>
+
+				<AuthMethodToggle
+					authMethod={authMethod}
+					onMethodChange={handleAuthMethodChange}
+				/>
+
+				{authMethod === 'email' && (
+					<EmailAuthForm
+						register={registerEmail}
+						errors={errorsEmail}
+						onSubmit={onEmailFormSubmit}
+					/>
+				)}
+
+				{authMethod === 'phone' && (
+					<PhoneAuthFormComponent
+						register={registerPhone}
+						errors={errorsPhone}
+						isLoginForm={isLoginForm}
+						onSubmit={onPhoneFormSubmit}
+					/>
+				)}
+
+				<AuthButtons
+					isLoginForm={isLoginForm}
+					setIsLoginForm={setIsLoginForm}
+					onSubmitEmail={onEmailFormSubmit}
+					onSubmitPhone={onPhoneFormSubmit}
+					isLoading={isLoading}
+					authMethod={authMethod}
+				/>
+			</div>
 		</div>
 	)
 }

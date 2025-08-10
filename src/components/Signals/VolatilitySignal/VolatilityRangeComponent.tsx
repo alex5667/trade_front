@@ -58,6 +58,12 @@ import s from './VolatilitySignal.module.scss'
  * Компонент для отображения сигналов диапазона волатильности
  */
 
+/**
+ * VolatilityRangeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов диапазона волатильности
+ */
+
 interface VolatilityRangeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -119,10 +125,21 @@ export const VolatilityRangeComponent: React.FC<
 			}
 		})
 
+		const toNumber = (v: unknown): number => {
+			if (typeof v === 'number') return v
+			if (typeof v === 'string') {
+				const ms = Date.parse(v)
+				return isNaN(ms) ? 0 : ms
+			}
+			return 0
+		}
+
 		// Convert map to array, sort by timestamp, and limit to maxSignals
 		const signalsArray = Object.values(updatedSignalsMap)
 			.sort(
-				(a, b) => (b.updatedAt || b.timestamp) - (a.updatedAt || a.timestamp)
+				(a, b) =>
+					toNumber(b.updatedAt ?? b.timestamp) -
+					toNumber(a.updatedAt ?? a.timestamp)
 			)
 			.slice(0, maxSignals)
 

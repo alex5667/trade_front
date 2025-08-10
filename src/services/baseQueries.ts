@@ -11,7 +11,7 @@ import {
 	saveTokenStorage
 } from './auth-token.service'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4200/api'
 export const baseQuery = retry(
 	fetchBaseQuery({
 		baseUrl: API_BASE_URL,
@@ -20,15 +20,17 @@ export const baseQuery = retry(
 		prepareHeaders: (headers) => {
 			const accessToken = getAccessToken()
 
-
 			if (accessToken) {
 				headers.set('Authorization', `Bearer ${accessToken}`)
 			}
 
-
-
 			headers.set('Content-Type', 'application/json')
-			headers.set('Origin', window.location.origin)
+			try {
+				// window может отсутствовать на сервере
+				if (typeof window !== 'undefined') {
+					headers.set('Origin', window.location.origin)
+				}
+			} catch { }
 
 			return headers
 		},
@@ -36,20 +38,20 @@ export const baseQuery = retry(
 		responseHandler: async (response) => {
 			if (!response.ok) {
 				if (response.status === 404) {
-					return { error: 'Not Found' }
+					return { error: 'Not Found', status: 404 }
 				}
 				const errorMessage = await response.text()
-				return { error: errorMessage || 'An error occurred' }
+				return { error: errorMessage || 'An error occurred', status: response.status }
 			}
 
 			// Если тело ответа пустое, возвращаем пустой объект
 			const text = await response.text()
 			if (!text) {
-				return {} // пустой ответ
+				return {}
 			}
 
 			try {
-				return JSON.parse(text) // Парсим JSON, если он есть
+				return JSON.parse(text)
 			} catch (error) {
 				console.error('Ошибка парсинга JSON:', error)
 				return { error: 'Ошибка парсинга JSON' }
@@ -74,12 +76,16 @@ export const baseQueryWIthReAuth: typeof baseQuery = async (
 			errorCatch(result.error) === 'jwt must be provided')
 	) {
 		const refreshResult = await baseQuery(
-			URLS.AUTH_LOGIN_ACCESS_TOKEN,
+			{
+				url: URLS.AUTH_LOGIN_ACCESS_TOKEN,
+				method: 'POST',
+				body: {}
+			},
 			api,
 			extraOptions
 		)
 		const refreshResultData = refreshResult.data as AuthResponse
-		if (refreshResultData.accessToken) {
+		if (refreshResultData?.accessToken) {
 			saveTokenStorage(refreshResultData.accessToken)
 			result = await baseQuery(args, api, extraOptions)
 		} else {
@@ -90,7 +96,7 @@ export const baseQueryWIthReAuth: typeof baseQuery = async (
 		const errorMessage = errorCatch(result.error)
 		const errorDetails = {
 			message: errorMessage,
-			status: result.error.status || 'unknown',
+			status: (result.error as any)?.status || 'unknown',
 			originalError: result.error
 		}
 		console.error('Base query error:', errorDetails)

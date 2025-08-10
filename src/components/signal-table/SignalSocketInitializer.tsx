@@ -25,36 +25,22 @@ import { initializeSignalService } from '@/services/signal.service'
 const SignalSocketInitializerComponent = () => {
 	const dispatch = useDispatch<AppDispatch>()
 
-	// Компонент создан
 	console.log('🔌 SignalSocketInitializer компонент создан')
 
-	// Используем хук для создания и настройки Socket.IO соединения (timeframe events)
+	// Используем хук для создания и настройки Socket.IO соединения (только статус)
 	useSignalSocketInitializer()
 
-	// Эффект для инициализации полного сервиса сигналов (volatility, volume, price change)
+	// Инициализация сервиса сигналов (волатильность/price change)
 	useEffect(() => {
-		console.log(
-			'🔄 SignalSocketInitializer эффект запущен - инициализация сервиса сигналов'
-		)
-
-		// Инициализируем полный сервис сигналов для обработки всех типов событий
 		const cleanup = initializeSignalService(dispatch)
-
 		return () => {
-			console.log(
-				'🛑 SignalSocketInitializer размонтирован - очистка сервиса сигналов'
-			)
-			if (cleanup) {
-				cleanup()
-			}
+			if (cleanup) cleanup()
 		}
 	}, [dispatch])
 
-	// Компонент не рендерит UI
 	return null
 }
 
-// Оборачиваем в React.memo для предотвращения лишних перерисовок
 export const SignalSocketInitializer = React.memo(
 	SignalSocketInitializerComponent,
 	() => true

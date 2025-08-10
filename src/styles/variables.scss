@@ -11,3 +11,43 @@ $tablet: 991.98px; // Планшети, деякі телефони в гори�
 $mobile: 767.98px; // Телефони L
 $mobileSmall: 479.98px;
 $darkening: rgba(0, 0, 0, 0.05);
+
+// CSS переменные для цветов (для использования в SCSS)
+$color-primary: var(--color-primary);
+$color-secondary: var(--color-secondary);
+$color-third: var(--color-third);
+$color-border: var(--color-border);
+$color-border-light: var(--color-border-light);
+$color-sidebar: var(--color-sidebar);
+$color-sidebar-light: var(--color-sidebar-light);
+$color-bg-black: var(--color-bg-primary);
+$color-text-primary: var(--color-text-primary);
+$color-text-secondary: var(--color-text-secondary);
+$color-text-white: var(--color-text-white);
+$color-text-gray: var(--color-text-gray);
+$color-primary-hover: var(--color-primary-hover);
+$color-hover-light: var(--color-hover-light);
+$color-bg-button-hover: var(--color-bg-btn-hover);
+$color-row-black: var(--color-row-dark);
+$color-button-red: var(--color-button-red);
+$color-button-brown: var(--color-button-brown);
+
+// Dashboard переменные
+$color-db-primary: var(--color-db-primary, var(--color-primary));
+$color-db-secondary: var(--color-db-secondary, var(--color-secondary));
+$color-db-border: var(--color-db-border, var(--color-border));
+$color-db-border-light: var(--color-db-border-light, var(--color-border-light));
+$color-db-sidebar: var(--color-db-sidebar, var(--color-sidebar));
+$color-db-sidebar-light: var(--color-db-sidebar-light, var(--color-sidebar-light));
+$color-db-bg: var(--color-db-bg, var(--color-bg-dark));
+$color-db-bg-light: var(--color-db-bg-light, var(--color-bg-light));
+$color-db-primary-color: var(--color-db-primary-color, var(--color-text-white));
+$color-db-text-color-on-primary: var(--color-db-text-color-on-primary, var(--color-text-white));
+$color-db-text-color-header-list: var(--color-db-text-color-header-list, var(--color-text-secondary));
+$color-db-primary-hover-color: var(--color-db-primary-hover-color, var(--color-primary-hover));
+$color-db-text-task-completed: var(--color-db-text-task-completed, var(--color-text-secondary));
+$color-db-bg-button-hover: var(--color-db-bg-button-hover, var(--color-bg-btn-hover));
+$color-db-primary-selected-color: var(--color-db-primary-selected-color, var(--color-primary));
+$color-db-row-light: var(--color-db-row-light, var(--color-row-light));
+$color-db-hover-light: var(--color-db-hover-light, var(--color-hover-row-light));
+$color-db-hover-black: var(--color-db-hover-black, var(--color-hover-row-dark));

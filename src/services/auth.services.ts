@@ -40,6 +40,31 @@ export const authApi = createApi({
 					dispatch(addUser(data.user))
 				} catch (err) {
 					console.error('Login error:', err)
+					removeFromStorage()
+				}
+			}
+		}),
+		/** Авторизация по телефону */
+		loginByPhone: builder.mutation<AuthResponse, { phone: string; password: string }>({
+			query: data => ({
+				url: URLS.AUTH_LOGIN_PHONE,
+				method: 'POST',
+				body: data
+			}),
+			transformResponse: (response: AuthResponse) => {
+				if (!response.accessToken) {
+					throw new Error('Phone login failed: Access token is missing')
+				}
+				saveTokenStorage(response.accessToken)
+				return response
+			},
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
+				try {
+					const { data } = await queryFulfilled
+					dispatch(addUser(data.user))
+				} catch (err) {
+					console.error('Phone login error:', err)
+					removeFromStorage()
 				}
 			}
 		}),
@@ -63,6 +88,31 @@ export const authApi = createApi({
 					dispatch(addUser(data.user))
 				} catch (err) {
 					console.error('Registration error:', err)
+					removeFromStorage()
+				}
+			}
+		}),
+		/** Регистрация по телефону */
+		registerByPhone: builder.mutation<AuthResponse, { phone: string; password: string; firstName?: string; lastName?: string }>({
+			query: data => ({
+				url: URLS.AUTH_REGISTER_PHONE,
+				method: 'POST',
+				body: data
+			}),
+			transformResponse: (response: AuthResponse) => {
+				if (!response.accessToken) {
+					throw new Error('Phone registration failed: Access token is missing')
+				}
+				saveTokenStorage(response.accessToken)
+				return response
+			},
+			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
+				try {
+					const { data } = await queryFulfilled
+					dispatch(addUser(data.user))
+				} catch (err) {
+					console.error('Phone registration error:', err)
+					removeFromStorage()
 				}
 			}
 		}),
@@ -108,41 +158,15 @@ export const authApi = createApi({
 					console.error('Google login error:', err)
 				}
 			}
-		}),
-		/** Обработка callback после авторизации через Google */
-		handleGoogleCallback: builder.mutation<AuthResponse, void>({
-			query: () => ({
-				url: URLS.USER_PROFILE,
-				method: 'GET',
-				credentials: 'include'
-			}),
-			transformResponse: (response: any) => {
-				if (response?.accessToken) {
-					saveTokenStorage(response.accessToken)
-					if (response.refreshToken) {
-						saveRefreshToken(response.refreshToken)
-					}
-				}
-				return response
-			},
-			onQueryStarted: async (arg, { queryFulfilled, dispatch }) => {
-				try {
-					const { data } = await queryFulfilled
-					if (data?.user) {
-						dispatch(addUser(data.user))
-					}
-				} catch (err) {
-					console.error('Failed to get user profile:', err)
-				}
-			}
 		})
 	})
 })
 
 export const {
 	useLoginMutation,
+	useLoginByPhoneMutation,
 	useRegisterMutation,
+	useRegisterByPhoneMutation,
 	useLogoutMutation,
-	useLoginGoogleMutation,
-	useHandleGoogleCallbackMutation
+	useLoginGoogleMutation
 } = authApi

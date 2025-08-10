@@ -11,10 +11,8 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { setConnectionStatus } from '@/store/signals/slices/connection.slice'
-import { replaceTimeframeGainers, replaceTimeframeLosers } from '@/store/signals/slices/timeframe.slice'
-
 import { getSocketIOClient } from '@/services/socket-io.service'
+import { setConnectionStatus } from '@/store/signals/slices/connection.slice'
 
 export const useSignalSocketInitializer = () => {
 	const dispatch = useDispatch()
@@ -44,16 +42,8 @@ export const useSignalSocketInitializer = () => {
 			dispatch(setConnectionStatus(false))
 		})
 
-		// Топы без привязки к 24h
-		client
-			.on('top:gainers', (data: any) => {
-				console.log(`📈 [${componentIdRef.current}] Получен top gainers:`, data)
-				dispatch(replaceTimeframeGainers({ data }))
-			})
-			.on('top:losers', (data: any) => {
-				console.log(`📉 [${componentIdRef.current}] Получен top losers:`, data)
-				dispatch(replaceTimeframeLosers({ data }))
-			})
+		// ВАЖНО: не подписываемся на топы и объём/фандинг через WebSocket
+		// Эти данные теперь получаем только через REST API
 
 		client.connect()
 

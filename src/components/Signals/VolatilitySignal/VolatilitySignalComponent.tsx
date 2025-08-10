@@ -43,6 +43,18 @@ import s from './VolatilitySignal.module.scss'
  * Base component for volatility signals
  */
 
+/**
+ * VolatilitySignalComponent
+ * ------------------------------
+ * Base component for volatility signals
+ */
+
+/**
+ * VolatilitySignalComponent
+ * ------------------------------
+ * Base component for volatility signals
+ */
+
 interface VolatilitySignalComponentProps {
 	maxSignals?: number
 	title?: string
@@ -71,8 +83,19 @@ export const VolatilitySignalComponent: React.FC<
 	// Update combined signals when any of the sources change
 	useEffect(() => {
 		// Combine and sort by timestamp (newest first)
+		const toNumber = (v: unknown): number => {
+			if (typeof v === 'number') return v
+			if (typeof v === 'string') {
+				const ms = Date.parse(v)
+				return isNaN(ms) ? 0 : ms
+			}
+			return 0
+		}
 		const allSignals = [...volatilitySpikeSignals, ...volatilityRangeSignals]
-			.sort((a, b) => b.timestamp - a.timestamp)
+			.sort(
+				(a: any, b: any) =>
+					toNumber(b.timestamp as any) - toNumber(a.timestamp as any)
+			)
 			.slice(0, maxSignals)
 
 		setCombinedSignals(allSignals)

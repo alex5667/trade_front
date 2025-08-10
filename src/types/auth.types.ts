@@ -12,6 +12,14 @@ export interface AuthForm {
 	password: string
 }
 
+/** Форма авторизации по телефону */
+export interface PhoneAuthForm {
+	phone: string
+	password: string
+	firstName?: string
+	lastName?: string
+}
+
 /** Модель пользователя в системе */
 export interface User {
 	/** Уникальный идентификатор пользователя */
@@ -46,3 +54,6 @@ export interface AuthResponse {
 
 /** Тип для формы пользователя без ID, но с паролем */
 export type TypeUserForm = Omit<User, 'id'> & { password: string | undefined }
+
+/** Тип метода аутентификации */
+export type AuthMethod = 'email' | 'phone'

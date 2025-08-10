@@ -8,6 +8,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 
 import { marketApi } from '@/services/api/market.api'
 import { authApi } from '@/services/auth.services'
+import { signalApi } from '@/services/signal.api'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { userSlice } from './user/user.slice'
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
 	[userApi.reducerPath]: userApi.reducer,
 	[authApi.reducerPath]: authApi.reducer,
 	[marketApi.reducerPath]: marketApi.reducer,
+	[signalApi.reducerPath]: signalApi.reducer,
 	[collapsedSlice.reducerPath]: collapsedSlice.reducer,
 
 	// Signal slices
@@ -82,6 +84,7 @@ export const store = configureStore({
 			userApi.middleware,
 			authApi.middleware,
 			marketApi.middleware,
+			signalApi.middleware,
 		]),
 
 	// В production режиме отключаем DevTools для оптимизации

@@ -124,15 +124,11 @@ export const useWebSocket = () => {
 			setSignalHistory(prev => [signal, ...prev.slice(0, 99)]) // Храним последние 100 сигналов
 		}
 
-		// Подписываемся на различные типы событий
+		// Подписываемся только на волатильность и системные статусы
 		const eventTypes = [
 			'volatility',
 			'volatilityRange',
-			'volatilitySpike',
-			'top-gainers',
-			'top-losers',
-			'volume-signals',
-			'funding-signals'
+			'volatilitySpike'
 		]
 
 		eventTypes.forEach(eventType => {
@@ -279,7 +275,7 @@ export const useSignalSubscription = (eventType: string, callback: (data: any) =
 }
 
 /**
- * Hook для получения только топ-листов
+ * Hook для получения только топ-листов (удален WS-источник)
  */
 export const useTopLists = () => {
 	const [topGainers, setTopGainers] = useState<any[]>([])
@@ -287,28 +283,11 @@ export const useTopLists = () => {
 	const [lastUpdate, setLastUpdate] = useState<string | null>(null)
 
 	useEffect(() => {
-		const handleTopGainers = (data: any) => {
-			setTopGainers(data.payload || data)
-			setLastUpdate(new Date().toISOString())
-		}
-
-		const handleTopLosers = (data: any) => {
-			setTopLosers(data.payload || data)
-			setLastUpdate(new Date().toISOString())
-		}
-
-		websocketService.subscribe('top-gainers', handleTopGainers)
-		websocketService.subscribe('top-losers', handleTopLosers)
-
-		return () => {
-			websocketService.unsubscribe('top-gainers', handleTopGainers)
-			websocketService.unsubscribe('top-losers', handleTopLosers)
-		}
+		// Источник через WS отключен — данные приходят REST-инициализатором в Redux
+		setTopGainers([])
+		setTopLosers([])
+		setLastUpdate(new Date().toISOString())
 	}, [])
 
-	return {
-		topGainers,
-		topLosers,
-		lastUpdate
-	}
+	return { topGainers, topLosers, lastUpdate }
 } 

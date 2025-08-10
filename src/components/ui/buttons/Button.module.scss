@@ -1,11 +1,117 @@
 @use "@/styles/mixins.scss";
-@use "@/styles/variables.scss";
+@use "@/styles/variables.scss" as *;
 
 .button {
-	@apply rounded-lg bg-transparent border border-border-light  transition hover:bg-primary active:bg-primary py-2;
+	border-radius: 0.5rem;
+	background: transparent;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	transition: all 0.2s ease;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
 	@include mixins.adaptiveValue("padding-left", 16, 7);
 	@include mixins.adaptiveValue("padding-right", 16, 7);
 	font-weight: 400;
 	letter-spacing: 0.01rem;
 	@include mixins.adaptiveValue("font-size", 18, 12);
+}
+
+.primary {
+	background-color: var(--primary, #3b82f6);
+	color: #fff;
+	border-color: var(--primary, #3b82f6);
+}
+.secondary {
+	background-color: transparent;
+	color: var(--primary, #3b82f6);
+	border-color: var(--primary, #3b82f6);
+}
+.danger {
+	background-color: #ef4444;
+	color: #fff;
+	border-color: #ef4444;
+}
+.ghost {
+	background: transparent;
+	border-color: transparent;
+}
+
+.menu-item {
+	min-width: 100%;
+	text-align: center;
+	margin-bottom: 0.75rem;
+	@include mixins.adaptiveValue("padding-top", 20, 10);
+	@include mixins.adaptiveValue("padding-bottom", 20, 10);
+	@include mixins.adaptiveValue("padding-left", 12, 10);
+	@include mixins.adaptiveValue("padding-right", 12, 10);
+	letter-spacing: 0.025em;
+	font-weight: 500;
+	@include mixins.adaptiveValue("font-size", 18, 14);
+}
+
+.switcher {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	transition: all 0.2s ease;
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+.switcher.disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.add-item {
+	font-style: italic;
+	font-size: 0.875rem;
+	width: 100%;
+	font-weight: 100;
+	border-radius: 0.125rem;
+	padding: 0.75rem 2rem;
+	letter-spacing: 0.025em;
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	transition: all 0.3s ease;
+	border: 1px solid transparent;
+	background-color: rgba(17, 24, 39, 0.05);
+	color: #111827;
+	@media (min-width: $mobile) {
+		font-size: 1rem;
+	}
+}
+
+.icon {
+	padding: 0 0.5rem;
+	margin-left: 0.5rem;
+	opacity: 0.5;
+	transition: opacity 0.3s ease;
+	color: #9ca3af;
+	background: transparent;
+	border: none;
+	border-radius: 0.25rem;
+}
+.icon:hover {
+	opacity: 1;
+	color: #ef4444;
+	background-color: rgba(239, 68, 68, 0.1);
+}
+
+.week-change {
+	padding: 0.5rem 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+}
+.google {
+	width: 100%;
+	padding: 0.5rem 1rem;
+	background: #fff;
+	color: #1f2937;
+	border-radius: 0.5rem;
+	border: 1px solid #d1d5db;
+	transition: background-color 0.2s ease;
 }

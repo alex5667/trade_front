@@ -12,7 +12,7 @@ export interface ConnectionState {
 export interface BaseSignal {
 	symbol: string
 	exchange?: string
-	timestamp: number
+	timestamp: number | string
 	price?: number
 	createdAt?: number
 }
@@ -34,12 +34,13 @@ export interface VolatilitySignal extends BaseSignal {
 
 export interface VolumeSignal extends BaseSignal {
 	type: 'volume'
-	signalType?: 'volumeSpike'
 	volume: number
-	volumeChange: number
-	volumeChangePercent: number
-	avgVolume?: number
-	interval?: string
+	change: number
+	volumePercent?: number
+	volume2Level?: number
+	volume5Level?: number
+	volume10Level?: number
+	timeframe?: string
 }
 
 export interface PriceChangeSignal extends BaseSignal {
@@ -61,8 +62,10 @@ export interface TimeframeCoin extends BaseSignal {
 
 export interface FundingCoin extends BaseSignal {
 	rate: number
+	change?: number
+	nextRate?: number
 	nextFundingTime?: number
-	interval?: string
+	timeframe?: string
 }
 
 export interface TriggerEvent {

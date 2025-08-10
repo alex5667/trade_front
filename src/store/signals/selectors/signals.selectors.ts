@@ -34,7 +34,17 @@ export const selectPriceChangeSignals = (state: TypeRootState) => state.priceCha
 
 export const selectCombinedVolatilitySignals = createSelector(
 	[selectVolatilitySpikeSignals, selectVolatilityRangeSignals],
-	(spikeSignals, rangeSignals) => [...spikeSignals, ...rangeSignals].sort((a, b) => b.timestamp - a.timestamp)
+	(spikeSignals, rangeSignals) => {
+		const toNumber = (v: unknown): number => {
+			if (typeof v === 'number') return v
+			if (typeof v === 'string') {
+				const ms = Date.parse(v)
+				return isNaN(ms) ? 0 : ms
+			}
+			return 0
+		}
+		return [...spikeSignals, ...rangeSignals].sort((a: any, b: any) => toNumber(b.timestamp as any) - toNumber(a.timestamp as any))
+	}
 )
 
 export const selectTopGainers = (state: TypeRootState) => state.timeframe?.gainers || []
