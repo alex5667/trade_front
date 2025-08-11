@@ -50,11 +50,11 @@ export const URLS = {
 	// Signal endpoints
 	SIGNALS: '/signals',
 	VOLATILITY_SIGNALS: '/volatility-spike-signals',
-	VOLUME_SIGNALS: '/volume-signals',
-	FUNDING_SIGNALS: '/funding-signals',
+	VOLUME_SIGNALS: '/trading-signals/volume',
+	FUNDING_SIGNALS: '/trading-signals/funding',
 	GAINER_SIGNALS: '/gainer-signals',
 	LOSER_SIGNALS: '/loser-signals',
-	TOP_GAINERS: '/top-gainers',
-	TOP_LOSERS: '/top-losers',
+	TOP_GAINERS: '/trading-signals/gainers',
+	TOP_LOSERS: '/trading-signals/losers',
 }
 

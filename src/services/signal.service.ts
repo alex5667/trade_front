@@ -158,7 +158,7 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 			errorMessage = errorData.message
 		}
 
-		console.error('Сервис сигналов: Ошибка Socket.IO -', errorMessage)
+		console.log('Сервис сигналов: Ошибка Socket.IO -', errorMessage)
 		dispatch(setConnectionError(errorMessage))
 	})
 

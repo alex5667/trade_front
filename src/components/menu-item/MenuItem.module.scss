@@ -1,0 +1,39 @@
+@use "@/styles/mixins.scss";
+@use "@/styles/variables.scss" as *;
+
+.menuItem {
+	@apply text-gray-200 hover:text-yellow-500 bg-gray-700/30 border border-gray-600 rounded-md;
+	min-width: 100%;
+	text-align: center;
+	margin-bottom: 0.75rem;
+	@include mixins.adaptiveValue("padding-top", 20, 10);
+	@include mixins.adaptiveValue("padding-bottom", 20, 10);
+	@include mixins.adaptiveValue("padding-left", 12, 10);
+	@include mixins.adaptiveValue("padding-right", 12, 10);
+	transition: all 0.2s ease;
+	position: relative;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+	&:hover {
+		@apply text-yellow-500;
+		transform: translateY(-2px);
+		z-index: 10;
+		box-shadow:
+			0 10px 25px -5px rgba(0, 0, 0, 0.1),
+			0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	}
+
+	&:focus {
+		outline: none;
+		box-shadow:
+			0 0 0 2px $color-primary,
+			0 0 0 4px rgba($color-primary, 0.1);
+		z-index: 10;
+	}
+}
+
+.menuItemText {
+	letter-spacing: 0.025em;
+	font-weight: 500;
+	@include mixins.adaptiveValue("font-size", 18, 14);
+}

@@ -194,6 +194,24 @@ export const VolatilitySpikeComponent: React.FC<
 		)
 	}
 
+	// Helper to render price change percent from open/close
+	const renderPriceChange = (signal: DisplaySignal) => {
+		if (signal.open === undefined || signal.close === undefined) {
+			return <td className={s.cell}>-</td>
+		}
+		const diff = signal.close - signal.open
+		const percent = signal.open !== 0 ? (diff / signal.open) * 100 : 0
+		const isPositive = percent > 0
+		const cls = isPositive ? s.positive : percent < 0 ? s.negative : ''
+		const sign = isPositive ? '+' : ''
+		return (
+			<td className={`${s.cell} ${cls}`}>
+				{sign}
+				{percent.toFixed(2)}%
+			</td>
+		)
+	}
+
 	return (
 		<div className={s.container}>
 			<h3 className={s.title}>{title}</h3>
@@ -205,6 +223,7 @@ export const VolatilitySpikeComponent: React.FC<
 							<th className={s.headCell}>Interval</th>
 							<th className={s.headCell}>Volatility</th>
 							<th className={s.headCell}>Δ Volatility</th>
+							<th className={s.headCell}>Price Change</th>
 							<th className={s.headCell}>Time</th>
 						</tr>
 					</thead>
@@ -231,6 +250,7 @@ export const VolatilitySpikeComponent: React.FC<
 											signal.volatilityChange.toFixed(2)
 										: '-'}
 								</td>
+								{renderPriceChange(signal)}
 								<td className={s.cell}>
 									{new Date(
 										signal.updatedAt || signal.timestamp

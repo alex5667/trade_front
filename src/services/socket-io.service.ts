@@ -73,6 +73,9 @@ export class TradeSignalSocketIOClient {
 	/** Флаг процесса подключения */
 	private isConnecting: boolean = false
 
+	private backoffBaseMs: number = 2000
+	private backoffMaxMs: number = 30000
+
 	/**
 	 * Конструктор Socket.IO клиента
 	 * 
@@ -118,6 +121,32 @@ export class TradeSignalSocketIOClient {
 		return
 	}
 
+	private scheduleReconnect() {
+		if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+			console.log('🔁 Достигнут лимит попыток переподключения Socket.IO')
+			return
+		}
+		this.reconnectAttempts += 1
+		const delay = Math.min(this.backoffBaseMs * Math.pow(2, this.reconnectAttempts - 1), this.backoffMaxMs)
+		console.log(`⏳ Попытка переподключения #${this.reconnectAttempts} через ${delay}мс`)
+		setTimeout(() => {
+			try {
+				this.connect()
+			} catch (e) {
+				console.log('Ошибка при переподключении Socket.IO:', e)
+			}
+		}, delay)
+	}
+
+	public getStats() {
+		return {
+			reconnectAttempts: this.reconnectAttempts,
+			connected: this.isConnected,
+			isConnecting: this.isConnecting,
+			url: this.baseUrl
+		}
+	}
+
 	/**
 	 * Подключиться к Socket.IO серверу
 	 * 
@@ -146,7 +175,7 @@ export class TradeSignalSocketIOClient {
 			try {
 				this.socket.disconnect()
 			} catch (err) {
-				console.error('Ошибка при закрытии Socket.IO сокета:', err)
+				console.log('Ошибка при закрытии Socket.IO сокета:', err)
 			}
 			this.socket = null
 		}
@@ -185,7 +214,8 @@ export class TradeSignalSocketIOClient {
 				console.log('⚠️ Socket.IO соединение закрыто, причина:', reason)
 				this.isConnected = false
 				this.isConnecting = false
-				this._emitEvent('disconnect')
+				this._emitEvent('disconnect', { reason })
+				this.scheduleReconnect()
 			})
 
 			// Обработчик ошибок подключения
@@ -206,14 +236,15 @@ export class TradeSignalSocketIOClient {
 					errorStringified: safeStringify(error)
 				}
 
-				console.error('❌ Ошибка подключения Socket.IO:', errorInfo)
-				console.error('❌ Socket.IO connect_error JSON:', safeStringify(errorInfo))
+				console.log('❌ Ошибка подключения Socket.IO:', errorInfo)
+				console.log('❌ Socket.IO connect_error JSON:', safeStringify(errorInfo))
 
 				this.isConnecting = false
 				this._emitEvent('error', {
 					message: 'Ошибка подключения Socket.IO',
 					details: errorInfo
 				})
+				this.scheduleReconnect()
 			})
 
 			// Обработчик pong ответов
@@ -237,13 +268,14 @@ export class TradeSignalSocketIOClient {
 				errorStack: error instanceof Error ? error.stack : undefined
 			}
 
-			console.error('❌ Ошибка при создании Socket.IO соединения:', errorInfo)
+			console.log('❌ Ошибка при создании Socket.IO соединения:', errorInfo)
 
 			this.isConnecting = false
 			this._emitEvent('error', {
 				message: 'Не удалось создать Socket.IO соединение',
 				details: errorInfo
 			})
+			this.scheduleReconnect()
 		}
 	}
 
@@ -386,6 +418,7 @@ export const getSocketIOClient = (): TradeSignalSocketIOClient => {
 		// Создаем экземпляр только на стороне клиента
 		if (!socketIOClientInstance) {
 			socketIOClientInstance = new TradeSignalSocketIOClient()
+				; (window as any).__socketStats = () => socketIOClientInstance?.getStats()
 		}
 		return socketIOClientInstance
 	}

@@ -225,6 +225,7 @@ export const VolatilityRangeComponent: React.FC<
 							<th className={s.headCell}>Volatility</th>
 							<th className={s.headCell}>Range</th>
 							<th className={s.headCell}>Avg Range</th>
+							<th className={s.headCell}>Change</th>
 							<th className={s.headCell}>% Diff</th>
 							<th className={s.headCell}>Time</th>
 						</tr>
@@ -251,6 +252,13 @@ export const VolatilityRangeComponent: React.FC<
 								>
 									{signal.avgRange !== undefined
 										? signal.avgRange.toFixed(6)
+										: '-'}
+								</td>
+								<td
+									className={`${s.cell} ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? s.positive : signal.volatilityChange !== undefined && signal.volatilityChange < 0 ? s.negative : ''}`}
+								>
+									{signal.volatilityChange !== undefined
+										? `${signal.volatilityChange > 0 ? '+' : ''}${signal.volatilityChange.toFixed(2)}%`
 										: '-'}
 								</td>
 								{renderPercentChange(signal)}

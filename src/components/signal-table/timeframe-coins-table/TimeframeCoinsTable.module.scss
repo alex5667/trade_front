@@ -1,64 +1,58 @@
-
 @use "@/styles/colors.scss" as colors;
 @use "@/styles/mixins.scss";
-
 
 .tableContainer {
 	@apply overflow-x-auto mb-6;
 }
 
-.tableHeader {
-	@apply text-lg font-semibold mb-2;
+.headerRow {
+	@apply flex justify-between items-center mb-4;
 }
 
-.table {
+.tableTitle {
+	@apply text-lg font-semibold;
+}
+
+.refreshButton {
+	@apply px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors;
+}
+
+.loadingWrap {
+	@apply text-center py-4;
+}
+
+.spinner {
+	@apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto;
+}
+
+.loadingText {
+	@apply mt-2 text-gray-500;
+}
+
+.errorWrap {
+	@apply text-center py-4 text-red-500;
+}
+
+.errorButton {
+	@apply mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600;
+}
+
+.timeframeTable {
 	@apply w-full text-sm border;
 }
 
-.tableHeaderRow {
-	@apply bg-title-dark dark:bg-bg-dark;
+.emptyWrap {
+	@apply text-center py-4;
 }
 
-.headerCell {
-	@apply p-2 border;
+.loadButton {
+	@apply mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600;
 }
 
-.tableRow {
-	@apply hover:bg-hover-row-dark dark:hover:bg-hover-row-light;
-
-	&.highlighted {
-		@apply bg-yellow-100 dark:bg-yellow-800/30 transition-colors duration-1000;
-	}
+.positive {
+	@apply text-green-600;
 }
 
-.symbolCell {
-	@apply p-2 border font-medium;
-}
-
-.dataCell {
-	@apply p-2 border font-medium;
-}
-
-.volumeCell {
-	@apply p-2 border font-medium;
-}
-
-.percentCell {
-	@apply p-2 border font-medium;
-}
-
-.changeCell {
-	@apply p-2 border font-medium;
-
-	&.positive {
-		@apply text-green-600;
-	}
-
-	&.negative {
-		@apply text-red-600;
-	}
-}
-
-.emptyMessage {
-	@apply p-4 text-center;
+.negative {
+	@apply text-red-600;
 }

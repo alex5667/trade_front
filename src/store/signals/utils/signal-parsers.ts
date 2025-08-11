@@ -29,6 +29,11 @@ export const parseSymbols = (data: any): string[] => {
 		return data.map(item => (typeof item === 'string' ? item : (item as AnyObject).symbol || ''))
 	}
 
+	// Handle wrapped { data: [...] }
+	if (data && typeof data === 'object' && Array.isArray((data as AnyObject).data)) {
+		return (data as AnyObject).data.map((item: any) => (typeof item === 'string' ? item : item.symbol || ''))
+	}
+
 	// Handle coins format { coins: [...] }
 	if (data && typeof data === 'object' && Array.isArray((data as AnyObject).coins)) {
 		return (data as AnyObject).coins.map((c: any) => (typeof c === 'string' ? c : c.symbol))
@@ -46,6 +51,15 @@ export const parseTimeframeCoins = (data: any): TimeframeCoin[] => {
 	if (data && data.type && data.payload && Array.isArray(data.payload)) {
 		return data.payload.map((item: any) => ({
 			symbol: item.symbol || '',
+			percentChange: typeof item.change === 'string' ? parseFloat(item.change) : Number(item.change || 0),
+			timestamp: Date.now()
+		}))
+	}
+
+	// Wrapped { data: [...] }
+	if (data && Array.isArray((data as AnyObject).data)) {
+		return (data as AnyObject).data.map((item: any) => ({
+			symbol: item.symbol || item.Symbol || '',
 			percentChange: typeof item.change === 'string' ? parseFloat(item.change) : Number(item.change || 0),
 			timestamp: Date.now()
 		}))
@@ -72,7 +86,7 @@ export const parseVolumeCoins = (data: any): VolumeCoin[] => {
 		? data.payload
 		: Array.isArray(data)
 			? data
-			: []
+			: (Array.isArray((data as AnyObject)?.data) ? (data as AnyObject).data : [])
 
 	return coinsArray.map((item: any) => ({
 		symbol: item.symbol || item.Symbol || '',
@@ -95,7 +109,7 @@ export const parseFundingCoins = (data: any): FundingCoin[] => {
 		? data.payload
 		: Array.isArray(data)
 			? data
-			: []
+			: (Array.isArray((data as AnyObject)?.data) ? (data as AnyObject).data : [])
 
 	return coinsArray.map((item: any) => {
 		const rawRate = item.rate ?? item.fundingRate ?? 0
@@ -137,6 +151,8 @@ export const parseVolatilitySignals = (data: any): any[] => {
 		signalsArray = data.payload
 	} else if (Array.isArray(data)) {
 		signalsArray = data
+	} else if ((data as AnyObject)?.data && Array.isArray((data as AnyObject).data)) {
+		signalsArray = (data as AnyObject).data
 	} else if (data && data.volatilitySpike && Array.isArray(data.volatilitySpike)) {
 		signalsArray = [...data.volatilitySpike]
 	} else if (data && data.volatilityRange && Array.isArray(data.volatilityRange)) {

@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux'
 
 import { AppDispatch } from '@/store/store'
 
+import { useSignalInitializer } from '@/hooks/useSignalInitializer'
 import { useSignalSocketInitializer } from '@/hooks/useSignalSocketInitializer'
 
 import { initializeSignalService } from '@/services/signal.service'
@@ -29,6 +30,9 @@ const SignalSocketInitializerComponent = () => {
 
 	// Используем хук для создания и настройки Socket.IO соединения (только статус)
 	useSignalSocketInitializer()
+
+	// Запускаем REST-инициализацию данных (Top gainers/losers, volume, funding, volatility)
+	useSignalInitializer()
 
 	// Инициализация сервиса сигналов (волатильность/price change)
 	useEffect(() => {

@@ -13,7 +13,7 @@ export class WebSocketService {
 
 	// Конфигурация подключения
 	private readonly config = {
-		url: process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:4201',
+		url: process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:4200',
 		options: {
 			transports: ['websocket', 'polling'],
 			timeout: 10000,
@@ -43,7 +43,7 @@ export class WebSocketService {
 
 			return new Promise((resolve) => {
 				const timeout = setTimeout(() => {
-					console.error('❌ WebSocket connection timeout')
+					console.log('❌ WebSocket connection timeout')
 					resolve(false)
 				}, 10000)
 
@@ -57,12 +57,12 @@ export class WebSocketService {
 
 				this.socket?.on('connect_error', (error) => {
 					clearTimeout(timeout)
-					console.error('❌ WebSocket connection error:', error)
+					console.log('❌ WebSocket connection error:', error)
 					resolve(false)
 				})
 			})
 		} catch (error) {
-			console.error('❌ Failed to initialize WebSocket:', error)
+			console.log('❌ Failed to initialize WebSocket:', error)
 			return false
 		}
 	}
@@ -96,7 +96,7 @@ export class WebSocketService {
 		this.socket.on('connect_error', (error) => {
 			this.isConnected = false
 			this.reconnectAttempts++
-			console.error(`❌ WebSocket connection error (attempt ${this.reconnectAttempts}):`, error)
+			console.log(`❌ WebSocket connection error (attempt ${this.reconnectAttempts}):`, error)
 		})
 
 		// Ответ на ping
@@ -184,7 +184,7 @@ export class WebSocketService {
 				try {
 					callback(data)
 				} catch (error) {
-					console.error(`Error in subscriber callback for ${eventType}:`, error)
+					console.log(`Error in subscriber callback for ${eventType}:`, error)
 				}
 			})
 		}

@@ -5,6 +5,7 @@
  * Используется для инициализации store начальными данными
  */
 
+import { URLS } from '@/config/urls'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQuery } from './baseQueries'
 
@@ -17,16 +18,16 @@ export const signalApi = createApi({
 		// Получение топ-гейнеров (trade_back)
 		getTopGainers: builder.query({
 			query: () => ({
-				url: '/trading-signals/gainers',
+				url: URLS.TOP_GAINERS,
 				method: 'GET',
 			}),
 			providesTags: ['Signal'],
 			transformResponse: (response: any) => {
 				console.log('Top gainers fetched:', response)
-				return response
+				return response?.data ?? response
 			},
 			transformErrorResponse: (err: any) => {
-				console.error('Failed to fetch top gainers:', err)
+				console.log('Failed to fetch top gainers:', err)
 				return err
 			},
 		}),
@@ -34,16 +35,16 @@ export const signalApi = createApi({
 		// Получение топ-лузеров (trade_back)
 		getTopLosers: builder.query({
 			query: () => ({
-				url: '/trading-signals/losers',
+				url: URLS.TOP_LOSERS,
 				method: 'GET',
 			}),
 			providesTags: ['Signal'],
 			transformResponse: (response: any) => {
 				console.log('Top losers fetched:', response)
-				return response
+				return response?.data ?? response
 			},
 			transformErrorResponse: (err: any) => {
-				console.error('Failed to fetch top losers:', err)
+				console.log('Failed to fetch top losers:', err)
 				return err
 			},
 		}),
@@ -51,7 +52,7 @@ export const signalApi = createApi({
 		// Получение сигналов волатильности (оставлено без изменений)
 		getVolatilitySignals: builder.query({
 			query: () => ({
-				url: '/signals/volatility',
+				url: URLS.SIGNALS + '/volatility',
 				method: 'GET',
 			}),
 			providesTags: ['Signal'],
@@ -60,7 +61,7 @@ export const signalApi = createApi({
 				return response
 			},
 			transformErrorResponse: (err: any) => {
-				console.error('Failed to fetch volatility signals:', err)
+				console.log('Failed to fetch volatility signals:', err)
 				return err
 			},
 		}),
@@ -68,7 +69,7 @@ export const signalApi = createApi({
 		// Получение сигналов объема (trade_back)
 		getVolumeSignals: builder.query({
 			query: () => ({
-				url: '/trading-signals/volume',
+				url: URLS.VOLUME_SIGNALS,
 				method: 'GET',
 			}),
 			providesTags: ['Signal'],
@@ -77,7 +78,7 @@ export const signalApi = createApi({
 				return response
 			},
 			transformErrorResponse: (err: any) => {
-				console.error('Failed to fetch volume signals:', err)
+				console.log('Failed to fetch volume signals:', err)
 				return err
 			},
 		}),
@@ -85,7 +86,7 @@ export const signalApi = createApi({
 		// Получение сигналов финансирования (trade_back)
 		getFundingSignals: builder.query({
 			query: () => ({
-				url: '/trading-signals/funding',
+				url: URLS.FUNDING_SIGNALS,
 				method: 'GET',
 			}),
 			providesTags: ['Signal'],
@@ -94,7 +95,7 @@ export const signalApi = createApi({
 				return response
 			},
 			transformErrorResponse: (err: any) => {
-				console.error('Failed to fetch funding signals:', err)
+				console.log('Failed to fetch funding signals:', err)
 				return err
 			},
 		}),
@@ -102,7 +103,7 @@ export const signalApi = createApi({
 		// Получение всех сигналов (не используется, агрегатора на backend нет)
 		getAllSignals: builder.query({
 			query: () => ({
-				url: '/trading-signals',
+				url: URLS.SIGNALS,
 				method: 'GET',
 			}),
 			providesTags: ['Signal'],
@@ -111,7 +112,7 @@ export const signalApi = createApi({
 				return response
 			},
 			transformErrorResponse: (err: any) => {
-				console.error('Failed to fetch all signals:', err)
+				console.log('Failed to fetch all signals:', err)
 				return err
 			},
 		}),

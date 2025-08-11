@@ -33,7 +33,7 @@ export const useWebSocket = () => {
 	const [isConnected, setIsConnected] = useState(false)
 	const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>({
 		connected: false,
-		url: process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:4201'
+		url: process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:4200'
 	})
 	const [lastSignal, setLastSignal] = useState<TradingSignal | null>(null)
 	const [signalHistory, setSignalHistory] = useState<TradingSignal[]>([])

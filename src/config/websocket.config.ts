@@ -12,7 +12,7 @@
 /** URL-адреса Socket.IO по умолчанию для различных окружений */
 const DEFAULT_URLS = {
 	/** URL для окружения разработки */
-	development: 'http://localhost:4201',
+	development: 'http://localhost:4200',
 	/** URL для продакшн окружения */
 	production: 'https://your-production-websocket-url.com',
 	/** URL для тестового окружения */

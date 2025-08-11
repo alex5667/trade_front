@@ -8,7 +8,7 @@ import { useTimeframeData } from '@/hooks/useTimeframeData'
 
 import { NoDataIndicator } from '../no-data-indicator/NoDataIndicator'
 
-import styles from './Time-table.module.scss'
+import styles from './TimeframeCoinsTable.module.scss'
 
 interface TimeframeCoinsTableProps {
 	title: string
@@ -58,12 +58,12 @@ export const TimeframeCoinsTable = ({
 
 	return (
 		<div className={styles.tableContainer}>
-			<div className='flex justify-between items-center mb-4'>
+			<div className={styles.headerRow}>
 				<h3 className={styles.tableTitle}>{title}</h3>
 				{!isLoading && (
 					<button
 						onClick={refetch}
-						className='px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
+						className={styles.refreshButton}
 						title='Обновить данные'
 					>
 						🔄
@@ -72,16 +72,16 @@ export const TimeframeCoinsTable = ({
 			</div>
 
 			{isLoading ? (
-				<div className='text-center py-4'>
-					<div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto'></div>
-					<p className='mt-2 text-gray-500'>Загрузка данных...</p>
+				<div className={styles.loadingWrap}>
+					<div className={styles.spinner}></div>
+					<p className={styles.loadingText}>Загрузка данных...</p>
 				</div>
 			) : error ? (
-				<div className='text-center py-4 text-red-500'>
+				<div className={styles.errorWrap}>
 					<p>{error}</p>
 					<button
 						onClick={refetch}
-						className='mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+						className={styles.errorButton}
 					>
 						Попробовать снова
 					</button>
@@ -110,12 +110,12 @@ export const TimeframeCoinsTable = ({
 					</tbody>
 				</table>
 			) : (
-				<div className='text-center py-4'>
+				<div className={styles.emptyWrap}>
 					<NoDataIndicator />
 					{!hasData && (
 						<button
 							onClick={refetch}
-							className='mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+							className={styles.loadButton}
 						>
 							Загрузить данные
 						</button>

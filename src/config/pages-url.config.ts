@@ -41,7 +41,9 @@ export const ADMINBOARD_PAGES = {
 	/** Страница настроек */
 	SETTINGS: `/i/settings`,
 	/** Страница авторизации */
-	AUTH: '/auth'
+	AUTH: '/auth',
+	/** Страница таблицы сигналов */
+	SIGNAL_TABLE: '/i/signal-table'
 }
 
 /** Функция получения базового URL сайта из переменных окружения */
