@@ -19,16 +19,6 @@ export const URLS = {
 	DISHES_BY_NAME_CONTAINS: '/dishes/findByNameContains',
 	DISH_ALIAS: '/dish-aliases',
 	DISH_ALIAS_BY_NAME: '/dish-aliases/dish',
-	INSTITUTIONS: '/institutions',
-	INSTITUTIONS_BY_NAME: '/institutions/by-name',
-	INSTITUTIONS_BY_NAME_CONTAINS: '/institutions/findByNameContains',
-	INSTITUTIONS_BY_SLUG: '/institutions/by-slug',
-	INGREDIENTS: '/ingredients',
-	INGREDIENTS_BY_NAME: '/ingredients/by-name',
-	INGREDIENTS_BY_NAME_CONTAINS: '/ingredients/findByNameContains',
-	INGREDIENTS_BY_SLUG: '/ingredients/by-slug',
-	INGREDIENT_ALIAS: '/ingredient-alias',
-	INGREDIENT_ALIAS_BY_NAME: '/ingredient-alias/ingredient',
 
 	DISHCATEGORIES: '/dish-categories',
 	DISHCATEGORIES_BY_NAME: '/dish-categories/by-name',
@@ -56,5 +46,6 @@ export const URLS = {
 	LOSER_SIGNALS: '/loser-signals',
 	TOP_GAINERS: '/trading-signals/gainers',
 	TOP_LOSERS: '/trading-signals/losers',
+	TELEGRAM_SIGNALS: '/telegram-signals',
 }
 

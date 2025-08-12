@@ -42,6 +42,20 @@ const Auth = () => {
 		onSubmitPhone(data, isLoginForm)
 	)
 
+	// Explicit submit handlers to prevent race between click and form submit
+	const onEmailLoginSubmit = handleSubmitEmail((data: AuthForm) =>
+		onSubmitEmail(data, true)
+	)
+	const onEmailRegisterSubmit = handleSubmitEmail((data: AuthForm) =>
+		onSubmitEmail(data, false)
+	)
+	const onPhoneLoginSubmit = handleSubmitPhone((data: PhoneAuthForm) =>
+		onSubmitPhone(data, true)
+	)
+	const onPhoneRegisterSubmit = handleSubmitPhone((data: PhoneAuthForm) =>
+		onSubmitPhone(data, false)
+	)
+
 	return (
 		<div className={styles.authContainer}>
 			<div className={styles.authCard}>
@@ -80,8 +94,10 @@ const Auth = () => {
 				<AuthButtons
 					isLoginForm={isLoginForm}
 					setIsLoginForm={setIsLoginForm}
-					onSubmitEmail={onEmailFormSubmit}
-					onSubmitPhone={onPhoneFormSubmit}
+					onSubmitEmailLogin={onEmailLoginSubmit}
+					onSubmitEmailRegister={onEmailRegisterSubmit}
+					onSubmitPhoneLogin={onPhoneLoginSubmit}
+					onSubmitPhoneRegister={onPhoneRegisterSubmit}
 					isLoading={isLoading}
 					authMethod={authMethod}
 				/>

@@ -9,6 +9,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { marketApi } from '@/services/api/market.api'
 import { authApi } from '@/services/auth.services'
 import { signalApi } from '@/services/signal.api'
+import { telegramApi } from '@/services/telegram.api'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { userSlice } from './user/user.slice'
@@ -17,6 +18,7 @@ import { userSlice } from './user/user.slice'
 import connectionReducer from './signals/slices/connection.slice'
 import fundingReducer from './signals/slices/funding.slice'
 import priceChangeReducer from './signals/slices/price-change.slice'
+import telegramReducer from './signals/slices/telegram.slice'
 import timeframeReducer from './signals/slices/timeframe.slice'
 import triggerReducer from './signals/slices/trigger.slice'
 import volatilityRangeReducer from './signals/slices/volatility-range.slice'
@@ -31,6 +33,7 @@ const rootReducer = combineReducers({
 	[authApi.reducerPath]: authApi.reducer,
 	[marketApi.reducerPath]: marketApi.reducer,
 	[signalApi.reducerPath]: signalApi.reducer,
+	[telegramApi.reducerPath]: telegramApi.reducer,
 	[collapsedSlice.reducerPath]: collapsedSlice.reducer,
 
 	// Signal slices
@@ -43,6 +46,7 @@ const rootReducer = combineReducers({
 	priceChange: priceChangeReducer,
 	timeframe: timeframeReducer,
 	trigger: triggerReducer,
+	telegram: telegramReducer,
 })
 
 // Конфигурация и создание хранилища
@@ -85,6 +89,7 @@ export const store = configureStore({
 			authApi.middleware,
 			marketApi.middleware,
 			signalApi.middleware,
+			telegramApi.middleware,
 		]),
 
 	// В production режиме отключаем DevTools для оптимизации

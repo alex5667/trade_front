@@ -3,8 +3,10 @@ import styles from '../../auth/Auth.module.scss'
 interface AuthButtonsProps {
 	isLoginForm: boolean
 	setIsLoginForm: (value: boolean) => void
-	onSubmitEmail: () => void
-	onSubmitPhone: () => void
+	onSubmitEmailLogin: () => void
+	onSubmitEmailRegister: () => void
+	onSubmitPhoneLogin: () => void
+	onSubmitPhoneRegister: () => void
 	isLoading: boolean
 	authMethod: 'email' | 'phone'
 }
@@ -12,19 +14,31 @@ interface AuthButtonsProps {
 export const AuthButtons = ({
 	isLoginForm,
 	setIsLoginForm,
-	onSubmitEmail,
-	onSubmitPhone,
+	onSubmitEmailLogin,
+	onSubmitEmailRegister,
+	onSubmitPhoneLogin,
+	onSubmitPhoneRegister,
 	isLoading,
 	authMethod
 }: AuthButtonsProps) => {
 	const formId = authMethod === 'email' ? 'email-auth-form' : 'phone-auth-form'
+	const handleLoginClick = () => {
+		setIsLoginForm(true)
+		if (authMethod === 'email') onSubmitEmailLogin()
+		else onSubmitPhoneLogin()
+	}
+	const handleRegisterClick = () => {
+		setIsLoginForm(false)
+		if (authMethod === 'email') onSubmitEmailRegister()
+		else onSubmitPhoneRegister()
+	}
 	return (
 		<div className={styles.authButtons}>
 			<button
 				type='submit'
 				form={formId}
 				className={`${styles.loginButton} ${isLoginForm ? 'opacity-100' : 'opacity-50'}`}
-				onClick={() => setIsLoginForm(true)}
+				onClick={handleLoginClick}
 				disabled={isLoading}
 			>
 				{isLoading ? 'Signing in...' : 'Login'}
@@ -33,7 +47,7 @@ export const AuthButtons = ({
 				type='submit'
 				form={formId}
 				className={`${styles.registerButton} ${!isLoginForm ? 'opacity-100' : 'opacity-50'}`}
-				onClick={() => setIsLoginForm(false)}
+				onClick={handleRegisterClick}
 				disabled={isLoading}
 			>
 				{isLoading ? 'Signing up...' : 'Register'}

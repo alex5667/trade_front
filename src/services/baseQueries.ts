@@ -36,25 +36,23 @@ export const baseQuery = retry(
 		},
 
 		responseHandler: async (response) => {
+			// Не вмешиваемся в обработку ошибок HTTP: пусть fetchBaseQuery сам проставит error
 			if (!response.ok) {
-				if (response.status === 404) {
-					return { error: 'Not Found', status: 404 }
-				}
-				const errorMessage = await response.text()
-				return { error: errorMessage || 'An error occurred', status: response.status }
-			}
-
-			// Если тело ответа пустое, возвращаем пустой объект
-			const text = await response.text()
-			if (!text) {
+				// Возвращаем пустой объект — фактическая ошибка будет в result.error
 				return {}
 			}
+
+			// 204 No Content или пустое тело
+			if (response.status === 204) return {}
+			const text = await response.text()
+			if (!text) return {}
 
 			try {
 				return JSON.parse(text)
 			} catch (error) {
 				console.error('Ошибка парсинга JSON:', error)
-				return { error: 'Ошибка парсинга JSON' }
+				// Возвращаем сырой текст как data, чтобы не терять информацию
+				return { message: text }
 			}
 		}
 	}),
@@ -92,14 +90,15 @@ export const baseQueryWIthReAuth: typeof baseQuery = async (
 			removeFromStorage()
 		}
 	} else if (result.error) {
-		// Improved error logging with more details
-		const errorMessage = errorCatch(result.error)
-		const errorDetails = {
-			message: errorMessage,
+		// Улучшенный лог ошибок
+		const message = errorCatch(result.error)
+		const details = {
+			message,
 			status: (result.error as any)?.status || 'unknown',
-			originalError: result.error
+			data: (result.error as any)?.data ?? null,
+			raw: result.error
 		}
-		console.error('Base query error:', errorDetails)
+		console.error('Base query error:', details)
 	}
 	return result
 }

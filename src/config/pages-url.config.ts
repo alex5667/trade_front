@@ -43,7 +43,9 @@ export const ADMINBOARD_PAGES = {
 	/** Страница авторизации */
 	AUTH: '/auth',
 	/** Страница таблицы сигналов */
-	SIGNAL_TABLE: '/i/signal-table'
+	SIGNAL_TABLE: '/i/signal-table',
+	/** Страница телеграм сигналов */
+	TELEGRAM_SIGNALS: '/i/telegram-signals'
 }
 
 /** Функция получения базового URL сайта из переменных окружения */
