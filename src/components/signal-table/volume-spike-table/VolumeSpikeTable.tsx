@@ -15,9 +15,8 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 				<thead>
 					<tr className={styles.headRow}>
 						<th className={styles.cell}>Монета</th>
-						<th className={styles.cell}>Интервал</th>
-						<th className={styles.cell}>Объем</th>
-						<th className={styles.cell}>Время</th>
+						<th className={`${styles.cell} ${styles.center}`}>Объем</th>
+						<th className={`${styles.cell} ${styles.center}`}>Время</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -28,11 +27,12 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 								className={styles.row}
 							>
 								<td className={styles.cell}>{signal.symbol}</td>
-								<td className={styles.cell}>{signal.interval}</td>
-								<td className={`${styles.cell} ${styles.volumeCell}`}>
+								<td
+									className={`${styles.cell} ${styles.volumeCell} ${styles.center}`}
+								>
 									{signal.volume}
 								</td>
-								<td className={styles.cell}>
+								<td className={`${styles.cell} ${styles.center}`}>
 									{new Date(signal.timestamp).toLocaleTimeString()}
 								</td>
 							</tr>
@@ -40,7 +40,7 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 					) : (
 						<tr>
 							<td
-								colSpan={4}
+								colSpan={3}
 								className={styles.emptyCell}
 							>
 								Ожидание сигналов объема...

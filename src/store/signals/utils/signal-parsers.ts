@@ -48,29 +48,48 @@ export const parseSymbols = (data: any): string[] => {
 export const parseTimeframeCoins = (data: any): TimeframeCoin[] => {
 	if (!data) return []
 
+	const normalize = (item: any): TimeframeCoin => {
+		const rawChange = item.change
+		const percentChange = typeof rawChange === 'string' ? parseFloat(rawChange) : Number(rawChange || 0)
+		// price may be string or number
+		const rawPrice = item.price
+		const price = rawPrice !== undefined ? (typeof rawPrice === 'string' ? parseFloat(rawPrice) : Number(rawPrice)) : undefined
+		// backend fields: volume (base), quoteVolume
+		const rawBaseVol = item.baseVolume ?? item.volume
+		const baseVolume = rawBaseVol !== undefined ? (typeof rawBaseVol === 'string' ? parseFloat(rawBaseVol) : Number(rawBaseVol)) : undefined
+		const rawQuoteVol = item.quoteVolume
+		const quoteVolume = rawQuoteVol !== undefined ? (typeof rawQuoteVol === 'string' ? parseFloat(rawQuoteVol) : Number(rawQuoteVol)) : undefined
+		// timestamp may be ISO string or number
+		const rawTs = item.timestamp
+		let timestamp: number | string = Date.now()
+		if (typeof rawTs === 'number') timestamp = rawTs
+		else if (typeof rawTs === 'string') {
+			const ms = Date.parse(rawTs)
+			timestamp = isNaN(ms) ? rawTs : ms
+		}
+
+		return {
+			symbol: item.symbol || item.Symbol || '',
+			percentChange,
+			price,
+			baseVolume,
+			quoteVolume,
+			direction: percentChange > 0 ? 'up' : percentChange < 0 ? 'down' : undefined,
+			timestamp
+		}
+	}
+
 	if (data && data.type && data.payload && Array.isArray(data.payload)) {
-		return data.payload.map((item: any) => ({
-			symbol: item.symbol || '',
-			percentChange: typeof item.change === 'string' ? parseFloat(item.change) : Number(item.change || 0),
-			timestamp: Date.now()
-		}))
+		return data.payload.map(normalize)
 	}
 
 	// Wrapped { data: [...] }
 	if (data && Array.isArray((data as AnyObject).data)) {
-		return (data as AnyObject).data.map((item: any) => ({
-			symbol: item.symbol || item.Symbol || '',
-			percentChange: typeof item.change === 'string' ? parseFloat(item.change) : Number(item.change || 0),
-			timestamp: Date.now()
-		}))
+		return (data as AnyObject).data.map(normalize)
 	}
 
 	if (Array.isArray(data)) {
-		return data.map((item: any) => ({
-			symbol: item.symbol || item.Symbol || '',
-			percentChange: typeof item.change === 'string' ? parseFloat(item.change) : Number(item.change || 0),
-			timestamp: Date.now()
-		}))
+		return data.map(normalize)
 	}
 
 	return []

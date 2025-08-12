@@ -14,13 +14,9 @@ import {
 } from '@/store/signals/selectors/signals.selectors'
 import { VolatilitySignal } from '@/store/signals/signal.types'
 
-import s from './VolatilitySignal.module.scss'
+import tableStyles from '../../signal-table/volume-spike-table/VolumeSpikeTable.module.scss'
 
-/**
- * VolatilitySpikeComponent
- * ------------------------------
- * Компонент для отображения сигналов скачков волатильности
- */
+import s from './VolatilitySignal.module.scss'
 
 /**
  * VolatilitySpikeComponent
@@ -187,9 +183,32 @@ export const VolatilitySpikeComponent: React.FC<
 	// Если нет сигналов, показываем заглушку
 	if (displaySignals.length === 0) {
 		return (
-			<div className={s.emptyBox}>
+			<div>
 				<h3 className={s.title}>{title}</h3>
-				<p className={s.emptyText}>No volatility spike signals available</p>
+				<div className={tableStyles.tableWrapper}>
+					<table className={tableStyles.table}>
+						<thead>
+							<tr className={tableStyles.headRow}>
+								<th className={tableStyles.cell}>Symbol</th>
+								<th className={tableStyles.cell}>Interval</th>
+								<th className={tableStyles.cell}>Volatility</th>
+								<th className={tableStyles.cell}>Δ Volatility</th>
+								<th className={tableStyles.cell}>Price Change</th>
+								<th className={tableStyles.cell}>Time</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td
+									colSpan={6}
+									className={tableStyles.emptyCell}
+								>
+									No volatility spike signals available
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		)
 	}
@@ -213,37 +232,39 @@ export const VolatilitySpikeComponent: React.FC<
 	}
 
 	return (
-		<div className={s.container}>
+		<div>
 			<h3 className={s.title}>{title}</h3>
-			<div className={s.scroll}>
-				<table className={s.table}>
-					<thead className={s.thead}>
-						<tr>
-							<th className={s.headCell}>Symbol</th>
-							<th className={s.headCell}>Interval</th>
-							<th className={s.headCell}>Volatility</th>
-							<th className={s.headCell}>Δ Volatility</th>
-							<th className={s.headCell}>Price Change</th>
-							<th className={s.headCell}>Time</th>
+			<div className={tableStyles.tableWrapper}>
+				<table className={tableStyles.table}>
+					<thead>
+						<tr className={tableStyles.headRow}>
+							<th className={tableStyles.cell}>Symbol</th>
+							<th className={tableStyles.cell}>Interval</th>
+							<th className={tableStyles.cell}>Volatility</th>
+							<th className={tableStyles.cell}>Δ Volatility</th>
+							<th className={tableStyles.cell}>Price Change</th>
+							<th className={tableStyles.cell}>Time</th>
 						</tr>
 					</thead>
-					<tbody className={s.tbody}>
+					<tbody>
 						{displaySignals.map(signal => (
 							<tr
 								key={`${signal.symbol}-${signal.timestamp}`}
-								className={s.row}
+								className={tableStyles.row}
 							>
-								<td className={`${s.cell} ${s.symbol}`}>{signal.symbol}</td>
-								<td className={s.cell}>{signal.interval || '-'}</td>
+								<td className={`${tableStyles.cell} ${s.symbol}`}>
+									{signal.symbol}
+								</td>
+								<td className={tableStyles.cell}>{signal.interval || '-'}</td>
 								<td
-									className={`${s.cell} ${signal.highlightVolatility ? s.highlight : ''}`}
+									className={`${tableStyles.cell} ${signal.highlightVolatility ? s.highlight : ''}`}
 								>
 									{signal.volatility !== undefined
 										? signal.volatility.toFixed(4)
 										: '0.0000'}
 								</td>
 								<td
-									className={`${s.cell} ${signal.volatilityChange > 0 ? s.positive : signal.volatilityChange < 0 ? s.negative : ''} ${signal.highlightChange ? s.highlight : ''}`}
+									className={`${tableStyles.cell} ${signal.volatilityChange > 0 ? s.positive : signal.volatilityChange < 0 ? s.negative : ''} ${signal.highlightChange ? s.highlight : ''}`}
 								>
 									{signal.volatilityChange !== undefined
 										? (signal.volatilityChange > 0 ? '+' : '') +
@@ -251,7 +272,7 @@ export const VolatilitySpikeComponent: React.FC<
 										: '-'}
 								</td>
 								{renderPriceChange(signal)}
-								<td className={s.cell}>
+								<td className={tableStyles.cell}>
 									{new Date(
 										signal.updatedAt || signal.timestamp
 									).toLocaleTimeString()}

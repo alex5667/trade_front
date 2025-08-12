@@ -1,4 +1,3 @@
-
 @use "@/styles/colors.scss" as colors;
 @use "@/styles/mixins.scss";
 
@@ -22,6 +21,10 @@
 // Общие ячейки
 .cell {
 	@apply p-2 border;
+}
+
+.center {
+	@apply text-center;
 }
 
 // Строка данных

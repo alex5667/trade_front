@@ -25,17 +25,20 @@ const TimeframeCoinsRow = ({
 	const changeClass = type === 'gainers' ? styles.positive : styles.negative
 	return (
 		<tr>
-			<td>{coin.symbol}</td>
-			<td>{coin.price ?? '-'}</td>
-			<td className={changeClass}>
+			<td className={`${styles.cell} ${styles.left}`}>{coin.symbol}</td>
+			<td className={`${styles.cell} ${styles.right}`}>{coin.price ?? '-'}</td>
+			<td className={`${styles.cell} ${styles.right} ${changeClass}`}>
 				{typeof coin.percentChange === 'number'
 					? `${coin.percentChange.toFixed(2)}%`
 					: '-'}
 			</td>
-			<td>{coin.baseVolume ?? '-'}</td>
-			<td>{coin.quoteVolume ?? '-'}</td>
-			<td>{coin.direction ?? '-'}</td>
-			<td>
+			<td className={`${styles.cell} ${styles.right}`}>
+				{coin.baseVolume ?? '-'}
+			</td>
+			<td className={`${styles.cell} ${styles.right}`}>
+				{coin.quoteVolume ?? '-'}
+			</td>
+			<td className={`${styles.cell} ${styles.right}`}>
 				{coin.timestamp ? new Date(coin.timestamp).toLocaleTimeString() : '-'}
 			</td>
 		</tr>
@@ -90,13 +93,18 @@ export const TimeframeCoinsTable = ({
 				<table className={styles.timeframeTable}>
 					<thead>
 						<tr>
-							<th>Монета</th>
-							<th>Цена</th>
-							<th>Изменение</th>
-							<th>Base Volume</th>
-							<th>Quote Volume</th>
-							<th>Direction</th>
-							<th>Time</th>
+							<th className={`${styles.headCell} ${styles.left}`}>Монета</th>
+							<th className={`${styles.headCell} ${styles.right}`}>Цена</th>
+							<th className={`${styles.headCell} ${styles.right}`}>
+								Изменение
+							</th>
+							<th className={`${styles.headCell} ${styles.right}`}>
+								Base Volume
+							</th>
+							<th className={`${styles.headCell} ${styles.right}`}>
+								Quote Volume
+							</th>
+							<th className={`${styles.headCell} ${styles.right}`}>Time</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -14,6 +14,8 @@ import {
 } from '@/store/signals/selectors/signals.selectors'
 import { VolatilitySignal } from '@/store/signals/signal.types'
 
+import tableStyles from '../../signal-table/volume-spike-table/VolumeSpikeTable.module.scss'
+
 import s from './VolatilitySignal.module.scss'
 
 /**
@@ -166,9 +168,33 @@ export const VolatilityRangeComponent: React.FC<
 	// Если нет сигналов, показываем заглушку
 	if (displaySignals.length === 0) {
 		return (
-			<div className={s.emptyBox}>
+			<div>
 				<h3 className={s.title}>{title}</h3>
-				<p className={s.emptyText}>No volatility range signals available</p>
+				<div className={tableStyles.tableWrapper}>
+					<table className={tableStyles.table}>
+						<thead>
+							<tr className={tableStyles.headRow}>
+								<th className={tableStyles.cell}>Symbol</th>
+								<th className={tableStyles.cell}>Volatility</th>
+								<th className={tableStyles.cell}>Range</th>
+								<th className={tableStyles.cell}>Avg Range</th>
+								<th className={tableStyles.cell}>Change</th>
+								<th className={tableStyles.cell}>% Diff</th>
+								<th className={tableStyles.cell}>Time</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td
+									colSpan={7}
+									className={tableStyles.emptyCell}
+								>
+									No volatility range signals available
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		)
 	}
@@ -215,54 +241,56 @@ export const VolatilityRangeComponent: React.FC<
 	}
 
 	return (
-		<div className={s.container}>
+		<div>
 			<h3 className={s.title}>{title}</h3>
-			<div className={s.scroll}>
-				<table className={s.table}>
-					<thead className={s.thead}>
-						<tr>
-							<th className={s.headCell}>Symbol</th>
-							<th className={s.headCell}>Volatility</th>
-							<th className={s.headCell}>Range</th>
-							<th className={s.headCell}>Avg Range</th>
-							<th className={s.headCell}>Change</th>
-							<th className={s.headCell}>% Diff</th>
-							<th className={s.headCell}>Time</th>
+			<div className={tableStyles.tableWrapper}>
+				<table className={tableStyles.table}>
+					<thead>
+						<tr className={tableStyles.headRow}>
+							<th className={tableStyles.cell}>Symbol</th>
+							<th className={tableStyles.cell}>Volatility</th>
+							<th className={tableStyles.cell}>Range</th>
+							<th className={tableStyles.cell}>Avg Range</th>
+							<th className={tableStyles.cell}>Change</th>
+							<th className={tableStyles.cell}>% Diff</th>
+							<th className={tableStyles.cell}>Time</th>
 						</tr>
 					</thead>
-					<tbody className={s.tbody}>
+					<tbody>
 						{displaySignals.map(signal => (
 							<tr
 								key={`${signal.symbol}-${signal.timestamp}`}
-								className={s.row}
+								className={tableStyles.row}
 							>
-								<td className={`${s.cell} ${s.symbol}`}>{signal.symbol}</td>
-								<td className={s.cell}>
+								<td className={`${tableStyles.cell} ${s.symbol}`}>
+									{signal.symbol}
+								</td>
+								<td className={tableStyles.cell}>
 									{signal.volatility !== undefined
 										? `${signal.volatility.toFixed(2)}%`
 										: '-'}
 								</td>
 								<td
-									className={`${s.cell} ${signal.highlightRange ? s.highlight : ''}`}
+									className={`${tableStyles.cell} ${signal.highlightRange ? s.highlight : ''}`}
 								>
 									{signal.range !== undefined ? signal.range.toFixed(6) : '-'}
 								</td>
 								<td
-									className={`${s.cell} ${signal.highlightAvgRange ? s.highlight : ''}`}
+									className={`${tableStyles.cell} ${signal.highlightAvgRange ? s.highlight : ''}`}
 								>
 									{signal.avgRange !== undefined
 										? signal.avgRange.toFixed(6)
 										: '-'}
 								</td>
 								<td
-									className={`${s.cell} ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? s.positive : signal.volatilityChange !== undefined && signal.volatilityChange < 0 ? s.negative : ''}`}
+									className={`${tableStyles.cell} ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? s.positive : signal.volatilityChange !== undefined && signal.volatilityChange < 0 ? s.negative : ''}`}
 								>
 									{signal.volatilityChange !== undefined
 										? `${signal.volatilityChange > 0 ? '+' : ''}${signal.volatilityChange.toFixed(2)}%`
 										: '-'}
 								</td>
 								{renderPercentChange(signal)}
-								<td className={s.cell}>
+								<td className={tableStyles.cell}>
 									{new Date(
 										signal.updatedAt || signal.timestamp
 									).toLocaleTimeString()}
