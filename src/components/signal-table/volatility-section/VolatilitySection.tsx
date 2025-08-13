@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 import { VolatilityRangeComponent } from '@/components/Signals/VolatilitySignal/VolatilityRangeComponent'
 import { VolatilitySpikeComponent } from '@/components/Signals/VolatilitySignal/VolatilitySpikeComponent'
+import { SignalSocketInitializer } from '@/components/signal-table/SignalSocketInitializer'
 
 import {
 	selectVolatilityLastUpdated,
@@ -30,19 +31,19 @@ export const VolatilitySection = () => {
 	const spikeLastUpdated = useSelector(selectVolatilitySpikeLastUpdated)
 	const rangeLastUpdated = useSelector(selectVolatilityRangeLastUpdated)
 
-	// Debug: Log the structure of the first signal if available
+	// Debug logs (optional)
 	if (volatilitySignals.length > 0) {
 		console.log(
 			'First volatility signal structure:',
 			JSON.stringify(volatilitySignals[0], null, 2)
 		)
 	}
-
 	console.log('Volatility spike signals:', spikeSignals.length)
 	console.log('Volatility range signals:', rangeSignals.length)
 
 	return (
 		<section className={styles.volatilitySection}>
+			<SignalSocketInitializer />
 			<h2 className={styles.sectionTitle}>Volatility Signals</h2>
 
 			<div>

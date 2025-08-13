@@ -10,6 +10,7 @@ import { marketApi } from '@/services/api/market.api'
 import { authApi } from '@/services/auth.services'
 import { signalApi } from '@/services/signal.api'
 import { telegramApi } from '@/services/telegram.api'
+import { telegramChannelApi } from '@/services/telegramChannel.api'
 import { userApi } from '@/services/user.services'
 import { collapsedSlice } from './collapsed/collapsed.slice'
 import { userSlice } from './user/user.slice'
@@ -19,6 +20,7 @@ import connectionReducer from './signals/slices/connection.slice'
 import fundingReducer from './signals/slices/funding.slice'
 import priceChangeReducer from './signals/slices/price-change.slice'
 import telegramReducer from './signals/slices/telegram.slice'
+import telegramChannelsReducer from './signals/slices/telegramChannels.slice'
 import timeframeReducer from './signals/slices/timeframe.slice'
 import triggerReducer from './signals/slices/trigger.slice'
 import volatilityRangeReducer from './signals/slices/volatility-range.slice'
@@ -34,6 +36,7 @@ const rootReducer = combineReducers({
 	[marketApi.reducerPath]: marketApi.reducer,
 	[signalApi.reducerPath]: signalApi.reducer,
 	[telegramApi.reducerPath]: telegramApi.reducer,
+	[telegramChannelApi.reducerPath]: telegramChannelApi.reducer,
 	[collapsedSlice.reducerPath]: collapsedSlice.reducer,
 
 	// Signal slices
@@ -47,6 +50,7 @@ const rootReducer = combineReducers({
 	timeframe: timeframeReducer,
 	trigger: triggerReducer,
 	telegram: telegramReducer,
+	telegramChannels: telegramChannelsReducer,
 })
 
 // Конфигурация и создание хранилища
@@ -90,6 +94,7 @@ export const store = configureStore({
 			marketApi.middleware,
 			signalApi.middleware,
 			telegramApi.middleware,
+			telegramChannelApi.middleware,
 		]),
 
 	// В production режиме отключаем DevTools для оптимизации

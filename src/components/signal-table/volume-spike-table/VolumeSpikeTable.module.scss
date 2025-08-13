@@ -41,3 +41,33 @@
 .emptyCell {
 	@apply p-4 text-center;
 }
+
+// Приклеенная шапка
+.headSticky {
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	background-color: inherit;
+}
+
+// Приклеенные первые колонки (фиксированные слева)
+.stickyCol0 {
+	position: sticky;
+	left: 0;
+	z-index: 15;
+	background-color: inherit;
+}
+
+.stickyCol1 {
+	position: sticky;
+	left: 160px;
+	z-index: 15;
+	background-color: inherit;
+}
+
+.stickyCol2 {
+	position: sticky;
+	left: 320px;
+	z-index: 15;
+	background-color: inherit;
+}

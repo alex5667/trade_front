@@ -47,5 +47,7 @@ export const URLS = {
 	TOP_GAINERS: '/trading-signals/gainers',
 	TOP_LOSERS: '/trading-signals/losers',
 	TELEGRAM_SIGNALS: '/telegram-signals',
+	TELEGRAM_CHANNEL: '/telegram-channel',
+	TELEGRAM_CHANNELS: '/telegram-channels',
 }
 

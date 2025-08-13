@@ -13,6 +13,7 @@ interface InputFieldsProps {
 	disabled?: boolean
 	type?: string
 	isNumber?: boolean
+	value?: string | number
 }
 
 export const SimpleField = forwardRef<HTMLInputElement, InputFieldsProps>(

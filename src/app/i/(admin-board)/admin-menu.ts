@@ -19,5 +19,11 @@ export const ADMINMENU: MenuItem[] = [
 		name: 'Telegram Signals',
 		endPoint: null
 	},
+	{
+		icon: MessageSquare,
+		link: `${ADMINBOARD_PAGES.TELEGRAM_CHANNEL}`,
+		name: 'Telegram Channels',
+		endPoint: null
+	},
 
 ]
