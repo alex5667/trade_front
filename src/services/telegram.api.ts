@@ -29,8 +29,26 @@ export const telegramApi = createApi({
 					dispatch(setTelegramSignals(signals))
 				} catch (e) { }
 			},
-		})
+		}),
+		getTelegramSignalsByRange: builder.query<any, { start: string; end: string; limit?: number; offset?: number; symbol?: string; direction?: string; timeframe?: string; exchange?: string; username?: string; chatId?: string }>(
+			{
+				query: (params) => ({
+					url: URLS.TELEGRAM_SIGNALS + '/range',
+					method: 'GET',
+					params,
+				}),
+				providesTags: ['TelegramSignal'],
+				transformResponse: (response: any) => response?.data ?? response,
+				async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+					try {
+						const { data } = await queryFulfilled
+						const signals = Array.isArray(data) ? data : (data?.signals || [])
+						dispatch(setTelegramSignals(signals))
+					} catch (e) { }
+				},
+			}
+		),
 	})
 })
 
-export const { useGetTelegramSignalsQuery } = telegramApi 
+export const { useGetTelegramSignalsQuery, useGetTelegramSignalsByRangeQuery } = telegramApi 
