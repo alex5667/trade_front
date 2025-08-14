@@ -1,11 +1,11 @@
 'use client'
 
-import { VolumeSpikeSignal } from '@/types/signal.types'
+import { VolumeSignalPrisma } from '@/types/signal.types'
 
 import styles from './VolumeSpikeTable.module.scss'
 
 interface VolumeSpikeTableProps {
-	signals: VolumeSpikeSignal[]
+	signals: VolumeSignalPrisma[]
 }
 
 export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
@@ -33,7 +33,9 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 									{signal.volume}
 								</td>
 								<td className={`${styles.cell} ${styles.center}`}>
-									{new Date(signal.timestamp).toLocaleTimeString()}
+									{signal.timestamp
+										? new Date(signal.timestamp).toLocaleTimeString()
+										: '-'}
 								</td>
 							</tr>
 						))

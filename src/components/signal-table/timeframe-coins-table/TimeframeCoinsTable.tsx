@@ -108,9 +108,9 @@ export const TimeframeCoinsTable = ({
 						</tr>
 					</thead>
 					<tbody>
-						{coins.map((coin: TimeframeCoin) => (
+						{coins.map((coin: TimeframeCoin, idx: number) => (
 							<TimeframeCoinsRow
-								key={coin.symbol}
+								key={`${coin.symbol}-${coin.timestamp ?? idx}`}
 								coin={coin}
 								type={type}
 							/>

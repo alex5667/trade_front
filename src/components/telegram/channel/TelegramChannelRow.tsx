@@ -16,6 +16,7 @@ interface TelegramChannelRowProps {
 	channel: EditableTelegramChannel
 	onSave: (id: string, data: TelegramChannelUpsert) => Promise<void>
 	onDelete: (id: string) => Promise<void>
+	onOpenMeta: (e: React.MouseEvent, ch: EditableTelegramChannel) => void
 	styles: {
 		button: string
 		buttonPrimary: string
@@ -29,6 +30,7 @@ export const TelegramChannelRow = ({
 	channel,
 	onSave,
 	onDelete,
+	onOpenMeta,
 	styles,
 	isSaving,
 	isDeleting
@@ -96,14 +98,14 @@ export const TelegramChannelRow = ({
 
 	return (
 		<tr className={tableStyles.row}>
-			<td className={`${tableStyles.cell} ${tableStyles.stickyCol0}`}>
-				{String(channel.id)}
-			</td>
-			<td className={`${tableStyles.cell} ${tableStyles.stickyCol1}`}>
-				{channel.createdAt || '-'}
-			</td>
-			<td className={`${tableStyles.cell} ${tableStyles.stickyCol2}`}>
-				{channel.updatedAt || '-'}
+			<td className={tableStyles.cell}>
+				<button
+					aria-label='Подробнее'
+					className={styles.button}
+					onClick={e => onOpenMeta(e, channel)}
+				>
+					+
+				</button>
 			</td>
 			{fields.map(f => (
 				<td

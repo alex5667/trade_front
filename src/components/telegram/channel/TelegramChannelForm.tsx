@@ -1,7 +1,9 @@
 import { FormEvent, useState } from 'react'
 
+import { Checkbox } from '@/components/ui/checkbox/Checkbox'
 import { SimpleField } from '@/components/ui/fields/SImpleField'
 
+import chStyles from './Channel.module.scss'
 import type { CreateTelegramChannelDto } from '@/services/telegramChannel.api'
 
 interface TelegramChannelFormProps {
@@ -107,38 +109,44 @@ export const TelegramChannelForm = ({
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className={className}
+			className={`${className} ${chStyles.formWrapper}`}
 		>
-			{fields.map(f => (
-				<div key={f.key}>
-					{f.isCheckbox ? (
-						<label className={labelClass}>
-							<input
-								type='checkbox'
-								checked={!!form[f.key]}
-								onChange={e => setField(f.key, e.target.checked)}
-							/>{' '}
-							{f.label}
-						</label>
-					) : (
-						<SimpleField
-							id={f.key}
-							label={f.label}
-							onChange={e => setField(f.key, e.target.value)}
-							placeholder={f.label}
-							extra=''
-							value={form[f.key] ?? ''}
-							type={f.type || 'text'}
-						/>
-					)}
-				</div>
-			))}
-			<button
-				type='submit'
-				className={buttonClass}
-			>
-				Добавить
-			</button>
+			<div className={chStyles.formGrid}>
+				{fields.map(f => (
+					<div
+						key={f.key}
+						className={`${chStyles.fieldItem} flex flex-col w-full text-center`}
+					>
+						{f.isCheckbox ? (
+							<label className={`${labelClass} ${chStyles.checkboxLabel}`}>
+								<Checkbox
+									checked={!!form[f.key]}
+									onChange={e => setField(f.key, e.target.checked)}
+								/>{' '}
+								{f.label}
+							</label>
+						) : (
+							<SimpleField
+								id={f.key}
+								label={f.label}
+								onChange={e => setField(f.key, e.target.value)}
+								placeholder={f.label}
+								extra='w-full text-center'
+								value={form[f.key] ?? ''}
+								type={f.type || 'text'}
+							/>
+						)}
+					</div>
+				))}
+			</div>
+			<div className={chStyles.formFooter}>
+				<button
+					type='submit'
+					className={`${buttonClass} ${chStyles.addButton}`}
+				>
+					Добавить
+				</button>
+			</div>
 		</form>
 	)
 }

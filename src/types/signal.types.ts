@@ -1,93 +1,107 @@
 'use strict'
-export type SignalType =
-	| 'signal:volatilityRange'
-	| 'signal:volatility'
-	| 'volumeSpike'
-	| 'priceChange'
-	| 'top:gainers'
-	| 'top:losers'
-	| 'volatilityRange'
+// Prisma-aligned signal models for frontend
 
-export interface BaseSignal {
+// Common helpers for number-like values from API (Decimal/BigInt as string)
+export type DecimalString = string
+export type BigIntString = string
+
+// VolatilityRangeSignal (was VolatilitySignal in legacy)
+export interface VolatilityRangeSignal {
+	id: BigIntString
+	type: 'volatility' | 'volatilityRange' | string
 	symbol: string
-	timestamp: number
-	type: SignalType
+	volatility: DecimalString
+	range?: DecimalString
+	avgRange?: DecimalString
+	receivedAt: string
+	timestamp?: string
+	createdAt: string
 }
 
+// VolatilitySpikeSignal with OHLC
 export interface VolatilitySpikeSignal {
-	type: string
+	id: BigIntString
+	type: 'volatilitySpike' | string
 	symbol: string
 	interval: string
-	open: number
-	high: number
-	low: number
-	close: number
-	volatility: number
-	timestamp: number
-	range?: number
-	avgRange?: number
+	open: DecimalString
+	high: DecimalString
+	low: DecimalString
+	close: DecimalString
+	volatility: DecimalString
+	receivedAt: string
+	timestamp?: string
+	createdAt: string
 }
 
-export interface VolumeSpikeSignal {
-	type: string
+export type AnyVolatilitySignal = VolatilityRangeSignal | VolatilitySpikeSignal
+
+// GainerSignal
+export interface GainerSignal {
+	id: BigIntString
 	symbol: string
-	interval: string
-	volume: number
-	timestamp: number
+	change: DecimalString
+	price?: DecimalString
+	volume?: DecimalString
+	quoteVolume?: DecimalString
+	timeframe?: string
+	receivedAt: string
+	timestamp?: string
+	createdAt: string
 }
 
-export interface PriceChangeSignal {
-	type: string
+// LoserSignal
+export interface LoserSignal {
+	id: BigIntString
 	symbol: string
-	interval: string
-	priceChange: number
-	priceChangePercent: number
-	timestamp: number
+	change: DecimalString
+	price?: DecimalString
+	volume?: DecimalString
+	quoteVolume?: DecimalString
+	timeframe?: string
+	receivedAt: string
+	timestamp?: string
+	createdAt: string
 }
 
-export type TopCoin = {
+// VolumeSignal (Prisma)
+export interface VolumeSignalPrisma {
+	id: BigIntString
+	type: 'volume' | string
 	symbol: string
-	price: number
-	priceChangePercent: number
+	volume: DecimalString
+	change: DecimalString
+	price?: DecimalString
+	volumePercent?: DecimalString
+	volume2Level?: DecimalString
+	volume5Level?: DecimalString
+	volume10Level?: DecimalString
+	timeframe?: string
+	receivedAt: string
+	timestamp?: string
+	createdAt: string
 }
 
-export type TimeframeCoin = {
+// FundingSignal (Prisma)
+export interface FundingSignalPrisma {
+	id: BigIntString
+	type: 'funding' | string
 	symbol: string
-	change: string
-	value?: number
-	volume?: string
-	volumePercent?: string
-	volume2Percent?: string
-	volume5Percent?: string
-	volume10Percent?: string
+	rate: DecimalString
+	change: DecimalString
+	nextRate?: DecimalString
+	timeframe?: string
+	receivedAt: string
+	timestamp?: string
+	createdAt: string
 }
 
-export interface TopGainersSignal {
-	type: string
-	coins: string[] | TopCoin[]
-	timestamp: number
-}
-
-export interface TopLosersSignal {
-	type: string
-	coins: string[] | TopCoin[]
-	timestamp: number
-}
-
-export interface TimeframeSignal {
-	type: string
-	payload: TimeframeCoin[]
-	timeframe: string
-}
-
-export type SignalData = {
-	volatilitySpikes: VolatilitySpikeSignal[]
-	volumeSpikes: VolumeSpikeSignal[]
-	priceChanges: PriceChangeSignal[]
-	topGainers: string[]
-	topLosers: string[]
-	volatilityRanges: VolatilitySpikeSignal[]
-	triggerGainers: string[]
-	triggerLosers: string[]
+// Aggregated top-moves item (for /trading-signals/gainers|losers)
+export interface TopMoveItem {
+	symbol: string
+	price?: number
+	changePct?: number
+	direction?: 'UP' | 'DOWN' | string
+	timestamp?: string
 }
 

@@ -1,0 +1,49 @@
+.formWrapper {
+	@apply w-full border border-gray-300 rounded-md;
+}
+
+.formGrid {
+	@apply grid w-full grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 p-3;
+}
+
+.formFooter {
+	@apply border-t border-gray-200 p-3;
+}
+
+.addButton {
+	@apply border;
+}
+
+/* New: bordered field item */
+.fieldItem {
+	@apply w-full border border-gray-200 rounded-md p-3 bg-white/5 dark:bg-white/5;
+}
+
+.checkboxLabel {
+	@apply w-full inline-flex items-center justify-center gap-2 text-center;
+}
+
+.popoverOverlay {
+	@apply fixed inset-0 z-40 cursor-default;
+}
+
+.popover {
+	@apply fixed z-50 rounded shadow-lg border border-gray-700 bg-gray-900 text-white p-4;
+	width: 280px;
+}
+
+.popoverClose {
+	@apply absolute right-2 top-2 text-gray-300 hover:text-white;
+}
+
+.popoverTitle {
+	@apply text-sm font-semibold mb-2;
+}
+
+.popoverMeta {
+	@apply grid grid-cols-1 gap-1 text-sm;
+}
+
+.popoverKey {
+	@apply text-gray-400;
+}

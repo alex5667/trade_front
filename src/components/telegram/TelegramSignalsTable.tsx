@@ -1,5 +1,7 @@
 import tableStyles from '@/components/signal-table/volume-spike-table/VolumeSpikeTable.module.scss'
 
+import styles from './TelegramSignalsTable.module.scss'
+
 interface TelegramSignalsTableProps {
 	columns: string[]
 	signals: any[]
@@ -52,7 +54,7 @@ export const TelegramSignalsTable = ({
 							>
 								Ошибка загрузки.{' '}
 								<button
-									className='underline'
+									className={styles.refetchLink}
 									onClick={onRefetch}
 								>
 									Повторить
@@ -70,7 +72,7 @@ export const TelegramSignalsTable = ({
 									<td className={tableStyles.cell}>
 										<button
 											onClick={ev => onOpenDetails(s, ev)}
-											className='px-2 py-1 border rounded'
+											className={styles.expandBtn}
 											aria-label='Подробнее'
 											title='Развернуть'
 										>
