@@ -11,20 +11,6 @@ export const isTimeLikeKey = (key: string) =>
 export const formatCell = (key: string, value: any) => {
 	if (value === null || value === undefined) return '-'
 
-	// Специальная обработка для числовых полей с фиксированным количеством знаков после запятой
-	if (key === 'entry' && typeof value === 'number') {
-		// Форматируем с ровно 5 знаками после запятой
-		return Number(value).toFixed(5)
-	}
-
-	// Также обрабатываем строковые числовые значения
-	if (key === 'entry' && typeof value === 'string') {
-		const numValue = parseFloat(value)
-		if (!isNaN(numValue)) {
-			return numValue.toFixed(5)
-		}
-	}
-
 	if (key === 'tp') {
 		try {
 			let data = value
