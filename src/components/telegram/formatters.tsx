@@ -10,6 +10,21 @@ export const isTimeLikeKey = (key: string) =>
 
 export const formatCell = (key: string, value: any) => {
 	if (value === null || value === undefined) return '-'
+
+	// Специальная обработка для числовых полей с фиксированным количеством знаков после запятой
+	if (key === 'entry' && typeof value === 'number') {
+		// Форматируем с ровно 5 знаками после запятой
+		return Number(value).toFixed(5)
+	}
+
+	// Также обрабатываем строковые числовые значения
+	if (key === 'entry' && typeof value === 'string') {
+		const numValue = parseFloat(value)
+		if (!isNaN(numValue)) {
+			return numValue.toFixed(5)
+		}
+	}
+
 	if (key === 'tp') {
 		try {
 			let data = value
@@ -29,6 +44,12 @@ export const formatCell = (key: string, value: any) => {
 				!Array.isArray(data) &&
 				data &&
 				Object.keys(data).length === 0
+
+			// Для массива tp убираем скобки и показываем только значения
+			if (Array.isArray(data)) {
+				return data.join(', ')
+			}
+
 			const pretty = JSON.stringify(data, null, 2)
 			return (
 				<pre className='whitespace-pre text-xs font-mono max-h-40 overflow-auto p-2 bg-gray-100 text-gray-800 rounded'>

@@ -2,6 +2,7 @@
 
 import { TelegramChannelForm } from '@/components/telegram/channel/TelegramChannelForm'
 import { TelegramChannelList } from '@/components/telegram/channel/TelegramChannelList'
+import { TelegramChannelSearch } from '@/components/telegram/channel/TelegramChannelSearch'
 
 import { useTelegramChannels } from '@/hooks/useTelegramChannels'
 
@@ -19,7 +20,9 @@ export default function TelegramChannelPage() {
 		updateChannel,
 		isDeleting,
 		deleteChannel,
-		isUpdating
+		isUpdating,
+		handleSearch,
+		handleClearSearch
 	} = useTelegramChannels()
 
 	const handleCreate = async (data: CreateTelegramChannelDto) => {
@@ -40,6 +43,10 @@ export default function TelegramChannelPage() {
 				className={styles.form}
 				buttonClass={styles.buttonPrimary}
 				labelClass={styles.fieldLabel}
+			/>
+			<TelegramChannelSearch
+				onSearch={handleSearch}
+				onClear={handleClearSearch}
 			/>
 			{isLoading ? (
 				<p>Загрузка...</p>

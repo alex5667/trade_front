@@ -10,11 +10,21 @@ export const useTelegramSignals = () => {
 	const [range, setRange] = useState<{ start?: string; end?: string }>({})
 	const rangeActive = !!(range.start && range.end)
 
-	const { isLoading: isTodayLoading, isError: isTodayError, refetch: refetchToday } = useGetTelegramSignalsQuery({ date: today })
+	const { isLoading: isTodayLoading, isError: isTodayError, refetch: refetchToday } = useGetTelegramSignalsQuery(
+		{ date: today },
+		{
+			// Отключаем polling когда выбран диапазон дат
+			pollingInterval: rangeActive ? undefined : 60000
+		}
+	)
 
 	const { isLoading: isRangeLoading, isError: isRangeError, refetch: refetchRange } = useGetTelegramSignalsByRangeQuery(
 		rangeActive ? { start: range.start as string, end: range.end as string } : ({} as any),
-		{ skip: !rangeActive }
+		{
+			skip: !rangeActive,
+			// Отключаем polling для диапазона дат
+			pollingInterval: undefined
+		}
 	)
 
 	const signals = useSelector(selectTelegramSignals)

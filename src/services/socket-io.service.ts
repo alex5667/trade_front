@@ -247,6 +247,29 @@ export class TradeSignalSocketIOClient {
 				this.scheduleReconnect()
 			})
 
+			// Обработчик общих ошибок Socket.IO
+			this.socket.on('error', (error: any) => {
+				const errorInfo = {
+					timestamp: new Date().toISOString(),
+					url: this.baseUrl,
+					isConnecting: this.isConnecting,
+					reconnectAttempts: this.reconnectAttempts,
+					errorMessage: error?.message || String(error) || 'Unknown Socket.IO error',
+					errorName: error?.name || error?.type || 'SocketError',
+					errorCode: error?.code || 'UNKNOWN',
+					errorStack: error?.stack
+				}
+
+				console.log('❌ Общая ошибка Socket.IO:', errorInfo)
+
+				this.isConnecting = false
+				this._emitEvent('error', {
+					message: 'Общая ошибка Socket.IO',
+					details: errorInfo
+				})
+				// Не планируем переподключение для общих ошибок, только для connect_error
+			})
+
 			// Обработчик pong ответов
 			this.socket.on('pong', (data) => {
 				console.log('📨 Получен pong от Socket.IO сервера:', data)
@@ -399,7 +422,7 @@ export class TradeSignalSocketIOClient {
 			try {
 				callback(data)
 			} catch (error) {
-				console.error(`Ошибка в коллбэке для события ${eventName}:`, error)
+				console.log(`❌ Ошибка в коллбэке для события ${eventName}: ${error}`)
 			}
 		})
 	}

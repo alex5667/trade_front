@@ -33,10 +33,9 @@ export type OrderByField = 'createdAt' | 'updatedAt' | 'membersCount' | 'winrate
 
 export interface GetTelegramChannelsParams {
 	// filters
-	title?: string
 	titleContains?: string
-	username?: string
 	usernameContains?: string
+	linkContains?: string
 	language?: string
 	status?: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED'
 	isPaid?: boolean
@@ -59,6 +58,8 @@ export interface GetTelegramChannelsParams {
 	offset?: number
 	orderBy?: OrderByField
 	order?: OrderDirection
+	// Служебный параметр для принудительного обновления
+	_refresh?: number
 }
 
 export const telegramChannelApi = createApi({
@@ -67,7 +68,15 @@ export const telegramChannelApi = createApi({
 	tagTypes: ['TelegramChannel'],
 	endpoints: (builder) => ({
 		getTelegramChannels: builder.query<PaginatedResponse<TelegramChannel>, GetTelegramChannelsParams | void>({
-			query: (params) => ({ url: URLS.TELEGRAM_CHANNELS, method: 'GET', params: params || {} as any }),
+			query: (params) => {
+				// Если параметры undefined, загружаем все каналы без фильтров
+				if (!params) {
+					return { url: URLS.TELEGRAM_CHANNELS, method: 'GET' }
+				}
+				// Убираем служебный параметр _refresh из запроса
+				const { _refresh, ...cleanParams } = params
+				return { url: URLS.TELEGRAM_CHANNELS, method: 'GET', params: cleanParams }
+			},
 			transformResponse: (response: any) => response?.data ? response : { data: response },
 			providesTags: ['TelegramChannel'],
 			async onQueryStarted(arg, { dispatch, queryFulfilled }) {

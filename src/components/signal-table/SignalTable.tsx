@@ -26,7 +26,13 @@ import { TimeframeSection } from './timeframe-section/TimeframeSection'
 import { VolatilitySection } from './volatility-section/VolatilitySection'
 import { VolumeSection } from './volume-section/VolumeSection'
 // Removed local initializer to avoid double mount; it is provided in /i layout
-import { signalApi } from '@/services/signal.api'
+import {
+	signalApi,
+	useGetFundingSignalsQuery,
+	useGetTopGainersQuery,
+	useGetTopLosersQuery,
+	useGetVolumeSignalsQuery
+} from '@/services/signal.api'
 
 /**
  * SignalTable - основной компонент для отображения всех торговых сигналов
@@ -40,6 +46,15 @@ export const SignalTable = () => {
 	const dispatch = useDispatch<AppDispatch>()
 	const componentId = useRef(`signal-table-${Date.now()}`)
 	console.log(`📊 [${componentId.current}] SignalTable создан`)
+
+	// Автоматическое обновление данных каждые 30 минут
+	const pollingInterval = 30 * 60 * 1000 // 30 минут в миллисекундах
+
+	// RTK Query hooks с автообновлением
+	useGetTopGainersQuery(undefined, { pollingInterval })
+	useGetTopLosersQuery(undefined, { pollingInterval })
+	useGetVolumeSignalsQuery(undefined, { pollingInterval })
+	useGetFundingSignalsQuery(undefined, { pollingInterval })
 
 	// Получение данных из Redux с помощью селекторов
 	const isConnected = useSelector(selectConnectionStatus)

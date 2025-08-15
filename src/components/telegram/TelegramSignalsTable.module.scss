@@ -1,7 +1,19 @@
 .expandBtn {
-	@apply px-2 py-1 border rounded;
+	@apply bg-blue-600 hover:bg-blue-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold cursor-pointer transition-colors;
 }
 
 .refetchLink {
-	@apply underline;
+	@apply text-blue-500 hover:text-blue-700 underline cursor-pointer;
+}
+
+.sortableHeader {
+	@apply cursor-pointer hover:bg-gray-700 transition-colors select-none;
+}
+
+.headerContent {
+	@apply flex items-center justify-between gap-2;
+}
+
+.sortIcon {
+	@apply text-xs opacity-70;
 }
