@@ -53,14 +53,40 @@ export const signalApi = createApi({
 
 		// Сигналы объема (Prisma)
 		getVolumeSignals: builder.query<VolumeSignalPrisma[] | any, void>({
-			query: () => ({ url: URLS.VOLUME_SIGNALS, method: 'GET' }),
+			query: () => ({ url: URLS.VOLUME_SIGNALS, method: 'GET', params: { limit: 10 } }),
 			providesTags: ['Signal'],
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled
+					if (data && Array.isArray(data)) {
+						// Import dynamically to avoid circular imports
+						const { replaceVolumeSignals } = await import('@/store/signals/slices/volume.slice')
+						dispatch(replaceVolumeSignals(data))
+						console.log(`📊 Loaded ${data.length} volume signals from API to Redux store`)
+					}
+				} catch (error) {
+					console.error('Error dispatching volume signals to Redux:', error)
+				}
+			},
 		}),
 
 		// Сигналы финансирования (Prisma)
 		getFundingSignals: builder.query<FundingSignalPrisma[] | any, void>({
-			query: () => ({ url: URLS.FUNDING_SIGNALS, method: 'GET' }),
+			query: () => ({ url: URLS.FUNDING_SIGNALS, method: 'GET', params: { limit: 10 } }),
 			providesTags: ['Signal'],
+			async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				try {
+					const { data } = await queryFulfilled
+					if (data && Array.isArray(data)) {
+						// Import dynamically to avoid circular imports
+						const { replaceFundingData } = await import('@/store/signals/slices/funding.slice')
+						dispatch(replaceFundingData(data))
+						console.log(`📊 Loaded ${data.length} funding signals from API to Redux store`)
+					}
+				} catch (error) {
+					console.error('Error dispatching funding signals to Redux:', error)
+				}
+			},
 		}),
 
 		// Получение телеграм-сигналов по диапазону дат (legacy)

@@ -2,23 +2,22 @@
 
 import {
 	PriceChangeSignal,
-	TopGainersSignal,
-	TopLosersSignal,
-	VolatilitySpikeSignal,
-	VolumeSpikeSignal
-} from '@/types/signal.types'
+	TimeframeCoin,
+	VolatilitySignal,
+	VolumeSignal
+} from '@/store/signals/signal.types'
 
 type Setter<T> = React.Dispatch<React.SetStateAction<T[]>>
 type SimpleHandler<T> = (setter: Setter<T>, data: T) => void
 type DirectHandler<T> = (data: T) => void
 
 export interface SignalSetters {
-	setVolatilitySpikes: Setter<VolatilitySpikeSignal>
-	setVolatilityRanges: Setter<VolatilitySpikeSignal>
-	setVolumeSpikes: Setter<VolumeSpikeSignal>
+	setVolatilitySpikes: Setter<VolatilitySignal>
+	setVolatilityRanges: Setter<VolatilitySignal>
+	setVolumeSpikes: Setter<VolumeSignal>
 	setPriceChanges: Setter<PriceChangeSignal>
-	setTopGainers: React.Dispatch<React.SetStateAction<TopGainersSignal['coins']>>
-	setTopLosers: React.Dispatch<React.SetStateAction<TopLosersSignal['coins']>>
+	setTopGainers: React.Dispatch<React.SetStateAction<TimeframeCoin[]>>
+	setTopLosers: React.Dispatch<React.SetStateAction<TimeframeCoin[]>>
 }
 
 // универсальный push

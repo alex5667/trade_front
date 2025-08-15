@@ -5,13 +5,13 @@
  * Отслеживает резкие изменения объема торговых операций
  */
 
+import type { VolumeSignalPrisma } from '@/types/signal.types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VolumeSignal } from '../signal.types'
 
 /** Интерфейс состояния сигналов объема */
 interface VolumeState {
 	/** Массив сигналов объема */
-	signals: VolumeSignal[]
+	signals: VolumeSignalPrisma[]
 	/** Время последнего обновления */
 	lastUpdated: number
 }
@@ -23,13 +23,13 @@ const initialState: VolumeState = {
 }
 
 /** Максимальное количество сигналов для улучшения производительности */
-const MAX_SIGNALS = 50
+const MAX_SIGNALS = 10
 
 export const volumeSlice = createSlice({
 	name: 'volume',
 	initialState,
 	reducers: {
-		addVolumeSignal: (state, action: PayloadAction<VolumeSignal>) => {
+		addVolumeSignal: (state, action: PayloadAction<VolumeSignalPrisma>) => {
 			const signal = action.payload
 
 			console.log(`💾 Adding volume signal to store: ${signal.symbol}`)
@@ -47,14 +47,14 @@ export const volumeSlice = createSlice({
 				state.signals[existingIndex] = {
 					...signal,
 					// Сохраняем время создания из оригинального сигнала
-					createdAt: state.signals[existingIndex].createdAt || Date.now()
+					createdAt: state.signals[existingIndex].createdAt || new Date().toISOString()
 				}
 			} else {
 				// Добавляем новый сигнал в начало массива с временной меткой создания
 				console.log(`➕ Adding new volume signal, current count: ${state.signals.length}`)
 				state.signals.unshift({
 					...signal,
-					createdAt: Date.now()
+					createdAt: new Date().toISOString()
 				})
 
 				// Сохраняем только самые свежие сигналы для предотвращения роста состояния
@@ -70,8 +70,11 @@ export const volumeSlice = createSlice({
 			// Обновляем время последнего обновления
 			state.lastUpdated = Date.now()
 		},
-		replaceVolumeSignals: (state, action: PayloadAction<VolumeSignal[]>) => {
-			state.signals = (action.payload || []).map(s => ({ ...s, createdAt: Date.now() }))
+		replaceVolumeSignals: (state, action: PayloadAction<VolumeSignalPrisma[]>) => {
+			state.signals = (action.payload || []).map(s => ({
+				...s,
+				createdAt: s.createdAt || new Date().toISOString()
+			}))
 			state.lastUpdated = Date.now()
 		},
 		clearVolumeSignals: (state) => {

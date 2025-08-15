@@ -23,7 +23,7 @@ const initialState: FundingState = {
 }
 
 /** Максимальное количество монет для отслеживания финансирования */
-const MAX_COINS = 20
+const MAX_COINS = 10
 
 export const fundingSlice = createSlice({
 	name: 'funding',
