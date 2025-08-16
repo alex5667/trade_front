@@ -38,8 +38,14 @@ export const baseQuery = retry(
 		responseHandler: async (response) => {
 			// Не вмешиваемся в обработку ошибок HTTP: пусть fetchBaseQuery сам проставит error
 			if (!response.ok) {
-				// Возвращаем пустой объект — фактическая ошибка будет в result.error
-				return {}
+				// Возвращаем объект с информацией об ошибке вместо пустого объекта
+				const errorText = await response.text().catch(() => 'Unknown error')
+				return {
+					error: true,
+					status: response.status,
+					statusText: response.statusText,
+					message: errorText || `HTTP ${response.status} ${response.statusText}`
+				}
 			}
 
 			// 204 No Content или пустое тело
@@ -92,13 +98,27 @@ export const baseQueryWIthReAuth: typeof baseQuery = async (
 	} else if (result.error) {
 		// Улучшенный лог ошибок
 		const message = errorCatch(result.error)
-		const details = {
-			message,
-			status: (result.error as any)?.status || 'unknown',
-			data: (result.error as any)?.data ?? null,
-			raw: result.error
+		const status = (result.error as any)?.status || 'unknown'
+		const data = (result.error as any)?.data ?? null
+
+		// Проверяем, что error не является пустым объектом
+		if (Object.keys(result.error).length > 0 || message !== '{}') {
+			const details = {
+				message,
+				status,
+				data,
+				raw: result.error
+			}
+			console.error('Base query error:', details)
+		} else {
+			// Если error пустой, логируем базовую информацию
+			const endpoint = typeof args === 'string' ? args : (args as any)?.url || 'unknown endpoint'
+			console.error('Base query error: Empty error object', {
+				status,
+				data,
+				args: endpoint
+			})
 		}
-		console.error('Base query error:', details)
 	}
 	return result
 }
