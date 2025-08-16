@@ -15,8 +15,8 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 				<thead>
 					<tr className={styles.headRow}>
 						<th className={styles.cell}>Монета</th>
-						<th className={`${styles.cell} ${styles.center}`}>Объем</th>
-						<th className={`${styles.cell} ${styles.center}`}>Время</th>
+						<th className={`${styles.cell} ${styles.center}`}>Объем (Quote)</th>
+						<th className={`${styles.cell} ${styles.center}`}>Дата/Время</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -34,7 +34,14 @@ export function VolumeSpikeTable({ signals }: VolumeSpikeTableProps) {
 								</td>
 								<td className={`${styles.cell} ${styles.center}`}>
 									{signal.timestamp
-										? new Date(signal.timestamp).toLocaleTimeString()
+										? new Date(signal.timestamp).toLocaleString('ru-RU', {
+												day: '2-digit',
+												month: '2-digit',
+												year: 'numeric',
+												hour: '2-digit',
+												minute: '2-digit',
+												second: '2-digit'
+											})
 										: '-'}
 								</td>
 							</tr>

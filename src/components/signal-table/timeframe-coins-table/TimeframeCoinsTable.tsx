@@ -33,13 +33,19 @@ const TimeframeCoinsRow = ({
 					: '-'}
 			</td>
 			<td className={`${styles.cell} ${styles.right}`}>
-				{coin.baseVolume ?? '-'}
-			</td>
-			<td className={`${styles.cell} ${styles.right}`}>
 				{coin.quoteVolume ?? '-'}
 			</td>
 			<td className={`${styles.cell} ${styles.right}`}>
-				{coin.timestamp ? new Date(coin.timestamp).toLocaleTimeString() : '-'}
+				{coin.timestamp
+					? new Date(coin.timestamp).toLocaleString('ru-RU', {
+							day: '2-digit',
+							month: '2-digit',
+							year: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+							second: '2-digit'
+						})
+					: '-'}
 			</td>
 		</tr>
 	)
@@ -99,12 +105,11 @@ export const TimeframeCoinsTable = ({
 								Изменение
 							</th>
 							<th className={`${styles.headCell} ${styles.right}`}>
-								Base Volume
-							</th>
-							<th className={`${styles.headCell} ${styles.right}`}>
 								Quote Volume
 							</th>
-							<th className={`${styles.headCell} ${styles.right}`}>Time</th>
+							<th className={`${styles.headCell} ${styles.right}`}>
+								Дата/Время
+							</th>
 						</tr>
 					</thead>
 					<tbody>
