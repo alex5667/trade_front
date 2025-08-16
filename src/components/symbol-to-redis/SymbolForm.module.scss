@@ -1,0 +1,52 @@
+// Стили для формы символа
+.form {
+	@apply bg-gray-800 rounded-lg p-6 border border-gray-700;
+}
+
+.formHeader {
+	@apply mb-6 text-center;
+}
+
+.title {
+	@apply text-xl font-semibold text-white;
+}
+
+.formGrid {
+	@apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6;
+}
+
+.formField {
+	@apply flex flex-col;
+}
+
+.label {
+	@apply text-sm text-gray-300 mb-2 font-medium;
+}
+
+.select {
+	@apply px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-blue-500 transition-colors;
+}
+
+.timeframeSection {
+	@apply mb-6;
+}
+
+.noteSection {
+	@apply mb-6;
+}
+
+.formActions {
+	@apply flex justify-end gap-4;
+}
+
+.cancelButton {
+	@apply px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded font-medium transition-colors;
+}
+
+.submitButton {
+	@apply px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors;
+}
+
+.error {
+	@apply text-red-400 text-sm mt-1;
+}

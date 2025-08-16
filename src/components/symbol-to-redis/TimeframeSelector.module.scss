@@ -1,0 +1,48 @@
+// Стили для селектора таймфреймов
+.container {
+	@apply bg-gray-800 rounded-lg p-4 border border-gray-700;
+}
+
+.header {
+	@apply flex justify-between items-center mb-4;
+}
+
+.title {
+	@apply text-lg font-semibold text-white;
+}
+
+.actions {
+	@apply flex gap-2;
+}
+
+.actionButton {
+	@apply px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors;
+}
+
+.timeframesContainer {
+	@apply space-y-4;
+}
+
+.timeframeGroup {
+	@apply border border-gray-600 rounded-lg p-3;
+}
+
+.groupTitle {
+	@apply text-sm font-medium text-gray-300 mb-3;
+}
+
+.timeframeGrid {
+	@apply grid grid-cols-2 md:grid-cols-4 gap-2;
+}
+
+.timeframeItem {
+	@apply flex items-center gap-2 cursor-pointer hover:bg-gray-700 p-2 rounded transition-colors;
+}
+
+.timeframeLabel {
+	@apply text-sm text-white;
+}
+
+.selectedInfo {
+	@apply mt-4 text-center text-sm text-gray-400 bg-gray-700 rounded-lg p-2;
+}

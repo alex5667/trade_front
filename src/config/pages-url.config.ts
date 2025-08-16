@@ -47,7 +47,9 @@ export const ADMINBOARD_PAGES = {
 	/** Страница телеграм сигналов */
 	TELEGRAM_SIGNALS: '/i/telegram-signals',
 	/** Страница телеграм каналов */
-	TELEGRAM_CHANNEL: '/i/telegram-channel'
+	TELEGRAM_CHANNEL: '/i/telegram-channel',
+	/** Страница торговых символов */
+	SYMBOLS_TO_REDIS: '/i/symbols-to-redis'
 }
 
 /** Функция получения базового URL сайта из переменных окружения */

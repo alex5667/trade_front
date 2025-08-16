@@ -1,0 +1,44 @@
+// Стили для списка символов
+.container {
+	@apply bg-gray-800 rounded-lg border border-gray-700;
+}
+
+.header {
+	@apply flex justify-between items-center p-6 border-b border-gray-700;
+}
+
+.title {
+	@apply text-xl font-semibold text-white;
+}
+
+.addButton {
+	@apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors;
+}
+
+.formOverlay {
+	@apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50;
+}
+
+.tableContainer {
+	@apply overflow-x-auto;
+}
+
+.table {
+	@apply w-full;
+}
+
+.tableHeader {
+	@apply bg-gray-700;
+}
+
+.headerCell {
+	@apply px-4 py-3 text-left text-sm font-medium text-gray-300 border-b border-gray-600;
+}
+
+.tableBody {
+	@apply bg-gray-800;
+}
+
+.emptyCell {
+	@apply px-4 py-8 text-center text-gray-400;
+}

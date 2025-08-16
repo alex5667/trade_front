@@ -1,14 +1,33 @@
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import type { SearchFilters } from '@/components/telegram/TelegramSignalsSearch'
 import { useGetTelegramSignalsByRangeQuery, useGetTelegramSignalsQuery } from '@/services/telegram.api'
 import { selectTelegramSignals } from '@/store/signals/selectors/telegram.selectors'
 
 export const useTelegramSignals = () => {
 	const today = dayjs().format('YYYY-MM-DD')
 	const [range, setRange] = useState<{ start?: string; end?: string }>({})
+	const [searchFilters, setSearchFilters] = useState<SearchFilters>({})
 	const rangeActive = !!(range.start && range.end)
+
+	// Получаем сигналы из Redux store
+	const signalsFromStore = useSelector(selectTelegramSignals)
+
+	// Фильтруем сигналы по поисковым критериям
+	const filteredSignals = useMemo(() => {
+		if (!searchFilters.username && !searchFilters.symbol) return signalsFromStore
+
+		return signalsFromStore.filter(signal => {
+			const usernameMatch = !searchFilters.username ||
+				(signal.username && signal.username.toLowerCase().includes(searchFilters.username.toLowerCase()))
+			const symbolMatch = !searchFilters.symbol ||
+				(signal.symbol && signal.symbol.toLowerCase().includes(searchFilters.symbol.toLowerCase()))
+
+			return usernameMatch && symbolMatch
+		})
+	}, [searchFilters, signalsFromStore])
 
 	const { isLoading: isTodayLoading, isError: isTodayError, refetch: refetchToday } = useGetTelegramSignalsQuery(
 		{ date: today },
@@ -27,10 +46,18 @@ export const useTelegramSignals = () => {
 		}
 	)
 
-	const signals = useSelector(selectTelegramSignals)
+	const signals = filteredSignals
 	const isLoading = rangeActive ? isRangeLoading : isTodayLoading
 	const isError = rangeActive ? isRangeError : isTodayError
 	const refetch = rangeActive ? refetchRange : refetchToday
+
+	const handleSearch = (filters: SearchFilters) => {
+		setSearchFilters(filters)
+	}
+
+	const handleClearSearch = () => {
+		setSearchFilters({})
+	}
 
 	return {
 		today,
@@ -40,6 +67,9 @@ export const useTelegramSignals = () => {
 		signals,
 		isLoading,
 		isError,
-		refetch
+		refetch,
+		searchFilters,
+		handleSearch,
+		handleClearSearch
 	}
 } 

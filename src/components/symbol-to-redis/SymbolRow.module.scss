@@ -1,0 +1,48 @@
+// Стили для строки символа
+.row {
+	@apply hover:bg-gray-700 transition-colors;
+}
+
+.cell {
+	@apply px-4 py-3 text-sm text-white border-b border-gray-600;
+}
+
+.symbol {
+	@apply font-semibold text-blue-400;
+}
+
+.instrumentType {
+	@apply px-2 py-1 text-xs bg-gray-600 rounded;
+}
+
+.status {
+	@apply px-2 py-1 text-xs rounded;
+	&:not(:empty) {
+		@apply bg-green-600 text-white;
+	}
+}
+
+.timeframes {
+	@apply text-xs text-gray-300;
+}
+
+.note {
+	@apply max-w-xs truncate block;
+}
+
+.actions {
+	@apply flex gap-2;
+}
+
+.editButton,
+.deleteButton {
+	@apply p-1 rounded transition-colors;
+}
+
+.editButton {
+	@apply hover:bg-blue-600;
+}
+
+.deleteButton {
+	@apply hover:bg-red-600;
+}

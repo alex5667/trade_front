@@ -2,7 +2,7 @@
 
 import { MenuItem } from '@/types/menu.interface'
 
-import { Activity, MessageSquare } from 'lucide-react'
+import { Activity, Coins, MessageSquare } from 'lucide-react'
 
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 
@@ -25,5 +25,10 @@ export const ADMINMENU: MenuItem[] = [
 		name: 'Telegram Channels',
 		endPoint: null
 	},
-
+	{
+		icon: Coins,
+		link: `${ADMINBOARD_PAGES.SYMBOLS_TO_REDIS}`,
+		name: 'Trading Symbols',
+		endPoint: null
+	}
 ]

@@ -9,6 +9,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { marketApi } from '@/services/api/market.api'
 import { authApi } from '@/services/auth.services'
 import { signalApi } from '@/services/signal.api'
+import { symbolToRedisApi } from '@/services/symbol-to-redis.api'
 import { telegramApi } from '@/services/telegram.api'
 import { telegramChannelApi } from '@/services/telegramChannel.api'
 import { userApi } from '@/services/user.services'
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
 	[signalApi.reducerPath]: signalApi.reducer,
 	[telegramApi.reducerPath]: telegramApi.reducer,
 	[telegramChannelApi.reducerPath]: telegramChannelApi.reducer,
+	[symbolToRedisApi.reducerPath]: symbolToRedisApi.reducer,
 	[collapsedSlice.reducerPath]: collapsedSlice.reducer,
 
 	// Signal slices
@@ -95,6 +97,7 @@ export const store = configureStore({
 			signalApi.middleware,
 			telegramApi.middleware,
 			telegramChannelApi.middleware,
+			symbolToRedisApi.middleware,
 		]),
 
 	// В production режиме отключаем DevTools для оптимизации

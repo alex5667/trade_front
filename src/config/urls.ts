@@ -46,8 +46,9 @@ export const URLS = {
 	LOSER_SIGNALS: '/loser-signals',
 	TOP_GAINERS: '/trading-signals/gainers',
 	TOP_LOSERS: '/trading-signals/losers',
-	TELEGRAM_SIGNALS: '/telegram-signals',
+	TELEGRAM_SIGNALS: '/telegram-signals/parsed',
 	TELEGRAM_CHANNEL: '/telegram-channel',
 	TELEGRAM_CHANNELS: '/telegram-channels',
-}
+	SYMBOLS_TO_REDIS: '/symbols-to-redis',
+} as const
 

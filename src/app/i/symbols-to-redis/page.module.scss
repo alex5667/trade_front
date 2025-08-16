@@ -1,0 +1,48 @@
+// Стили для страницы symbols-to-redis
+.container {
+	@apply p-6;
+}
+
+.pageHeader {
+	@apply mb-8 text-center;
+}
+
+.pageTitle {
+	@apply text-2xl font-bold text-white mb-2;
+}
+
+.pageDescription {
+	@apply text-gray-400 max-w-2xl mx-auto;
+}
+
+.stats {
+	@apply mt-8 flex justify-center gap-8;
+}
+
+.statItem {
+	@apply flex flex-col items-center;
+}
+
+.statLabel {
+	@apply text-sm text-gray-400 mb-1;
+}
+
+.statValue {
+	@apply text-lg font-semibold text-white;
+}
+
+.errorContainer {
+	@apply min-h-screen flex flex-col items-center justify-center p-6;
+}
+
+.errorTitle {
+	@apply text-2xl font-bold text-red-400 mb-4;
+}
+
+.errorMessage {
+	@apply text-gray-400 text-center mb-6 max-w-md;
+}
+
+.retryButton {
+	@apply px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors;
+}

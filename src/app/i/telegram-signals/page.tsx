@@ -5,14 +5,24 @@ import { useMemo, useState } from 'react'
 
 import { TelegramDateRangePicker } from '@/components/telegram/TelegramDateRangePicker'
 import { TelegramDetailsPopover } from '@/components/telegram/TelegramDetailsPopover'
+import { TelegramSignalsSearch } from '@/components/telegram/TelegramSignalsSearch'
 import { TelegramSignalsTable } from '@/components/telegram/TelegramSignalsTable'
 
 import { useTelegramSignals } from '@/hooks/useTelegramSignals'
 
 export default function TelegramSignalsPage() {
 	const today = dayjs().format('YYYY-MM-DD')
-	const { range, setRange, rangeActive, signals, isLoading, isError, refetch } =
-		useTelegramSignals()
+	const {
+		range,
+		setRange,
+		rangeActive,
+		signals,
+		isLoading,
+		isError,
+		refetch,
+		handleSearch,
+		handleClearSearch
+	} = useTelegramSignals()
 	const hasData = signals.length > 0
 
 	const preferredOrder = [
@@ -100,10 +110,21 @@ export default function TelegramSignalsPage() {
 				Date: {rangeActive ? `${range.start} → ${range.end}` : today}
 			</p>
 			<TelegramDateRangePicker
-				initialStart={today}
-				initialEnd={today}
+				initialStart={range.start || today}
+				initialEnd={range.end || today}
 				onApply={(start, end) => setRange({ start, end })}
 			/>
+			<TelegramSignalsSearch
+				onSearch={handleSearch}
+				onClear={handleClearSearch}
+			/>
+			{modalOpen && modalData && anchorPos && (
+				<TelegramDetailsPopover
+					data={modalData}
+					onClose={closeModal}
+					anchor={anchorPos}
+				/>
+			)}
 			<TelegramSignalsTable
 				columns={columns}
 				signals={signals}
@@ -112,14 +133,6 @@ export default function TelegramSignalsPage() {
 				isError={isError}
 				onRefetch={refetch}
 			/>
-
-			{modalOpen && anchorPos && (
-				<TelegramDetailsPopover
-					anchor={anchorPos}
-					data={modalData}
-					onClose={closeModal}
-				/>
-			)}
 		</div>
 	)
 }
