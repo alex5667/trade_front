@@ -1,8 +1,10 @@
+@use "../../styles/colors.scss" as *;
+
 .rdp {
 	--rdp-cell-size: 32px;
 	--rdp-caption-font-size: 17px;
 	--rdp-background-color: rgba(255, 255, 255, 0.2);
-	--rdp-accent-color: #7551ff;
+	--rdp-accent-color: #{$blue-500};
 	@apply m-1;
 	font-size: 85%;
 }

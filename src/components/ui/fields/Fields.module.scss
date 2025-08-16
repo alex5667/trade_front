@@ -28,7 +28,7 @@
 .fieldDisabled {
 	@apply border-none bg-title-dark dark:bg-white/5;
 	&::placeholder {
-		color: var(--color-text-white, #ffffff);
+		color: colors.$text-white;
 		opacity: 0.15;
 	}
 }

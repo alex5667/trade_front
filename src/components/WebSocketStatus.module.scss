@@ -1,3 +1,5 @@
+@use "../styles/colors.scss" as *;
+
 .container {
 	padding: 1.5rem;
 	max-width: 64rem;
@@ -10,16 +12,16 @@
 .heading {
 	font-size: 1.5rem;
 	font-weight: 700;
-	color: var(--color-gray-900, #111827);
+	color: $gray-900;
 }
 .subtext {
-	color: var(--color-gray-600, #4b5563);
+	color: $gray-600;
 	margin-top: 0.5rem;
 }
 .card {
-	background: var(--color-text-white, #fff);
+	background: $text-white;
 	border-radius: 0.5rem;
-	box-shadow: 0 1px 2px color-mix(in srgb, var(--color-gray-900, #111827) 6%, transparent);
+	box-shadow: 0 1px 2px color-mix(in srgb, $gray-900 6%, transparent);
 	padding: 1rem;
 }
 .row {
@@ -31,7 +33,7 @@
 .h2 {
 	font-size: 1.125rem;
 	font-weight: 600;
-	color: var(--color-gray-900, #111827);
+	color: $gray-900;
 }
 .actions {
 	display: flex;
@@ -39,21 +41,21 @@
 }
 .btn {
 	padding: 0.25rem 0.75rem;
-	color: var(--color-text-white, #ffffff);
+	color: $text-white;
 	border-radius: 0.25rem;
 	transition: background-color 150ms ease;
 }
 .green {
-	background: var(--color-green-500, #10b981);
+	background: $green-500;
 }
 .green:hover {
-	background: var(--color-green-600, #059669);
+	background: $green-600;
 }
 .red {
-	background: var(--color-red-500, #ef4444);
+	background: $red-500;
 }
 .red:hover {
-	background: var(--color-red-600, #dc2626);
+	background: $red-600;
 }
 .grid {
 	display: grid;
@@ -66,7 +68,7 @@
 	}
 }
 .kv {
-	color: var(--color-gray-600, #4b5563);
+	color: $gray-600;
 	font-size: 0.875rem;
 	display: grid;
 	gap: 0.25rem;
@@ -74,14 +76,14 @@
 .alert {
 	margin-top: 1rem;
 	padding: 0.75rem;
-	background: var(--color-red-100, #fee2e2);
-	color: var(--color-red-700, #b91c1c);
+	background: $red-100;
+	color: $red-700;
 	border-radius: 0.5rem;
 }
 .cardTitle {
 	font-size: 1.125rem;
 	font-weight: 600;
-	color: var(--color-gray-900, #111827);
+	color: $gray-900;
 	margin-bottom: 1rem;
 }
 .grid4 {
@@ -95,25 +97,25 @@
 	}
 }
 .k {
-	color: var(--color-gray-600, #4b5563);
+	color: $gray-600;
 	font-size: 0.875rem;
 }
 .badge {
 	margin-top: 0.75rem;
 	padding: 0.75rem;
-	background: var(--color-blue-50, #eff6ff);
-	color: var(--color-blue-300, #60a5fa);
+	background: $blue-50;
+	color: $blue-300;
 	border-radius: 0.5rem;
 }
 .btnBlue {
 	padding: 0.25rem 0.75rem;
-	color: var(--color-text-white, #ffffff);
-	background: var(--color-blue-500, #3b82f6);
+	color: $text-white;
+	background: $blue-500;
 	border-radius: 0.25rem;
 	transition: background-color 150ms ease;
 }
 .btnBlue:hover {
-	background: var(--color-blue-700, #2563eb);
+	background: $blue-700;
 }
 .history {
 	display: flex;
@@ -123,13 +125,13 @@
 	overflow-y: auto;
 }
 .muted {
-	color: var(--color-gray-500, #6b7280);
+	color: $gray-500;
 	text-align: center;
 	padding: 1rem 0;
 }
 .item {
 	padding: 0.75rem;
-	border: 1px solid var(--color-gray-700, #374151);
+	border: 1px solid $gray-700;
 	border-radius: 0.5rem;
 	display: flex;
 	justify-content: space-between;
@@ -141,10 +143,10 @@
 }
 .time {
 	font-size: 0.875rem;
-	color: var(--color-gray-500, #6b7280);
+	color: $gray-500;
 }
 .debug {
-	background: var(--color-gray-100, #f3f4f6);
+	background: $gray-100;
 	border-radius: 0.5rem;
 	padding: 1rem;
 }
@@ -153,28 +155,28 @@
 	overflow-x: auto;
 }
 .dark .heading {
-	color: var(--color-text-white, #ffffff);
+	color: $text-white;
 }
 .dark .subtext {
-	color: var(--color-gray-400, #9ca3af);
+	color: $gray-400;
 }
 .dark .card {
-	background: var(--color-gray-800, #1f2937);
+	background: $gray-800;
 }
 .dark .h2 {
-	color: var(--color-text-white, #ffffff);
+	color: $text-white;
 }
 .dark .kv {
-	color: var(--color-gray-400, #9ca3af);
+	color: $gray-400;
 }
 .dark .alert {
-	background: var(--color-red-900, #7f1d1d);
-	color: var(--color-red-200, #fecaca);
+	background: $red-900;
+	color: $red-200;
 }
 .dark .badge {
-	background: var(--color-blue-900, #1e3a8a);
-	color: var(--color-blue-200, #93c5fd);
+	background: $blue-900;
+	color: $blue-200;
 }
 .dark .muted {
-	color: var(--color-gray-500, #6b7280);
+	color: $gray-500;
 }

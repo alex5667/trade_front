@@ -1,5 +1,6 @@
 @use "@/styles/variables.scss" as *;
 @use "@/styles/mixins.scss";
+@use "@/styles/colors.scss" as *;
 
 .dashBoardWrapper {
 	@apply bg-bg-dark 
@@ -29,12 +30,12 @@
 
 .mainContent {
 	flex: 1 1 auto; /* flex-1 */
-	border-top: 1px solid var(--color-gray-200, #e5e7eb); /* border-gray-200 */
+	border-top: 1px solid $gray-200; /* border-gray-200 */
 	padding-top: 1rem; /* pt-4 */
 }
 
 .dark .mainContent {
-	border-top-color: var(--color-gray-700, #374151); /* dark:border-gray-700 */
+	border-top-color: $gray-700; /* dark:border-gray-700 */
 }
 
 .sidebarHeaderWrap {

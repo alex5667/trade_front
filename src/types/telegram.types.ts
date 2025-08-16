@@ -28,6 +28,39 @@ export interface TelegramChannel {
 
 export type TelegramChannelUpsert = Partial<Omit<TelegramChannel, 'id' | 'createdAt' | 'updatedAt'>>
 
+// Excel Import API Types
+export interface ImportErrorDto {
+	row: number
+	column: string
+	value: any
+	message: string
+}
+
+export interface ImportedChannelDto {
+	id: string
+	title: string
+	username?: string
+	link?: string
+	row: number
+}
+
+export interface ImportExcelResponseDto {
+	totalRows: number
+	importedCount: number
+	skippedCount: number
+	errorCount: number
+	errors: ImportErrorDto[]
+	imported: ImportedChannelDto[]
+}
+
+export interface ExcelImportInfo {
+	supportedFormats: string[]
+	maxFileSize: string
+	requiredFields: string[]
+	optionalFields: string[]
+	exampleHeaders: string[]
+}
+
 // Parsed telegram signal as in trade_back model TelegramParsedSignal
 export interface TelegramParsedSignal {
 	id?: string

@@ -1,26 +1,27 @@
 @use "@/styles/mixins.scss";
+@use "@/styles/colors.scss" as *;
 
 .badge {
 	border-radius: 0.5rem;
 	min-width: 100%;
 	padding: 0.25rem 0.5rem;
 	font-size: 0.875rem;
-	color: var(--color-text-white, #ffffff);
+	color: $text-white;
 	transition: all 150ms ease-in-out;
 }
 
 .low {
-	background-color: var(--color-blue-200, #bfdbfe);
+	background-color: $blue-200;
 }
 .medium {
-	background-color: var(--color-blue-500, #3b82f6);
+	background-color: $blue-500;
 }
 .high {
-	background-color: var(--color-blue-800, #1e40af);
+	background-color: $blue-800;
 }
 .gray {
-	background-color: color-mix(in srgb, var(--color-gray-900, #111827) 20%, transparent);
+	background-color: color-mix(in srgb, $gray-900 20%, transparent);
 }
 .select {
-	background-color: color-mix(in srgb, var(--color-gray-900, #111827) 30%, transparent);
+	background-color: color-mix(in srgb, $gray-900 30%, transparent);
 }

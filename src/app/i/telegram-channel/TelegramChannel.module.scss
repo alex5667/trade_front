@@ -1,10 +1,20 @@
+@use "sass:math";
+@use "../../../styles/variables" as *;
+@use "../../../styles/colors" as *;
+
 .container {
 	padding: 1rem;
+}
+.headerRow {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.75rem;
 }
 .header {
 	font-size: 1.125rem;
 	font-weight: 600;
-	margin-bottom: 0.75rem;
+	margin: 0;
 }
 .form {
 	display: flex;
@@ -25,25 +35,41 @@
 }
 .fieldLabel {
 	font-size: 0.75rem;
-	color: #6b7280;
+	color: $text-gray;
 	margin-bottom: 0.25rem;
 }
 .buttonPrimary {
 	padding: 0.25rem 0.75rem;
 	border-radius: 0.375rem;
-	background: #2563eb;
-	color: white;
+	background: $blue-500;
+	color: $text-white;
 	font-size: 0.875rem;
 }
 .button {
 	padding: 0.25rem 0.5rem;
-	border: 1px solid #d1d5db;
+	border: 1px solid $gray-300;
 	border-radius: 0.375rem;
 	font-size: 0.875rem;
 }
 .buttonDanger {
-	color: #dc2626;
-	border-color: #dc2626;
+	color: $red-600;
+	border-color: $red-600;
+}
+.buttonSecondary {
+	padding: 0.5rem 1rem;
+	border: 1px solid $gray-300;
+	border-radius: 0.375rem;
+	background: $text-white;
+	color: $gray-700;
+	font-size: 0.875rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s;
+
+	&:hover {
+		background: $gray-100;
+		border-color: $gray-400;
+	}
 }
 .list {
 	display: flex;
@@ -51,7 +77,7 @@
 	gap: 0.5rem;
 }
 .item {
-	border: 1px solid #e5e7eb;
+	border: 1px solid $gray-200;
 	border-radius: 0.5rem;
 	padding: 0.75rem;
 }
@@ -66,7 +92,7 @@
 	}
 }
 .value {
-	color: #1f2937;
+	color: $gray-800;
 	font-size: 0.75rem;
 }
 .actions {

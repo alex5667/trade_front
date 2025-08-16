@@ -1,3 +1,6 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/colors" as *;
+
 .root {
 	width: 100%;
 }
@@ -11,6 +14,6 @@
 	width: 66.6667%;
 }
 .submit {
-	color: var(--text-white, #fff);
+	color: $text-white;
 	padding: 0.5rem 2rem;
 }

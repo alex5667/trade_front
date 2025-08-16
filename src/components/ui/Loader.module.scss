@@ -1,3 +1,5 @@
+@use "../../styles/colors.scss" as *;
+
 .container {
 	display: flex;
 	justify-content: center;
@@ -7,7 +9,7 @@
 	animation: spin 1s linear infinite;
 	height: 1.25rem;
 	width: 1.25rem;
-	color: var(--color-text-white, #ffffff);
+	color: $text-white;
 }
 @keyframes spin {
 	from {

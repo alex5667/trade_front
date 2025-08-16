@@ -1,5 +1,6 @@
 @use "@/styles/mixins.scss";
 @use "@/styles/variables.scss" as *;
+@use "@/styles/colors.scss" as *;
 
 .authContainer {
 	@apply min-h-screen flex items-center justify-center p-4;
@@ -12,8 +13,8 @@
 	background: rgba($color-text-white, 0.95);
 	border: 1px solid rgba($color-text-white, 0.3);
 	box-shadow:
-		0 8px 32px rgba(0, 0, 0, 0.15),
-		0 4px 16px rgba(0, 0, 0, 0.1);
+		0 8px 32px rgba($bg-dark, 0.15),
+		0 4px 16px rgba($bg-dark, 0.1);
 }
 
 .authHeader {
@@ -39,7 +40,7 @@
 .authMethodButtonActive {
 	background: rgba($color-text-white, 0.95);
 	color: $color-primary;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 2px 8px rgba($bg-dark, 0.15);
 }
 .authMethodButtonInactive {
 	color: $color-text-gray;
@@ -134,10 +135,10 @@
 	background: rgba($color-text-white, 0.95);
 	border: 1px solid rgba($color-border-light, 0.9);
 	color: $color-text-primary;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	box-shadow: 0 2px 8px rgba($bg-dark, 0.08);
 	&:hover {
 		background: rgba($color-border-light, 0.95);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+		box-shadow: 0 4px 12px rgba($bg-dark, 0.12);
 		transform: translateY(-1px);
 	}
 	&:focus {

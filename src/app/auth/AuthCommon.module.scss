@@ -1,3 +1,5 @@
+@use "../../styles/colors.scss" as *;
+
 .centerScreen {
 	min-height: 100vh;
 	display: flex;
@@ -16,7 +18,7 @@
 	animation: spin 1s linear infinite;
 	height: 3rem;
 	width: 3rem;
-	border-bottom: 2px solid var(--color-gray-900, #111827);
+	border-bottom: 2px solid $gray-900;
 	border-radius: 9999px;
 	margin: 0 auto;
 }

@@ -1,16 +1,18 @@
+@use "colors.scss" as *;
+
 $minWidth: 320;
 $maxWidth: 1920;
 $maxWidthContainer: 1680;
 $containerPadding: 30;
 $containerWidth: $maxWidthContainer + $containerPadding;
-$borderRed: #f95454;
-$secondary: #afbfc0cc;
-$borderColor: #4f3dace6;
-$white: #ffff;
+$borderRed: $red-500;
+$secondary: $text-gray;
+$borderColor: $blue-500;
+$white: $text-white;
 $tablet: 991.98px; // Планшети, деякі телефони в горизонтальному положенні
 $mobile: 767.98px; // Телефони L
 $mobileSmall: 479.98px;
-$darkening: rgba(0, 0, 0, 0.05);
+$darkening: rgba($bg-dark, 0.05);
 
 // CSS переменные для цветов (для использования в SCSS)
 $color-primary: var(--color-primary);

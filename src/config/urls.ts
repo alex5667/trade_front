@@ -49,6 +49,7 @@ export const URLS = {
 	TELEGRAM_SIGNALS: '/telegram-signals/parsed',
 	TELEGRAM_CHANNEL: '/telegram-channel',
 	TELEGRAM_CHANNELS: '/telegram-channels',
+	TELEGRAM_CHANNELS_EXCEL: '/telegram-channels/excel',
 	SYMBOLS_TO_REDIS: '/symbols-to-redis',
 } as const
 

@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { URLS } from '@/config/urls'
 import { setTelegramChannels } from '@/store/signals/slices/telegramChannels.slice'
-import type { TelegramChannelUpsert } from '@/types/telegram.types'
+import type { ExcelImportInfo, ImportExcelResponseDto, TelegramChannelUpsert } from '@/types/telegram.types'
 import { baseQueryWIthReAuth } from './baseQueries'
 
 export interface TelegramChannel {
@@ -104,7 +104,39 @@ export const telegramChannelApi = createApi({
 			query: (id) => ({ url: `${URLS.TELEGRAM_CHANNEL}/${id}`, method: 'DELETE' }),
 			invalidatesTags: (_res, _err, id) => [{ type: 'TelegramChannel', id } as any, 'TelegramChannel'],
 		}),
+
+		// Excel Import API endpoints
+		getExcelImportInfo: builder.query<ExcelImportInfo, void>({
+			query: () => ({ url: `${URLS.TELEGRAM_CHANNELS_EXCEL}/info`, method: 'GET' }),
+		}),
+
+		downloadExcelTemplate: builder.query<Blob, void>({
+			query: () => ({
+				url: `${URLS.TELEGRAM_CHANNELS_EXCEL}/template`,
+				method: 'GET',
+				responseHandler: (response) => response.blob()
+			}),
+		}),
+
+		uploadExcelFile: builder.mutation<ImportExcelResponseDto, FormData>({
+			query: (formData) => ({
+				url: `${URLS.TELEGRAM_CHANNELS_EXCEL}/upload`,
+				method: 'POST',
+				body: formData,
+				formData: true
+			}),
+			invalidatesTags: ['TelegramChannel'],
+		}),
 	})
 })
 
-export const { useGetTelegramChannelsQuery, useGetTelegramChannelByIdQuery, useCreateTelegramChannelMutation, useUpdateTelegramChannelMutation, useDeleteTelegramChannelMutation } = telegramChannelApi 
+export const {
+	useGetTelegramChannelsQuery,
+	useGetTelegramChannelByIdQuery,
+	useCreateTelegramChannelMutation,
+	useUpdateTelegramChannelMutation,
+	useDeleteTelegramChannelMutation,
+	useGetExcelImportInfoQuery,
+	useDownloadExcelTemplateQuery,
+	useUploadExcelFileMutation
+} = telegramChannelApi 

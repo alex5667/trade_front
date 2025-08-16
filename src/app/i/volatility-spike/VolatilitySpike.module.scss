@@ -1,3 +1,5 @@
+@use "../../../styles/colors.scss" as *;
+
 .pageWrap {
 	padding: 1rem;
 }
@@ -10,19 +12,19 @@
 	margin-bottom: 1rem;
 	padding: 0.75rem;
 	border-radius: 0.5rem;
-	background-color: var(--color-yellow-100, #fef3c7);
-	color: var(--color-yellow-800, #92400e);
+	background-color: $yellow-100;
+	color: $yellow-800;
 }
 .statusError {
 	margin-bottom: 1rem;
 	padding: 0.75rem;
 	border-radius: 0.5rem;
-	background-color: var(--color-red-100, #fee2e2);
-	color: var(--color-red-800, #991b1b);
+	background-color: $red-100;
+	color: $red-800;
 }
 .emptyBox {
 	padding: 1rem;
 	border-radius: 0.5rem;
-	background-color: var(--color-gray-100, #f3f4f6);
-	color: var(--color-gray-700, #374151);
+	background-color: $gray-100;
+	color: $gray-700;
 }

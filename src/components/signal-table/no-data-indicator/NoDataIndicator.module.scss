@@ -1,3 +1,5 @@
+@use "../../../styles/colors.scss" as *;
+
 .noDataContainer {
 	display: flex;
 	justify-content: center;
@@ -5,7 +7,7 @@
 }
 
 .noDataMessage {
-	color: var(--color-gray-500, #6b7280);
+	color: $gray-500;
 	font-size: 16px;
 	text-align: center;
 }

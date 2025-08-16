@@ -15,7 +15,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: color-mix(in srgb, var(--color-brand-beige, #dfccc2) 80%, transparent);
+		background: color-mix(in srgb, colors.$brand-beige 80%, transparent);
 		z-index: 2;
 		pointer-events: none;
 	}
@@ -80,9 +80,9 @@
 	font-weight: 600;
 
 	text-shadow:
-		1px 1px 2px rgba(0, 0, 0, 0.3),
-		2px 2px 4px rgba(0, 0, 0, 0.3),
-		3px 3px 6px rgba(0, 0, 0, 0.3);
+		1px 1px 2px rgba(colors.$bg-dark, 0.3),
+		2px 2px 4px rgba(colors.$bg-dark, 0.3),
+		3px 3px 6px rgba(colors.$bg-dark, 0.3);
 }
 
 .textStyleFood {
@@ -94,7 +94,7 @@
 	font-weight: 600;
 
 	text-shadow:
-		1px 1px 2px rgba(0, 0, 0, 0.3),
-		2px 2px 4px rgba(0, 0, 0, 0.3),
-		3px 3px 6px rgba(0, 0, 0, 0.3);
+		1px 1px 2px rgba(colors.$bg-dark, 0.3),
+		2px 2px 4px rgba(colors.$bg-dark, 0.3),
+		3px 3px 6px rgba(colors.$bg-dark, 0.3);
 }

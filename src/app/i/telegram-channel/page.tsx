@@ -1,5 +1,8 @@
 'use client'
 
+import { useState } from 'react'
+
+import ChannelsExcelUploader from '@/components/telegram/channel/ChannelsExcelUploader'
 import { TelegramChannelForm } from '@/components/telegram/channel/TelegramChannelForm'
 import { TelegramChannelList } from '@/components/telegram/channel/TelegramChannelList'
 import { TelegramChannelSearch } from '@/components/telegram/channel/TelegramChannelSearch'
@@ -10,6 +13,8 @@ import styles from './TelegramChannel.module.scss'
 import type { CreateTelegramChannelDto } from '@/services/telegramChannel.api'
 
 export default function TelegramChannelPage() {
+	const [showExcelUploader, setShowExcelUploader] = useState(false)
+
 	const {
 		channels,
 		isLoading,
@@ -35,9 +40,34 @@ export default function TelegramChannelPage() {
 		await deleteChannel(id).unwrap()
 	}
 
+	if (showExcelUploader) {
+		return (
+			<div className={styles.container}>
+				<div className={styles.headerRow}>
+					<h1 className={styles.header}>Загрузка каналов из Excel</h1>
+					<button
+						onClick={() => setShowExcelUploader(false)}
+						className={styles.buttonSecondary}
+					>
+						← Назад к списку
+					</button>
+				</div>
+				<ChannelsExcelUploader />
+			</div>
+		)
+	}
+
 	return (
 		<div className={styles.container}>
-			<h1 className={styles.header}>Telegram Channels</h1>
+			<div className={styles.headerRow}>
+				<h1 className={styles.header}>Telegram Channels</h1>
+				<button
+					onClick={() => setShowExcelUploader(true)}
+					className={styles.buttonSecondary}
+				>
+					📊 Загрузить из Excel
+				</button>
+			</div>
 			<TelegramChannelForm
 				onCreate={handleCreate}
 				className={styles.form}

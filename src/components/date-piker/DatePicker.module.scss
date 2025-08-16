@@ -22,8 +22,8 @@
 }
 
 .past {
-	background-color: color-mix(in srgb, var(--color-red-100, #fee2e2) 60%, transparent);
-	color: var(--color-gray-400, #9ca3af);
+	background-color: color-mix(in srgb, colors.$red-100 60%, transparent);
+	color: colors.$gray-400;
 }
 
 .dateButton {

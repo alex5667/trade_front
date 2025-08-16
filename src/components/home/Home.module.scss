@@ -1,5 +1,7 @@
 @use "@/styles/mixins.scss";
 @use "@/styles/variables.scss";
+@use "@/styles/colors.scss" as *;
+
 .header__container {
 	@apply pt-3;
 	display: flex;
@@ -25,7 +27,7 @@
 	// animation: slideIn 0.5s ease-out forwards;
 
 	&:not(:last-child) {
-		border-right: 1px solid var(--color-gray-300, #d1d5db);
+		border-right: 1px solid $gray-300;
 		@media (max-width: 1050px) {
 			border: none;
 		}
@@ -55,7 +57,7 @@
 	width: 100%;
 	position: relative;
 	&:not(:last-child) {
-		border-bottom: 1px solid color-mix(in srgb, var(--color-text-white, #ffffff) 80%, transparent);
+		border-bottom: 1px solid color-mix(in srgb, $text-white 80%, transparent);
 	}
 	@media (max-width: 1050px) {
 		width: 100%;
@@ -95,7 +97,7 @@
 		width: 100%;
 		height: 2px;
 		border-radius: 4px;
-		background-color: color-mix(in oklab, var(--color-brand-brown, #794f45) 20%, transparent);
+		background-color: color-mix(in oklab, $brand-brown 20%, transparent);
 		z-index: 2;
 		transition:
 			height 0.3s ease,
@@ -108,7 +110,7 @@
 		}
 		&:hover {
 			// > span {
-			color: var(--color-text-white, #ffffff);
+			color: $text-white;
 			// }
 		}
 	}
@@ -116,7 +118,7 @@
 
 .formattedDate {
 	&:hover {
-		color: var(--color-text-white, #ffffff);
+		color: $text-white;
 	}
 	@include mixins.adaptiveValue("font-size", 18, 16);
 }
@@ -157,7 +159,7 @@
 		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
-		background: color-mix(in oklab, var(--color-brand-brown, #794f45) 27%, transparent);
+		background: color-mix(in oklab, $brand-brown 27%, transparent);
 		z-index: 2;
 		pointer-events: none;
 	}
@@ -170,16 +172,16 @@
 		min-width: 100%;
 		height: 100%;
 		border-radius: 4px;
-		background: color-mix(in srgb, var(--color-gray-900, #111827) 12%, transparent);
+		background: color-mix(in srgb, $gray-900 12%, transparent);
 		z-index: 3;
 		pointer-events: none;
 	}
 
 	&:nth-child(even)::before {
-		background: color-mix(in oklab, var(--color-brand-brown, #794f45) 37%, transparent);
+		background: color-mix(in oklab, $brand-brown 37%, transparent);
 	}
 	&:nth-child(even)::after {
-		background: color-mix(in srgb, var(--color-gray-900, #111827) 15%, transparent);
+		background: color-mix(in srgb, $gray-900 15%, transparent);
 	}
 	.dishRowSpan {
 		@apply text-white relative z-10 italic;
