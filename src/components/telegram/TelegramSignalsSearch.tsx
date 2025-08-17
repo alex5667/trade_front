@@ -10,6 +10,9 @@ interface TelegramSignalsSearchProps {
 export interface SearchFilters {
 	username?: string
 	symbol?: string
+	direction?: string
+	timeframe?: string
+	exchange?: string
 }
 
 export const TelegramSignalsSearch = ({
@@ -18,7 +21,10 @@ export const TelegramSignalsSearch = ({
 }: TelegramSignalsSearchProps) => {
 	const [filters, setFilters] = useState<SearchFilters>({
 		username: '',
-		symbol: ''
+		symbol: '',
+		direction: '',
+		timeframe: '',
+		exchange: ''
 	})
 
 	const handleInputChange = useCallback(
@@ -44,7 +50,10 @@ export const TelegramSignalsSearch = ({
 	const handleClear = useCallback(() => {
 		setFilters({
 			username: '',
-			symbol: ''
+			symbol: '',
+			direction: '',
+			timeframe: '',
+			exchange: ''
 		})
 		// Сразу отправляем пустой поиск для загрузки всех сигналов
 		onClear()
@@ -86,6 +95,45 @@ export const TelegramSignalsSearch = ({
 						onChange={e => handleInputChange('symbol', e.target.value)}
 						onKeyPress={handleKeyPress}
 						placeholder='Введите символ (BTC, ETH, etc.)'
+						className={styles.searchInput}
+					/>
+				</div>
+
+				<div className={styles.searchField}>
+					<label className={styles.searchLabel}>Direction</label>
+					<select
+						value={filters.direction}
+						onChange={e => handleInputChange('direction', e.target.value)}
+						className={styles.searchInput}
+					>
+						<option value=''>Все направления</option>
+						<option value='long'>Long</option>
+						<option value='short'>Short</option>
+						<option value='buy'>Buy</option>
+						<option value='sell'>Sell</option>
+					</select>
+				</div>
+
+				<div className={styles.searchField}>
+					<label className={styles.searchLabel}>Timeframe</label>
+					<input
+						type='text'
+						value={filters.timeframe}
+						onChange={e => handleInputChange('timeframe', e.target.value)}
+						onKeyPress={handleKeyPress}
+						placeholder='1m, 5m, 1h, 4h, 1d'
+						className={styles.searchInput}
+					/>
+				</div>
+
+				<div className={styles.searchField}>
+					<label className={styles.searchLabel}>Exchange</label>
+					<input
+						type='text'
+						value={filters.exchange}
+						onChange={e => handleInputChange('exchange', e.target.value)}
+						onKeyPress={handleKeyPress}
+						placeholder='Binance, Bybit, etc.'
 						className={styles.searchInput}
 					/>
 				</div>

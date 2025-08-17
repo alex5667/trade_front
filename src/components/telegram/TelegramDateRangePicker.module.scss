@@ -1,0 +1,64 @@
+@use "../../styles/colors.scss" as *;
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	align-items: flex-start;
+	margin-bottom: 0.75rem;
+
+	@media (min-width: 768px) {
+		flex-direction: row;
+		align-items: flex-end;
+	}
+}
+
+.dateInputs {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+
+	@media (min-width: 768px) {
+		flex-direction: row;
+		gap: 1rem;
+	}
+}
+
+.dateField {
+	display: flex;
+	flex-direction: column;
+}
+
+.dateLabel {
+	font-size: 0.75rem;
+	color: $gray-500;
+	margin-bottom: 0.25rem;
+}
+
+.dateInput {
+	border: 1px solid $gray-600;
+	border-radius: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.875rem;
+	background-color: $gray-700;
+	color: $text-white;
+	border-color: $gray-600;
+
+	&:focus {
+		outline: none;
+		border-color: $blue-500;
+	}
+}
+
+.applyButton {
+	padding: 0.25rem 0.75rem;
+	border-radius: 0.25rem;
+	background-color: $blue-600;
+	color: $text-white;
+	font-size: 0.875rem;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $blue-700;
+	}
+}

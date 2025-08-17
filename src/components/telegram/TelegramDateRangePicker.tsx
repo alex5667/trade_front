@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import styles from './TelegramDateRangePicker.module.scss'
+
 interface TelegramDateRangePickerProps {
 	initialStart: string
 	initialEnd: string
@@ -20,30 +22,32 @@ export const TelegramDateRangePicker = ({
 	}
 
 	return (
-		<div className='flex flex-col md:flex-row gap-2 items-start md:items-end mb-3'>
-			<div className='flex flex-col'>
-				<label className='text-xs text-gray-500 mb-1'>Start date</label>
-				<input
-					type='date'
-					className='border rounded px-2 py-1 text-sm'
-					value={startDate}
-					onChange={e => setStartDate(e.target.value)}
-				/>
-			</div>
-			<div className='flex flex-col'>
-				<label className='text-xs text-gray-500 mb-1'>End date</label>
-				<input
-					type='date'
-					className='border rounded px-2 py-1 text-sm'
-					value={endDate}
-					onChange={e => setEndDate(e.target.value)}
-				/>
+		<div className={styles.container}>
+			<div className={styles.dateInputs}>
+				<div className={styles.dateField}>
+					<label className={styles.dateLabel}>Начальная дата</label>
+					<input
+						type='date'
+						className={styles.dateInput}
+						value={startDate}
+						onChange={e => setStartDate(e.target.value)}
+					/>
+				</div>
+				<div className={styles.dateField}>
+					<label className={styles.dateLabel}>Конечная дата</label>
+					<input
+						type='date'
+						className={styles.dateInput}
+						value={endDate}
+						onChange={e => setEndDate(e.target.value)}
+					/>
+				</div>
 			</div>
 			<button
 				onClick={handleApply}
-				className='px-3 py-1 rounded bg-blue-600 text-white text-sm hover:bg-blue-700'
+				className={styles.applyButton}
 			>
-				Apply
+				Применить
 			</button>
 		</div>
 	)

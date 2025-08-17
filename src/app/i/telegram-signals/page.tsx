@@ -32,17 +32,20 @@ export default function TelegramSignalsPage() {
 		'channel',
 		'source',
 		'username',
-		'chatId',
-		'chatTitle',
 		'symbol',
 		'ticker',
 		'direction',
+		'timeframe',
+		'exchange',
 		'price',
 		'entry',
 		'stop',
 		'take',
 		'tp',
 		'takeProfit',
+		'leverage',
+		'riskPct',
+		'tpPct',
 		'message',
 		'text',
 		'link',
@@ -56,8 +59,6 @@ export default function TelegramSignalsPage() {
 	]
 
 	const hiddenMainColumns = new Set([
-		'timeframe',
-		'exchange',
 		'chatId',
 		'chatTitle',
 		'confidence',
@@ -65,6 +66,35 @@ export default function TelegramSignalsPage() {
 		'createdAt',
 		'msgId'
 	])
+
+	// Маппинг для более понятных названий колонок
+	const columnLabels: Record<string, string> = {
+		time: 'Время',
+		timestamp: 'Дата/Время',
+		date: 'Дата',
+		channel: 'Канал',
+		source: 'Источник',
+		username: 'Username',
+		symbol: 'Символ',
+		ticker: 'Тикер',
+		direction: 'Направление',
+		timeframe: 'Таймфрейм',
+		exchange: 'Биржа',
+		price: 'Цена',
+		entry: 'Entry',
+		stop: 'Stop Loss',
+		take: 'Take Profit',
+		tp: 'Take Profit',
+		takeProfit: 'Take Profit',
+		leverage: 'Плечо',
+		riskPct: 'Риск %',
+		tpPct: 'TP %',
+		message: 'Сообщение',
+		text: 'Текст',
+		link: 'Ссылка',
+		url: 'URL',
+		membersCount: 'Участники'
+	}
 
 	const columns = useMemo(() => {
 		if (!hasData) return ['time', 'channel', 'symbol', 'message']
@@ -80,7 +110,12 @@ export default function TelegramSignalsPage() {
 			.filter(k => !orderedPreferred.includes(k) && !hiddenMainColumns.has(k))
 			.sort((a, b) => a.localeCompare(b))
 		return [...orderedPreferred, ...remaining]
-	}, [signals, hasData, preferredOrder])
+	}, [signals, hasData, preferredOrder, hiddenMainColumns])
+
+	// Функция для получения отображаемого названия колонки
+	const getColumnLabel = (column: string) => {
+		return columnLabels[column] || column
+	}
 
 	const [modalOpen, setModalOpen] = useState(false)
 	const [modalData, setModalData] = useState<any>(null)
@@ -132,6 +167,7 @@ export default function TelegramSignalsPage() {
 				isLoading={isLoading}
 				isError={isError}
 				onRefetch={refetch}
+				getColumnLabel={getColumnLabel}
 			/>
 		</div>
 	)

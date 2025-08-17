@@ -12,6 +12,7 @@ interface TelegramSignalsTableProps {
 	isLoading: boolean
 	isError: boolean
 	onRefetch: () => void
+	getColumnLabel?: (column: string) => string
 }
 
 type SortDirection = 'asc' | 'desc' | null
@@ -27,7 +28,8 @@ export const TelegramSignalsTable = ({
 	onOpenDetails,
 	isLoading,
 	isError,
-	onRefetch
+	onRefetch,
+	getColumnLabel = (col: string) => col
 }: TelegramSignalsTableProps) => {
 	const [sortState, setSortState] = useState<SortState>({
 		column: null,
@@ -59,7 +61,15 @@ export const TelegramSignalsTable = ({
 			if (aValue == null) return 1
 			if (bValue == null) return -1
 
-			// Попытка числовой сортировки
+			// Специальная обработка для числовых полей
+			const numericFields = ['leverage', 'riskPct', 'tpPct', 'membersCount']
+			if (numericFields.includes(sortState.column!)) {
+				const aNum = parseFloat(String(aValue).replace('%', '')) || 0
+				const bNum = parseFloat(String(bValue).replace('%', '')) || 0
+				return sortState.direction === 'asc' ? aNum - bNum : bNum - aNum
+			}
+
+			// Попытка числовой сортировки для других полей
 			const aNum = Number(aValue)
 			const bNum = Number(bValue)
 			if (!isNaN(aNum) && !isNaN(bNum)) {
@@ -96,10 +106,10 @@ export const TelegramSignalsTable = ({
 								key={col}
 								className={`${tableStyles.cell} ${styles.sortableHeader}`}
 								onClick={() => handleSort(col)}
-								title={`Сортировать по ${col}`}
+								title={`Сортировать по ${getColumnLabel(col)}`}
 							>
 								<div className={styles.headerContent}>
-									<span>{col}</span>
+									<span>{getColumnLabel(col)}</span>
 									<span className={styles.sortIcon}>{getSortIcon(col)}</span>
 								</div>
 							</th>

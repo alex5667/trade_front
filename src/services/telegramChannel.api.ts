@@ -98,36 +98,35 @@ export const telegramChannelApi = createApi({
 		}),
 		updateTelegramChannel: builder.mutation<TelegramChannel, UpdateTelegramChannelDto>({
 			query: ({ id, data }) => ({ url: `${URLS.TELEGRAM_CHANNEL}/${id}`, method: 'PUT', body: data }),
-			invalidatesTags: (_res, _err, arg) => [{ type: 'TelegramChannel', id: arg.id } as any, 'TelegramChannel'],
+			invalidatesTags: ['TelegramChannel'],
 		}),
-		deleteTelegramChannel: builder.mutation<{ success: boolean }, string | number>({
+		deleteTelegramChannel: builder.mutation<{ id: string }, string | number>({
 			query: (id) => ({ url: `${URLS.TELEGRAM_CHANNEL}/${id}`, method: 'DELETE' }),
-			invalidatesTags: (_res, _err, id) => [{ type: 'TelegramChannel', id } as any, 'TelegramChannel'],
+			invalidatesTags: ['TelegramChannel'],
 		}),
-
-		// Excel Import API endpoints
+		// Excel Import endpoints
 		getExcelImportInfo: builder.query<ExcelImportInfo, void>({
 			query: () => ({ url: `${URLS.TELEGRAM_CHANNELS_EXCEL}/info`, method: 'GET' }),
 		}),
-
-		downloadExcelTemplate: builder.query<Blob, void>({
+		downloadExcelTemplate: builder.mutation<Blob, void>({
 			query: () => ({
 				url: `${URLS.TELEGRAM_CHANNELS_EXCEL}/template`,
 				method: 'GET',
 				responseHandler: (response) => response.blob()
 			}),
 		}),
-
-		uploadExcelFile: builder.mutation<ImportExcelResponseDto, FormData>({
-			query: (formData) => ({
+		uploadExcelFile: builder.mutation<ImportExcelResponseDto, any[]>({
+			query: (data) => ({
 				url: `${URLS.TELEGRAM_CHANNELS_EXCEL}/upload`,
 				method: 'POST',
-				body: formData,
-				formData: true
+				body: data,
+				headers: {
+					'Content-Type': 'application/json'
+				}
 			}),
 			invalidatesTags: ['TelegramChannel'],
 		}),
-	})
+	}),
 })
 
 export const {
@@ -137,6 +136,6 @@ export const {
 	useUpdateTelegramChannelMutation,
 	useDeleteTelegramChannelMutation,
 	useGetExcelImportInfoQuery,
-	useDownloadExcelTemplateQuery,
+	useDownloadExcelTemplateMutation,
 	useUploadExcelFileMutation
 } = telegramChannelApi 

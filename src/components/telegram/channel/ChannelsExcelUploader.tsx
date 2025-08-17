@@ -4,6 +4,8 @@ import React, { useMemo, useState } from 'react'
 import * as XLSX from 'xlsx'
 import { z } from 'zod'
 
+import { useUploadExcelFileMutation } from '@/services/telegramChannel.api'
+
 const RowSchema = z.object({
 	title: z.string().min(1),
 	username: z
@@ -13,14 +15,16 @@ const RowSchema = z.object({
 	link: z.string().url().optional(),
 	description: z.string().optional(),
 	language: z.string().optional(),
-	members: z.number().optional(),
+	membersCount: z.number().optional(),
 	price: z.number().optional(),
-	signalsFormat: z.enum(['NONE', 'CSV', 'JSON']).optional(),
+	signalsFormat: z
+		.enum(['NONE', 'ENTRY_SL_TP', 'ANALYTICS', 'BOTH'])
+		.optional(),
 	markets: z.array(z.string()).optional(),
 	tags: z.array(z.string()).optional(),
-	winrate: z.number().optional(),
-	status: z.enum(['ACTIVE', 'INACTIVE', 'SUSPENDED']).optional(),
-	source: z.enum(['MANUAL', 'AUTO', 'IMPORT']).optional()
+	winratePct: z.number().optional(),
+	status: z.enum(['ACTIVE', 'INACTIVE', 'ARCHIVED']).optional(),
+	source: z.enum(['MANUAL', 'SCRAPED', 'IMPORTED']).optional()
 })
 
 type RowDTO = z.infer<typeof RowSchema>
@@ -32,7 +36,8 @@ function normalizeStatus(v?: string) {
 	const s = v.trim().toLowerCase()
 	if (['active', 'enabled', 'live'].includes(s)) return 'ACTIVE'
 	if (['inactive', 'disabled', 'off'].includes(s)) return 'INACTIVE'
-	if (['suspended', 'blocked', 'banned'].includes(s)) return 'SUSPENDED'
+	if (['archived', 'suspended', 'blocked', 'banned'].includes(s))
+		return 'ARCHIVED'
 	return (v[0]?.toUpperCase() ?? '') + v.slice(1)
 }
 
@@ -40,9 +45,19 @@ function normalizeSource(v?: string) {
 	if (!v) return undefined
 	const s = v.trim().toLowerCase()
 	if (['manual', 'hand', 'user'].includes(s)) return 'MANUAL'
-	if (['auto', 'automatic', 'bot'].includes(s)) return 'AUTO'
-	if (['import', 'excel', 'csv'].includes(s)) return 'IMPORT'
+	if (['scraped', 'auto', 'automatic', 'bot'].includes(s)) return 'SCRAPED'
+	if (['imported', 'import', 'excel', 'csv'].includes(s)) return 'IMPORTED'
 	return (v[0]?.toUpperCase() ?? '') + v.slice(1)
+}
+
+function normalizeSignalsFormat(v?: string) {
+	if (!v) return 'NONE'
+	const s = v.trim().toLowerCase()
+	if (['entry_sl_tp', 'entry sl tp', 'entry-sl-tp'].includes(s))
+		return 'ENTRY_SL_TP'
+	if (['analytics', 'analysis'].includes(s)) return 'ANALYTICS'
+	if (['both', 'all', 'full'].includes(s)) return 'BOTH'
+	return 'NONE'
 }
 
 function parseArray(v?: string) {
@@ -61,11 +76,10 @@ function toNumberSafe(v: unknown) {
 
 type SheetMeta = { name: string; rows: number; totalRows: number }
 
-export default function ChannelsExcelUploader({
-	apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? '/api/channels/bulk'
-}: {
-	apiUrl?: string
-}) {
+export default function ChannelsExcelUploader() {
+	const [uploadExcelFile, { isLoading: isUploading }] =
+		useUploadExcelFileMutation()
+
 	const [status, setStatus] = useState<string>('')
 	const [progress, setProgress] = useState<number>(0)
 	const [errors, setErrors] = useState<string[]>([])
@@ -146,27 +160,18 @@ export default function ChannelsExcelUploader({
 			setErrors(['Не выбран ни один лист.'])
 			return
 		}
+
 		setErrors([])
 		setProgress(0)
 		setStatus('Нормализую данные…')
 
-		// объединяем все выбранные листы
+		// Объединяем все выбранные листы
 		const rawRows: Record<string, any>[] = selectedSheets.flatMap(sheet => {
 			const ws = wb.Sheets[sheet]
-
-			// Читаем с заголовками для правильного маппинга колонок
-			const json = XLSX.utils.sheet_to_json(ws, {
-				defval: '',
-				raw: false
-			}) as Record<string, any>[]
-
-			// Фильтруем строки, где есть хотя бы одно непустое значение
-			return json.filter(row =>
-				Object.values(row).some(
-					value =>
-						value !== null && value !== undefined && String(value).trim() !== ''
-				)
-			)
+			return XLSX.utils.sheet_to_json(ws, { defval: '' }) as Record<
+				string,
+				any
+			>[]
 		})
 
 		if (rawRows.length === 0) {
@@ -179,23 +184,25 @@ export default function ChannelsExcelUploader({
 		try {
 			rawRows.forEach((r, idx) => {
 				const dto: RowDTO = {
-					title: String(r['Title'] ?? r['Name'] ?? '').trim(),
-					username: String(r['Username'] ?? r['Telegram_Handle'] ?? '').trim(),
+					title: String(r['Name'] ?? r['Title'] ?? '').trim(),
+					username:
+						String(r['Telegram_Handle'] ?? r['Username'] ?? '').trim() ||
+						undefined,
 					link:
-						String(r['Link'] ?? r['Telegram_URL'] ?? '').trim() || undefined,
+						String(r['Telegram_URL'] ?? r['Link'] ?? '').trim() || undefined,
 					description:
 						String(r['Description'] ?? r['Summary'] ?? '').trim() || undefined,
 					language: String(r['Language'] ?? '').trim() || undefined,
-					members: toNumberSafe(r['Members']),
+					membersCount: toNumberSafe(r['Members']),
 					price: toNumberSafe(r['Price']),
-					signalsFormat: String(
-						r['Signals_Format'] ?? 'NONE'
-					).toUpperCase() as any,
+					signalsFormat: normalizeSignalsFormat(
+						String(r['Signals_Format'] ?? 'NONE')
+					) as any,
 					markets: parseArray(String(r['Markets'] ?? r['Assets'] ?? '')),
 					tags: parseArray(String(r['Tags'] ?? '')),
-					winrate: toNumberSafe(r['Winrate'] ?? r['Claimed_Winrate']),
+					winratePct: toNumberSafe(r['Winrate'] ?? r['Claimed_Winrate']),
 					status: normalizeStatus(String(r['Status'] ?? 'ACTIVE')) as any,
-					source: normalizeSource(String(r['Source'] ?? 'IMPORT')) as any
+					source: normalizeSource(String(r['Source'] ?? 'IMPORTED')) as any
 				}
 				const res = RowSchema.safeParse(dto)
 				if (!res.success) {
@@ -214,32 +221,46 @@ export default function ChannelsExcelUploader({
 		}
 
 		setStatus('Отправляю на бэкенд…')
-		let sent = 0
+		setProgress(50)
+
 		const localErrors: string[] = []
 
-		for (let i = 0; i < mapped.length; i += BATCH_SIZE) {
-			const chunk = mapped.slice(i, i + BATCH_SIZE)
-			try {
-				const resp = await fetch(apiUrl, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ items: chunk })
-				})
-				if (!resp.ok) {
-					const txt = await resp.text().catch(() => '')
-					throw new Error(`HTTP ${resp.status} ${txt}`)
-				}
-			} catch (err: any) {
+		try {
+			// Отправляем данные напрямую как JSON
+			const resp = await uploadExcelFile(mapped as any).unwrap()
+
+			if (resp.errorCount > 0) {
 				localErrors.push(
-					`Батч ${i / BATCH_SIZE + 1}: ${err.message ?? String(err)}`
+					`Импортировано: ${resp.importedCount}, ошибок: ${resp.errorCount}`
 				)
+				if (resp.errors && resp.errors.length > 0) {
+					resp.errors.forEach((err: any) => {
+						localErrors.push(`Строка ${err.row}: ${err.message}`)
+					})
+				}
 			}
-			sent += chunk.length
-			setProgress(Math.round((sent / mapped.length) * 100))
+
+			setProgress(100)
+			setStatus(localErrors.length ? 'Завершено с ошибками' : 'Готово ✅')
+		} catch (err: any) {
+			if (err?.data) {
+				// Ошибка от сервера
+				localErrors.push(
+					`Ошибка сервера: ${err.data.message || 'Неизвестная ошибка'}`
+				)
+			} else if (err?.error) {
+				// Ошибка RTK Query
+				localErrors.push(
+					`Ошибка запроса: ${err.error.data?.message || err.error.status || 'Неизвестная ошибка'}`
+				)
+			} else {
+				// Общая ошибка
+				localErrors.push(`Ошибка отправки: ${err.message ?? String(err)}`)
+			}
+			setStatus('Ошибка импорта')
 		}
 
 		setErrors(localErrors)
-		setStatus(localErrors.length ? 'Завершено с ошибками' : 'Готово ✅')
 	}
 
 	return (
@@ -297,9 +318,17 @@ export default function ChannelsExcelUploader({
 
 					<button
 						onClick={handleImport}
-						className='px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+						className='px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+						disabled={isUploading}
 					>
-						Импортировать
+						{isUploading ? (
+							<div className='flex items-center gap-2'>
+								<div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+								Импортирую...
+							</div>
+						) : (
+							'Импортировать'
+						)}
 					</button>
 				</div>
 			)}
@@ -368,7 +397,7 @@ export default function ChannelsExcelUploader({
 					</div>
 					<div>
 						<code className='bg-gray-200 px-1 rounded'>Status</code> - статус
-						(ACTIVE/INACTIVE)
+						(ACTIVE/INACTIVE/ARCHIVED)
 					</div>
 					<div>
 						<code className='bg-gray-200 px-1 rounded'>Winrate</code> - винрейт
@@ -377,6 +406,14 @@ export default function ChannelsExcelUploader({
 					<div>
 						<code className='bg-gray-200 px-1 rounded'>Markets (csv)</code> -
 						рынки через запятую
+					</div>
+					<div>
+						<code className='bg-gray-200 px-1 rounded'>Signals_Format</code> -
+						формат сигналов (NONE/ENTRY_SL_TP/ANALYTICS/BOTH)
+					</div>
+					<div>
+						<code className='bg-gray-200 px-1 rounded'>Source</code> - источник
+						(MANUAL/SCRAPED/IMPORTED)
 					</div>
 				</div>
 			</div>

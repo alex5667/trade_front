@@ -1,19 +1,51 @@
-.expandBtn {
-	@apply bg-blue-600 hover:bg-blue-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold cursor-pointer transition-colors;
-}
-
-.refetchLink {
-	@apply text-blue-500 hover:text-blue-700 underline cursor-pointer;
-}
+@use "../../styles/colors.scss" as *;
 
 .sortableHeader {
-	@apply cursor-pointer hover:bg-gray-700 transition-colors select-none;
+	cursor: pointer;
+	user-select: none;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: rgba($gray-700, 0.1);
+	}
 }
 
 .headerContent {
-	@apply flex items-center justify-between gap-2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
 }
 
 .sortIcon {
-	@apply text-xs opacity-70;
+	font-size: 0.75rem;
+	opacity: 0.7;
+}
+
+.expandBtn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0.25rem 0.5rem;
+	border-radius: 0.25rem;
+	background-color: $blue-500;
+	color: $text-white;
+	font-weight: bold;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $blue-600;
+	}
+}
+
+.refetchLink {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: $blue-500;
+	text-decoration: underline;
+
+	&:hover {
+		color: $blue-600;
+	}
 }

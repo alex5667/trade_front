@@ -17,15 +17,28 @@ export const useTelegramSignals = () => {
 
 	// Фильтруем сигналы по поисковым критериям
 	const filteredSignals = useMemo(() => {
-		if (!searchFilters.username && !searchFilters.symbol) return signalsFromStore
+		if (!searchFilters.username && !searchFilters.symbol &&
+			!searchFilters.direction && !searchFilters.timeframe && !searchFilters.exchange) {
+			return signalsFromStore
+		}
 
 		return signalsFromStore.filter(signal => {
 			const usernameMatch = !searchFilters.username ||
 				(signal.username && signal.username.toLowerCase().includes(searchFilters.username.toLowerCase()))
+
 			const symbolMatch = !searchFilters.symbol ||
 				(signal.symbol && signal.symbol.toLowerCase().includes(searchFilters.symbol.toLowerCase()))
 
-			return usernameMatch && symbolMatch
+			const directionMatch = !searchFilters.direction ||
+				(signal.direction && signal.direction.toLowerCase().includes(searchFilters.direction.toLowerCase()))
+
+			const timeframeMatch = !searchFilters.timeframe ||
+				(signal.timeframe && signal.timeframe.toLowerCase().includes(searchFilters.timeframe.toLowerCase()))
+
+			const exchangeMatch = !searchFilters.exchange ||
+				(signal.exchange && signal.exchange.toLowerCase().includes(searchFilters.exchange.toLowerCase()))
+
+			return usernameMatch && symbolMatch && directionMatch && timeframeMatch && exchangeMatch
 		})
 	}, [searchFilters, signalsFromStore])
 

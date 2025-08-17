@@ -1,36 +1,92 @@
+@use "../../styles/colors.scss" as *;
+
 // Стили для поиска Telegram сигналов
 .searchContainer {
-	@apply bg-gray-800 rounded-lg p-4 mb-6 border border-gray-700;
+	background-color: $gray-800;
+	border-radius: 0.5rem;
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+	border: 1px solid $gray-700;
 }
 
 .searchTitle {
-	@apply text-lg font-semibold text-white mb-4 text-center;
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: $text-white;
+	margin-bottom: 1rem;
+	text-align: center;
 }
 
 .searchGrid {
-	@apply grid grid-cols-1 md:grid-cols-2 gap-4 mb-4;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+	margin-bottom: 1rem;
+
+	@media (min-width: 768px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media (min-width: 1024px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
 }
 
 .searchField {
-	@apply flex flex-col;
+	display: flex;
+	flex-direction: column;
 }
 
 .searchLabel {
-	@apply text-sm text-gray-300 mb-1 font-medium;
+	font-size: 0.875rem;
+	color: $gray-300;
+	margin-bottom: 0.25rem;
+	font-weight: 500;
 }
 
 .searchInput {
-	@apply px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors;
+	padding: 0.5rem 0.75rem;
+	background-color: $gray-700;
+	border: 1px solid $gray-600;
+	border-radius: 0.25rem;
+	color: $text-white;
+	placeholder-color: $gray-400;
+	transition: border-color 0.2s ease;
+
+	&:focus {
+		outline: none;
+		border-color: $blue-500;
+	}
 }
 
 .searchActions {
-	@apply flex justify-center gap-4;
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
 }
 
 .searchButton {
-	@apply px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors;
+	padding: 0.5rem 1.5rem;
+	background-color: $blue-600;
+	color: $text-white;
+	border-radius: 0.25rem;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $blue-700;
+	}
 }
 
 .clearButton {
-	@apply px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded font-medium transition-colors;
+	padding: 0.5rem 1.5rem;
+	background-color: $gray-600;
+	color: $text-white;
+	border-radius: 0.25rem;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $gray-700;
+	}
 }
