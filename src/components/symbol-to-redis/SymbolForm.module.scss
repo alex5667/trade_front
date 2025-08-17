@@ -1,52 +1,107 @@
+@use "../../styles/colors.scss" as *;
+
 // Стили для формы символа
 .form {
-	@apply bg-gray-800 rounded-lg p-6 border border-gray-700;
+	background-color: $gray-800;
+	border-radius: 0.5rem;
+	padding: 1.5rem;
+	border: 1px solid $gray-700;
 }
 
 .formHeader {
-	@apply mb-6 text-center;
+	margin-bottom: 1.5rem;
+	text-align: center;
 }
 
 .title {
-	@apply text-xl font-semibold text-white;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: $text-white;
 }
 
 .formGrid {
-	@apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+
+	@media (min-width: 768px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	@media (min-width: 1024px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
 }
 
 .formField {
-	@apply flex flex-col;
+	display: flex;
+	flex-direction: column;
 }
 
 .label {
-	@apply text-sm text-gray-300 mb-2 font-medium;
+	font-size: 0.875rem;
+	color: $gray-300;
+	margin-bottom: 0.5rem;
+	font-weight: 500;
 }
 
 .select {
-	@apply px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-blue-500 transition-colors;
+	padding: 0.5rem 0.75rem;
+	background-color: $gray-700;
+	border: 1px solid $gray-600;
+	border-radius: 0.25rem;
+	color: $text-white;
+	transition: border-color 0.2s ease;
+
+	&:focus {
+		outline: none;
+		border-color: $blue-500;
+	}
 }
 
 .timeframeSection {
-	@apply mb-6;
+	margin-bottom: 1.5rem;
 }
 
 .noteSection {
-	@apply mb-6;
+	margin-bottom: 1.5rem;
 }
 
 .formActions {
-	@apply flex justify-end gap-4;
+	display: flex;
+	justify-content: flex-end;
+	gap: 1rem;
 }
 
 .cancelButton {
-	@apply px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded font-medium transition-colors;
+	padding: 0.5rem 1.5rem;
+	background-color: $gray-600;
+	color: $text-white;
+	border-radius: 0.25rem;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $gray-700;
+	}
 }
 
 .submitButton {
-	@apply px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors;
+	padding: 0.5rem 1.5rem;
+	background-color: $blue-600;
+	color: $text-white;
+	border-radius: 0.25rem;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $blue-700;
+	}
 }
 
 .error {
-	@apply text-red-400 text-sm mt-1;
+	color: $red-400;
+	font-size: 0.875rem;
+	margin-top: 0.25rem;
 }

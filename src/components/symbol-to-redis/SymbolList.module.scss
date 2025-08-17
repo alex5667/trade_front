@@ -1,44 +1,77 @@
+@use "../../styles/colors.scss" as *;
+
 // Стили для списка символов
 .container {
-	@apply bg-gray-800 rounded-lg border border-gray-700;
+	background-color: $gray-800;
+	border-radius: 0.5rem;
+	border: 1px solid $gray-700;
 }
 
 .header {
-	@apply flex justify-between items-center p-6 border-b border-gray-700;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1.5rem;
+	border-bottom: 1px solid $gray-700;
 }
 
 .title {
-	@apply text-xl font-semibold text-white;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: $text-white;
 }
 
 .addButton {
-	@apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition-colors;
+	padding: 0.5rem 1rem;
+	background-color: $blue-600;
+	color: $text-white;
+	border-radius: 0.25rem;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $blue-700;
+	}
 }
 
 .formOverlay {
-	@apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50;
+	position: fixed;
+	inset: 0;
+	background-color: rgba($bg-dark, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	z-index: 50;
 }
 
 .tableContainer {
-	@apply overflow-x-auto;
+	overflow-x: auto;
 }
 
 .table {
-	@apply w-full;
+	width: 100%;
 }
 
 .tableHeader {
-	@apply bg-gray-700;
+	background-color: $gray-700;
 }
 
 .headerCell {
-	@apply px-4 py-3 text-left text-sm font-medium text-gray-300 border-b border-gray-600;
+	padding: 0.75rem 1rem;
+	text-align: left;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: $gray-300;
+	border-bottom: 1px solid $gray-600;
 }
 
 .tableBody {
-	@apply bg-gray-800;
+	background-color: $gray-800;
 }
 
 .emptyCell {
-	@apply px-4 py-8 text-center text-gray-400;
+	padding: 2rem 0.75rem;
+	text-align: center;
+	color: $gray-400;
 }

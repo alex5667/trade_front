@@ -1,7 +1,10 @@
 import { FormEvent, useState } from 'react'
 
+import { SingleSelect } from '@/components/single-selest/SingleSelect'
 import { Checkbox } from '@/components/ui/checkbox/Checkbox'
 import { SimpleField } from '@/components/ui/fields/SImpleField'
+
+import type { ChannelStatus, Source } from '@/types/telegram.types'
 
 import chStyles from './Channel.module.scss'
 import type { CreateTelegramChannelDto } from '@/services/telegramChannel.api'
@@ -36,7 +39,21 @@ export const TelegramChannelForm = ({
 		status: 'ACTIVE',
 		source: 'MANUAL'
 	})
+
 	const setField = (k: string, v: any) => setForm(p => ({ ...p, [k]: v }))
+
+	const statusOptions = [
+		{ label: 'Active', value: 'ACTIVE' },
+		{ label: 'Inactive', value: 'INACTIVE' },
+		{ label: 'Archived', value: 'ARCHIVED' }
+	]
+
+	const sourceOptions = [
+		{ label: 'Manual', value: 'MANUAL' },
+		{ label: 'Scraped', value: 'SCRAPED' },
+		{ label: 'Imported', value: 'IMPORTED' }
+	]
+
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault()
 		if (!String(form.title || '').trim()) return
@@ -61,8 +78,8 @@ export const TelegramChannelForm = ({
 				.map(s => s.trim())
 				.filter(Boolean),
 			winratePct: form.winratePct === '' ? undefined : String(form.winratePct),
-			status: form.status,
-			source: form.source
+			status: form.status as ChannelStatus,
+			source: form.source as Source
 		}
 		console.log('Create TelegramChannel payload:', payload)
 		await onCreate(payload)
@@ -84,11 +101,14 @@ export const TelegramChannelForm = ({
 			source: 'MANUAL'
 		})
 	}
+
 	const fields: Array<{
 		key: string
 		label: string
 		type?: string
 		isCheckbox?: boolean
+		isSelect?: boolean
+		options?: Array<{ label: string; value: string }>
 	}> = [
 		{ key: 'title', label: 'Title' },
 		{ key: 'username', label: 'Username' },
@@ -103,9 +123,10 @@ export const TelegramChannelForm = ({
 		{ key: 'marketsCsv', label: 'Markets (csv)' },
 		{ key: 'tagsCsv', label: 'Tags (csv)' },
 		{ key: 'winratePct', label: 'Winrate %' },
-		{ key: 'status', label: 'Status' },
-		{ key: 'source', label: 'Source' }
+		{ key: 'status', label: 'Status', isSelect: true, options: statusOptions },
+		{ key: 'source', label: 'Source', isSelect: true, options: sourceOptions }
 	]
+
 	return (
 		<form
 			onSubmit={handleSubmit}
@@ -125,6 +146,15 @@ export const TelegramChannelForm = ({
 								/>{' '}
 								{f.label}
 							</label>
+						) : f.isSelect ? (
+							<div className='flex flex-col w-full text-center'>
+								<label className={`${labelClass} mb-2`}>{f.label}</label>
+								<SingleSelect
+									data={f.options || []}
+									value={form[f.key] || ''}
+									onChange={value => setField(f.key, value)}
+								/>
+							</div>
 						) : (
 							<SimpleField
 								id={f.key}

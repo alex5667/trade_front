@@ -16,16 +16,23 @@ interface SingleSelect {
 	onChange: (value: string) => void
 	value: BadgeVariant | string
 	isColorSelect?: boolean
+	placeholder?: string
 }
 
 export function SingleSelect({
 	data,
 	onChange,
 	value,
-	isColorSelect
+	isColorSelect,
+	placeholder = 'Click for select'
 }: SingleSelect) {
 	const { isShow, ref, setIsShow } = useOutside(false)
-	const getValue = () => data.find(item => item.value === value)?.value
+
+	const getCurrentOption = () => data.find(item => item.value === value)
+	const getDisplayValue = () => {
+		const option = getCurrentOption()
+		return option ? option.label : value || ''
+	}
 
 	return (
 		<div
@@ -39,20 +46,20 @@ export function SingleSelect({
 				}}
 				className={styles.fullWidth}
 			>
-				{getValue() ? (
+				{getCurrentOption() ? (
 					<Badge
-						variant={value as BadgeVariant}
+						variant='medium'
 						className={cn(
 							styles.capitalize,
 							styles.hoverShadow,
 							isColorSelect && styles.colorBadge
 						)}
 					>
-						{getValue()}
+						{getDisplayValue()}
 					</Badge>
 				) : (
 					<Badge className={cn(styles.onPrimary, styles.hoverShadow)}>
-						Click for select
+						{placeholder}
 					</Badge>
 				)}
 			</button>
@@ -89,7 +96,7 @@ export function SingleSelect({
 						>
 							<Badge
 								className={styles.hoverShadow}
-								variant={item.value as BadgeVariant}
+								variant='medium'
 							>
 								{item.label}
 							</Badge>

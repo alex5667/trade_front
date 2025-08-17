@@ -1,48 +1,78 @@
+@use "../../styles/colors.scss" as *;
+
 // Стили для строки символа
 .row {
-	@apply hover:bg-gray-700 transition-colors;
+	background-color: transparent;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $gray-700;
+	}
 }
 
 .cell {
-	@apply px-4 py-3 text-sm text-white border-b border-gray-600;
+	padding: 0.75rem 1rem;
+	font-size: 0.875rem;
+	color: $text-white;
+	border-bottom: 1px solid $gray-600;
 }
 
 .symbol {
-	@apply font-semibold text-blue-400;
+	font-weight: 600;
+	color: $blue-400;
 }
 
 .instrumentType {
-	@apply px-2 py-1 text-xs bg-gray-600 rounded;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	background-color: $gray-600;
+	border-radius: 0.25rem;
 }
 
 .status {
-	@apply px-2 py-1 text-xs rounded;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	border-radius: 0.25rem;
+
 	&:not(:empty) {
-		@apply bg-green-600 text-white;
+		background-color: $green-600;
+		color: $text-white;
 	}
 }
 
 .timeframes {
-	@apply text-xs text-gray-300;
+	font-size: 0.75rem;
+	color: $gray-300;
 }
 
 .note {
-	@apply max-w-xs truncate block;
+	max-width: 12rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
 }
 
 .actions {
-	@apply flex gap-2;
+	display: flex;
+	gap: 0.5rem;
 }
 
 .editButton,
 .deleteButton {
-	@apply p-1 rounded transition-colors;
+	padding: 0.25rem;
+	border-radius: 0.25rem;
+	transition: background-color 0.2s ease;
 }
 
 .editButton {
-	@apply hover:bg-blue-600;
+	&:hover {
+		background-color: $blue-600;
+	}
 }
 
 .deleteButton {
-	@apply hover:bg-red-600;
+	&:hover {
+		background-color: $red-600;
+	}
 }

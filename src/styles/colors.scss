@@ -140,6 +140,10 @@ $colors: (
 	--color-blue-900: #{map.get($colors, "blue-900")};
 	--color-red-900: #{map.get($colors, "red-900")};
 	// Extended
+	--color-blue-300: #{map.get($colors, "blue-300")};
+	--color-blue-400: #{map.get($colors, "blue-400")};
+	--color-blue-600: #{map.get($colors, "blue-600")};
+	--color-gray-600: #{map.get($colors, "gray-600")};
 	--color-gray-100: #{map.get($colors, "gray-100")};
 	--color-gray-300: #{map.get($colors, "gray-300")};
 	--color-gray-800: #{map.get($colors, "gray-800")};
@@ -218,7 +222,10 @@ $yellow-900: var(--color-yellow-900, #78350f);
 $blue-50: var(--color-blue-50, #eff6ff);
 $blue-100: var(--color-blue-100, #dbeafe);
 $blue-200: var(--color-blue-200, #bfdbfe);
+$blue-300: var(--color-blue-300, #93c5fd);
+$blue-400: var(--color-blue-400, #60a5fa);
 $blue-500: var(--color-blue-500, #3b82f6);
+$blue-600: var(--color-blue-600, #2563eb);
 $blue-700: var(--color-blue-700, #1d4ed8);
 $blue-800: var(--color-blue-800, #1e40af);
 $blue-900: var(--color-blue-900, #1e3a8a);
@@ -226,6 +233,7 @@ $blue-900: var(--color-blue-900, #1e3a8a);
 $gray-200: var(--color-gray-200, #e5e7eb);
 $gray-400: var(--color-gray-400, #9ca3af);
 $gray-500: var(--color-gray-500, #6b7280);
+$gray-600: var(--color-gray-600, #4b5563);
 $gray-700: var(--color-gray-700, #374151);
 $gray-900: var(--color-gray-900, #111827);
 // Extended

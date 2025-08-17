@@ -1,48 +1,98 @@
+@use "../../styles/colors.scss" as *;
+
 // Стили для селектора таймфреймов
 .container {
-	@apply bg-gray-800 rounded-lg p-4 border border-gray-700;
+	background-color: $gray-800;
+	border-radius: 0.5rem;
+	padding: 1rem;
+	border: 1px solid $gray-700;
 }
 
 .header {
-	@apply flex justify-between items-center mb-4;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
 }
 
 .title {
-	@apply text-lg font-semibold text-white;
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: $text-white;
 }
 
 .actions {
-	@apply flex gap-2;
+	display: flex;
+	gap: 0.5rem;
 }
 
 .actionButton {
-	@apply px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors;
+	padding: 0.25rem 0.75rem;
+	font-size: 0.875rem;
+	background-color: $blue-600;
+	color: $text-white;
+	border-radius: 0.25rem;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $blue-700;
+	}
 }
 
 .timeframesContainer {
-	@apply space-y-4;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
 }
 
 .timeframeGroup {
-	@apply border border-gray-600 rounded-lg p-3;
+	border: 1px solid $gray-600;
+	border-radius: 0.5rem;
+	padding: 0.75rem;
 }
 
 .groupTitle {
-	@apply text-sm font-medium text-gray-300 mb-3;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: $gray-300;
+	margin-bottom: 0.75rem;
 }
 
 .timeframeGrid {
-	@apply grid grid-cols-2 md:grid-cols-4 gap-2;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 0.5rem;
+
+	@media (min-width: 768px) {
+		grid-template-columns: repeat(4, 1fr);
+	}
 }
 
 .timeframeItem {
-	@apply flex items-center gap-2 cursor-pointer hover:bg-gray-700 p-2 rounded transition-colors;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 0.25rem;
+	transition: background-color 0.2s ease;
+
+	&:hover {
+		background-color: $gray-700;
+	}
 }
 
 .timeframeLabel {
-	@apply text-sm text-white;
+	font-size: 0.875rem;
+	color: $text-white;
 }
 
 .selectedInfo {
-	@apply mt-4 text-center text-sm text-gray-400 bg-gray-700 rounded-lg p-2;
+	margin-top: 1rem;
+	text-align: center;
+	font-size: 0.875rem;
+	color: $gray-400;
+	background-color: $gray-700;
+	border-radius: 0.5rem;
+	padding: 0.5rem;
 }

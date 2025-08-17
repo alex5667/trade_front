@@ -1,19 +1,32 @@
 @use "../../styles/colors.scss" as *;
 
 .container {
-	@apply relative  flex justify-center items-center  text-sm;
+	@apply relative flex justify-center items-center text-sm;
+	width: 100%;
 }
+
 .closeButton {
 	@apply absolute top-0 right-0 opacity-30 hover:opacity-100 transition-opacity;
 }
 
 .listContainer {
-	@apply absolute flex flex-col items-start  min-w-full p-2.5 left-0  bg-sidebar z-20 shadow rounded-lg;
+	@apply absolute flex flex-col items-start min-w-full p-2.5 left-0 z-20 shadow rounded-lg;
 	top: calc(100% + 0.5rem);
+	background-color: $gray-800;
+	border: 1px solid $gray-700;
 }
 
 .listButton {
-	@apply mb-4  block min-w-full last:mb-0 capitalize rounded-lg text-text-color-on-primary;
+	@apply mb-4 block min-w-full last:mb-0 capitalize rounded-lg;
+	width: 100%;
+	text-align: left;
+	padding: 0.5rem;
+	transition: background-color 0.2s ease;
+	color: $text-white;
+
+	&:hover {
+		background-color: $gray-700;
+	}
 }
 
 .colorBadge {
@@ -29,16 +42,21 @@
 .fullWidth {
 	display: block;
 	min-width: 100%;
+	width: 100%;
 }
+
 .capitalize {
 	text-transform: capitalize;
 }
+
 .onPrimary {
 	color: var(--text-color-on-primary, inherit);
 }
+
 .hoverShadow:hover {
 	animation: shadow-inset-center 0.5s ease both;
 }
+
 @keyframes shadow-inset-center {
 	0% {
 		box-shadow: inset 0 0 0 0 color-mix(in srgb, $gray-900 20%, transparent);
