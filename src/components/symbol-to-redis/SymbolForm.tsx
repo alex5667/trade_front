@@ -4,8 +4,8 @@ import { SimpleField } from '@/components/ui/fields/SImpleField'
 
 import {
 	type CreateSymbolToRedisDto,
-	INSTRUMENT_TYPES,
-	type Timeframe
+	DEFAULT_TIMEFRAMES,
+	INSTRUMENT_TYPES
 } from '@/types/symbol-to-redis.types'
 
 import styles from './SymbolForm.module.scss'
@@ -29,7 +29,7 @@ export const SymbolForm = ({
 		baseAsset: '',
 		quoteAsset: '',
 		instrumentType: 'FUTURES',
-		timeframes: [],
+		timeframes: initialData?.timeframes || DEFAULT_TIMEFRAMES,
 		exchange: 'binance',
 		status: 'TRADING',
 		note: '',
@@ -40,7 +40,11 @@ export const SymbolForm = ({
 
 	useEffect(() => {
 		if (initialData) {
-			setFormData(prev => ({ ...prev, ...initialData }))
+			setFormData(prev => ({
+				...prev,
+				...initialData,
+				timeframes: initialData.timeframes || DEFAULT_TIMEFRAMES
+			}))
 		}
 	}, [initialData])
 
@@ -55,7 +59,7 @@ export const SymbolForm = ({
 		}
 	}
 
-	const handleTimeframesChange = (timeframes: Timeframe[]) => {
+	const handleTimeframesChange = (timeframes: string[]) => {
 		setFormData(prev => ({ ...prev, timeframes }))
 	}
 
@@ -107,6 +111,14 @@ export const SymbolForm = ({
 				<h2 className={styles.title}>
 					{initialData ? 'Редактировать символ' : 'Создать новый символ'}
 				</h2>
+				<button
+					type='button'
+					onClick={onCancel}
+					className={styles.closeButton}
+					aria-label='Закрыть окно'
+				>
+					✕
+				</button>
 			</div>
 
 			<div className={styles.formGrid}>
@@ -181,6 +193,11 @@ export const SymbolForm = ({
 			</div>
 
 			<div className={styles.timeframeSection}>
+				<div className={styles.timeframeInfo}>
+					<p className={styles.timeframeNote}>
+						По умолчанию выбраны таймфреймы: M1, M5, M15, H1, H4, D1, W1
+					</p>
+				</div>
 				<TimeframeSelector
 					selectedTimeframes={formData.timeframes || []}
 					onTimeframesChange={handleTimeframesChange}

@@ -23,7 +23,7 @@ export interface PhoneAuthForm {
 /** Модель пользователя в системе */
 export interface User {
 	/** Уникальный идентификатор пользователя */
-	id: number
+	id: string
 	/** Электронная почта пользователя */
 	email: string
 	/** Имя пользователя (необязательно) */

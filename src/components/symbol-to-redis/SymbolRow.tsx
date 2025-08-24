@@ -17,10 +17,7 @@ export const SymbolRow = ({
 }: SymbolRowProps) => {
 	const formatTimeframes = (timeframes?: SymbolToRedis['timeframes']) => {
 		if (!timeframes || timeframes.length === 0) return '-'
-		return timeframes
-			.filter(tf => tf.isActive)
-			.map(tf => tf.timeframe)
-			.join(', ')
+		return timeframes.join(', ')
 	}
 
 	const formatDate = (date: Date | string) => {

@@ -31,7 +31,7 @@ export interface SymbolToRedis {
 	note?: string | null
 	createdAt: Date
 	updatedAt: Date
-	timeframes?: SymbolTimeframe[]
+	timeframes: string[]
 }
 
 // DTO для создания символа
@@ -40,7 +40,7 @@ export interface CreateSymbolToRedisDto {
 	baseAsset?: string
 	quoteAsset?: string
 	instrumentType?: InstrumentType
-	timeframes?: Timeframe[]
+	timeframes?: string[]
 	exchange?: string
 	status?: string
 	note?: string
@@ -55,7 +55,7 @@ export interface SymbolToRedisFilters {
 	baseAsset?: string
 	quoteAsset?: string
 	instrumentType?: InstrumentType
-	timeframe?: Timeframe
+	timeframes?: string[]
 	exchange?: string
 	status?: string
 	note?: string
@@ -89,37 +89,38 @@ export interface PaginatedSymbolsToRedisResponse {
 // Результат поиска
 export interface SymbolSearchResult {
 	symbol: SymbolToRedis
-	matchType: 'exact' | 'partial' | 'fuzzy'
-	score: number
+	matchType: 'exact' | 'case_insensitive' | 'normalized' | 'partial'
+	originalQuery: string
+	normalizedSymbol: string
 }
 
 // Статистика символов
 export interface SymbolToRedisStats {
-	totalSymbols: number
-	totalTimeframes: number
-	byInstrumentType: Record<InstrumentType, number>
-	byExchange: Record<string, number>
-	byBaseAsset: Record<string, number>
-	byQuoteAsset: Record<string, number>
-	byTimeframe: Record<Timeframe, number>
+	totalCount: number
+	countByType: Record<string, number>
+	countByExchange: Record<string, number>
+	countByStatus: Record<string, number>
+	countByBaseAsset: Record<string, number>
+	countByQuoteAsset: Record<string, number>
+	countByTimeframe: Record<string, number>
 }
 
 // Нормализация символа
 export interface SymbolNormalization {
-	original: string
-	normalized: string
+	symbol: string
 	baseAsset: string
 	quoteAsset: string
 	instrumentType: InstrumentType
-	confidence: number
-	suggestions: string[]
+	normalizationType: 'case_conversion' | 'typo_correction' | 'separator_removal'
 }
 
 // Массовое создание символов
 export interface BulkCreateSymbolsDto {
-	symbols: CreateSymbolToRedisDto[]
-	skipDuplicates?: boolean
-	validateOnly?: boolean
+	symbols: string[]
+	timeframes?: string[]
+	exchange?: string
+	status?: string
+	note?: string
 }
 
 // Константы
@@ -129,6 +130,14 @@ export const TIMEFRAMES: Timeframe[] = [
 	'D1', 'D3',
 	'W1',
 	'MN1'
+]
+
+// Таймфреймы по умолчанию для новых символов
+export const DEFAULT_TIMEFRAMES: Timeframe[] = [
+	'M1', 'M5', 'M15',
+	'H1', 'H4',
+	'D1',
+	'W1'
 ]
 
 export const INSTRUMENT_TYPES: InstrumentType[] = [

@@ -25,6 +25,17 @@ const initialState: VolumeState = {
 /** Максимальное количество сигналов для улучшения производительности */
 const MAX_SIGNALS = 10
 
+/**
+ * Сортирует сигналы объема по объему от большего к меньшему
+ */
+const sortSignalsByVolume = (signals: VolumeSignalPrisma[]): VolumeSignalPrisma[] => {
+	return [...signals].sort((a, b) => {
+		const volumeA = parseFloat(a.volume) || 0
+		const volumeB = parseFloat(b.volume) || 0
+		return volumeB - volumeA // Sort from highest to lowest
+	})
+}
+
 export const volumeSlice = createSlice({
 	name: 'volume',
 	initialState,
@@ -64,6 +75,9 @@ export const volumeSlice = createSlice({
 				}
 			}
 
+			// Сортируем сигналы по объему от большего к меньшему
+			state.signals = sortSignalsByVolume(state.signals)
+
 			// Логируем текущее количество сигналов
 			console.log(`📊 Current volume signals count: ${state.signals.length}`)
 
@@ -71,10 +85,10 @@ export const volumeSlice = createSlice({
 			state.lastUpdated = Date.now()
 		},
 		replaceVolumeSignals: (state, action: PayloadAction<VolumeSignalPrisma[]>) => {
-			state.signals = (action.payload || []).map(s => ({
+			state.signals = sortSignalsByVolume((action.payload || []).map(s => ({
 				...s,
 				createdAt: s.createdAt || new Date().toISOString()
-			}))
+			})))
 			state.lastUpdated = Date.now()
 		},
 		clearVolumeSignals: (state) => {

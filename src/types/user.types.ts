@@ -1,12 +1,12 @@
 export interface Role {
-	id: number
+	id: string
 	name: string
 	createdAt: string
 	updatedAt: string
 }
 
 export interface User {
-	id: number
+	id: string
 	email?: string
 	firstName?: string
 	lastName?: string

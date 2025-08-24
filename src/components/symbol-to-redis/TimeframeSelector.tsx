@@ -2,13 +2,13 @@ import { useMemo } from 'react'
 
 import { Checkbox } from '@/components/ui/checkbox/Checkbox'
 
-import { TIMEFRAMES, type Timeframe } from '@/types/symbol-to-redis.types'
+import { DEFAULT_TIMEFRAMES, TIMEFRAMES } from '@/types/symbol-to-redis.types'
 
 import styles from './TimeframeSelector.module.scss'
 
 interface TimeframeSelectorProps {
-	selectedTimeframes: Timeframe[]
-	onTimeframesChange: (timeframes: Timeframe[]) => void
+	selectedTimeframes: string[]
+	onTimeframesChange: (timeframes: string[]) => void
 	disabled?: boolean
 }
 
@@ -20,7 +20,9 @@ export const TimeframeSelector = ({
 	// Группируем таймфреймы по категориям для лучшего отображения
 	const groupedTimeframes = useMemo(() => {
 		return {
-			minutes: TIMEFRAMES.filter(tf => tf.startsWith('M')),
+			minutes: TIMEFRAMES.filter(
+				tf => tf.startsWith('M') && !tf.startsWith('MN')
+			),
 			hours: TIMEFRAMES.filter(tf => tf.startsWith('H')),
 			days: TIMEFRAMES.filter(tf => tf.startsWith('D')),
 			weeks: TIMEFRAMES.filter(tf => tf.startsWith('W')),
@@ -28,7 +30,7 @@ export const TimeframeSelector = ({
 		}
 	}, [])
 
-	const handleTimeframeToggle = (timeframe: Timeframe) => {
+	const handleTimeframeToggle = (timeframe: string) => {
 		if (disabled) return
 
 		const newTimeframes = selectedTimeframes.includes(timeframe)
@@ -48,7 +50,12 @@ export const TimeframeSelector = ({
 		onTimeframesChange([])
 	}
 
-	const renderTimeframeGroup = (title: string, timeframes: Timeframe[]) => (
+	const handleResetToDefault = () => {
+		if (disabled) return
+		onTimeframesChange([...DEFAULT_TIMEFRAMES])
+	}
+
+	const renderTimeframeGroup = (title: string, timeframes: string[]) => (
 		<div
 			key={title}
 			className={styles.timeframeGroup}
@@ -83,6 +90,14 @@ export const TimeframeSelector = ({
 						className={styles.actionButton}
 					>
 						Выбрать все
+					</button>
+					<button
+						type='button'
+						onClick={handleResetToDefault}
+						disabled={disabled}
+						className={styles.actionButton}
+					>
+						По умолчанию
 					</button>
 					<button
 						type='button'

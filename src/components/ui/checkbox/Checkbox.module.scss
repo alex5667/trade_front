@@ -9,26 +9,26 @@
 	// Добавляем кастомную галочку через псевдоэлемент
 	&:checked::after {
 		content: "✔"; // Символ галочки
-		@apply absolute text-sidebar text-sm leading-none;
+		@apply absolute text-white text-sm leading-none font-bold;
 	}
 }
 
 .checked-red {
-	@apply bg-red-500 dark:bg-red-400;
+	@apply bg-red-400 dark:bg-red-300;
 }
 
 .checked-blue {
-	@apply bg-blue-500 dark:bg-blue-400;
+	@apply bg-blue-400 dark:bg-blue-300;
 }
 
 .checked-green {
-	@apply bg-green-500 dark:bg-green-400;
+	@apply bg-green-400 dark:bg-green-300;
 }
 
 .checked-yellow {
-	@apply bg-yellow-500 dark:bg-yellow-400;
+	@apply bg-yellow-400 dark:bg-yellow-300;
 }
 
 .checked-brand {
-	@apply bg-gray-800 dark:bg-gray-400; // Fallback brand color
+	@apply bg-gray-500 dark:bg-gray-300; // Сделали светлее
 }

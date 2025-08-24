@@ -50,6 +50,6 @@ export const URLS = {
 	TELEGRAM_CHANNEL: '/telegram-channel',
 	TELEGRAM_CHANNELS: '/telegram-channels',
 	TELEGRAM_CHANNELS_EXCEL: '/telegram-channels/excel',
-	SYMBOLS_TO_REDIS: '/symbols-to-redis',
+	SYMBOLS_TO_REDIS: '/symbol-to-redis',
 } as const
 

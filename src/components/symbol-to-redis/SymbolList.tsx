@@ -5,6 +5,7 @@ import type {
 	SymbolToRedis,
 	UpdateSymbolToRedisDto
 } from '@/types/symbol-to-redis.types'
+import { DEFAULT_TIMEFRAMES } from '@/types/symbol-to-redis.types'
 
 import { SymbolForm } from './SymbolForm'
 import styles from './SymbolList.module.scss'
@@ -89,7 +90,10 @@ export const SymbolList = ({
 							baseAsset: editingSymbol.baseAsset,
 							quoteAsset: editingSymbol.quoteAsset,
 							instrumentType: editingSymbol.instrumentType,
-							timeframes: editingSymbol.timeframes?.map(tf => tf.timeframe),
+							timeframes:
+								editingSymbol.timeframes && editingSymbol.timeframes.length > 0
+									? editingSymbol.timeframes
+									: DEFAULT_TIMEFRAMES,
 							exchange: editingSymbol.exchange,
 							status: editingSymbol.status || undefined,
 							note: editingSymbol.note || undefined

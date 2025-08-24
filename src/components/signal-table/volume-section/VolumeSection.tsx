@@ -1,8 +1,7 @@
 'use client'
 
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-
-import type { VolumeSignalPrisma } from '@/types/signal.types'
 
 import { selectVolumeSignals } from '@/store/signals'
 
@@ -14,8 +13,16 @@ import styles from './VolumeSection.module.scss'
 export const VolumeSection = () => {
 	const volumeSignals = useSelector(selectVolumeSignals)
 
-	// Volume signals are already in VolumeSignalPrisma format from API
-	const volumeTableSignals: VolumeSignalPrisma[] = volumeSignals
+	// Sort volume signals by volume from highest to lowest
+	const sortedVolumeSignals = useMemo(() => {
+		if (!volumeSignals || volumeSignals.length === 0) return []
+
+		return [...volumeSignals].sort((a, b) => {
+			const volumeA = parseFloat(a.volume) || 0
+			const volumeB = parseFloat(b.volume) || 0
+			return volumeB - volumeA // Sort from highest to lowest
+		})
+	}, [volumeSignals])
 
 	return (
 		<div>
@@ -23,7 +30,7 @@ export const VolumeSection = () => {
 			<section className={styles.section}>
 				<div className={styles.gridTwo}>
 					<div>
-						<VolumeSpikeTable signals={volumeTableSignals} />
+						<VolumeSpikeTable signals={sortedVolumeSignals} />
 					</div>
 					<div>
 						<FundingTable />

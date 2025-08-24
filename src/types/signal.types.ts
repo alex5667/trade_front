@@ -7,7 +7,7 @@ export type BigIntString = string
 
 // VolatilityRangeSignal (was VolatilitySignal in legacy)
 export interface VolatilityRangeSignal {
-	id: BigIntString
+	id: string
 	type: 'volatility' | 'volatilityRange' | string
 	symbol: string
 	volatility: DecimalString
@@ -20,7 +20,7 @@ export interface VolatilityRangeSignal {
 
 // VolatilitySpikeSignal with OHLC
 export interface VolatilitySpikeSignal {
-	id: BigIntString
+	id: string
 	type: 'volatilitySpike' | string
 	symbol: string
 	interval: string
@@ -38,7 +38,7 @@ export type AnyVolatilitySignal = VolatilityRangeSignal | VolatilitySpikeSignal
 
 // GainerSignal
 export interface GainerSignal {
-	id: BigIntString
+	id: string
 	symbol: string
 	change: DecimalString
 	price?: DecimalString
@@ -52,7 +52,7 @@ export interface GainerSignal {
 
 // LoserSignal
 export interface LoserSignal {
-	id: BigIntString
+	id: string
 	symbol: string
 	change: DecimalString
 	price?: DecimalString
@@ -66,7 +66,7 @@ export interface LoserSignal {
 
 // VolumeSignal (Prisma)
 export interface VolumeSignalPrisma {
-	id: BigIntString
+	id: string
 	type: 'volume' | string
 	symbol: string
 	volume: DecimalString
@@ -84,7 +84,7 @@ export interface VolumeSignalPrisma {
 
 // FundingSignal (Prisma)
 export interface FundingSignalPrisma {
-	id: BigIntString
+	id: string
 	type: 'funding' | string
 	symbol: string
 	rate: DecimalString

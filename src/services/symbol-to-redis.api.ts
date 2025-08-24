@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { URLS } from '@/config/urls'
 import type {
+	BulkCreateSymbolsDto,
 	CreateSymbolToRedisDto,
 	GetSymbolsToRedisQuery,
 	PaginatedSymbolsToRedisResponse,
@@ -70,7 +71,7 @@ export const symbolToRedisApi = createApi({
 		}),
 
 		// Поиск символов
-		searchSymbols: builder.query<SymbolSearchResult[], { query: string; limit?: number }>({
+		searchSymbols: builder.query<SymbolSearchResult[], any>({
 			query: (params) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/search`,
 				method: 'GET',
@@ -88,17 +89,28 @@ export const symbolToRedisApi = createApi({
 			})
 		}),
 
+		// Массовое создание символов
+		bulkCreateSymbols: builder.mutation<SymbolToRedis[], BulkCreateSymbolsDto>({
+			query: (data) => ({
+				url: `${URLS.SYMBOLS_TO_REDIS}/bulk`,
+				method: 'POST',
+				body: data
+			}),
+			invalidatesTags: ['SymbolToRedis']
+		}),
+
 		// Получить статистику
-		getStats: builder.query<SymbolToRedisStats, void>({
-			query: () => ({
+		getStats: builder.query<SymbolToRedisStats, string | void>({
+			query: (groupBy) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/stats`,
-				method: 'GET'
+				method: 'GET',
+				params: groupBy ? { groupBy } : undefined
 			}),
 			providesTags: ['SymbolToRedis']
 		}),
 
 		// Фильтрация по базовой валюте
-		getSymbolsByBaseAsset: builder.query<SymbolToRedis[], string>({
+		getSymbolsByBaseAsset: builder.query<string[], string>({
 			query: (baseAsset) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/base/${baseAsset}`,
 				method: 'GET'
@@ -107,7 +119,7 @@ export const symbolToRedisApi = createApi({
 		}),
 
 		// Фильтрация по котируемой валюте
-		getSymbolsByQuoteAsset: builder.query<SymbolToRedis[], string>({
+		getSymbolsByQuoteAsset: builder.query<string[], string>({
 			query: (quoteAsset) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/quote/${quoteAsset}`,
 				method: 'GET'
@@ -116,7 +128,7 @@ export const symbolToRedisApi = createApi({
 		}),
 
 		// Фильтрация по типу инструмента
-		getSymbolsByInstrumentType: builder.query<SymbolToRedis[], string>({
+		getSymbolsByInstrumentType: builder.query<string[], string>({
 			query: (instrumentType) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/type/${instrumentType}`,
 				method: 'GET'
@@ -125,7 +137,7 @@ export const symbolToRedisApi = createApi({
 		}),
 
 		// Фильтрация по таймфрейму
-		getSymbolsByTimeframe: builder.query<SymbolToRedis[], string>({
+		getSymbolsByTimeframe: builder.query<string[], string>({
 			query: (timeframe) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/timeframe/${timeframe}`,
 				method: 'GET'
@@ -134,7 +146,7 @@ export const symbolToRedisApi = createApi({
 		}),
 
 		// Redis операции
-		getRedisSymbols: builder.query<SymbolToRedis[], void>({
+		getRedisSymbols: builder.query<string[], void>({
 			query: () => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/all`,
 				method: 'GET'
@@ -142,7 +154,7 @@ export const symbolToRedisApi = createApi({
 			providesTags: ['SymbolToRedis']
 		}),
 
-		getRedisSymbolsByBaseAsset: builder.query<SymbolToRedis[], string>({
+		getRedisSymbolsByBaseAsset: builder.query<string[], string>({
 			query: (baseAsset) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/base/${baseAsset}`,
 				method: 'GET'
@@ -150,7 +162,7 @@ export const symbolToRedisApi = createApi({
 			providesTags: ['SymbolToRedis']
 		}),
 
-		getRedisSymbolsByQuoteAsset: builder.query<SymbolToRedis[], string>({
+		getRedisSymbolsByQuoteAsset: builder.query<string[], string>({
 			query: (quoteAsset) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/quote/${quoteAsset}`,
 				method: 'GET'
@@ -158,7 +170,7 @@ export const symbolToRedisApi = createApi({
 			providesTags: ['SymbolToRedis']
 		}),
 
-		getRedisSymbolsByInstrumentType: builder.query<SymbolToRedis[], string>({
+		getRedisSymbolsByInstrumentType: builder.query<string[], string>({
 			query: (instrumentType) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/type/${instrumentType}`,
 				method: 'GET'
@@ -166,7 +178,7 @@ export const symbolToRedisApi = createApi({
 			providesTags: ['SymbolToRedis']
 		}),
 
-		getRedisSymbolsByTimeframe: builder.query<SymbolToRedis[], string>({
+		getRedisSymbolsByTimeframe: builder.query<string[], string>({
 			query: (timeframe) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/timeframe/${timeframe}`,
 				method: 'GET'
@@ -174,7 +186,7 @@ export const symbolToRedisApi = createApi({
 			providesTags: ['SymbolToRedis']
 		}),
 
-		getRedisSymbolDetails: builder.query<SymbolToRedis, string>({
+		getRedisSymbolDetails: builder.query<any, string>({
 			query: (symbol) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/details/${symbol}`,
 				method: 'GET'
@@ -182,7 +194,7 @@ export const symbolToRedisApi = createApi({
 			providesTags: ['SymbolToRedis']
 		}),
 
-		checkRedisSymbolExists: builder.query<boolean, string>({
+		checkRedisSymbolExists: builder.query<{ exists: boolean }, string>({
 			query: (symbol) => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/exists/${symbol}`,
 				method: 'GET'
@@ -190,7 +202,7 @@ export const symbolToRedisApi = createApi({
 			providesTags: ['SymbolToRedis']
 		}),
 
-		getRedisStats: builder.query<SymbolToRedisStats, void>({
+		getRedisStats: builder.query<any, void>({
 			query: () => ({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/stats`,
 				method: 'GET'
@@ -216,6 +228,7 @@ export const {
 	useDeleteSymbolMutation,
 	useSearchSymbolsQuery,
 	useNormalizeSymbolMutation,
+	useBulkCreateSymbolsMutation,
 	useGetStatsQuery,
 	useGetSymbolsByBaseAssetQuery,
 	useGetSymbolsByQuoteAssetQuery,
