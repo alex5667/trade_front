@@ -3,8 +3,8 @@
  * Соответствуют интерфейсам из backend
  */
 
-// Тип для таймфреймов
-export type Timeframe = 'M1' | 'M5' | 'M15' | 'M30' | 'H1' | 'H4' | 'H6' | 'H8' | 'H12' | 'D1' | 'D3' | 'W1' | 'MN1'
+// Тип для таймфреймов (унифицированный стандарт)
+export type TF = 'M1' | 'M5' | 'M15' | 'M30' | 'H1' | 'H4' | 'D' | 'W' | 'M'
 
 // Тип для типа инструмента
 export type InstrumentType = 'SPOT' | 'FUTURES' | 'FOREX' | 'METAL' | 'INDEX' | 'CRYPTO_INDEX' | 'OTHER'
@@ -13,7 +13,7 @@ export type InstrumentType = 'SPOT' | 'FUTURES' | 'FOREX' | 'METAL' | 'INDEX' | 
 export interface SymbolTimeframe {
 	id: string
 	symbolId: string
-	timeframe: Timeframe
+	timeframe: TF
 	isActive: boolean
 	createdAt: Date
 	updatedAt: Date
@@ -124,20 +124,20 @@ export interface BulkCreateSymbolsDto {
 }
 
 // Константы
-export const TIMEFRAMES: Timeframe[] = [
+export const TIMEFRAMES: TF[] = [
 	'M1', 'M5', 'M15', 'M30',
-	'H1', 'H4', 'H6', 'H8', 'H12',
-	'D1', 'D3',
-	'W1',
-	'MN1'
+	'H1', 'H4',
+	'D',
+	'W',
+	'M'
 ]
 
 // Таймфреймы по умолчанию для новых символов
-export const DEFAULT_TIMEFRAMES: Timeframe[] = [
-	'M1', 'M5', 'M15',
+export const DEFAULT_TIMEFRAMES: TF[] = [
+	'M1', 'M5', 'M15', 'M30',
 	'H1', 'H4',
-	'D1',
-	'W1'
+	'D',
+	'W'
 ]
 
 export const INSTRUMENT_TYPES: InstrumentType[] = [

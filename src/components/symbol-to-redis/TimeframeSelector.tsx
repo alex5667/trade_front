@@ -20,13 +20,11 @@ export const TimeframeSelector = ({
 	// Группируем таймфреймы по категориям для лучшего отображения
 	const groupedTimeframes = useMemo(() => {
 		return {
-			minutes: TIMEFRAMES.filter(
-				tf => tf.startsWith('M') && !tf.startsWith('MN')
-			),
+			minutes: TIMEFRAMES.filter(tf => tf.startsWith('M') && tf !== 'M'),
 			hours: TIMEFRAMES.filter(tf => tf.startsWith('H')),
-			days: TIMEFRAMES.filter(tf => tf.startsWith('D')),
-			weeks: TIMEFRAMES.filter(tf => tf.startsWith('W')),
-			months: TIMEFRAMES.filter(tf => tf.startsWith('MN'))
+			days: TIMEFRAMES.filter(tf => tf === 'D'),
+			weeks: TIMEFRAMES.filter(tf => tf === 'W'),
+			months: TIMEFRAMES.filter(tf => tf === 'M')
 		}
 	}, [])
 
