@@ -1,7 +1,7 @@
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 import { NextRequest, NextResponse } from 'next/server'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4200/api'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4207/api'
 
 function decodeToken(token: string): any {
 	try {
@@ -24,7 +24,7 @@ export function middleware(request: NextRequest) {
 		try {
 			return NextResponse.redirect(new URL('/auth', request.url))
 		} catch {
-			return NextResponse.redirect(new URL('/auth', 'http://localhost:3000'))
+			return NextResponse.redirect(new URL('/auth', 'http://localhost:3003'))
 		}
 	}
 
@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
 		try {
 			return NextResponse.redirect(new URL('/auth', request.url))
 		} catch {
-			return NextResponse.redirect(new URL('/auth', 'http://localhost:3000'))
+			return NextResponse.redirect(new URL('/auth', 'http://localhost:3003'))
 		}
 	}
 
@@ -55,14 +55,14 @@ export function middleware(request: NextRequest) {
 			try {
 				return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, request.url))
 			} catch {
-				return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, 'http://localhost:3000'))
+				return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, 'http://localhost:3003'))
 			}
 		}
 
 		try {
 			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, request.url))
 		} catch {
-			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, 'http://localhost:3000'))
+			return NextResponse.redirect(new URL(ADMINBOARD_PAGES.CUSTOMER, 'http://localhost:3003'))
 		}
 	}
 

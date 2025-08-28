@@ -84,6 +84,12 @@ import s from './VolatilitySignal.module.scss'
  * Компонент для отображения сигналов скачков волатильности
  */
 
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
 interface VolatilitySpikeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -175,7 +181,7 @@ export const VolatilitySpikeComponent: React.FC<
 					highlightChange: false
 				}))
 			)
-		}, 3000)
+		}, 3003)
 
 		return () => clearTimeout(timer)
 	}, [displaySignals])

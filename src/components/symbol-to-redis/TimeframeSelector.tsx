@@ -20,11 +20,15 @@ export const TimeframeSelector = ({
 	// Группируем таймфреймы по категориям для лучшего отображения
 	const groupedTimeframes = useMemo(() => {
 		return {
-			minutes: TIMEFRAMES.filter(tf => tf.startsWith('M') && tf !== 'M'),
+			minutes: TIMEFRAMES.filter(
+				tf => tf.startsWith('M') && !tf.startsWith('MN')
+			),
 			hours: TIMEFRAMES.filter(tf => tf.startsWith('H')),
-			days: TIMEFRAMES.filter(tf => tf === 'D'),
-			weeks: TIMEFRAMES.filter(tf => tf === 'W'),
-			months: TIMEFRAMES.filter(tf => tf === 'M')
+			days: TIMEFRAMES.filter(tf => tf.startsWith('D')),
+			weeks: TIMEFRAMES.filter(tf => tf.startsWith('W')),
+			months: TIMEFRAMES.filter(tf => tf.startsWith('MN')),
+			quarters: TIMEFRAMES.filter(tf => tf.startsWith('Q')),
+			years: TIMEFRAMES.filter(tf => tf.startsWith('Y'))
 		}
 	}, [])
 
@@ -114,6 +118,8 @@ export const TimeframeSelector = ({
 				{renderTimeframeGroup('Дни', groupedTimeframes.days)}
 				{renderTimeframeGroup('Недели', groupedTimeframes.weeks)}
 				{renderTimeframeGroup('Месяцы', groupedTimeframes.months)}
+				{renderTimeframeGroup('Кварталы', groupedTimeframes.quarters)}
+				{renderTimeframeGroup('Годы', groupedTimeframes.years)}
 			</div>
 
 			{selectedTimeframes.length > 0 && (

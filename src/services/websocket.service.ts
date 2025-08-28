@@ -3,6 +3,9 @@ import { io, Socket } from 'socket.io-client'
 /**
  * WebSocket Service для подключения к trade_back
  * Обеспечивает получение торговых сигналов в реальном времени
+ * 
+ * ⚠️ ВАЖНО: Этот сервис подключается к WebSocket серверу Trade Back
+ * на порту 4202 (НЕ на порту 4207, который используется для REST API).
  */
 export class WebSocketService {
 	private socket: Socket | null = null
@@ -13,7 +16,7 @@ export class WebSocketService {
 
 	// Конфигурация подключения
 	private readonly config = {
-		url: process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:4200',
+		url: process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:4202',
 		options: {
 			transports: ['websocket', 'polling'],
 			timeout: 10000,

@@ -4,6 +4,9 @@
  * Сервис, управляющий Socket.IO соединением с бэкендом
  * и отправляющий события в Redux-хранилище.
  * 
+ * ⚠️ ВАЖНО: Этот клиент подключается к WebSocket серверу Trade Back
+ * на порту 4202 (НЕ на порту 4207, который используется для REST API).
+ * 
  * Основные функции:
  * - Установка и поддержание Socket.IO соединения
  * - Автоматическое переподключение при обрыве связи
@@ -74,7 +77,7 @@ export class TradeSignalSocketIOClient {
 	private isConnecting: boolean = false
 
 	private backoffBaseMs: number = 2000
-	private backoffMaxMs: number = 30000
+	private backoffMaxMs: number = 30030
 
 	/**
 	 * Конструктор Socket.IO клиента

@@ -11,7 +11,7 @@ import {
 	saveTokenStorage
 } from './auth-token.service'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4200/api'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4207/api'
 export const baseQuery = retry(
 	fetchBaseQuery({
 		baseUrl: API_BASE_URL,

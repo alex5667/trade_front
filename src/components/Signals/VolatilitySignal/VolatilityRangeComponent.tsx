@@ -66,6 +66,12 @@ import s from './VolatilitySignal.module.scss'
  * Компонент для отображения сигналов диапазона волатильности
  */
 
+/**
+ * VolatilityRangeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов диапазона волатильности
+ */
+
 interface VolatilityRangeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -160,7 +166,7 @@ export const VolatilityRangeComponent: React.FC<
 					highlightPercentDiff: false
 				}))
 			)
-		}, 3000)
+		}, 3003)
 
 		return () => clearTimeout(timer)
 	}, [displaySignals])

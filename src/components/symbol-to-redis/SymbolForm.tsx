@@ -195,7 +195,8 @@ export const SymbolForm = ({
 			<div className={styles.timeframeSection}>
 				<div className={styles.timeframeInfo}>
 					<p className={styles.timeframeNote}>
-						По умолчанию выбраны таймфреймы: M1, M5, M15, M30, H1, H4, D, W
+						По умолчанию выбраны таймфреймы: M1, M5, M15, H1, H4, D1, W1, MN1,
+						Q1, Y1
 					</p>
 				</div>
 				<TimeframeSelector

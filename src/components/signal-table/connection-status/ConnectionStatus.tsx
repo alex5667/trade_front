@@ -36,7 +36,7 @@ export const ConnectionStatus = () => {
 				if (stats?.reconnectAttempts !== undefined)
 					setAttempts(stats.reconnectAttempts)
 			} catch {}
-		}, 3000)
+		}, 3003)
 		return () => clearInterval(interval)
 	}, [])
 
