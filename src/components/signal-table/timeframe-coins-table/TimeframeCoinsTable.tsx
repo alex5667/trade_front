@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { TimeframeCoin } from '@/store/signals/signal.types'
 
@@ -64,6 +64,25 @@ export const TimeframeCoinsTable = ({
 	}, [timeframeData, type])
 
 	const tableHasData = useMemo(() => coins.length > 0, [coins])
+
+	// Debug logging to track data and detect duplicates
+	useEffect(() => {
+		if (coins.length > 0) {
+			const symbols = coins.map(coin => coin.symbol)
+			const uniqueSymbols = new Set(symbols)
+			if (symbols.length !== uniqueSymbols.size) {
+				console.warn(`⚠️ Duplicate symbols detected in ${type}:`, {
+					total: symbols.length,
+					unique: uniqueSymbols.size,
+					duplicates: symbols.filter(
+						(symbol, index) => symbols.indexOf(symbol) !== index
+					)
+				})
+			} else {
+				console.log(`✅ ${type} table: ${coins.length} unique symbols`)
+			}
+		}
+	}, [coins, type])
 
 	return (
 		<div className={styles.tableContainer}>

@@ -20,13 +20,37 @@ export const timeframeSlice = createSlice({
 	initialState,
 	reducers: {
 		replaceTimeframeGainers: (state, action: PayloadAction<{ data: TimeframeCoin[] }>) => {
-			state.gainers = (action.payload.data || [])
+			// Deduplicate gainers by symbol before replacing
+			const uniqueGainers = (action.payload.data || []).reduce((acc: TimeframeCoin[], coin) => {
+				const existingIndex = acc.findIndex(c => c.symbol === coin.symbol)
+				if (existingIndex === -1) {
+					acc.push(coin)
+				} else {
+					// Update existing coin with newer data
+					acc[existingIndex] = coin
+				}
+				return acc
+			}, [])
+
+			state.gainers = uniqueGainers
 				.slice()
 				.sort((a, b) => b.percentChange - a.percentChange)
 				.slice(0, MAX_ITEMS)
 		},
 		replaceTimeframeLosers: (state, action: PayloadAction<{ data: TimeframeCoin[] }>) => {
-			state.losers = (action.payload.data || [])
+			// Deduplicate losers by symbol before replacing
+			const uniqueLosers = (action.payload.data || []).reduce((acc: TimeframeCoin[], coin) => {
+				const existingIndex = acc.findIndex(c => c.symbol === coin.symbol)
+				if (existingIndex === -1) {
+					acc.push(coin)
+				} else {
+					// Update existing coin with newer data
+					acc[existingIndex] = coin
+				}
+				return acc
+			}, [])
+
+			state.losers = uniqueLosers
 				.slice()
 				.sort((a, b) => a.percentChange - b.percentChange)
 				.slice(0, MAX_ITEMS)

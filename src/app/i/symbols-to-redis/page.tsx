@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { SymbolList } from '@/components/symbol-to-redis/SymbolList'
 
@@ -42,9 +43,10 @@ export default function SymbolsToRedisPage() {
 		try {
 			await createSymbol(data).unwrap()
 			refetch()
+			toast.success('Символ успешно создан')
 		} catch (error) {
 			console.error('Ошибка при создании символа:', error)
-			alert('Ошибка при создании символа')
+			toast.error('Ошибка при создании символа')
 		}
 	}
 
@@ -52,9 +54,10 @@ export default function SymbolsToRedisPage() {
 		try {
 			await updateSymbol({ id, data }).unwrap()
 			refetch()
+			toast.success('Символ успешно обновлен')
 		} catch (error) {
 			console.error('Ошибка при обновлении символа:', error)
-			alert('Ошибка при обновлении символа')
+			toast.error('Ошибка при обновлении символа')
 		}
 	}
 
@@ -62,9 +65,10 @@ export default function SymbolsToRedisPage() {
 		try {
 			await deleteSymbol(id).unwrap()
 			refetch()
+			toast.success('Символ успешно удален')
 		} catch (error) {
 			console.error('Ошибка при удалении символа:', error)
-			alert('Ошибка при удалении символа')
+			toast.error('Ошибка при удалении символа')
 		}
 	}
 

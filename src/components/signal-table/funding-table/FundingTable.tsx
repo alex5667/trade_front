@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { selectFundingData } from '@/store/signals'
@@ -22,6 +22,25 @@ export const FundingTable = () => {
 		}))
 		return list.sort((a, b) => Math.abs(b.rate || 0) - Math.abs(a.rate || 0))
 	}, [fundingCoins])
+
+	// Debug logging to track data and detect duplicates
+	useEffect(() => {
+		if (sortedFunding.length > 0) {
+			const symbols = sortedFunding.map(coin => coin.symbol)
+			const uniqueSymbols = new Set(symbols)
+			if (symbols.length !== uniqueSymbols.size) {
+				console.warn(`⚠️ Duplicate symbols detected in funding table:`, {
+					total: symbols.length,
+					unique: uniqueSymbols.size,
+					duplicates: symbols.filter(
+						(symbol, index) => symbols.indexOf(symbol) !== index
+					)
+				})
+			} else {
+				console.log(`✅ Funding table: ${sortedFunding.length} unique symbols`)
+			}
+		}
+	}, [sortedFunding])
 
 	const formatRate = (rate?: number) => {
 		if (rate === undefined || rate === null || isNaN(rate)) return ''
@@ -62,7 +81,7 @@ export const FundingTable = () => {
 					{sortedFunding && sortedFunding.length > 0 ? (
 						sortedFunding.map((c: any, idx: number) => (
 							<tr
-								key={idx}
+								key={`${c.symbol}-${c.timestamp ?? idx}`}
 								className={tableStyles.row}
 							>
 								<td className={tableStyles.cell}>{c.symbol}</td>

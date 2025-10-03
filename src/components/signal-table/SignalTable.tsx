@@ -7,7 +7,7 @@
  * Использует Redux store для получения данных сигналов
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import {
 	selectConnectionStatus,
@@ -18,43 +18,24 @@ import {
 	selectVolatilitySignals,
 	selectVolumeSignals
 } from '@/store/signals'
-import type { AppDispatch } from '@/store/store'
 
 import styles from './Signal-table.module.scss'
 import { ConnectionStatus } from './connection-status/ConnectionStatus'
 import { TimeframeSection } from './timeframe-section/TimeframeSection'
 import { VolatilitySection } from './volatility-section/VolatilitySection'
 import { VolumeSection } from './volume-section/VolumeSection'
-// Removed local initializer to avoid double mount; it is provided in /i layout
-import {
-	signalApi,
-	useGetFundingSignalsQuery,
-	useGetTopGainersQuery,
-	useGetTopLosersQuery,
-	useGetVolumeSignalsQuery
-} from '@/services/signal.api'
 
 /**
  * SignalTable - основной компонент для отображения всех торговых сигналов
  *
  * Этот компонент:
- * 1. Инициализирует WebSocket-соединение для получения сигналов
- * 2. Отображает сигналы по таймфрейму
- * 3. Показывает сигналы волатильности и другие специальные сигналы
+ * 1. Отображает сигналы по таймфрейму из Redux store
+ * 2. Показывает сигналы волатильности и другие специальные сигналы
+ * 3. Данные инициализируются через SignalSocketInitializer в layout
  */
 export const SignalTable = () => {
-	const dispatch = useDispatch<AppDispatch>()
 	const componentId = useRef(`signal-table-${Date.now()}`)
 	console.log(`📊 [${componentId.current}] SignalTable создан`)
-
-	// Автоматическое обновление данных каждые 30 минут
-	const pollingInterval = 30 * 60 * 1000 // 30 минут в миллисекундах
-
-	// RTK Query hooks с автообновлением
-	useGetTopGainersQuery(undefined, { pollingInterval })
-	useGetTopLosersQuery(undefined, { pollingInterval })
-	useGetVolumeSignalsQuery(undefined, { pollingInterval })
-	useGetFundingSignalsQuery(undefined, { pollingInterval })
 
 	// Получение данных из Redux с помощью селекторов
 	const isConnected = useSelector(selectConnectionStatus)
@@ -64,41 +45,6 @@ export const SignalTable = () => {
 	const fundingData = useSelector(selectFundingData)
 	const triggers = useSelector(selectTimeframeTriggers)
 	const timeframeData = useSelector(selectTimeframeData)
-
-	// Безопасная инициализация данных через RTK Query если стор пустой
-	useEffect(() => {
-		const noTimeframe =
-			timeframeData.gainers.length + timeframeData.losers.length === 0
-		const noVolumeFunding =
-			volumeSignals.length === 0 || fundingData.length === 0
-		if (noTimeframe || noVolumeFunding) {
-			console.log(
-				'🟡 Store empty on mount, triggering RTK Query fetch for initial data'
-			)
-			dispatch(signalApi.util.invalidateTags(['Signal']))
-			dispatch(
-				signalApi.endpoints.getTopGainers.initiate(undefined, {
-					forceRefetch: true
-				})
-			)
-			dispatch(
-				signalApi.endpoints.getTopLosers.initiate(undefined, {
-					forceRefetch: true
-				})
-			)
-			dispatch(
-				signalApi.endpoints.getVolumeSignals.initiate(undefined, {
-					forceRefetch: true
-				})
-			)
-			dispatch(
-				signalApi.endpoints.getFundingSignals.initiate(undefined, {
-					forceRefetch: true
-				})
-			)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
 
 	// Отслеживание предыдущего состояния соединения для логирования изменений
 	const prevConnectedRef = useRef(isConnected)

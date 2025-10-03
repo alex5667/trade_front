@@ -45,16 +45,14 @@ export const volumeSlice = createSlice({
 
 			console.log(`💾 Adding volume signal to store: ${signal.symbol}`)
 
-			// Проверяем, существует ли уже сигнал с тем же символом и временной меткой
+			// Проверяем, существует ли уже сигнал с тем же символом
 			const existingIndex = state.signals.findIndex(
-				existingSignal =>
-					existingSignal.symbol === signal.symbol &&
-					existingSignal.timestamp === signal.timestamp
+				existingSignal => existingSignal.symbol === signal.symbol
 			)
 
 			if (existingIndex !== -1) {
 				// Обновляем существующий сигнал вместо добавления нового
-				console.log(`🔄 Updating existing volume signal at index ${existingIndex}`)
+				console.log(`🔄 Updating existing volume signal for ${signal.symbol} at index ${existingIndex}`)
 				state.signals[existingIndex] = {
 					...signal,
 					// Сохраняем время создания из оригинального сигнала
@@ -62,7 +60,7 @@ export const volumeSlice = createSlice({
 				}
 			} else {
 				// Добавляем новый сигнал в начало массива с временной меткой создания
-				console.log(`➕ Adding new volume signal, current count: ${state.signals.length}`)
+				console.log(`➕ Adding new volume signal for ${signal.symbol}, current count: ${state.signals.length}`)
 				state.signals.unshift({
 					...signal,
 					createdAt: new Date().toISOString()
@@ -85,10 +83,25 @@ export const volumeSlice = createSlice({
 			state.lastUpdated = Date.now()
 		},
 		replaceVolumeSignals: (state, action: PayloadAction<VolumeSignalPrisma[]>) => {
-			state.signals = sortSignalsByVolume((action.payload || []).map(s => ({
-				...s,
-				createdAt: s.createdAt || new Date().toISOString()
-			})))
+			// Deduplicate signals by symbol before replacing
+			const uniqueSignals = (action.payload || []).reduce((acc: VolumeSignalPrisma[], signal) => {
+				const existingIndex = acc.findIndex(s => s.symbol === signal.symbol)
+				if (existingIndex === -1) {
+					acc.push({
+						...signal,
+						createdAt: signal.createdAt || new Date().toISOString()
+					})
+				} else {
+					// Update existing signal with newer data
+					acc[existingIndex] = {
+						...signal,
+						createdAt: acc[existingIndex].createdAt || new Date().toISOString()
+					}
+				}
+				return acc
+			}, [])
+
+			state.signals = sortSignalsByVolume(uniqueSignals)
 			state.lastUpdated = Date.now()
 		},
 		clearVolumeSignals: (state) => {

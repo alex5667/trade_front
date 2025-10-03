@@ -58,7 +58,19 @@ export const fundingSlice = createSlice({
 			state.lastUpdated = Date.now()
 		},
 		replaceFundingData: (state, action: PayloadAction<FundingCoin[]>) => {
-			state.coins = (action.payload || [])
+			// Deduplicate funding data by symbol before replacing
+			const uniqueCoins = (action.payload || []).reduce((acc: FundingCoin[], coin) => {
+				const existingIndex = acc.findIndex(c => c.symbol === coin.symbol)
+				if (existingIndex === -1) {
+					acc.push(coin)
+				} else {
+					// Update existing coin with newer data
+					acc[existingIndex] = coin
+				}
+				return acc
+			}, [])
+
+			state.coins = uniqueCoins
 				.slice()
 				.sort((a, b) => Math.abs(b.rate) - Math.abs(a.rate))
 				.slice(0, MAX_COINS)
