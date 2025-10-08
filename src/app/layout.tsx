@@ -4,6 +4,7 @@ import { Noto_Sans } from 'next/font/google'
 import { Suspense } from 'react'
 import { Toaster } from 'sonner'
 
+import { RegimeAlertToast } from '@/components/regime-alert'
 import Background from '@/components/ui/Background'
 
 import { Providers } from '@/providers/providers'
@@ -59,6 +60,7 @@ export default function RootLayout({
 						position='bottom-right'
 						duration={1500}
 					/>
+					<RegimeAlertToast />
 				</Providers>
 			</body>
 		</html>

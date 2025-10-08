@@ -105,3 +105,136 @@ export interface TopMoveItem {
 	timestamp?: string
 }
 
+// Market Regime Signal
+export type RegimeType = 'range' | 'squeeze' | 'trending_bull' | 'trending_bear' | 'expansion'
+
+export interface RegimeSignal {
+	regime: RegimeType
+	adx?: number
+	atrPct?: number
+	timestamp?: string
+}
+
+// Regime Snapshot (от API)
+export interface RegimeSnapshot {
+	id?: string
+	symbol: string
+	timeframe: string
+	regime: RegimeType
+	adx: number
+	atrPct: number
+	timestamp: string
+	createdAt?: string
+}
+
+// Параметры запроса временного ряда режима
+export interface RegimeSnapshotParams {
+	symbol: string
+	timeframe: string
+	from?: string
+	to?: string
+	limit?: number
+}
+
+// Квантили ADX/ATR%
+export interface RegimeQuantiles {
+	symbol: string
+	timeframe: string
+	adxQ25?: number
+	adxQ50?: number
+	adxQ75?: number
+	atrQ25?: number
+	atrQ50?: number
+	atrQ75?: number
+	updatedAt?: string
+}
+
+// Серии данных для графиков
+export interface RegimeSeries {
+	adx: number[]
+	atrPct: number[]
+}
+
+// Типы сигналов для фильтрации
+export type SignalTypeFilter = 'fvg' | 'ob' | 'breaker' | 'volumeSpike' | 'volatility' | 'smt' | 'other'
+
+// Сторона сделки
+export type TradeSide = 'long' | 'short'
+
+// Фильтруемый сигнал
+export interface FilterableSignal {
+	type: SignalTypeFilter
+	side?: TradeSide
+	symbol?: string
+	[key: string]: any
+}
+
+// Health status типы
+export type HealthStatus = 'ok' | 'warn' | 'error'
+
+export interface RegimeHealthSamples {
+	actual: number
+	expected: number
+}
+
+export interface RegimeHealthResponse {
+	symbol: string
+	timeframe: string
+	status: HealthStatus
+	lastSnapshot?: {
+		timestamp: string
+		lagSec: number
+	}
+	quantilesPresent: boolean
+	samples: {
+		last1h: RegimeHealthSamples
+		last1d: RegimeHealthSamples
+	}
+}
+
+// Aggregation типы
+export interface RegimeAggHourly {
+	hour: string
+	counts: Record<RegimeType, number>
+	avgAdx: number
+	avgAtrPct: number
+}
+
+export interface RegimeAggDaily {
+	date: string
+	counts: Record<RegimeType, number>
+	avgAdx: number
+	avgAtrPct: number
+}
+
+// Context типы
+export interface RegimeContextSnapshot {
+	regime: RegimeType
+	adx: number
+	atrPct: number
+	timestamp: string
+}
+
+export interface RegimeContextResponse {
+	symbol: string
+	ltf: string
+	htf: string
+	latestLTF?: RegimeContextSnapshot
+	latestHTF?: RegimeContextSnapshot
+	allowed: boolean
+	bias: string
+	signalType?: string
+	side?: TradeSide
+}
+
+// Alert типы
+export interface RegimeAlert {
+	symbol: string
+	timeframe: string
+	status: HealthStatus
+	recovered?: boolean
+	lagSec?: number
+	issues?: string[]
+	timestamp?: string
+}
+

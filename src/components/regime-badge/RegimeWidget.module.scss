@@ -1,0 +1,85 @@
+@import "@/styles/mixins";
+
+.widget {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: var(--bg-secondary, #1f2937);
+  border: 1px solid var(--border-color, #374151);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--border-hover, #4b5563);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary, #f3f4f6);
+  margin: 0;
+}
+
+.status {
+  font-size: 1rem;
+  transition: color 0.2s ease;
+
+  &.connected {
+    color: #22c55e;
+    animation: pulse-status 2s infinite;
+  }
+
+  &.disconnected {
+    color: #6b7280;
+  }
+}
+
+@keyframes pulse-status {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timestamp {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #9ca3af);
+  margin: 0.5rem 0 0 0;
+}
+
+.loading {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #9ca3af);
+  text-align: center;
+  padding: 1rem;
+}
+
+.error {
+  font-size: 0.875rem;
+  color: #ef4444;
+  text-align: center;
+  padding: 1rem;
+}
+
+.pngSparklineWrapper {
+  margin-top: 0.75rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+}
