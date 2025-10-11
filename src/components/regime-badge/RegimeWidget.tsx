@@ -9,6 +9,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { PngSparkline } from '@/components/sparkline'
+import { API_BASE_URL } from '@/config/api.config'
 
 import { RegimeSeries, RegimeSnapshot } from '@/types/signal.types'
 
@@ -17,6 +18,13 @@ import { useRegimeSocket } from '@/hooks/useRegimeSocket'
 import { RegimeBadge } from './RegimeBadge'
 import styles from './RegimeWidget.module.scss'
 import { fetchRegimeLatest, fetchRegimeRange } from '@/services/regime.api'
+
+/**
+ * Компонент RegimeWidget - виджет отображения рыночного режима
+ * ------------------------------
+ * Загружает данные о рыночном режиме из API и отображает их
+ * с опциональными спарклайнами и live обновлениями через WebSocket
+ */
 
 /**
  * Компонент RegimeWidget - виджет отображения рыночного режима
@@ -99,8 +107,24 @@ export const RegimeWidget: React.FC<RegimeWidgetProps> = ({
 	// Live обновление от WebSocket
 	useEffect(() => {
 		if (!autoUpdate || !liveRegime) return
-		if (liveRegime.symbol !== symbol || liveRegime.timeframe !== timeframe)
+
+		// Проверяем, что обновление для нашего символа/таймфрейма
+		const matchesSymbol = !liveRegime.symbol || liveRegime.symbol === symbol
+		const matchesTimeframe =
+			!liveRegime.timeframe || liveRegime.timeframe === timeframe
+
+		if (!matchesSymbol || !matchesTimeframe) {
+			console.log('⏭️ Пропускаем обновление для другого символа/TF:', {
+				received: {
+					symbol: liveRegime.symbol,
+					timeframe: liveRegime.timeframe
+				},
+				expected: { symbol, timeframe }
+			})
 			return
+		}
+
+		console.log('📈 Применяем live обновление:', liveRegime)
 
 		setLatest(prev => ({
 			...prev,
@@ -113,7 +137,7 @@ export const RegimeWidget: React.FC<RegimeWidgetProps> = ({
 		}))
 
 		// Обновляем серию данных для спарклайна
-		if (showSparkline) {
+		if (showSparkline && sparklineType === 'svg') {
 			setSeries(prev => ({
 				adx: [
 					...prev.adx.slice(-sparklinePoints + 1),
@@ -131,7 +155,8 @@ export const RegimeWidget: React.FC<RegimeWidgetProps> = ({
 		timeframe,
 		sparklinePoints,
 		showSparkline,
-		autoUpdate
+		autoUpdate,
+		sparklineType
 	])
 
 	if (isLoading) {
@@ -148,13 +173,34 @@ export const RegimeWidget: React.FC<RegimeWidgetProps> = ({
 	}
 
 	if (error) {
+		const isNetworkError = error.includes('Network error') || error.includes('Failed to fetch')
+		
 		return (
 			<div className={`${styles.widget} ${className}`}>
 				<div className={styles.header}>
 					<h3 className={styles.title}>Market Regime</h3>
+					<span className={styles.status} style={{ color: '#ef4444' }}>
+						○ Offline
+					</span>
 				</div>
 				<div className={styles.content}>
-					<p className={styles.error}>{error}</p>
+					<div className={styles.errorContainer}>
+						<p className={styles.error}>
+							{isNetworkError ? (
+								<>
+									<strong>Backend недоступен</strong>
+									<br />
+									<small>
+										API: {API_BASE_URL || 'не настроен'}
+										<br />
+										Проверьте, что backend запущен на порту 4207
+									</small>
+								</>
+							) : (
+								error
+							)}
+						</p>
+					</div>
 				</div>
 			</div>
 		)
@@ -169,9 +215,14 @@ export const RegimeWidget: React.FC<RegimeWidgetProps> = ({
 				{showStatus && (
 					<span
 						className={`${styles.status} ${isConnected ? styles.connected : styles.disconnected}`}
-						title={isConnected ? 'Connected' : 'Disconnected'}
+						title={
+							isConnected
+								? 'WebSocket connected - Live updates'
+								: 'WebSocket disconnected - API only'
+						}
 					>
 						{isConnected ? '●' : '○'}
+						{!isConnected && <span className={styles.apiOnly}> API</span>}
 					</span>
 				)}
 			</div>

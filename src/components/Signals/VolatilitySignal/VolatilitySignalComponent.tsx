@@ -55,6 +55,12 @@ import s from './VolatilitySignal.module.scss'
  * Base component for volatility signals
  */
 
+/**
+ * VolatilitySignalComponent
+ * ------------------------------
+ * Base component for volatility signals
+ */
+
 interface VolatilitySignalComponentProps {
 	maxSignals?: number
 	title?: string
@@ -140,18 +146,18 @@ export const VolatilitySignalComponent: React.FC<
 								<td className={`${s.cell} ${s.symbol}`}>{signal.symbol}</td>
 								<td className={s.cell}>
 									{signal.volatility !== undefined
-										? signal.volatility.toFixed(4)
+										? Number(signal.volatility).toFixed(4)
 										: '0.0000'}
 								</td>
 								<td
-									className={`${s.cell} ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? s.positive : s.negative}`}
+									className={`${s.cell} ${signal.volatilityChange !== undefined && Number(signal.volatilityChange) > 0 ? s.positive : s.negative}`}
 								>
 									{signal.volatilityChange !== undefined &&
-									signal.volatilityChange > 0
+									Number(signal.volatilityChange) > 0
 										? '+'
 										: ''}
 									{signal.volatilityChange !== undefined
-										? signal.volatilityChange.toFixed(2)
+										? Number(signal.volatilityChange).toFixed(2)
 										: '0.00'}
 									%
 								</td>

@@ -29,8 +29,10 @@ const TimeframeCoinsRow = ({
 			<td className={`${styles.cell} ${styles.right}`}>{coin.price ?? '-'}</td>
 			<td className={`${styles.cell} ${styles.right} ${changeClass}`}>
 				{typeof coin.percentChange === 'number'
-					? `${coin.percentChange.toFixed(2)}%`
-					: '-'}
+					? `${Number(coin.percentChange).toFixed(2)}%`
+					: coin.percentChange !== undefined
+						? `${Number(coin.percentChange).toFixed(2)}%`
+						: '-'}
 			</td>
 			<td className={`${styles.cell} ${styles.right}`}>
 				{coin.quoteVolume ?? '-'}

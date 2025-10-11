@@ -312,6 +312,8 @@ export class TradeSignalSocketIOClient {
 	private _setupSignalHandlers() {
 		if (!this.socket) return
 
+		console.log('🔧 Настройка обработчиков Socket.IO сигналов...')
+
 		// Обработчики для всех типов событий сигналов
 		const signalTypes = [
 			'signal:volatility',
@@ -323,10 +325,14 @@ export class TradeSignalSocketIOClient {
 
 		signalTypes.forEach(signalType => {
 			this.socket?.on(signalType, (data) => {
-				console.log(`📨 Получен Socket.IO сигнал ${signalType}:`, data)
+				console.log(`📨 [Socket.IO] Получен сигнал ${signalType}:`, data)
+				const callbackCount = this.callbacks[signalType]?.length || 0
+				console.log(`📋 [Socket.IO] Количество подписчиков на ${signalType}: ${callbackCount}`)
 				this._emitEvent(signalType, data)
 			})
 		})
+
+		console.log(`✅ Настроены обработчики для: ${signalTypes.join(', ')}`)
 
 		// Дополнительно: подписываемся на имена каналов, совпадающие с Redis Streams
 		// и транслируем их в уже используемые клиентом события (алиасы)
@@ -339,13 +345,28 @@ export class TradeSignalSocketIOClient {
 
 		Object.entries(redisEventAliases).forEach(([redisEvent, aliases]) => {
 			this.socket?.on(redisEvent, (data) => {
-				console.log(`📨 Получен Redis-канал ${redisEvent}:`, data)
+				console.log(`📨 [Redis Stream] Получен канал ${redisEvent}:`, data)
+				console.log(`📋 [Redis Stream] Будет транслирован в: ${aliases.join(', ')}`)
 				// Эмитим исходное имя события
 				this._emitEvent(redisEvent, data)
 				// И алиасы, которые уже слушает приложение
-				aliases.forEach((alias) => this._emitEvent(alias, data))
+				aliases.forEach((alias) => {
+					console.log(`🔀 Транслируем ${redisEvent} → ${alias}`)
+					this._emitEvent(alias, data)
+				})
 			})
 		})
+
+		console.log(`✅ Настроены обработчики Redis каналов: ${Object.keys(redisEventAliases).join(', ')}`)
+
+		// Добавляем обработчик для отслеживания ВСЕХ событий (для отладки)
+		if (this.socket) {
+			this.socket.onAny((eventName, ...args) => {
+				if (!['connect', 'disconnect', 'pong'].includes(eventName)) {
+					console.log(`🔍 [Debug] Получено любое событие: ${eventName}`, args)
+				}
+			})
+		}
 	}
 
 	/**

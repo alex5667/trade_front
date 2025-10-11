@@ -44,7 +44,7 @@ export const FundingTable = () => {
 
 	const formatRate = (rate?: number) => {
 		if (rate === undefined || rate === null || isNaN(rate)) return ''
-		return `${(rate * 100).toFixed(3)}%`
+		return `${(Number(rate) * 100).toFixed(3)}%`
 	}
 
 	const formatTime = (value?: number) => {

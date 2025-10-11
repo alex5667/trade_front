@@ -11,8 +11,18 @@ import { useState } from 'react'
 import { RegimeWidget } from '@/components/regime-badge'
 import { RegimeContext } from '@/components/regime-context'
 import { RegimeHealth } from '@/components/regime-health'
+import { RegimeTipsCard } from '@/components/regime-tips'
+
+import { useRegimeSocket } from '@/hooks/useRegimeSocket'
 
 import styles from './RegimeDashboard.module.scss'
+
+/**
+ * Regime Dashboard Page
+ * ------------------------------
+ * Полноценный дашборд с мониторингом рыночного режима,
+ * здоровья пайплайна и контекстом для принятия решений
+ */
 
 /**
  * Regime Dashboard Page
@@ -25,6 +35,10 @@ export default function RegimeDashboardPage() {
 	const [symbol] = useState('BTCUSDT')
 	const [ltf] = useState('1m')
 	const [htf] = useState('1h')
+
+	// Получаем текущий режим из WebSocket
+	const { regime: liveRegime } = useRegimeSocket(symbol, ltf)
+	const currentRegime = (liveRegime?.regime as any) || 'range'
 
 	return (
 		<div className={styles.container}>
@@ -95,6 +109,14 @@ export default function RegimeDashboardPage() {
 							<strong>Expansion:</strong> High volatility phase
 						</div>
 					</div>
+				</div>
+
+				{/* Trading Tips for Current Regime */}
+				<div className={styles.tipsWidget}>
+					<RegimeTipsCard
+						regime={currentRegime}
+						compact={false}
+					/>
 				</div>
 			</div>
 		</div>

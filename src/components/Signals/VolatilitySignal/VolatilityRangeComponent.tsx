@@ -72,6 +72,12 @@ import s from './VolatilitySignal.module.scss'
  * Компонент для отображения сигналов диапазона волатильности
  */
 
+/**
+ * VolatilityRangeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов диапазона волатильности
+ */
+
 interface VolatilityRangeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -211,19 +217,21 @@ export const VolatilityRangeComponent: React.FC<
 
 		// Используем volatilityChange если он доступен
 		if (signal.volatilityChange !== undefined) {
-			change = signal.volatilityChange
+			change = Number(signal.volatilityChange)
 		} else {
 			// Вычисляем процентное изменение на основе range и avgRange
 			if (
 				signal.range !== undefined &&
 				signal.avgRange !== undefined &&
-				signal.avgRange > 0
+				Number(signal.avgRange) > 0
 			) {
 				// Формула: ((current_range - avg_range) / avg_range) * 100
-				change = ((signal.range - signal.avgRange) / signal.avgRange) * 100
+				const rangeNum = Number(signal.range)
+				const avgRangeNum = Number(signal.avgRange)
+				change = ((rangeNum - avgRangeNum) / avgRangeNum) * 100
 			} else if (signal.rangeRatio !== undefined) {
 				// Или используем rangeRatio для вычисления
-				change = (signal.rangeRatio - 1) * 100
+				change = (Number(signal.rangeRatio) - 1) * 100
 			} else {
 				// По умолчанию 0, если нет данных для вычисления или avgRange = 0
 				change = 0
@@ -273,26 +281,28 @@ export const VolatilityRangeComponent: React.FC<
 								</td>
 								<td className={tableStyles.cell}>
 									{signal.volatility !== undefined
-										? `${signal.volatility.toFixed(2)}%`
+										? `${Number(signal.volatility).toFixed(2)}%`
 										: '-'}
 								</td>
 								<td
 									className={`${tableStyles.cell} ${signal.highlightRange ? s.highlight : ''}`}
 								>
-									{signal.range !== undefined ? signal.range.toFixed(6) : '-'}
+									{signal.range !== undefined
+										? Number(signal.range).toFixed(6)
+										: '-'}
 								</td>
 								<td
 									className={`${tableStyles.cell} ${signal.highlightAvgRange ? s.highlight : ''}`}
 								>
 									{signal.avgRange !== undefined
-										? signal.avgRange.toFixed(6)
+										? Number(signal.avgRange).toFixed(6)
 										: '-'}
 								</td>
 								<td
-									className={`${tableStyles.cell} ${signal.volatilityChange !== undefined && signal.volatilityChange > 0 ? s.positive : signal.volatilityChange !== undefined && signal.volatilityChange < 0 ? s.negative : ''}`}
+									className={`${tableStyles.cell} ${signal.volatilityChange !== undefined && Number(signal.volatilityChange) > 0 ? s.positive : signal.volatilityChange !== undefined && Number(signal.volatilityChange) < 0 ? s.negative : ''}`}
 								>
 									{signal.volatilityChange !== undefined
-										? `${signal.volatilityChange > 0 ? '+' : ''}${signal.volatilityChange.toFixed(2)}%`
+										? `${Number(signal.volatilityChange) > 0 ? '+' : ''}${Number(signal.volatilityChange).toFixed(2)}%`
 										: '-'}
 								</td>
 								{renderPercentChange(signal)}

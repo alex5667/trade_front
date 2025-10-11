@@ -3,6 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
+		"predev": "./scripts/kill-port.sh 3003",
 		"dev": "next dev -p 3003",
 		"build": "next build",
 		"start": "next start",

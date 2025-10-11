@@ -216,6 +216,29 @@ export const symbolToRedisApi = createApi({
 				method: 'DELETE'
 			}),
 			invalidatesTags: ['SymbolToRedis']
+		}),
+
+		// Excel Import endpoints
+		getExcelImportInfo: builder.query<any, void>({
+			query: () => ({ url: `${URLS.SYMBOLS_TO_REDIS_EXCEL}/info`, method: 'GET' }),
+		}),
+		downloadExcelTemplate: builder.mutation<Blob, void>({
+			query: () => ({
+				url: `${URLS.SYMBOLS_TO_REDIS_EXCEL}/template`,
+				method: 'GET',
+				responseHandler: (response) => response.blob()
+			}),
+		}),
+		uploadExcelData: builder.mutation<any, any[]>({
+			query: (data) => ({
+				url: `${URLS.SYMBOLS_TO_REDIS_EXCEL}/upload`,
+				method: 'POST',
+				body: data,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}),
+			invalidatesTags: ['SymbolToRedis'],
 		})
 	})
 })
@@ -242,5 +265,8 @@ export const {
 	useGetRedisSymbolDetailsQuery,
 	useCheckRedisSymbolExistsQuery,
 	useGetRedisStatsQuery,
-	useClearRedisDataMutation
+	useClearRedisDataMutation,
+	useGetExcelImportInfoQuery,
+	useDownloadExcelTemplateMutation,
+	useUploadExcelDataMutation
 } = symbolToRedisApi 

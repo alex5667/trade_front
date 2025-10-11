@@ -33,13 +33,18 @@ export const useRegimeAlerts = (): UseRegimeAlertsReturn => {
 			reconnectionAttempts: WEBSOCKET_CONFIG.maxReconnectAttempts,
 			reconnectionDelay: WEBSOCKET_CONFIG.reconnectDelay,
 			timeout: WEBSOCKET_CONFIG.connectionTimeout,
+			autoConnect: true,
+			forceNew: false,
 		})
 
 		setSocket(socketInstance)
 
 		// Обработчик подключения
 		socketInstance.on('connect', () => {
-			console.log('✅ Regime Alerts WebSocket подключен')
+			console.log('✅ Regime Alerts WebSocket подключен:', {
+				id: socketInstance.id,
+				url: WEBSOCKET_CONFIG.url
+			})
 			setIsConnected(true)
 		})
 
@@ -49,10 +54,19 @@ export const useRegimeAlerts = (): UseRegimeAlertsReturn => {
 			setIsConnected(false)
 		})
 
-		// Обработчик ошибок
+		// Обработчик ошибок подключения
 		socketInstance.on('connect_error', (error) => {
-			console.error('🔴 Ошибка подключения Regime Alerts WebSocket:', error)
+			console.warn('⚠️ Regime Alerts WebSocket недоступен:', {
+				message: error.message,
+				url: WEBSOCKET_CONFIG.url,
+				note: 'Alerts будут недоступны, но приложение продолжит работу'
+			})
 			setIsConnected(false)
+		})
+
+		// Обработчик общих ошибок
+		socketInstance.on('error', (error) => {
+			console.error('🔴 WebSocket error:', error)
 		})
 
 		// Слушаем событие 'regime:alert'
@@ -66,6 +80,7 @@ export const useRegimeAlerts = (): UseRegimeAlertsReturn => {
 			socketInstance.off('connect')
 			socketInstance.off('disconnect')
 			socketInstance.off('connect_error')
+			socketInstance.off('error')
 			socketInstance.off('regime:alert')
 			socketInstance.close()
 		}

@@ -87,9 +87,27 @@ export const RegimeHealth: React.FC<RegimeHealthProps> = ({
 	}
 
 	if (error) {
+		const isNetworkError = error.includes('Network error') || error.includes('Failed to fetch')
+		
 		return (
-			<div className={`${styles.container} ${className}`}>
-				<div className={styles.error}>Health error: {error}</div>
+			<div className={`${styles.container} ${className}`} style={{ borderColor: '#ef4444' }}>
+				<div
+					className={styles.header}
+					style={{ color: '#ef4444' }}
+				>
+					<span
+						className={styles.statusIndicator}
+						style={{ backgroundColor: '#ef4444' }}
+					/>
+					<strong className={styles.title}>Regime Health - Offline</strong>
+				</div>
+				<div className={styles.error}>
+					{isNetworkError ? (
+						<>Backend недоступен. Проверьте API сервер на порту 4207.</>
+					) : (
+						`Health error: ${error}`
+					)}
+				</div>
 			</div>
 		)
 	}

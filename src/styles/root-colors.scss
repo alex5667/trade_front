@@ -81,4 +81,17 @@
 	--color-gray-500: #{map.get(colors.$colors, "gray-500")};
 	--color-gray-700: #{map.get(colors.$colors, "gray-700")};
 	--color-gray-900: #{map.get(colors.$colors, "gray-900")};
+
+	// Regime colors
+	--color-regime-range: #6b7280;
+	--color-regime-squeeze: #eab308;
+	--color-regime-trending-bull: #22c55e;
+	--color-regime-trending-bear: #ef4444;
+	--color-regime-expansion: #3b82f6;
+
+	// Status colors
+	--color-success: #22c55e;
+	--color-danger: #ef4444;
+	--color-warning: #eab308;
+	--color-info: #3b82f6;
 }

@@ -163,11 +163,34 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 	})
 
 	// Обработчики сигналов волатильности
-	client.on('signal:volatility', handleVolatilitySignal(dispatch))
-	client.on('volatilitySpike', handleVolatilitySignal(dispatch))
-	client.on('volatility', handleVolatilitySignal(dispatch))
-	client.on('signal:volatilityRange', handleVolatilitySignal(dispatch))
-	client.on('volatilityRange', handleVolatilitySignal(dispatch))
+	console.log('🔧 [Signal Service] Подписка на события волатильности...')
+
+	client.on('signal:volatility', (signal) => {
+		console.log('📩 [Signal Service] Получен signal:volatility')
+		handleVolatilitySignal(dispatch)(signal)
+	})
+
+	client.on('volatilitySpike', (signal) => {
+		console.log('📩 [Signal Service] Получен volatilitySpike')
+		handleVolatilitySignal(dispatch)(signal)
+	})
+
+	client.on('volatility', (signal) => {
+		console.log('📩 [Signal Service] Получен volatility')
+		handleVolatilitySignal(dispatch)(signal)
+	})
+
+	client.on('signal:volatilityRange', (signal) => {
+		console.log('📩 [Signal Service] Получен signal:volatilityRange')
+		handleVolatilitySignal(dispatch)(signal)
+	})
+
+	client.on('volatilityRange', (signal) => {
+		console.log('📩 [Signal Service] Получен volatilityRange')
+		handleVolatilitySignal(dispatch)(signal)
+	})
+
+	console.log('✅ [Signal Service] Подписки на события волатильности установлены')
 
 	// ВАЖНО: не подписываемся на объём и топы через WebSocket - только REST
 	// Удалено: volumeSpike, top:gainers, top:losers и их response:*

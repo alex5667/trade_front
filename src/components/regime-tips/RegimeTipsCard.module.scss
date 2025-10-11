@@ -1,0 +1,132 @@
+@import "@/styles/mixins.scss";
+@import "@/styles/variables.scss";
+
+.card {
+	border-radius: 12px;
+	padding: 16px;
+	background: var(--color-bg-light);
+	border: 1px solid var(--color-border);
+
+	&[data-regime="range"] {
+		border-color: var(--color-regime-range);
+
+		.indicator {
+			background: var(--color-regime-range);
+		}
+	}
+
+	&[data-regime="squeeze"] {
+		border-color: var(--color-regime-squeeze);
+
+		.indicator {
+			background: var(--color-regime-squeeze);
+		}
+	}
+
+	&[data-regime="trending_bull"] {
+		border-color: var(--color-regime-trending-bull);
+
+		.indicator {
+			background: var(--color-regime-trending-bull);
+		}
+	}
+
+	&[data-regime="trending_bear"] {
+		border-color: var(--color-regime-trending-bear);
+
+		.indicator {
+			background: var(--color-regime-trending-bear);
+		}
+	}
+
+	&[data-regime="expansion"] {
+		border-color: var(--color-regime-expansion);
+
+		.indicator {
+			background: var(--color-regime-expansion);
+		}
+	}
+}
+
+.header {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.indicator {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.title {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0;
+	color: var(--color-text-primary);
+}
+
+.summary {
+	margin: 0 0 16px 0;
+	color: var(--color-text-secondary);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.sections {
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.section {
+	background: var(--color-bg-dark);
+	border-radius: 8px;
+	padding: 12px;
+}
+
+.sectionTitle {
+	font-weight: 600;
+	margin-bottom: 8px;
+	font-size: 14px;
+	color: var(--color-text-primary);
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.sectionList {
+	margin: 0;
+	padding-left: 20px;
+
+	li {
+		margin-bottom: 6px;
+		font-size: 13px;
+		line-height: 1.4;
+		color: var(--color-text-secondary);
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.checklistSection {
+	margin-top: 16px;
+	background: var(--color-bg-dark);
+	border-radius: 8px;
+	padding: 12px;
+}
+
+.compact {
+	.sections {
+		grid-template-columns: 1fr;
+	}
+
+	.section {
+		padding: 8px;
+	}
+}

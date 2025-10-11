@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { SymbolList } from '@/components/symbol-to-redis/SymbolList'
+import SymbolsExcelUploader from '@/components/symbol-to-redis/SymbolsExcelUploader'
 
 import type {
 	CreateSymbolToRedisDto,
@@ -19,6 +20,7 @@ import {
 } from '@/services/symbol-to-redis.api'
 
 export default function SymbolsToRedisPage() {
+	const [showExcelUploader, setShowExcelUploader] = useState(false)
 	const [filters, setFilters] = useState({
 		limit: 100,
 		offset: 0,
@@ -72,6 +74,23 @@ export default function SymbolsToRedisPage() {
 		}
 	}
 
+	if (showExcelUploader) {
+		return (
+			<div className={styles.container}>
+				<div className={styles.headerRow}>
+					<h1 className={styles.pageTitle}>Загрузка символов из Excel</h1>
+					<button
+						onClick={() => setShowExcelUploader(false)}
+						className={styles.buttonSecondary}
+					>
+						← Назад к списку
+					</button>
+				</div>
+				<SymbolsExcelUploader />
+			</div>
+		)
+	}
+
 	if (error) {
 		return (
 			<div className={styles.errorContainer}>
@@ -91,12 +110,20 @@ export default function SymbolsToRedisPage() {
 
 	return (
 		<div className={styles.container}>
-			<div className={styles.pageHeader}>
-				<h1 className={styles.pageTitle}>Управление торговыми символами</h1>
-				<p className={styles.pageDescription}>
-					Создавайте, редактируйте и управляйте торговыми символами с
-					автоматической синхронизацией в Redis
-				</p>
+			<div className={styles.headerRow}>
+				<div>
+					<h1 className={styles.pageTitle}>Управление торговыми символами</h1>
+					<p className={styles.pageDescription}>
+						Создавайте, редактируйте и управляйте торговыми символами с
+						автоматической синхронизацией в Redis
+					</p>
+				</div>
+				<button
+					onClick={() => setShowExcelUploader(true)}
+					className={styles.buttonSecondary}
+				>
+					📊 Загрузить из Excel
+				</button>
 			</div>
 
 			<SymbolList

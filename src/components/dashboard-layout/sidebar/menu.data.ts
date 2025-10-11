@@ -1,4 +1,6 @@
 import {
+	ActivitySquare,
+	BookOpen,
 	DatabaseZap,
 	LayoutDashboard,
 	Settings
@@ -15,8 +17,18 @@ export const USERMENU: MenuItem[] = [
 		name: 'User board',
 		endPoint: 'getProfile'
 	},
-
-
+	{
+		icon: ActivitySquare,
+		link: ADMINBOARD_PAGES.REGIME_DASHBOARD,
+		name: 'Regime Dashboard',
+		endPoint: 'getProfile'
+	},
+	{
+		icon: BookOpen,
+		link: ADMINBOARD_PAGES.REGIME_TIPS,
+		name: 'Trading Tips',
+		endPoint: 'getProfile'
+	},
 	{
 		icon: Settings,
 		link: ADMINBOARD_PAGES.SETTINGS,

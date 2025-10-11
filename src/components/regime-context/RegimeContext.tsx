@@ -99,9 +99,20 @@ export const RegimeContext: React.FC<RegimeContextProps> = ({
 	}
 
 	if (error) {
+		const isNetworkError = error.includes('Network error') || error.includes('Failed to fetch')
+		
 		return (
 			<div className={`${styles.container} ${className}`}>
-				<div className={styles.error}>Context error: {error}</div>
+				<div className={styles.header}>
+					<strong className={styles.title}>Regime Context - Offline</strong>
+				</div>
+				<div className={styles.error}>
+					{isNetworkError ? (
+						<>Backend недоступен. Проверьте API сервер на порту 4207.</>
+					) : (
+						`Context error: ${error}`
+					)}
+				</div>
 			</div>
 		)
 	}

@@ -31,13 +31,18 @@ export const useRegimeSocket = (): UseRegimeSocketReturn => {
 			reconnectionAttempts: WEBSOCKET_CONFIG.maxReconnectAttempts,
 			reconnectionDelay: WEBSOCKET_CONFIG.reconnectDelay,
 			timeout: WEBSOCKET_CONFIG.connectionTimeout,
+			autoConnect: true,
+			forceNew: false,
 		})
 
 		setSocket(socketInstance)
 
 		// Обработчик подключения
 		socketInstance.on('connect', () => {
-			console.log('✅ Regime WebSocket подключен')
+			console.log('✅ Regime WebSocket подключен:', {
+				id: socketInstance.id,
+				url: WEBSOCKET_CONFIG.url
+			})
 			setIsConnected(true)
 		})
 
@@ -47,14 +52,25 @@ export const useRegimeSocket = (): UseRegimeSocketReturn => {
 			setIsConnected(false)
 		})
 
-		// Обработчик ошибок
+		// Обработчик ошибок подключения
 		socketInstance.on('connect_error', (error) => {
-			console.error('🔴 Ошибка подключения Regime WebSocket:', error)
+			console.error('🔴 Ошибка подключения Regime WebSocket:', {
+				message: error.message,
+				url: WEBSOCKET_CONFIG.url,
+				transports: socketInstance.io.opts.transports,
+				reconnectAttempts: socketInstance.io.engine?.transport?.readyState
+			})
 			setIsConnected(false)
+		})
+
+		// Обработчик общих ошибок
+		socketInstance.on('error', (error) => {
+			console.error('🔴 WebSocket error:', error)
 		})
 
 		// Слушаем событие 'regime'
 		socketInstance.on('regime', (data: RegimeSignal & { symbol?: string; timeframe?: string }) => {
+			console.log('📊 Regime update received:', data)
 			setRegime(data)
 		})
 
@@ -63,6 +79,7 @@ export const useRegimeSocket = (): UseRegimeSocketReturn => {
 			socketInstance.off('connect')
 			socketInstance.off('disconnect')
 			socketInstance.off('connect_error')
+			socketInstance.off('error')
 			socketInstance.off('regime')
 			socketInstance.close()
 		}

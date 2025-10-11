@@ -3,6 +3,11 @@
 	@apply p-6;
 }
 
+.headerRow {
+	@apply flex justify-between items-start mb-6 gap-4;
+	flex-wrap: wrap;
+}
+
 .pageHeader {
 	@apply mb-8 text-center;
 }
@@ -12,7 +17,15 @@
 }
 
 .pageDescription {
-	@apply text-gray-400 max-w-2xl mx-auto;
+	@apply text-gray-400 max-w-2xl;
+}
+
+.buttonSecondary {
+	@apply px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 font-medium cursor-pointer transition-all;
+
+	&:hover {
+		@apply bg-gray-100 border-gray-400;
+	}
 }
 
 .stats {

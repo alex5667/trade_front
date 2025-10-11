@@ -49,7 +49,11 @@ export const ADMINBOARD_PAGES = {
 	/** Страница телеграм каналов */
 	TELEGRAM_CHANNEL: '/i/telegram-channel',
 	/** Страница торговых символов */
-	SYMBOLS_TO_REDIS: '/i/symbols-to-redis'
+	SYMBOLS_TO_REDIS: '/i/symbols-to-redis',
+	/** Страница Regime Dashboard */
+	REGIME_DASHBOARD: '/i/regime-dashboard',
+	/** Страница подсказок по режимам */
+	REGIME_TIPS: '/i/regime-tips'
 }
 
 /** Функция получения базового URL сайта из переменных окружения */

@@ -90,6 +90,12 @@ import s from './VolatilitySignal.module.scss'
  * Компонент для отображения сигналов скачков волатильности
  */
 
+/**
+ * VolatilitySpikeComponent
+ * ------------------------------
+ * Компонент для отображения сигналов скачков волатильности
+ */
+
 interface VolatilitySpikeComponentProps {
 	maxSignals?: number
 	title?: string
@@ -224,8 +230,10 @@ export const VolatilitySpikeComponent: React.FC<
 		if (signal.open === undefined || signal.close === undefined) {
 			return <td className={s.cell}>-</td>
 		}
-		const diff = signal.close - signal.open
-		const percent = signal.open !== 0 ? (diff / signal.open) * 100 : 0
+		const openNum = Number(signal.open)
+		const closeNum = Number(signal.close)
+		const diff = closeNum - openNum
+		const percent = openNum !== 0 ? (diff / openNum) * 100 : 0
 		const isPositive = percent > 0
 		const cls = isPositive ? s.positive : percent < 0 ? s.negative : ''
 		const sign = isPositive ? '+' : ''
@@ -266,15 +274,15 @@ export const VolatilitySpikeComponent: React.FC<
 									className={`${tableStyles.cell} ${signal.highlightVolatility ? s.highlight : ''}`}
 								>
 									{signal.volatility !== undefined
-										? signal.volatility.toFixed(4)
+										? Number(signal.volatility).toFixed(4)
 										: '0.0000'}
 								</td>
 								<td
-									className={`${tableStyles.cell} ${signal.volatilityChange > 0 ? s.positive : signal.volatilityChange < 0 ? s.negative : ''} ${signal.highlightChange ? s.highlight : ''}`}
+									className={`${tableStyles.cell} ${Number(signal.volatilityChange) > 0 ? s.positive : Number(signal.volatilityChange) < 0 ? s.negative : ''} ${signal.highlightChange ? s.highlight : ''}`}
 								>
 									{signal.volatilityChange !== undefined
-										? (signal.volatilityChange > 0 ? '+' : '') +
-											signal.volatilityChange.toFixed(2)
+										? (Number(signal.volatilityChange) > 0 ? '+' : '') +
+											Number(signal.volatilityChange).toFixed(2)
 										: '-'}
 								</td>
 								{renderPriceChange(signal)}
