@@ -79,12 +79,10 @@ export const useSignalInitializer = () => {
 		if (topGainersData) {
 			const dataKey = createDataKey(topGainersData, 'gainers')
 			if (dataKey && !processedDataRef.current.has(dataKey)) {
-				console.log('🔄 Processing top gainers data...')
 				const coins = parseTimeframeCoins(topGainersData)
 				if (coins.length > 0) {
 					dispatch(replaceTimeframeGainers({ data: coins }))
 					processedDataRef.current.add(dataKey)
-					console.log(`✅ Processed ${coins.length} top gainers`)
 				}
 			}
 		}
@@ -95,12 +93,10 @@ export const useSignalInitializer = () => {
 		if (topLosersData) {
 			const dataKey = createDataKey(topLosersData, 'losers')
 			if (dataKey && !processedDataRef.current.has(dataKey)) {
-				console.log('🔄 Processing top losers data...')
 				const coins = parseTimeframeCoins(topLosersData)
 				if (coins.length > 0) {
 					dispatch(replaceTimeframeLosers({ data: coins }))
 					processedDataRef.current.add(dataKey)
-					console.log(`✅ Processed ${coins.length} top losers`)
 				}
 			}
 		}
@@ -111,7 +107,6 @@ export const useSignalInitializer = () => {
 		if (volatilityData) {
 			const dataKey = createDataKey(volatilityData, 'volatility')
 			if (dataKey && !processedDataRef.current.has(dataKey)) {
-				console.log('🔄 Processing volatility data...')
 				const signals = parseVolatilitySignals(volatilityData)
 				signals.forEach(signal => {
 					if (signal.type === 'volatilitySpike') {
@@ -121,7 +116,6 @@ export const useSignalInitializer = () => {
 					}
 				})
 				processedDataRef.current.add(dataKey)
-				console.log(`✅ Processed ${signals.length} volatility signals`)
 			}
 		}
 	}, [volatilityData, dispatch])
@@ -131,7 +125,6 @@ export const useSignalInitializer = () => {
 		if (volumeData) {
 			const dataKey = createDataKey(volumeData, 'volume')
 			if (dataKey && !processedDataRef.current.has(dataKey)) {
-				console.log('🔄 Processing volume data...')
 				const parsed = parseVolumeCoins(volumeData)
 				parsed.forEach((item) => {
 					const rawChange = (item as any)?.change
@@ -149,7 +142,6 @@ export const useSignalInitializer = () => {
 					dispatch(addVolumeSignal(signal as any))
 				})
 				processedDataRef.current.add(dataKey)
-				console.log(`✅ Processed ${parsed.length} volume signals`)
 			}
 		}
 	}, [volumeData, dispatch])
@@ -159,12 +151,10 @@ export const useSignalInitializer = () => {
 		if (fundingData) {
 			const dataKey = createDataKey(fundingData, 'funding')
 			if (dataKey && !processedDataRef.current.has(dataKey)) {
-				console.log('🔄 Processing funding data...')
 				const coins = parseFundingCoins(fundingData)
 				if (coins.length > 0) {
 					dispatch(replaceFundingData(coins))
 					processedDataRef.current.add(dataKey)
-					console.log(`✅ Processed ${coins.length} funding signals`)
 				}
 			}
 		}

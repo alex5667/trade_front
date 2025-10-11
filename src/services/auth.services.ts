@@ -38,8 +38,7 @@ export const authApi = createApi({
 				try {
 					const { data } = await queryFulfilled
 					dispatch(addUser(data.user))
-				} catch (err) {
-					console.error('Login error:', err)
+				} catch {
 					removeFromStorage()
 				}
 			}
@@ -62,8 +61,7 @@ export const authApi = createApi({
 				try {
 					const { data } = await queryFulfilled
 					dispatch(addUser(data.user))
-				} catch (err) {
-					console.error('Phone login error:', err)
+				} catch {
 					removeFromStorage()
 				}
 			}
@@ -86,8 +84,7 @@ export const authApi = createApi({
 				try {
 					const { data } = await queryFulfilled
 					dispatch(addUser(data.user))
-				} catch (err) {
-					console.error('Registration error:', err)
+				} catch {
 					removeFromStorage()
 				}
 			}
@@ -110,8 +107,7 @@ export const authApi = createApi({
 				try {
 					const { data } = await queryFulfilled
 					dispatch(addUser(data.user))
-				} catch (err) {
-					console.error('Phone registration error:', err)
+				} catch {
 					removeFromStorage()
 				}
 			}
@@ -128,8 +124,8 @@ export const authApi = createApi({
 			onQueryStarted: async (arg, { queryFulfilled }) => {
 				try {
 					await queryFulfilled
-				} catch (err) {
-					console.error('Logout error:', err)
+				} catch {
+					// Ошибка обрабатывается RTK Query
 				}
 			}
 		}),
@@ -154,8 +150,8 @@ export const authApi = createApi({
 				try {
 					const { data } = await queryFulfilled
 					dispatch(addUser(data.user))
-				} catch (err) {
-					console.error('Google login error:', err)
+				} catch {
+					// Ошибка обрабатывается RTK Query
 				}
 			}
 		})

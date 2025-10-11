@@ -55,8 +55,7 @@ export const baseQuery = retry(
 
 			try {
 				return JSON.parse(text)
-			} catch (error) {
-				console.error('Ошибка парсинга JSON:', error)
+			} catch {
 				// Возвращаем сырой текст как data, чтобы не терять информацию
 				return { message: text }
 			}
@@ -95,30 +94,7 @@ export const baseQueryWIthReAuth: typeof baseQuery = async (
 		} else {
 			removeFromStorage()
 		}
-	} else if (result.error) {
-		// Улучшенный лог ошибок
-		const message = errorCatch(result.error)
-		const status = (result.error as any)?.status || 'unknown'
-		const data = (result.error as any)?.data ?? null
-
-		// Проверяем, что error не является пустым объектом
-		if (Object.keys(result.error).length > 0 || message !== '{}') {
-			const details = {
-				message,
-				status,
-				data,
-				raw: result.error
-			}
-			console.error('Base query error:', details)
-		} else {
-			// Если error пустой, логируем базовую информацию
-			const endpoint = typeof args === 'string' ? args : (args as any)?.url || 'unknown endpoint'
-			console.error('Base query error: Empty error object', {
-				status,
-				data,
-				args: endpoint
-			})
-		}
 	}
+	// Ошибки доступны через RTK Query state
 	return result
 }

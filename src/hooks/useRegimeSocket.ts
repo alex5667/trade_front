@@ -39,38 +39,26 @@ export const useRegimeSocket = (): UseRegimeSocketReturn => {
 
 		// Обработчик подключения
 		socketInstance.on('connect', () => {
-			console.log('✅ Regime WebSocket подключен:', {
-				id: socketInstance.id,
-				url: WEBSOCKET_CONFIG.url
-			})
 			setIsConnected(true)
 		})
 
 		// Обработчик отключения
-		socketInstance.on('disconnect', (reason) => {
-			console.log('❌ Regime WebSocket отключен:', reason)
+		socketInstance.on('disconnect', () => {
 			setIsConnected(false)
 		})
 
 		// Обработчик ошибок подключения
-		socketInstance.on('connect_error', (error) => {
-			console.error('🔴 Ошибка подключения Regime WebSocket:', {
-				message: error.message,
-				url: WEBSOCKET_CONFIG.url,
-				transports: socketInstance.io.opts.transports,
-				reconnectAttempts: socketInstance.io.engine?.transport?.readyState
-			})
+		socketInstance.on('connect_error', () => {
 			setIsConnected(false)
 		})
 
 		// Обработчик общих ошибок
-		socketInstance.on('error', (error) => {
-			console.error('🔴 WebSocket error:', error)
+		socketInstance.on('error', () => {
+			// Ошибка обрабатывается через состояние подключения
 		})
 
 		// Слушаем событие 'regime'
 		socketInstance.on('regime', (data: RegimeSignal & { symbol?: string; timeframe?: string }) => {
-			console.log('📊 Regime update received:', data)
 			setRegime(data)
 		})
 

@@ -83,28 +83,22 @@ const handleVolatilitySignal = (dispatch: AppDispatch) => (signal: any) => {
 
 	// Проверяем, был ли уже обработан этот сигнал
 	if (processedSignals.has(signalId)) {
-		console.log(`Сигнал ${signalId} уже был обработан, пропускаем`)
 		return
 	}
 
 	// Добавляем ID в множество обработанных сигналов
 	processedSignals.add(signalId)
 
-	console.log(`📊 Обрабатываем сигнал волатильности: ${normalizedSignal.symbol} (${normalizedSignal.signalType || normalizedSignal.type})`)
-
 	// Отправляем в соответствующий slice в зависимости от типа сигнала
 	switch (normalizedSignal.signalType) {
 		case 'volatilitySpike':
-			console.log(`🔥 Отправляем volatilitySpike сигнал для ${normalizedSignal.symbol}`)
 			dispatch(addVolatilitySpikeSignal(normalizedSignal))
 			break
 		case 'volatilityRange':
-			console.log(`📊 Отправляем volatilityRange сигнал для ${normalizedSignal.symbol}`)
 			dispatch(addVolatilityRangeSignal(normalizedSignal))
 			break
 		default:
 			// Для общих сигналов волатильности отправляем в основной slice
-			console.log(`⚡ Отправляем общий volatility сигнал для ${normalizedSignal.symbol}`)
 			dispatch(addVolatilitySignal(normalizedSignal))
 			break
 	}
@@ -131,14 +125,12 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 
 	// Обработчики состояния соединения
 	client.on('connect', () => {
-		console.log('Сервис сигналов: Socket.IO подключен, обновляем Redux хранилище')
 		dispatch(connected())
 		// Очищаем множество обработанных сигналов при переподключении
 		processedSignals.clear()
 	})
 
 	client.on('disconnect', () => {
-		console.log('Сервис сигналов: Socket.IO отключен, обновляем Redux хранилище')
 		dispatch(disconnected())
 	})
 
@@ -150,47 +142,33 @@ export const initializeSignalService = (dispatch: AppDispatch) => {
 			errorMessage = errorData
 		} else if (errorData?.message) {
 			errorMessage = errorData.message
-			// Логируем дополнительные детали если доступны
-			if (errorData.details) {
-				console.error('Сервис сигналов: Детали ошибки Socket.IO:', errorData.details)
-			}
 		} else if (errorData instanceof Error) {
 			errorMessage = errorData.message
 		}
 
-		console.log('Сервис сигналов: Ошибка Socket.IO -', errorMessage)
 		dispatch(setConnectionError(errorMessage))
 	})
 
 	// Обработчики сигналов волатильности
-	console.log('🔧 [Signal Service] Подписка на события волатильности...')
-
 	client.on('signal:volatility', (signal) => {
-		console.log('📩 [Signal Service] Получен signal:volatility')
 		handleVolatilitySignal(dispatch)(signal)
 	})
 
 	client.on('volatilitySpike', (signal) => {
-		console.log('📩 [Signal Service] Получен volatilitySpike')
 		handleVolatilitySignal(dispatch)(signal)
 	})
 
 	client.on('volatility', (signal) => {
-		console.log('📩 [Signal Service] Получен volatility')
 		handleVolatilitySignal(dispatch)(signal)
 	})
 
 	client.on('signal:volatilityRange', (signal) => {
-		console.log('📩 [Signal Service] Получен signal:volatilityRange')
 		handleVolatilitySignal(dispatch)(signal)
 	})
 
 	client.on('volatilityRange', (signal) => {
-		console.log('📩 [Signal Service] Получен volatilityRange')
 		handleVolatilitySignal(dispatch)(signal)
 	})
-
-	console.log('✅ [Signal Service] Подписки на события волатильности установлены')
 
 	// ВАЖНО: не подписываемся на объём и топы через WebSocket - только REST
 	// Удалено: volumeSpike, top:gainers, top:losers и их response:*

@@ -30,8 +30,8 @@ export const userApi = createApi({
 					// const { data } = await queryFulfilled
 					// dispatch(setWorkInterval(data.user.workInterval))
 					// dispatch(setBreakInterval(data.user.breakInterval))
-				} catch (err) {
-					console.error('Failed to fetch profile:', err)
+				} catch {
+					// Ошибка обрабатывается RTK Query автоматически
 				}
 			}
 		}),
@@ -46,8 +46,8 @@ export const userApi = createApi({
 			onQueryStarted: async (arg, { queryFulfilled }) => {
 				try {
 					await queryFulfilled
-				} catch (err) {
-					console.error('Failed to update profile:', err)
+				} catch {
+					// Ошибка обрабатывается RTK Query автоматически
 				}
 			}
 		})
