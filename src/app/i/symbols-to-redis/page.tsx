@@ -44,8 +44,8 @@ export default function SymbolsToRedisPage() {
 	const handleCreate = async (data: CreateSymbolToRedisDto) => {
 		try {
 			await createSymbol(data).unwrap()
-			refetch()
 			toast.success('Символ успешно создан')
+			// RTK Query автоматически обновит таблицу через invalidatesTags
 		} catch (error) {
 			console.error('Ошибка при создании символа:', error)
 			toast.error('Ошибка при создании символа')
@@ -55,8 +55,8 @@ export default function SymbolsToRedisPage() {
 	const handleUpdate = async (id: string, data: UpdateSymbolToRedisDto) => {
 		try {
 			await updateSymbol({ id, data }).unwrap()
-			refetch()
 			toast.success('Символ успешно обновлен')
+			// RTK Query автоматически обновит таблицу через invalidatesTags
 		} catch (error) {
 			console.error('Ошибка при обновлении символа:', error)
 			toast.error('Ошибка при обновлении символа')
@@ -66,8 +66,8 @@ export default function SymbolsToRedisPage() {
 	const handleDelete = async (id: string) => {
 		try {
 			await deleteSymbol(id).unwrap()
-			refetch()
 			toast.success('Символ успешно удален')
+			// RTK Query автоматически обновит таблицу через invalidatesTags
 		} catch (error) {
 			console.error('Ошибка при удалении символа:', error)
 			toast.error('Ошибка при удалении символа')

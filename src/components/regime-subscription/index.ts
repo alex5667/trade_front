@@ -1,0 +1,2 @@
+export { RegimeSubscriptionManager } from './RegimeSubscriptionManager';
+

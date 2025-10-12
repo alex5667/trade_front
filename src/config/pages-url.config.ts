@@ -53,7 +53,9 @@ export const ADMINBOARD_PAGES = {
 	/** Страница Regime Dashboard */
 	REGIME_DASHBOARD: '/i/regime-dashboard',
 	/** Страница подсказок по режимам */
-	REGIME_TIPS: '/i/regime-tips'
+	REGIME_TIPS: '/i/regime-tips',
+	/** Страница подписок на режимы */
+	REGIME_SUBSCRIPTIONS: '/i/regime-subscriptions'
 }
 
 /** Функция получения базового URL сайта из переменных окружения */

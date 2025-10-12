@@ -62,10 +62,9 @@ export const signalApi = createApi({
 						// Import dynamically to avoid circular imports
 						const { replaceVolumeSignals } = await import('@/store/signals/slices/volume.slice')
 						dispatch(replaceVolumeSignals(data))
-						console.log(`📊 Loaded ${data.length} volume signals from API to Redux store`)
 					}
-				} catch (error) {
-					console.error('Error dispatching volume signals to Redux:', error)
+				} catch {
+					// Ошибка обрабатывается RTK Query
 				}
 			},
 		}),
@@ -81,10 +80,9 @@ export const signalApi = createApi({
 						// Import dynamically to avoid circular imports
 						const { replaceFundingData } = await import('@/store/signals/slices/funding.slice')
 						dispatch(replaceFundingData(data))
-						console.log(`📊 Loaded ${data.length} funding signals from API to Redux store`)
 					}
-				} catch (error) {
-					console.error('Error dispatching funding signals to Redux:', error)
+				} catch {
+					// Ошибка обрабатывается RTK Query
 				}
 			},
 		}),

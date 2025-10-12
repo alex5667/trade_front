@@ -2,7 +2,7 @@
 
 import { MenuItem } from '@/types/menu.interface'
 
-import { Activity, Coins, Gauge, Lightbulb, MessageSquare } from 'lucide-react'
+import { Activity, Coins, Gauge, Lightbulb, MessageSquare, Rss } from 'lucide-react'
 
 import { ADMINBOARD_PAGES } from '@/config/pages-url.config'
 
@@ -35,6 +35,12 @@ export const ADMINMENU: MenuItem[] = [
 		icon: Gauge,
 		link: `${ADMINBOARD_PAGES.REGIME_DASHBOARD}`,
 		name: 'Regime Dashboard',
+		endPoint: null
+	},
+	{
+		icon: Rss,
+		link: `${ADMINBOARD_PAGES.REGIME_SUBSCRIPTIONS}`,
+		name: 'Regime Subscriptions',
 		endPoint: null
 	},
 	{

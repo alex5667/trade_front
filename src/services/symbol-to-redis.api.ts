@@ -26,7 +26,13 @@ export const symbolToRedisApi = createApi({
 				method: 'GET',
 				params
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: (result) =>
+				result
+					? [
+						...result.data.map(({ id }) => ({ type: 'SymbolToRedis' as const, id })),
+						{ type: 'SymbolToRedis', id: 'LIST' }
+					]
+					: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Получить символ по ID
@@ -45,7 +51,7 @@ export const symbolToRedisApi = createApi({
 				method: 'POST',
 				body: data
 			}),
-			invalidatesTags: ['SymbolToRedis']
+			invalidatesTags: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Обновить символ
@@ -57,7 +63,7 @@ export const symbolToRedisApi = createApi({
 			}),
 			invalidatesTags: (result, error, { id }) => [
 				{ type: 'SymbolToRedis', id },
-				{ type: 'SymbolToRedis' }
+				{ type: 'SymbolToRedis', id: 'LIST' }
 			]
 		}),
 
@@ -67,7 +73,10 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/${id}`,
 				method: 'DELETE'
 			}),
-			invalidatesTags: ['SymbolToRedis']
+			invalidatesTags: (result, error, id) => [
+				{ type: 'SymbolToRedis', id },
+				{ type: 'SymbolToRedis', id: 'LIST' }
+			]
 		}),
 
 		// Поиск символов
@@ -77,7 +86,7 @@ export const symbolToRedisApi = createApi({
 				method: 'GET',
 				params
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Нормализация символа
@@ -96,7 +105,7 @@ export const symbolToRedisApi = createApi({
 				method: 'POST',
 				body: data
 			}),
-			invalidatesTags: ['SymbolToRedis']
+			invalidatesTags: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Получить статистику
@@ -106,7 +115,7 @@ export const symbolToRedisApi = createApi({
 				method: 'GET',
 				params: groupBy ? { groupBy } : undefined
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'STATS' }]
 		}),
 
 		// Фильтрация по базовой валюте
@@ -115,7 +124,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/base/${baseAsset}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Фильтрация по котируемой валюте
@@ -124,7 +133,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/quote/${quoteAsset}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Фильтрация по типу инструмента
@@ -133,7 +142,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/type/${instrumentType}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Фильтрация по таймфрейму
@@ -142,7 +151,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/timeframe/${timeframe}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'LIST' }]
 		}),
 
 		// Redis операции
@@ -151,7 +160,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/all`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		getRedisSymbolsByBaseAsset: builder.query<string[], string>({
@@ -159,7 +168,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/base/${baseAsset}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		getRedisSymbolsByQuoteAsset: builder.query<string[], string>({
@@ -167,7 +176,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/quote/${quoteAsset}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		getRedisSymbolsByInstrumentType: builder.query<string[], string>({
@@ -175,7 +184,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/type/${instrumentType}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		getRedisSymbolsByTimeframe: builder.query<string[], string>({
@@ -183,7 +192,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/timeframe/${timeframe}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		getRedisSymbolDetails: builder.query<any, string>({
@@ -191,7 +200,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/details/${symbol}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		checkRedisSymbolExists: builder.query<{ exists: boolean }, string>({
@@ -199,7 +208,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/exists/${symbol}`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		getRedisStats: builder.query<any, void>({
@@ -207,7 +216,7 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/stats`,
 				method: 'GET'
 			}),
-			providesTags: ['SymbolToRedis']
+			providesTags: [{ type: 'SymbolToRedis', id: 'REDIS' }]
 		}),
 
 		clearRedisData: builder.mutation<void, void>({
@@ -215,7 +224,10 @@ export const symbolToRedisApi = createApi({
 				url: `${URLS.SYMBOLS_TO_REDIS}/redis/clear`,
 				method: 'DELETE'
 			}),
-			invalidatesTags: ['SymbolToRedis']
+			invalidatesTags: [
+				{ type: 'SymbolToRedis', id: 'LIST' },
+				{ type: 'SymbolToRedis', id: 'REDIS' }
+			]
 		}),
 
 		// Excel Import endpoints
@@ -238,7 +250,7 @@ export const symbolToRedisApi = createApi({
 					'Content-Type': 'application/json'
 				}
 			}),
-			invalidatesTags: ['SymbolToRedis'],
+			invalidatesTags: [{ type: 'SymbolToRedis', id: 'LIST' }],
 		})
 	})
 })
