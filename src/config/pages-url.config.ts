@@ -55,7 +55,9 @@ export const ADMINBOARD_PAGES = {
 	/** Страница подсказок по режимам */
 	REGIME_TIPS: '/i/regime-tips',
 	/** Страница подписок на режимы */
-	REGIME_SUBSCRIPTIONS: '/i/regime-subscriptions'
+	REGIME_SUBSCRIPTIONS: '/i/regime-subscriptions',
+	/** Страница Order Flow Dashboard */
+	ORDER_FLOW: '/i/order-flow'
 }
 
 /** Функция получения базового URL сайта из переменных окружения */
